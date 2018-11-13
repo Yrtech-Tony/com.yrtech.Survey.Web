@@ -12,30 +12,15 @@ namespace com.yrtech.SurveyWeb.Controllers
     {
         //
         // GET: /System/
-        public ActionResult Brand()
+        public ActionResult BrandIndex()
         {
             return View();
         }
 
-        public ActionResult Tenant()
+        public ActionResult TenantIndex()
         {
             return View();
         }
-
-        public ActionResult Project()
-        {
-            return View();
-        }
-
-        public ActionResult SubjectLink()
-        {
-            return View();
-        }
-
-        public ActionResult Subject()
-        {
-            return View();
-        }
-        
+                
 	}
 }
