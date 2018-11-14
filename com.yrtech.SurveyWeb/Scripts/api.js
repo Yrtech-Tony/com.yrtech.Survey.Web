@@ -346,11 +346,11 @@ function loadSubjectLossResult() {
     })
 }
 
-//失分描述管理
+//体系分数管理
 function loadSubjectTypeScoreRegion() {
     $.get(baseUrl + "survey/api/Master/GetSubjectTypeScoreRegion", {
-        projectId: "1",
-        subjectId: "29"
+        subjectId: "",
+        subjectTypeId: "1"
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -411,14 +411,52 @@ function loadSubjectLink() {
                     tr.append($("<td></td>").html(item.SubjectLinkCode));
                     tr.append($("<td></td>").html(item.SubjectLinkName));
                     tr.append($("<td></td>").html(item.InUserId));
-                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                    tr.append($("<td></td>").html(item.InDateTime?item.InDateTime.replace('T', ' '):''));
 
                     $("#subjectlink-table tbody").append(tr);
                 })
 
                 //$("#subjectlink-table tbody [type=checkbox]").iCheck();
+            }
+            pageClick(1);
+            createPage(lst.length, curPageNum, pageSize, pageClick);
+        }
+    })
+}
+//经销商管理
+function loadShopByProject() {
+    $.get(baseUrl + "survey/api/Master/GetShopByProjectId", {
+        projectId: "2"
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            var pageClick = function (curPage) {
+                $("#shop-table tbody").empty();
+
+                curPageNum = curPage;
+                var pageLst = lst.filter(function (item, i, self) {
+                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                    return (i >= start && i < (start + pageSize));
+                })
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+
+                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
+                    tr.append($("<td></td>").html(item.ShopCode));
+                    tr.append($("<td></td>").html(item.ShopName));
+                    tr.append($("<td></td>").html(item.ShopShortName));
+                    tr.append($("<td></td>").html(item.Province));
+                    tr.append($("<td></td>").html(item.City));
+                    tr.append($("<td></td>").html(item.SubjectTypeExamName));
+                    tr.append($("<td></td>").html(item.InUserId));
+                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+
+                    $("#shop-table tbody").append(tr);
+                })
+
+                //$("#project-table tbody [type=checkbox]").iCheck();
             }
             pageClick(1);
             createPage(lst.length, curPageNum, pageSize, pageClick);

@@ -352,6 +352,7 @@
     <Content Include="Views\ProjectContent\SubjectFileIndex.cshtml" />
     <Content Include="Views\ProjectContent\SubjectLossResultIndex.cshtml" />
     <Content Include="Views\ProjectContent\SubjectTypeScoreRegionIndex.cshtml" />
+    <Content Include="Views\ProjectContent\ShopByProjectIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

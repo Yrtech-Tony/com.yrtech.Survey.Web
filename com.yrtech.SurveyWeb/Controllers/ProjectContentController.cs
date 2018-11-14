@@ -45,7 +45,7 @@ namespace com.yrtech.SurveyWeb.Controllers
         }
 
         // GET: SubjectContent
-        public ActionResult ShopByProject()
+        public ActionResult ShopByProjectIndex()
         {
             return View();
         }
