@@ -5,6 +5,14 @@ var baseUrl = 'http://localhost:57328/';
 var dta = {};
 var pageSize = 15;
 var curPageNum = 1;
+
+var loginUser = {
+    TenantId: 1,
+    UserId:1,
+    AccountId:'sysadmin',
+    AccountName:'管理员'
+};
+
 //加载列表
 function exeQuery(data) {
     $.ajax({
@@ -14,6 +22,10 @@ function exeQuery(data) {
         "data": data.aoData,
         "success": data.fnCallback
     });
+}
+
+function login(params,success,error) {
+    $.get(baseUrl + "survey/api/Account/Login",params,success).error(error);
 }
 
 function loadTenant() {
@@ -59,17 +71,17 @@ function loadTenant() {
 
 function loadBrand() {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
-        tenantId: "1",
-        brandId:""
+        tenantId: loginUser.TenantId,
+        brandId: ""
     }, function (data) {
-        if (data && data.Status) {            
+        if (data && data.Status) {
             var lst = JSON.parse(data.Body);
-           
+
             var pageClick = function (curPage) {
                 $("#brand-table tbody").empty();
 
                 curPageNum = curPage;
-                var pageLst = lst.filter(function (item,i,self) {
+                var pageLst = lst.filter(function (item, i, self) {
                     var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
                     return (i >= start && i < (start + pageSize));
                 })
@@ -85,21 +97,63 @@ function loadBrand() {
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
                     tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                    var userManager = $("<a href='#'>账号管理</a>");
+                    userManager.click(function () {
+                        $("#Modal").modal("show");
+                        var params = {
+                            BrandId: item.BrandId,
+                            BrandCode: item.BrandCode,
+                            BrandName: item.BrandName
+                        };
+                        $("#Modal .modal-body").load("/System/UserInfoForBrand", params, function () {
+                            loadUserInfoByBrandId(params);
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(userManager));
 
                     $("#brand-table tbody").append(tr);
                 })
 
-                $("#brand-table tbody [type=checkbox]").iCheck();
+                //$("#brand-table tbody [type=checkbox]").iCheck();
             }
             pageClick(1);
             createPage(lst.length, curPageNum, pageSize, pageClick);
-        }        
+        }
     })
 }
 
+function closeModel() {
+    $("#Modal").modal("hide");
+}
+
+function loadUserInfoByBrandId(obj) {
+    $.get(baseUrl + "survey/api/Master/GetUserInfoByBrandId", {
+        brandId: obj.BrandId
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            $.each(lst, function (i, item) {
+                var tr = $("<tr>");
+
+                tr.append($("<td></td>").html(obj.BrandName));
+                tr.append($("<td></td>").html(item.AccountName));
+                tr.append($("<td></td>").html(item.UserType));
+                tr.append($("<td></td>").html(item.RoleType));
+                tr.append($("<td></td>").html(item.Email));
+                tr.append($("<td></td>").html(item.TelNO));
+
+                $("#brand-user-table tbody").append(tr);
+            })
+        }
+    })
+}
+//查询期号
 function loadProject() {
+    var brandId = $("#brand-sel").val();
     $.get(baseUrl + "survey/api/Master/GetProject", {
-        brandId: "1",
+        tenantId:loginUser.TenantId,
+        brandId: brandId,
         projectId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -125,8 +179,18 @@ function loadProject() {
                     tr.append($("<td></td>").html(item.OrderNO));
                     tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));                    
+                    tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {
+                            $("#project-form").setForm(item);
+                            $("#project-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
 
                     $("#project-table tbody").append(tr);
                 })
@@ -135,6 +199,32 @@ function loadProject() {
             }
             pageClick(1);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        }
+    })
+}
+//保存期号
+function saveProject() {
+    var brandId = $("#brand-sel").val();
+    var params = $("#project-form").serializeJson();
+    var json = $("#project-form").data("json");
+    if (json && json.length>0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.TenantId = loginUser.TenantId;
+        params.BrandId = brandId;
+        params.InUserId = loginUser.UserId;
+        params.ModifyUserId = loginUser.UserId;
+    }
+
+    $.post(baseUrl + "survey/api/Master/SaveProject", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadProject();
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -166,7 +256,7 @@ function loadShop() {
                     tr.append($("<td></td>").html(item.ShopShortName));
                     tr.append($("<td></td>").html(item.Province));
                     tr.append($("<td></td>").html(item.City));
-                    tr.append($("<td></td>").html(item.UseChk?'是':'否'));
+                    tr.append($("<td></td>").html(item.UseChk ? '是' : '否'));
                     tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
                     tr.append($("<td></td>").html(item.ModifyUserId));
@@ -183,7 +273,7 @@ function loadShop() {
     })
 }
 
-//体系管理
+//体系查询
 function loadSubject() {
     $.get(baseUrl + "survey/api/Master/GetSubject", {
         projectId: "1",
@@ -213,6 +303,19 @@ function loadSubject() {
                     tr.append($("<td></td>").html(item.CheckPoint));
                     //tr.append($("<td></td>").html(item.Desc.replace(/\n/g,'<br>')));
                     tr.append($("<td></td>").html(item.InspectionDesc));
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
+                            $("#subject-form").setForm(item);
+                            $("#subject-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })                   
+                    tr.append($("<td></td>").append(edit));
+                    //体系详情
+                    var showDetail = $("<a href='/ProjectContent/SubjectDetail?SubjectId=" + item.SubjectId + "'>体系详情</a>");
+                    tr.append($("<td></td>").append(showDetail));
 
                     $("#subject-table tbody").append(tr);
                 })
@@ -221,6 +324,31 @@ function loadSubject() {
             }
             pageClick(1);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        }
+    })
+}
+//体系保存
+function saveSubject() {
+    var projectId = $("#project-sel").val();
+    var params = $("#subject-form").serializeJson();
+    var json = $("#subject-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.ProjectId = projectId;
+        params.InUserId = loginUser.UserId;
+        params.ModifyUserId = loginUser.UserId;
+    }
+
+    $.post(baseUrl + "survey/api/Master/SaveSubject", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadSubject();
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -289,7 +417,7 @@ function loadSubjectInspectionStandard() {
 
                     //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
                     tr.append($("<td></td>").html(item.SeqNO));
-                    tr.append($("<td></td>").html(item.InspectionStandardName));                   
+                    tr.append($("<td></td>").html(item.InspectionStandardName));
                     tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
                     tr.append($("<td></td>").html(item.ModifyUserId));
@@ -411,7 +539,7 @@ function loadSubjectLink() {
                     tr.append($("<td></td>").html(item.SubjectLinkCode));
                     tr.append($("<td></td>").html(item.SubjectLinkName));
                     tr.append($("<td></td>").html(item.InUserId));
-                    tr.append($("<td></td>").html(item.InDateTime?item.InDateTime.replace('T', ' '):''));
+                    tr.append($("<td></td>").html(item.InDateTime ? item.InDateTime.replace('T', ' ') : ''));
 
                     $("#subjectlink-table tbody").append(tr);
                 })
@@ -423,6 +551,7 @@ function loadSubjectLink() {
         }
     })
 }
+
 //经销商管理
 function loadShopByProject() {
     $.get(baseUrl + "survey/api/Master/GetShopByProjectId", {

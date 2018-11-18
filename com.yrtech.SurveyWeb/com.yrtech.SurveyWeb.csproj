@@ -129,26 +129,28 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attributes\AuthenAdminAttribute.cs" />
+    <Compile Include="CommonHelper.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BrandContentController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProjectContentController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-progressbar-3.3.4.min.css" />
     <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\buttons.bootstrap.min.css" />
     <Content Include="Content\custom.css" />
     <Content Include="Content\custom.min.css" />
@@ -295,6 +297,7 @@
     <Content Include="iCheck\icheck.jquery.json" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\comm.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\custom.js" />
     <Content Include="Scripts\custom.min.js" />
@@ -302,6 +305,7 @@
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\fastclick.js" />
+    <Content Include="Scripts\form-serialize.js" />
     <Content Include="Scripts\gauge.js" />
     <Content Include="Scripts\gauge.min.js" />
     <Content Include="Scripts\icheck.js" />
@@ -331,7 +335,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\System\BrandIndex.cshtml" />
     <Content Include="Views\System\TenantIndex.cshtml" />
   </ItemGroup>
@@ -353,6 +356,12 @@
     <Content Include="Views\ProjectContent\SubjectLossResultIndex.cshtml" />
     <Content Include="Views\ProjectContent\SubjectTypeScoreRegionIndex.cshtml" />
     <Content Include="Views\ProjectContent\ShopByProjectIndex.cshtml" />
+    <Content Include="Views\System\_PartialUserInfoForBrand.cshtml" />
+    <Content Include="Views\BrandContent\_PartialProjectEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectEdit.cshtml" />
+    <Content Include="Views\ProjectContent\SubjectDetail.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

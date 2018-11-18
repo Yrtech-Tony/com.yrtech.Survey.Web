@@ -16,7 +16,7 @@ namespace com.yrtech.SurveyWeb
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "System", action = "BrandIndex", id = UrlParameter.Optional }
             );
         }
     }

@@ -336,7 +336,7 @@ html, body {
     }
 
     .profile_info h2 {
-        font-size: 14px;
+        font-size: 16px;
         color: #ECF0F1;
         margin: 0;
         font-weight: 300;
@@ -780,7 +780,7 @@ h3,
 }
 
 a {
-    color: #5A738E;
+    /*color: #5A738E;*/
     text-decoration: none;
 }
 
@@ -1073,7 +1073,7 @@ a {
 
         .panel_toolbox > li > a {
             padding: 5px;
-            color: #C5C7CB;
+            color: #7e7e7e;
             font-size: 14px;
         }
 
@@ -1212,7 +1212,7 @@ article.media {
     }
 
 h2 {
-    font-size: 30px;
+    font-size: 18px;
     font-weight: 400;
 }
 

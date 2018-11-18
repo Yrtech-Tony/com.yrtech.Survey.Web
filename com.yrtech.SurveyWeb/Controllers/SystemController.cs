@@ -5,9 +5,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using com.yrtech.SurveyWeb.Attributes;
 
 namespace com.yrtech.SurveyWeb.Controllers
 {
+    [AuthenAdmin]
     public class SystemController : Controller
     {
         //
@@ -21,6 +23,13 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
-                
+
+        public ActionResult UserInfoForBrand(string BrandId, string BrandCode, string BrandName)
+        {
+            ViewBag.BrandId = BrandId;
+            ViewBag.BrandCode = BrandCode;
+            ViewBag.BrandName = BrandName;
+            return PartialView("_PartialUserInfoForBrand");
+        }
 	}
 }
