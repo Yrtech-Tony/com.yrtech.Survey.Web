@@ -63,7 +63,7 @@ function loadTenant() {
 
                 //$("#brand-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
@@ -117,7 +117,7 @@ function loadBrand() {
 
                 //$("#brand-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
@@ -197,7 +197,7 @@ function loadProject() {
 
                 //$("#project-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
@@ -267,7 +267,7 @@ function loadShop() {
 
                 //$("#project-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
@@ -275,8 +275,9 @@ function loadShop() {
 
 //体系查询
 function loadSubject() {
+    var projectId = "1";
     $.get(baseUrl + "survey/api/Master/GetSubject", {
-        projectId: "1",
+        projectId: projectId,
         subjectId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -314,7 +315,12 @@ function loadSubject() {
                     })                   
                     tr.append($("<td></td>").append(edit));
                     //体系详情
-                    var showDetail = $("<a href='/ProjectContent/SubjectDetail?SubjectId=" + item.SubjectId + "'>体系详情</a>");
+                    var params = {
+                        ProjectId : projectId,
+                        SubjectId: item.SubjectId,
+                        Page : curPageNum
+                    }
+                    var showDetail = $("<a href='/ProjectContent/SubjectDetail?" + parseParams(params)+ "'>体系详情</a>");
                     tr.append($("<td></td>").append(showDetail));
 
                     $("#subject-table tbody").append(tr);
@@ -322,7 +328,7 @@ function loadSubject() {
 
                 //$("#subject-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
@@ -352,12 +358,22 @@ function saveSubject() {
         }
     })
 }
+//查询体系详情
+function loadSubjectDetail() {
+    var projectId = $("#ProjectId").val();
+    var subjectId = $("#SubjectId").val();
+    loadSubjectFile(projectId,subjectId);
+    loadSubjectInspectionStandard(projectId, subjectId);
+    loadSubjectLossResult(projectId, subjectId);
+    loadSubjectTypeScoreRegion(projectId, subjectId);
+    loadSubjectLink(projectId, subjectId);
+}
 
 //标准照片管理
-function loadSubjectFile() {
+function loadSubjectFile(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectFile", {
-        projectId: "1",
-        subjectId: "29"
+        projectId: projectId,
+        subjectId: subjectId
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -388,17 +404,17 @@ function loadSubjectFile() {
 
                 //$("#subject-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
 }
 
 //检查标准管理
-function loadSubjectInspectionStandard() {
+function loadSubjectInspectionStandard(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectInspectionStandard", {
-        projectId: "1",
-        subjectId: "29"
+        projectId: projectId,
+        subjectId: subjectId
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -428,17 +444,17 @@ function loadSubjectInspectionStandard() {
 
                 //$("#subject-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
 }
 
 //失分描述管理
-function loadSubjectLossResult() {
+function loadSubjectLossResult(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectLossResult", {
-        projectId: "1",
-        subjectId: "29"
+        projectId: projectId,
+        subjectId: subjectId
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -468,17 +484,18 @@ function loadSubjectLossResult() {
 
                 //$("#loss-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
 }
 
 //体系分数管理
-function loadSubjectTypeScoreRegion() {
+function loadSubjectTypeScoreRegion(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectTypeScoreRegion", {
-        subjectId: "",
-        subjectTypeId: "1"
+        projectId: projectId,
+        subjectId: subjectId,
+        subjectTypeId: ""
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -508,17 +525,16 @@ function loadSubjectTypeScoreRegion() {
 
                 //$("#loss-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
 }
 
-
 //流程类型管理
-function loadSubjectLink() {
+function loadSubjectLink(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectLink", {
-        projectId: "1"
+        projectId: projectId
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -546,7 +562,7 @@ function loadSubjectLink() {
 
                 //$("#subjectlink-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })
@@ -587,7 +603,7 @@ function loadShopByProject() {
 
                 //$("#project-table tbody [type=checkbox]").iCheck();
             }
-            pageClick(1);
+            pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
     })

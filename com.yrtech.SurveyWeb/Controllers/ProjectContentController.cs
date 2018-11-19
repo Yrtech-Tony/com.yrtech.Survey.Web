@@ -11,8 +11,9 @@ namespace com.yrtech.SurveyWeb.Controllers
     public class ProjectContentController : Controller
     {
         // GET: SubjectContent
-        public ActionResult SubjectIndex()
+        public ActionResult SubjectIndex(string Page)
         {
+            ViewBag.Page = Page;
             return View();
         }
 
@@ -57,10 +58,18 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialSubjectEdit");
         }
 
-        public ActionResult SubjectDetail(int SubjectId)
+        public ActionResult SubjectDetail(string ProjectId, string SubjectId, string Page)
         {
+            ViewBag.ProjectId = ProjectId;
             ViewBag.SubjectId = SubjectId;
+            ViewBag.Page = Page;
+
             return View();
+        }
+
+        public ActionResult LoadPartial(string view)
+        {
+            return PartialView(view);
         }
         
     }

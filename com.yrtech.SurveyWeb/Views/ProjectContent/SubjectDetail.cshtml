@@ -6,6 +6,9 @@
     <div class="title_left">
         <h3>体系详情 <small></small></h3>
     </div>
+    <div style="float:right">
+        <a id="btnBack" href="/ProjectContent/SubjectIndex?Page=@ViewBag.Page" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;返回</a>
+    </div>
 </div>
 
 <div class="row">
@@ -15,7 +18,7 @@
                 <h2>标准照片</h2>
                 <ul class="nav navbar-right panel_toolbox" style="font-size:16px;">
                     <li>
-                        <a id="btnAddFile" class="collapse-link btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
+                        <a id="btnAddFile" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
                     </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -46,7 +49,7 @@
                 <h2>检查标准</h2>
                 <ul class="nav navbar-right panel_toolbox" style="font-size:16px;">
                     <li>
-                        <a id="btnAddFile" class="collapse-link btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
+                        <a id="btnAddFile" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
                     </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -76,7 +79,7 @@
                 <h2>失分描述</h2>
                 <ul class="nav navbar-right panel_toolbox" style="font-size:16px;">
                     <li>
-                        <a id="btnAddFile" class="collapse-link btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
+                        <a id="btnAddFile" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
                     </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -106,7 +109,7 @@
                 <h2>体系分数</h2>
                 <ul class="nav navbar-right panel_toolbox" style="font-size:16px;">
                     <li>
-                        <a id="btnAddFile" class="collapse-link btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
+                        <a id="btnAddFile" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
                     </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -136,7 +139,7 @@
                 <h2>流程类型</h2>
                 <ul class="nav navbar-right panel_toolbox" style="font-size:16px;">
                     <li>
-                        <a id="btnAddFile" class="collapse-link btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
+                        <a id="btnAddFile" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
                     </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -158,6 +161,8 @@
         </div>
     </div>
 </div>
+<input id="ProjectId" type="hidden" value="@ViewBag.ProjectId"/>
+<input id="SubjectId" type="hidden" value="@ViewBag.SubjectId" />
 
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false">
     <div class="modal-dialog">
@@ -169,7 +174,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveSubject()" class="btn btn-primary">保存</button>
+                <button id="save_button" type="button" onclick="saveSubjectDetail()" class="btn btn-primary">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -180,11 +185,11 @@
     <script src="~/Scripts/page.js"></script>
     <script>
         $(function () {
-            loadSubject();
+            loadSubjectDetail();
 
-            $("#btnAdd").click(function () {
+            $("#btnAddFile").click(function () {
                 $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {
+                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", {view:""}, function () {
                 })
                 return false;
             })
