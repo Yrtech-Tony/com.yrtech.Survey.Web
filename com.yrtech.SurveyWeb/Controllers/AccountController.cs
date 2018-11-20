@@ -28,5 +28,16 @@ namespace com.yrtech.SurveyWeb.Controllers
             }
             return Json("", JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Logoff()
+        {
+            Session["LoginUser"] = null;
+            return this.Redirect("~/");
+        }
+
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
     }
 }

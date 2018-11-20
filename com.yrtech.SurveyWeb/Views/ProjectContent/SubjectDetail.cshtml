@@ -164,7 +164,7 @@
 <input id="ProjectId" type="hidden" value="@ViewBag.ProjectId"/>
 <input id="SubjectId" type="hidden" value="@ViewBag.SubjectId" />
 
-<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false">
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -189,7 +189,7 @@
 
             $("#btnAddFile").click(function () {
                 $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", {view:""}, function () {
+                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectFileEdit" }, function () {
                 })
                 return false;
             })

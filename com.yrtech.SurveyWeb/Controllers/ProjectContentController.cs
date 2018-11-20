@@ -58,6 +58,11 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialSubjectEdit");
         }
 
+        public ActionResult SubjectIndexEdit()
+        {
+            return PartialView("_PartialSubjectIndexEdit");
+        }
+        
         public ActionResult SubjectDetail(string ProjectId, string SubjectId, string Page)
         {
             ViewBag.ProjectId = ProjectId;

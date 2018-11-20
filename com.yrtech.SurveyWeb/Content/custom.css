@@ -5087,3 +5087,10 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 .input-page-div input[type=text]{
     width:40px;
 }
+
+.record-div{
+    padding-right: 5px;
+    float: left;
+    height: 40px;
+    line-height: 40px;
+}

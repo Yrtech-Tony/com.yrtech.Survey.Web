@@ -37,16 +37,17 @@ function createPageNav(opt) {
     if (opt.$container && opt.pageCount == 0) {
         $(opt.$container).empty();
     }
+    var totalCount = opt.totalCount||0;
     var $container = opt.$container || null, //必需，页码容器，请确保这个容器只用来存放页码导航
         pageCount = Number(opt.pageCount) || 0,    //必需，页码总数
         currentNum = Number(opt.currentNum) || 1,    //选填，当前页码
-        maxCommonLen = Number(opt.maxCommonLen) || 10,   //选填，普通页码的最大个数
+        maxCommonLen = Number(opt.maxCommonLen) || 5,   //选填，普通页码的最大个数
 
         className = opt.className || "pagination",//选填，分页类型：pagination或pager等
         preText = opt.preText || "上一页",      //选填，上一页文字显示，适用于只有前后页按钮的情况
         nextText = opt.nextText || "下一页",      //选填，下一页文字，同上
         firstText = opt.firstText || "首页",
-    lastText = opt.lastText || "末页",
+        lastText = opt.lastText || "末页",
 
         hasFirstBtn = opt.hasFirstBtn === false ? false : true,
         hasLastBtn = opt.hasLastBtn === false ? false : true,
@@ -89,6 +90,7 @@ function createPageNav(opt) {
     function _initPageNav() {
         var initStr = [];
         initStr.push('<nav><ul class="' + className + '" onselectstart="return false">');
+        initStr.push("<span class='record-div'>共" + totalCount + "条记录</span>");
         if (hasInput)
             initStr.push('<div class="input-page-div">当前第<input type="text" maxlength="6" value="' + currentNum + '" />页，共<span>'
                 + pageCount

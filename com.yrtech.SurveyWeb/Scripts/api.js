@@ -53,9 +53,9 @@ function loadTenant() {
                     tr.append($("<td></td>").html(item.TenantName));
                     tr.append($("<td></td>").html(item.Email));
                     tr.append($("<td></td>").html(item.TelNo));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
+                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
 
                     $("#brand-table tbody").append(tr);
@@ -93,9 +93,9 @@ function loadBrand() {
                     tr.append($("<td></td>").html(item.BrandCode));
                     tr.append($("<td></td>").html(item.BrandName));
                     tr.append($("<td></td>").html(item.Remark));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
+                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
                     var userManager = $("<a href='#'>账号管理</a>");
                     userManager.click(function () {
@@ -119,6 +119,8 @@ function loadBrand() {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -145,6 +147,8 @@ function loadUserInfoByBrandId(obj) {
 
                 $("#brand-user-table tbody").append(tr);
             })
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -177,9 +181,9 @@ function loadProject() {
                     tr.append($("<td></td>").html(item.Year));
                     tr.append($("<td></td>").html(item.Quarter));
                     tr.append($("<td></td>").html(item.OrderNO));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
+                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
                     var edit = $("<a href='#'>编辑</a>");
                     edit.click(function () {
@@ -199,6 +203,8 @@ function loadProject() {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -257,9 +263,9 @@ function loadShop() {
                     tr.append($("<td></td>").html(item.Province));
                     tr.append($("<td></td>").html(item.City));
                     tr.append($("<td></td>").html(item.UseChk ? '是' : '否'));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
+                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
 
                     $("#shop-table tbody").append(tr);
@@ -269,6 +275,8 @@ function loadShop() {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -307,9 +315,11 @@ function loadSubject() {
                     var edit = $("<a href='#'>编辑</a>");
                     edit.click(function () {
                         $("#Modal").modal("show");
-                        $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
-                            $("#subject-form").setForm(item);
-                            $("#subject-form").data("json", JSON.stringify(item));
+                        $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {                            
+                            loadSubjectTypeExamDrop($("#SubjectTypeExamId"), function () {
+                                $("#subject-form").setForm(item);
+                                $("#subject-form").data("json", JSON.stringify(item));
+                            });
                         })
                         return false;
                     })                   
@@ -330,9 +340,29 @@ function loadSubject() {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
+
+//加载试卷类型下拉列表
+function loadSubjectTypeExamDrop(select,callback) {
+    $.get(baseUrl + "survey/api/Master/GetSubjectTypeExam", {}, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            if (lst) {
+                for (i in lst) {
+                    $(select).append($("<option>").val(lst[i].SubjectTypeExamId).html(lst[i].SubjectTypeExamName));
+                }
+            }
+            callback();
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
 //体系保存
 function saveSubject() {
     var projectId = $("#project-sel").val();
@@ -358,6 +388,9 @@ function saveSubject() {
         }
     })
 }
+
+
+
 //查询体系详情
 function loadSubjectDetail() {
     var projectId = $("#ProjectId").val();
@@ -394,9 +427,9 @@ function loadSubjectFile(projectId, subjectId) {
                     tr.append($("<td></td>").html(item.FileName));
                     tr.append($("<td></td>").html(item.FileType));
                     tr.append($("<td></td>").html(item.SeqNO));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
+                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
 
                     $("#subject-file-table tbody").append(tr);
@@ -406,6 +439,8 @@ function loadSubjectFile(projectId, subjectId) {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -434,9 +469,9 @@ function loadSubjectInspectionStandard(projectId, subjectId) {
                     //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
                     tr.append($("<td></td>").html(item.SeqNO));
                     tr.append($("<td></td>").html(item.InspectionStandardName));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
+                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
 
                     $("#standard-table tbody").append(tr);
@@ -446,6 +481,8 @@ function loadSubjectInspectionStandard(projectId, subjectId) {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -474,9 +511,9 @@ function loadSubjectLossResult(projectId, subjectId) {
                     //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
                     tr.append($("<td></td>").html(item.SeqNO));
                     tr.append($("<td></td>").html(item.LossResultName));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
+                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
 
                     $("#loss-table tbody").append(tr);
@@ -486,6 +523,8 @@ function loadSubjectLossResult(projectId, subjectId) {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -515,9 +554,9 @@ function loadSubjectTypeScoreRegion(projectId, subjectId) {
                     //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
                     tr.append($("<td></td>").html(item.LowestScore));
                     tr.append($("<td></td>").html(item.FullScore));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyUserId));
+                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
 
                     $("#score-table tbody").append(tr);
@@ -527,14 +566,16 @@ function loadSubjectTypeScoreRegion(projectId, subjectId) {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
 
 //流程类型管理
-function loadSubjectLink(projectId, subjectId) {
+function loadSubjectLink() {
     $.get(baseUrl + "survey/api/Master/GetSubjectLink", {
-        projectId: projectId
+        projectId: "1"
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -554,8 +595,18 @@ function loadSubjectLink(projectId, subjectId) {
                     //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
                     tr.append($("<td></td>").html(item.SubjectLinkCode));
                     tr.append($("<td></td>").html(item.SubjectLinkName));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime ? item.InDateTime.replace('T', ' ') : ''));
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/ProjectContent/SubjectIndexEdit", {}, function () {
+                            $("#subject-link-form").setForm(item);
+                            $("#subject-link-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
 
                     $("#subjectlink-table tbody").append(tr);
                 })
@@ -564,14 +615,39 @@ function loadSubjectLink(projectId, subjectId) {
             }
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
         }
     })
 }
+//保存流程类型
+function saveSubjectIndex() {
+    var projectId = "1";
+    var params = $("#subject-link-form").serializeJson();
+    var json = $("#subject-link-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.ProjectId = projectId;
+        params.InUserId = loginUser.UserId;        
+    }
 
+    $.post(baseUrl + "survey/api/Master/SaveSubjectIndex", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadSubjectIndex();
+        } else {
+            alert(data.Body);
+        }
+    })
+}
 //经销商管理
 function loadShopByProject() {
     $.get(baseUrl + "survey/api/Master/GetShopByProjectId", {
-        projectId: "2"
+        projectId: "1"
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -595,7 +671,7 @@ function loadShopByProject() {
                     tr.append($("<td></td>").html(item.Province));
                     tr.append($("<td></td>").html(item.City));
                     tr.append($("<td></td>").html(item.SubjectTypeExamName));
-                    tr.append($("<td></td>").html(item.InUserId));
+                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
 
                     $("#shop-table tbody").append(tr);
@@ -627,5 +703,5 @@ function parseParams(data) {
 
 function createPage(total, curPageNum, pageSize, pageClick) {
     var pageCount = total % pageSize == 0 ? Math.floor(total / pageSize) : Math.floor(total / pageSize + 1);
-    createPageNav({ $container: $("#pagination"), pageCount: pageCount, currentNum: curPageNum, afterFun: pageClick });
+    createPageNav({ $container: $("#pagination"), pageCount: pageCount, currentNum: curPageNum, totalCount: total, afterFun: pageClick });
 }

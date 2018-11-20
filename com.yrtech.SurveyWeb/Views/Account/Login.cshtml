@@ -1,7 +1,9 @@
 ﻿@{
     Layout = null;
 }
-
+<style>
+    
+</style>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -18,7 +20,7 @@
 
     <style>
         body.login {
-            background: url(../Content/image/loginbg.jpg);
+            /*background: url(../Content/image/loginbg.jpg);*/
             /* 背景图垂直、水平均居中 */
             background-position: center center;
             /* 背景图不平铺 */
@@ -33,7 +35,7 @@
 
         .login .content {
             position: relative;
-            width: 470px;
+            width: 400px;
             background: rgba(255, 255, 255, 0.6) !important; /* IE无效，FF有效 */
             background: #fff;
             filter: alpha(opacity=60);
@@ -42,7 +44,7 @@
             -webkit-border-radius: 8px;
             border-radius: 8px;
             margin: 150px auto 200px;
-            padding: 10px 20px 5px 190px;
+            padding: 10px 20px 5px 20px;
         }
 
             .login .content .i {
@@ -68,7 +70,7 @@
         }
 
         .content #searchForm {
-            border-left: #666 solid 1px;
+            /*border-left: #666 solid 1px;*/
             padding: 1px 10px 10px 30px;
             margin: 30px auto;
         }
@@ -87,12 +89,18 @@
                 filter: alpha(opacity=40);
                 color: #fff;
             }
+
+        #bottom {
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+        }
     </style>
 </head>
 <body class="login">
     <div class="container">
         <div class="content">
-            <i class="i"><img src="~/Content/image/login-logo.png"></i>
+            @*<i class="i"><img src="~/Content/image/login-logo.png"></i>*@
             <form id="searchForm" method="post" class="form-group login-form" action="#">
                 <input type="hidden" name="action" value="login" />
                 <div class="alert alert-danger alert-dismissible hidden" role="alert">
@@ -127,7 +135,7 @@
             <p class="text-center">
                 建议使用Chrome，火狐或IE10以上版本，若使用360浏览器请在极速模式下打开系统<br />
                 如系统出现错误或异常，影响正常使用，请记录错误并通过以下方式通知管理员，以便及时为您解决问题！ <br />
-                工作时间：工作日9:00-18:00  /   电话：010-64687240-7303  /   邮箱：vgic_support@163.com
+                工作时间：9:00-20:00  /   邮箱：506011382@163.com
             </p>
         </div>
     </div>
@@ -162,11 +170,10 @@
                 var params = { accountId: $("#txtUsername").val(), password: $("#txtPassword").val() };
 
                 login(params, function (data) {
-                    console.log("loginreturn", data)
                     if (data.Status) {
                         $.post("../Account/AfterLogin", { loginUser: data.Body }, function () {
                             location.href = $("#valueReturnUrl").val();
-                        }).error(function () {
+                        }).complete(function () {
                             $("#btnLogin").button('reset');
                         });
                     }
@@ -176,12 +183,12 @@
                     }
                 }, function (XMLHttpRequest, textStatus, errorThrown) {
                     $("#btnLogin").button('reset');
-                    alert("未知错误，请通过以下方式联系管理员进行处理：\r\n电话：010-64687240-7303\r\n邮箱：vgic_support@163.com\r\n\r\n");
+                    alert("未知错误，请通过以下方式联系管理员进行处理：<br>邮箱：506011382@qq.com ");
                 })
 
             });
             $('#btnForget').click(function () {
-                alert('如您忘记密码，请通过以下方式联系管理员进行重置：\r\n电话：010-64687240-7303\r\n邮箱：vgic_support@163.com\r\n\r\n');
+                alert('如您忘记密码，请通过以下方式联系管理员进行重置：<br>邮箱：506011382@qq.com ');
             });
         });
     </script>
