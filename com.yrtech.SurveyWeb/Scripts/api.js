@@ -8,9 +8,9 @@ var curPageNum = 1;
 
 var loginUser = {
     TenantId: 1,
-    UserId:1,
-    AccountId:'sysadmin',
-    AccountName:'管理员'
+    UserId: 1,
+    AccountId: 'sysadmin',
+    AccountName: '管理员'
 };
 
 //加载列表
@@ -24,8 +24,8 @@ function exeQuery(data) {
     });
 }
 
-function login(params,success,error) {
-    $.get(baseUrl + "survey/api/Account/Login",params,success).error(error);
+function login(params, success, error) {
+    $.get(baseUrl + "survey/api/Account/Login", params, success).error(error);
 }
 
 function loadTenant() {
@@ -156,7 +156,7 @@ function loadUserInfoByBrandId(obj) {
 function loadProject() {
     var brandId = $("#brand-sel").val();
     $.get(baseUrl + "survey/api/Master/GetProject", {
-        tenantId:loginUser.TenantId,
+        tenantId: loginUser.TenantId,
         brandId: brandId,
         projectId: ""
     }, function (data) {
@@ -210,10 +210,11 @@ function loadProject() {
 }
 //保存期号
 function saveProject() {
+    $("#save_button").button("loading");
     var brandId = $("#brand-sel").val();
     var params = $("#project-form").serializeJson();
     var json = $("#project-form").data("json");
-    if (json && json.length>0) {
+    if (json && json.length > 0) {
         //编辑
         json = JSON.parse(json);
         params = $.extend(json, params);
@@ -232,6 +233,7 @@ function saveProject() {
         } else {
             alert(data.Body);
         }
+        $("#save_button").button("reset");
     })
 }
 
@@ -315,22 +317,22 @@ function loadSubject() {
                     var edit = $("<a href='#'>编辑</a>");
                     edit.click(function () {
                         $("#Modal").modal("show");
-                        $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {                            
+                        $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
                             loadSubjectTypeExamDrop($("#SubjectTypeExamId"), function () {
                                 $("#subject-form").setForm(item);
                                 $("#subject-form").data("json", JSON.stringify(item));
                             });
                         })
                         return false;
-                    })                   
+                    })
                     tr.append($("<td></td>").append(edit));
                     //体系详情
                     var params = {
-                        ProjectId : projectId,
+                        ProjectId: projectId,
                         SubjectId: item.SubjectId,
-                        Page : curPageNum
+                        Page: curPageNum
                     }
-                    var showDetail = $("<a href='/ProjectContent/SubjectDetail?" + parseParams(params)+ "'>体系详情</a>");
+                    var showDetail = $("<a href='/ProjectContent/SubjectDetail?" + parseParams(params) + "'>体系详情</a>");
                     tr.append($("<td></td>").append(showDetail));
 
                     $("#subject-table tbody").append(tr);
@@ -347,7 +349,7 @@ function loadSubject() {
 }
 
 //加载试卷类型下拉列表
-function loadSubjectTypeExamDrop(select,callback) {
+function loadSubjectTypeExamDrop(select, callback) {
     $.get(baseUrl + "survey/api/Master/GetSubjectTypeExam", {}, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -356,7 +358,8 @@ function loadSubjectTypeExamDrop(select,callback) {
                     $(select).append($("<option>").val(lst[i].SubjectTypeExamId).html(lst[i].SubjectTypeExamName));
                 }
             }
-            callback();
+            if (callback)
+                callback();
         } else {
             alert(data.Body);
         }
@@ -365,6 +368,8 @@ function loadSubjectTypeExamDrop(select,callback) {
 
 //体系保存
 function saveSubject() {
+    $("#save_button").button("loading");
+
     var projectId = $("#project-sel").val();
     var params = $("#subject-form").serializeJson();
     var json = $("#subject-form").data("json");
@@ -380,6 +385,7 @@ function saveSubject() {
     }
 
     $.post(baseUrl + "survey/api/Master/SaveSubject", params, function (data) {
+        $("#save_button").button("loading");
         if (data && data.Status) {
             closeModel();
             loadSubject();
@@ -395,11 +401,10 @@ function saveSubject() {
 function loadSubjectDetail() {
     var projectId = $("#ProjectId").val();
     var subjectId = $("#SubjectId").val();
-    loadSubjectFile(projectId,subjectId);
+    loadSubjectFile(projectId, subjectId);
     loadSubjectInspectionStandard(projectId, subjectId);
     loadSubjectLossResult(projectId, subjectId);
     loadSubjectTypeScoreRegion(projectId, subjectId);
-    loadSubjectLink(projectId, subjectId);
 }
 
 //标准照片管理
@@ -410,35 +415,34 @@ function loadSubjectFile(projectId, subjectId) {
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
-
-            var pageClick = function (curPage) {
-                $("#subject-file-table tbody").empty();
-
-                curPageNum = curPage;
-                var pageLst = lst.filter(function (item, i, self) {
-                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                    return (i >= start && i < (start + pageSize));
+            $("#subject-file-table tbody").empty();
+            var maxSeqNO = 0;
+            $.each(lst, function (i, item) {
+                maxSeqNO = Math.max(maxSeqNO, parseInt(item.SeqNO));
+                
+                var tr = $("<tr>");
+                tr.append($("<td></td>").html(item.FileName));
+                //tr.append($("<td></td>").html(item.FileType));
+                tr.append($("<td></td>").html(item.SeqNO));
+                //tr.append($("<td></td>").html(item.InUserId));
+                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                //tr.append($("<td></td>").html(item.ModifyUserId));
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                var edit = $("<a href='#'>编辑</a>");
+                edit.click(function () {
+                    $("#Modal").modal("show");
+                    $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectFileEdit" }, function () {
+                        $("#subject-file-form").setForm(item);
+                        $("#subject-file-form").data("json", JSON.stringify(item));
+                    })
+                    return false;
                 })
-                $.each(pageLst, function (i, item) {
-                    //page
-                    var tr = $("<tr>");
+                tr.append($("<td></td>").append(edit));
 
-                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
-                    tr.append($("<td></td>").html(item.FileName));
-                    tr.append($("<td></td>").html(item.FileType));
-                    tr.append($("<td></td>").html(item.SeqNO));
-                    //tr.append($("<td></td>").html(item.InUserId));
-                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    //tr.append($("<td></td>").html(item.ModifyUserId));
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                $("#subject-file-table tbody").append(tr);
+            })
 
-                    $("#subject-file-table tbody").append(tr);
-                })
-
-                //$("#subject-table tbody [type=checkbox]").iCheck();
-            }
-            pageClick(curPageNum);
-            createPage(lst.length, curPageNum, pageSize, pageClick);
+            $("#fileMaxSeqNO").val(maxSeqNO);
         } else {
             alert(data.Body);
         }
@@ -453,34 +457,32 @@ function loadSubjectInspectionStandard(projectId, subjectId) {
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
+            $("#standard-table tbody").empty();
+            var maxSeqNO = 0;
+            $.each(lst, function (i, item) {
+                maxSeqNO = Math.max(maxSeqNO, parseInt(item.SeqNO));
+                var tr = $("<tr>");
 
-            var pageClick = function (curPage) {
-                $("#standard-table tbody").empty();
-
-                curPageNum = curPage;
-                var pageLst = lst.filter(function (item, i, self) {
-                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                    return (i >= start && i < (start + pageSize));
+                tr.append($("<td></td>").html(item.SeqNO));
+                tr.append($("<td></td>").html(item.InspectionStandardName));
+                //tr.append($("<td></td>").html(item.InUserId));
+                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                //tr.append($("<td></td>").html(item.ModifyUserId));
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                var edit = $("<a href='#'>编辑</a>");
+                edit.click(function () {
+                    $("#Modal").modal("show");
+                    $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectInspectionStandardEdit" }, function () {
+                        $("#subject-standard-form").setForm(item);
+                        $("#subject-standard-form").data("json", JSON.stringify(item));
+                    })
+                    return false;
                 })
-                $.each(pageLst, function (i, item) {
-                    //page
-                    var tr = $("<tr>");
+                tr.append($("<td></td>").append(edit));
 
-                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
-                    tr.append($("<td></td>").html(item.SeqNO));
-                    tr.append($("<td></td>").html(item.InspectionStandardName));
-                    //tr.append($("<td></td>").html(item.InUserId));
-                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    //tr.append($("<td></td>").html(item.ModifyUserId));
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-
-                    $("#standard-table tbody").append(tr);
-                })
-
-                //$("#subject-table tbody [type=checkbox]").iCheck();
-            }
-            pageClick(curPageNum);
-            createPage(lst.length, curPageNum, pageSize, pageClick);
+                $("#standard-table tbody").append(tr);
+            })
+            $("#standardMaxSeqNO").val(maxSeqNO);
         } else {
             alert(data.Body);
         }
@@ -495,34 +497,32 @@ function loadSubjectLossResult(projectId, subjectId) {
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
+            var maxSeqNO = 0;
+            $("#loss-table tbody").empty();
+            $.each(lst, function (i, item) {
+                maxSeqNO = Math.max(maxSeqNO, parseInt(item.SeqNO));
+                var tr = $("<tr>");
 
-            var pageClick = function (curPage) {
-                $("#loss-table tbody").empty();
-
-                curPageNum = curPage;
-                var pageLst = lst.filter(function (item, i, self) {
-                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                    return (i >= start && i < (start + pageSize));
+                tr.append($("<td></td>").html(item.SeqNO));
+                tr.append($("<td></td>").html(item.LossResultName));
+                //tr.append($("<td></td>").html(item.InUserId));
+                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                //tr.append($("<td></td>").html(item.ModifyUserId));
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                var edit = $("<a href='#'>编辑</a>");
+                edit.click(function () {
+                    $("#Modal").modal("show");
+                    $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectLossResultEdit" }, function () {
+                        $("#subject-loss-form").setForm(item);
+                        $("#subject-loss-form").data("json", JSON.stringify(item));
+                    })
+                    return false;
                 })
-                $.each(pageLst, function (i, item) {
-                    //page
-                    var tr = $("<tr>");
+                tr.append($("<td></td>").append(edit));
 
-                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
-                    tr.append($("<td></td>").html(item.SeqNO));
-                    tr.append($("<td></td>").html(item.LossResultName));
-                    //tr.append($("<td></td>").html(item.InUserId));
-                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    //tr.append($("<td></td>").html(item.ModifyUserId));
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-
-                    $("#loss-table tbody").append(tr);
-                })
-
-                //$("#loss-table tbody [type=checkbox]").iCheck();
-            }
-            pageClick(curPageNum);
-            createPage(lst.length, curPageNum, pageSize, pageClick);
+                $("#loss-table tbody").append(tr);
+            })
+            $("#lossMaxSeqNO").val(maxSeqNO);
         } else {
             alert(data.Body);
         }
@@ -538,34 +538,32 @@ function loadSubjectTypeScoreRegion(projectId, subjectId) {
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
+            $("#score-table tbody").empty();
+            $.each(lst, function (i, item) {
+                var tr = $("<tr>");
 
-            var pageClick = function (curPage) {
-                $("#score-table tbody").empty();
-
-                curPageNum = curPage;
-                var pageLst = lst.filter(function (item, i, self) {
-                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                    return (i >= start && i < (start + pageSize));
+                tr.append($("<td></td>").html(item.SubjectTypeName));
+                tr.append($("<td></td>").html(item.LowestScore));
+                tr.append($("<td></td>").html(item.FullScore));
+                //tr.append($("<td></td>").html(item.InUserId));
+                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                //tr.append($("<td></td>").html(item.ModifyUserId));
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                var edit = $("<a href='#'>编辑</a>");
+                edit.click(function () {
+                    $("#Modal").modal("show");
+                    $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectTypeScoreRegionEdit" }, function () {
+                        loadSubjectType($("#SubjectTypeId"), function () {
+                            $("#subject-score-region-form").setForm(item);
+                            $("#subject-score-region-form").data("json", JSON.stringify(item));
+                        });
+                    })
+                    return false;
                 })
-                $.each(pageLst, function (i, item) {
-                    //page
-                    var tr = $("<tr>");
+                tr.append($("<td></td>").append(edit));
 
-                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
-                    tr.append($("<td></td>").html(item.LowestScore));
-                    tr.append($("<td></td>").html(item.FullScore));
-                    //tr.append($("<td></td>").html(item.InUserId));
-                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    //tr.append($("<td></td>").html(item.ModifyUserId));
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-
-                    $("#score-table tbody").append(tr);
-                })
-
-                //$("#loss-table tbody [type=checkbox]").iCheck();
-            }
-            pageClick(curPageNum);
-            createPage(lst.length, curPageNum, pageSize, pageClick);
+                $("#score-table tbody").append(tr);
+            })
         } else {
             alert(data.Body);
         }
@@ -622,6 +620,7 @@ function loadSubjectLink() {
 }
 //保存流程类型
 function saveSubjectIndex() {
+    $("#save_button").button("loading");
     var projectId = "1";
     var params = $("#subject-link-form").serializeJson();
     var json = $("#subject-link-form").data("json");
@@ -632,10 +631,11 @@ function saveSubjectIndex() {
     } else {
         //新增
         params.ProjectId = projectId;
-        params.InUserId = loginUser.UserId;        
+        params.InUserId = loginUser.UserId;
     }
 
-    $.post(baseUrl + "survey/api/Master/SaveSubjectIndex", params, function (data) {
+    $.post(baseUrl + "survey/api/Master/SaveSubjectLink", params, function (data) {
+        $("#save_button").button("reset");
         if (data && data.Status) {
             closeModel();
             loadSubjectIndex();
@@ -682,6 +682,20 @@ function loadShopByProject() {
             pageClick(curPageNum);
             createPage(lst.length, curPageNum, pageSize, pageClick);
         }
+    })
+}
+
+function loadSubjectType(select, callback) {
+    $.get(baseUrl + "survey/api/Master/GetSubjectType", {
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            $.each(lst, function (i, item) {
+                $(select).append($("<option>").val(item.SubjectTypeId).html(item.SubjectTypeName));
+            })
+        }
+        if (callback)
+            callback();
     })
 }
 

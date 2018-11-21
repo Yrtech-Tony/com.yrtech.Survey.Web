@@ -1,13 +1,13 @@
 ﻿
 <div>
-    <form class="form-horizontal form-label-left" id="subject-file-form">
+    <form class="form-horizontal form-label-left" id="subject-loss-form">
         <fieldset>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="userName">
-                    标准照片名称<span class="required">*</span>
+                    失分描述<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="FileName" name="FileName" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <textarea id="LossResultName" name="LossResultName" required="required" rows="6" class="form-control col-md-7 col-xs-12"></textarea>
                 </div>
             </div>
         </fieldset>
@@ -17,8 +17,8 @@
 
     function saveSubjectDetail() {
         $("#save_button").button("loading");
-        var params = $("#subject-file-form").serializeJson();
-        var json = $("#subject-file-form").data("json");
+        var params = $("#subject-loss-form").serializeJson();
+        var json = $("#subject-loss-form").data("json");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
@@ -26,12 +26,12 @@
         } else {
             //新增
             params.SubjectId = $("#SubjectId").val();
-            params.SeqNO = parseInt($("#fileMaxSeqNO").val()) + 1;
+            params.SeqNO = parseInt($("#lossMaxSeqNO").val()) + 1;
             params.InUserId = loginUser.UserId;
             params.ModifyUserId = loginUser.UserId;
         }
 
-        $.post(baseUrl + "survey/api/Master/SaveSubjectFile", params, function (data) {
+        $.post(baseUrl + "survey/api/Master/SaveLossResult", params, function (data) {
             if (data && data.Status) {
                 closeModel();
                 loadSubjectDetail();

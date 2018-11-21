@@ -51,7 +51,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveSubject()" class="btn btn-primary">保存</button>
+                <button id="save_button" type="button" onclick="saveSubject()" data-loading-text="提交中..." class="btn btn-primary">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -63,7 +63,6 @@
     <script src="~/Scripts/form-serialize.js"></script>
     <script>
         $(function () {
-            debugger
             var page = '@ViewBag.Page';
             if (page) {
                 curPageNum = page;
@@ -73,6 +72,8 @@
             $("#btnAdd").click(function () {
                 $("#Modal").modal("show");
                 $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
+                    loadSubjectTypeExamDrop($("#SubjectTypeExamId"), function () {
+                    });
                 })
                 return false;
             })

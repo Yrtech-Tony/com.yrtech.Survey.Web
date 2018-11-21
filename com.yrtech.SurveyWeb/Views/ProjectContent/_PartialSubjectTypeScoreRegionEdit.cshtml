@@ -1,0 +1,63 @@
+﻿
+<div>
+    <form class="form-horizontal form-label-left" id="subject-score-region-form">
+        <fieldset>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="userName">
+                    体系类型<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="SubjectTypeId" name="SubjectTypeId" class="form-control col-md-7 col-xs-12"></select>
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="userName">
+                    得分下限<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="LowestScore" name="LowestScore" required="required" type="text" maxlength="5" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="userName">
+                    得分上限<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="FullScore" name="FullScore" required="required" type="text" maxlength="5" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<script>
+    loadSubjectType();
+    function saveSubjectDetail() {
+        $("#save_button").button("loading");
+
+        var params = $("#subject-score-region-form").serializeJson();
+        var json = $("#subject-score-region-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+        } else {
+            //新增
+            params.SubjectId = $("#SubjectId").val();
+            params.SeqNO = parseInt($("#fileMaxSeqNO").val()) + 1;
+            params.InUserId = loginUser.UserId;
+            params.ModifyUserId = loginUser.UserId;
+        }
+
+        $.post(baseUrl + "survey/api/Master/SaveSubjectTypeScoreRegion", params, function (data) {
+            if (data && data.Status) {
+                closeModel();
+                loadSubjectDetail();
+            } else {
+                alert(data.Body);
+            }
+            $("#save_button").button("reset");
+        })
+    }
+
+</script>
+
