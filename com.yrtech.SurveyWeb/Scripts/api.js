@@ -1,6 +1,6 @@
 ﻿
-//var baseUrl = 'http://123.57.229.128:8001/';
-var baseUrl = 'http://localhost:57328/';
+var baseUrl = 'http://123.57.229.128:8001/';
+//var baseUrl = 'http://localhost:57328/';
 
 var dta = {};
 var pageSize = 15;
