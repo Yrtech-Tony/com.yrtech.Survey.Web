@@ -58,9 +58,9 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialSubjectEdit");
         }
 
-        public ActionResult SubjectIndexEdit()
+        public ActionResult SubjectLinkEdit()
         {
-            return PartialView("_PartialSubjectIndexEdit");
+            return PartialView("_PartialSubjectLinkEdit");
         }
         
         public ActionResult SubjectDetail(string ProjectId, string SubjectId, string Page)

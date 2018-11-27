@@ -598,7 +598,7 @@ function loadSubjectLink() {
                     var edit = $("<a href='#'>编辑</a>");
                     edit.click(function () {
                         $("#Modal").modal("show");
-                        $("#Modal .modal-body").load("/ProjectContent/SubjectIndexEdit", {}, function () {
+                        $("#Modal .modal-body").load("/ProjectContent/SubjectLinkEdit", {}, function () {
                             $("#subject-link-form").setForm(item);
                             $("#subject-link-form").data("json", JSON.stringify(item));
                         })
@@ -619,7 +619,7 @@ function loadSubjectLink() {
     })
 }
 //保存流程类型
-function saveSubjectIndex() {
+function saveSubjectLink() {
     $("#save_button").button("loading");
     var projectId = "1";
     var params = $("#subject-link-form").serializeJson();
@@ -638,7 +638,7 @@ function saveSubjectIndex() {
         $("#save_button").button("reset");
         if (data && data.Status) {
             closeModel();
-            loadSubjectIndex();
+            loadSubjectLink();
         } else {
             alert(data.Body);
         }
