@@ -53,7 +53,7 @@
                 <h2>检查标准</h2>
                 <ul class="nav navbar-right panel_toolbox" style="font-size:16px;">
                     <li>
-                        <a id="btnAddFile" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
+                        <a id="btnAddStandard" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
                     </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -84,7 +84,7 @@
                 <h2>失分描述</h2>
                 <ul class="nav navbar-right panel_toolbox" style="font-size:16px;">
                     <li>
-                        <a id="btnAddFile" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
+                        <a id="btnAddLoss" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
                     </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -115,7 +115,7 @@
                 <h2>体系分数</h2>
                 <ul class="nav navbar-right panel_toolbox" style="font-size:16px;">
                     <li>
-                        <a id="btnAddFile" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
+                        <a id="btnAddScore" class="btn btn-default"><i class="fa fa-plus-circle"></i>&nbsp;新增</a>
                     </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -170,6 +170,28 @@
             $("#btnAddFile").click(function () {
                 $("#Modal").modal("show");
                 $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectFileEdit" }, function () {
+                })
+                return false;
+            })
+
+            $("#btnAddStandard").click(function () {
+                $("#Modal").modal("show");
+                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectInspectionStandardEdit" }, function () {
+                })
+                return false;
+            })
+
+            $("#btnAddLoss").click(function () {
+                $("#Modal").modal("show");
+                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectLossResultEdit" }, function () {
+                })
+                return false;
+            })
+
+            $("#btnAddScore").click(function () {
+                $("#Modal").modal("show");
+                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectTypeScoreRegionEdit" }, function () {
+                    loadSubjectType($("#SubjectTypeId"), function () { });
                 })
                 return false;
             })

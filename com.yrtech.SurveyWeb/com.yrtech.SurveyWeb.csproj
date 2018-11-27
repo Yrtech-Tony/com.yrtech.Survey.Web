@@ -363,7 +363,7 @@
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectLossResultEdit.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSubjectIndexEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectLinkEdit.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectInspectionStandardEdit.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectFileEdit.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectTypeScoreRegionEdit.cshtml" />
