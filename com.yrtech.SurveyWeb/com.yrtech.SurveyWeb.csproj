@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -139,6 +140,7 @@
     <Compile Include="Attributes\AuthenAdminAttribute.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AppealController.cs" />
     <Compile Include="Controllers\BrandContentController.cs" />
     <Compile Include="Controllers\ProjectContentController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
@@ -157,9 +159,16 @@
     <Content Include="Content\dataTables.bootstrap.min.css" />
     <Content Include="Content\daterangepicker.css" />
     <Content Include="Content\fixedHeader.bootstrap.min.css" />
+    <Content Include="Content\font-awesome-ie7.min.css" />
     <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\image\bottom-bg.png" />
+    <Content Include="Content\image\login-bg.jpg" />
+    <Content Include="Content\image\login-logo.png" />
     <Content Include="Content\image\user.png" />
+    <Content Include="Content\login.css" />
     <Content Include="Content\nprogress.css" />
+    <Content Include="Content\public.css" />
     <Content Include="Content\responsive.bootstrap.min.css" />
     <Content Include="Content\scroller.bootstrap.css" />
     <Content Include="Content\scroller.bootstrap.min.css" />
@@ -367,6 +376,7 @@
     <Content Include="Views\ProjectContent\_PartialSubjectInspectionStandardEdit.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectFileEdit.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectTypeScoreRegionEdit.cshtml" />
+    <Content Include="Views\Appeal\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
