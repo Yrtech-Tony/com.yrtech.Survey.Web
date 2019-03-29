@@ -190,8 +190,8 @@ $(document).ready(function () {
 });
 // /iCheck
 
-$(document).ready(function () {
 
+$(document).ready(function () {
     init_sidebar();
 
 });

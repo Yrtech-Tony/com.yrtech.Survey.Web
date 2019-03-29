@@ -69,6 +69,20 @@ function loadTenant() {
     })
 }
 
+function loadBrandBindDropdownList(callback) {
+    $.get(baseUrl + "survey/api/Master/GetBrand", {
+        tenantId: loginUser.TenantId,
+        userId: loginUser.UserId,
+        brandId: ""
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            if (callback)
+                callback(lst);                    
+        }
+    })
+}
+
 function loadBrand() {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
@@ -125,6 +139,154 @@ function loadBrand() {
     })
 }
 
+//申诉数据导入准备期号数据
+function loadProjectForAppeal(brandId, year) {
+    $.get(baseUrl + "survey/api/Master/GetProject", {
+        brandId: brandId,
+        projectId: loginUser.TenantId,
+        year: year
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            $("#appeal-table tbody").empty();
+
+            $.each(lst, function (i, item) {
+                var tr = $("<tr>");
+
+                tr.append($("<td></td>").html(item.ProjectId));
+                tr.append($("<td></td>").html(item.ProjectCode));
+                tr.append($("<td></td>").html(item.ProjectName));
+                tr.append($("<td></td>").html(item.Year));
+                tr.append($("<td></td>").html(item.Quarter));
+                tr.append($("<td></td>").html(item.DataScore));
+             
+                var uploadBtn = $("<a href='#'>上传</a>");
+                uploadBtn.click(function () {
+                    $("#UpProjectId").val(item.ProjectId);
+                    $("#uploadFile").click();
+                    return false;
+                })
+                tr.append($("<td></td>").append(uploadBtn));
+
+                var applyBtn = $("<a href='#'>开始申诉</a>");
+                applyBtn.click(function () {
+
+                    return false;
+                })
+                tr.append($("<td></td>").append(applyBtn));
+
+                if (item.AppealStartDate) {
+                    tr.append($("<td></td>").html(item.AppealStartDate.replace('T', ' ')));
+                } else {
+                    tr.append($("<td></td>").html(''));
+                }
+                
+
+                $("#appeal-table tbody").append(tr);
+
+            })
+            
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
+//查询申诉反馈
+function loadAppeal(params) {
+    var projectId = $("#brand-sel").val();
+
+    $.get(baseUrl + "survey/api/Appeal/GetShopAppealInfoByPage", params, function (data) {
+        if (data && data.Status) {
+            var retArr = JSON.parse(data.Body);
+            var total = retArr[0];
+
+            var pageLst = retArr[1];
+            var pageClick = function (curPage) {
+                $("#appeal-table tbody").empty();
+
+                curPageNum = curPage;
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+
+                    var edit = $("<a href='/Appeal/Edit?appealId=" + item.AppealId + "'>申诉/详细</a>");
+                    tr.append($("<td></td>").append(edit));
+
+                    tr.append($("<td></td>").html(item.ShopCode));
+                    tr.append($("<td></td>").html(item.ShopName));
+                    tr.append($("<td></td>").html(item.SubjectCode));
+                    tr.append($("<td></td>").html(item.CheckPoint));
+                    tr.append($("<td></td>").html(item.ImportScore));
+                    tr.append($("<td></td>").html(item.ImportLossResult));
+                    tr.append($("<td></td>").html(item.AppealUserName));
+                    tr.append($("<td></td>").html(toNullString(item.AppealDateTime).replace('T', ' ')));
+                    tr.append($("<td></td>").html(item.AppealReason));
+                    tr.append($("<td></td>").html(item.FeedBackStatusStr));
+                    tr.append($("<td></td>").html(item.FeedBackReason));
+                    tr.append($("<td></td>").html(item.FeedBackUserName));
+                    tr.append($("<td></td>").html(toNullString(item.FeedBackDateTime).replace('T', ' ')));
+
+
+                    $("#appeal-table tbody").append(tr);
+                })
+            }
+            pageClick(curPageNum);
+            createPage(total, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
+//获取某条申诉反馈详情
+function getAppeal(appealId, callback) {
+    $.get(baseUrl + "survey/api/Appeal/GetShopSubjectAppeal", {
+        appealId: appealId
+    }, function (data) {
+        if (data && data.Status) {
+            var objs = JSON.parse(data.Body);
+
+            if (callback)
+                callback(objs[0]);
+        }
+    })
+}
+
+//提交申诉
+function appealApply(params, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealApply", params, function (data) {
+        if (data && data.Status) {
+            if (callback)
+                callback(data);
+        }
+    })
+}
+//提交反馈
+function appealFeedBack(params, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealFeedBack", params, function (data) {
+        if (data && data.Status) {
+            if (callback)
+                callback(data);
+        }
+    })
+}
+//提交申诉反馈附件
+function appealFileSave(params, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealFileSave", params, function (data) {
+        if (data && data.Status) {
+            if (callback)
+                callback(data);
+        }
+    });
+}
+
+//获取申诉反馈附件
+function loadFileList(params, callback) {
+    $.get(baseUrl + "survey/api/Appeal/AppealFileSearch", params, callback);
+}
+
+
 function closeModel() {
     $("#Modal").modal("hide");
 }
@@ -152,12 +314,28 @@ function loadUserInfoByBrandId(obj) {
         }
     })
 }
+
+//查询绑定申诉界面的期号列表
+function loadProjectBindAppeal(brandId,year, callback) {
+    $.get(baseUrl + "survey/api/Master/GetProject", {
+        brandId: brandId,
+        year: year,
+        projectId: ""
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            if (callback)
+                callback(lst);
+        }
+    })
+}
+
 //查询期号
 function loadProject() {
     var brandId = $("#brand-sel").val();
     $.get(baseUrl + "survey/api/Master/GetProject", {
-        tenantId: loginUser.TenantId,
         brandId: brandId,
+        year: '',
         projectId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -235,6 +413,26 @@ function saveProject() {
         }
         $("#save_button").button("reset");
     })
+}
+
+var allShop;
+function searchShop(key,projectId, callback) {
+    if (allShop) {
+        callback(allShop);
+    } else {
+        $.get(baseUrl + "survey/api/Master/GetShop", {
+            projectId: "1",
+            shopId: ""
+        }, function (data) {
+            if (data && data.Status) {
+                allShop = JSON.parse(data.Body);
+                callback(allShop);
+            } else {
+                alert(data.Body);
+            }
+        })
+    }
+    
 }
 
 //经销商管理
@@ -419,7 +617,7 @@ function loadSubjectFile(projectId, subjectId) {
             var maxSeqNO = 0;
             $.each(lst, function (i, item) {
                 maxSeqNO = Math.max(maxSeqNO, parseInt(item.SeqNO));
-                
+
                 var tr = $("<tr>");
                 tr.append($("<td></td>").html(item.FileName));
                 //tr.append($("<td></td>").html(item.FileType));

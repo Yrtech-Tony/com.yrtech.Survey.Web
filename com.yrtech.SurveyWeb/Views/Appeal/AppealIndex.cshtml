@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "巡检系统-申诉管理";
+}
+<style>
+    .link-btn-cell {
+        margin: 3px 5px 0px;
+        cursor: pointer;
+    }
+</style>
+@section scripts{
+<script src="~/Scripts/api.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(function () {
+            $("input[type=checkbox]").iCheckParser();
+            for (var i = 2019; i < 2030; i++) {
+                $("#Year").append($("<option>").text(i + "").val(i + ""));
+            }
+
+            $("#Year").change(function () {
+                loadProjectBindAppeal($("#Brand").val(), $(this).val(), function (data) {
+                    $.each(data, function (i,item) {
+                        var shop = $('<label class="dealer-li"> </label>');
+                        shop.append($('<input type="radio">').val(item.ProjectCode))
+                            .append($('<font>').text(item.ProjectCode));
+                        $("#ProjectListDiv").append(shop);
+                    })
+                    $("#ProjectListDiv input[type=radio]").iCheckParser();
+                });
+            });
+
+            loadBrandBindDropdownList(function (data) {
+                $.each(data, function () {
+                    $("#Brand").append($("<option>").val(this.BrandId).text(this.BrandName));
+                })
+
+                $("#Year").change();
+            });
+
+            //查询
+            $("#btnSearch").click(function () {
+                var params = getParams();
+                loadAppeal(params);
+            });
+
+            $("#btnClear").click(function () {
+                SearchShopFileInfo();
+            });
+
+
+            //经销商自动补全
+            //$("#ShopInput").typeahead({
+            //    source: function (query, process) { //query是输入框输入的文本内容, process是一个回调函数
+            //        $.post("${base}/demo/list", { name: query }, function (data) {
+            //            if (data == "" || data.trim().length == 0) { console.log("没有查询到相关结果"); };
+            //            var results = [];
+            //            for (var i = 0; i < data.length; i++) {
+            //                objects[data[i].name] = data[i].id;
+            //                results.push(data[i].name);
+            //            }
+            //            process(results);
+            //        });
+            //    },
+            //    afterSelect: function (item) {       //选择项之后的事件，item是当前选中的选项
+            //        $("#hidden").val(objects[item]); //为隐藏输入框赋值
+            //    },
+            //});
+        });
+
+        function getParams() {
+            var shopIds = [];
+            $("#ShopListDiv input[type='checkbox']:checked").each(function () {
+                shopIds.push($(this).val());
+            });
+            var shopIdStr = shopIds.join(",");
+
+            return {
+                projectId: "1",
+                businessType: $("#BusinessArea").val(),
+                wideArea: $("#WideArea").val(),
+                bigArea: $("#BigArea").val(),
+                middleArea: $("#MiddleArea").val(),
+                smallArea: $("#SmallArea").val(),
+                shopIdStr: shopIdStr,
+                keyword:$('#keyword').val(),
+                pageNum: 1,
+                pageCount: 20
+            };
+        }
+
+    </script>
+}
+<style>
+    #searchForm th {
+        vertical-align: middle;
+    }
+</style>
+<div id="container" class="col-md-12">
+    <form id="searchForm" class="form-horizontal">
+        <table class="table table-bordered" style="border:solid 1px #666">            
+            <tr>
+                <th width="85" align="center">
+                    经销商
+                </th>
+                <td colspan="5">
+                    <input type="text" id="ShopInput" name="ShopInput" class="form-control" style="width:300px" />
+                </td>
+            </tr>
+            <tr>
+                <th width="85" align="center">
+                    品牌
+                </th>
+                <td width="150px;">
+                    <select id="Brand" name="Brand" class="form-control" class="selectpicker"></select>
+                </td>
+                <th width="85" align="center">
+                    年份
+                </th>
+                <td width="150px;">
+                    <select id="Year" class="form-control" class="selectpicker"></select>
+                </td>
+                <th width="85" align="center">
+                    期号
+                </th>
+                <td>
+                    <div id="ProjectListDiv">
+
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th align="center">关键字</th>
+                <td colspan="5">
+                    <input id="keyword" type="text" class="form-control" placeholder="经销商名称或代码" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" class="text-right">
+                    <button type="button" class="btn btn-default" style="width:100px;" id="btnClear">清&nbsp;空</button>
+                    <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;询</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <div class="list" style="overflow:auto;">
+        <div class="table-responsive comm-table-div">
+            <table id="appeal-table" class="table table-bordered table-set">
+                <thead>
+                    <tr>
+                        <th style="width:100px">操作</th>
+                        <th style="width:110px">经销店代码</th>
+                        <th style="width:250px">经销店名称</th>
+                        <th style="width:80px">体系号</th>
+                        <th style="width:300px">检查点</th>
+                        <th style="width:50px">得分</th>
+                        <th style="width:300px">失分说明</th>
+                        <th style="width:70px">申诉人</th>
+                        <th style="width:130px">申诉时间</th>
+                        <th style="width:200px">申诉理由</th>
+                        <th style="width:90px">反馈状态</th>
+                        <th style="width:200px">反馈理由</th>
+                        <th style="width:70px">反馈人</th>
+                        <th style="width:130px">反馈时间</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="pagination" class="pull-right">
+        <ul id="pageUl"></ul>
+    </div>
+
+    <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button id="save_button" type="button" onclick="saveProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                    <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

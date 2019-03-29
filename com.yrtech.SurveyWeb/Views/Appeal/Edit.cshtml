@@ -1,0 +1,254 @@
+﻿@{
+    Layout = "~/Views/Appeal/_AppealLayout.cshtml";
+    ViewBag.Title = "申诉编辑";
+    com.yrtech.Survey.ShopSite.DTO.AccountDto accountDto = Session["LoginUser"] as com.yrtech.Survey.ShopSite.DTO.AccountDto;
+}
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20170928"></script>
+<script src="~/Scripts/custom/form-serialize.js"></script>
+
+@section scripts{
+    <script src="~/Scripts/api.js"></script>
+    <script>
+        var appealId = "@ViewBag.AppealId";
+        var userId = "@accountDto.Id";
+        var roleType = "@accountDto.RoleType";
+        var BrandId = "@accountDto.BrandId";
+
+        $(function () {
+            if (roleType == "B_Shop") {
+                setFeedBackStatus(false);
+            } else if (roleType == "S") {
+                setFeedBackStatus(true);
+            }
+            var ossClient;
+            getAppeal(appealId, function (data) {
+                console.log(data);
+                $("#appeal-form").setForm(data);
+                $("#ProjectCode").html(data.ProjectCode);
+                $("#ShopName").html(data.ShopName);
+                $("#SubjectCode").html(data.SubjectCode);
+
+                var brand_project_appeal = BrandId + '/' + data.ProjectId + '/' + data.AppealId;
+                var osspath = "survey/Appeal/" + brand_project_appeal + "/Shop/";
+
+                console.log(osspath);
+                //初始化LexusReport OSS 数据源
+                ossClient = new OSSClient({
+                    fileAddCheck: function () {
+                        return true;
+                    },
+                    fileAddCheckMsg: "请填写题号，再选择上传附件",
+                    osspath: osspath,
+                    uploaded: function (args) {
+                        console.log("args", args);
+                        var file = '';
+                        if (args.fileName.indexOf('_') >= 0) {
+                            file = args.fileName.substr(args.fileName.indexOf('_') + 1);
+                        }
+
+                        appealFileSave({
+                            appealId: data.AppealId,
+                            seqNo: 0,
+                            userId: userId,
+                            fileName: file,
+                            serverFileName: args.fileName,
+                            fileType:'Shop',
+                        }, function (data) {
+                            loadAppealFiles();
+                        });
+                    }
+                });
+
+                setFeedBackStatus(data.FeedBackStatus);
+            });
+            //loadAppealFiles();
+
+
+            $("#btnSave").click(function () {
+                if (roleType == "B_Shop") {
+                    //经销商
+                    if ($("#AppealReason").val().length == 0) {
+                        alert("申诉理由必填");
+                        return false;
+                    }
+                    appealApply({
+                        appealId: appealId,
+                        appealReason: $("#AppealReason").val(),
+                        appealUserId: userId
+                    }, function () { })
+                } else if (roleType == "S") {
+                    //明检人员
+                    //check propertys
+                    if ($("input[name=FeedBackStatus]:checked").length == 0) {
+                        alert("反馈意见必须选择");
+                        return false;
+                    }
+                    if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
+                        alert("反馈意见为不同意时反馈内容必填");
+                        return false;
+                    }
+
+                    appealFeedBack({
+                        appealId: appealId,
+                        feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
+                        feedbackReason: $("#FeedBackReason").val(),
+                        feedbackUserId: userId
+                    }, function () { })
+
+                }
+            });
+
+
+        })
+
+        function setFeedBackStatus(feedBackStatus) {
+            if (feedBackStatus) {
+                $("#AppealReason").prop("disabled", true);
+                $("input[name=FeedBackStatus]").iCheck('enable');
+                $("#FeedBackReason").prop("disabled", false);
+
+                $("#selectfiles").hide();
+                $("#postfiles").hide();
+            } else {
+                $("#AppealReason").prop("disabled", false);
+                $("input[name=FeedBackStatus]").iCheck('disabled');
+                $("#FeedBackReason").prop("disabled", true);
+
+                $("#selectfiles").show();
+                $("#postfiles").show();
+            }
+        }
+
+        function loadAppealFiles() {
+            loadFileList({
+                appealId: appealId,
+                fileType: 'Shop'
+            }, function (data) {
+                $("#feedback_file_table tbody").empty();
+                if (data) {
+                    $.each(data, function (i, item) {
+                        var tr = $("<tr>");
+
+                        var fileDownName = item.FileName;
+                        tr.append($("<td>").html(fileDownName));
+                        tr.append($("<td>").html(item.FileTypeName));
+                        tr.append($("<td>").html(item.InUserId));
+                        //下载
+                        var download = $("<a>下载</a>");
+                        download.attr("href", "");
+                        tr.append($("<td></td>").append(download));
+
+                        $("#feedback_file_table tbody").append(tr);
+                    });
+                }
+            });
+        }
+
+
+        function delFile(id, filename) {
+            confirm("确定要删除该文件吗？", function () {
+                $.ajax("/Appeal/DeleteFile", {
+                    method: "POST",
+                    data: {
+                        id: id,
+                        filename: filename
+                    },
+                    type: 'json',
+                    success: function (data) {
+                        loadFileList();
+                    }
+                });
+            });
+        }
+    </script>
+}
+
+<div class="requir col-md-10">
+    <form id="appeal-form">
+        <div style="width:100%;padding-bottom:5px;" class="text-right">
+            <a id="btnSave" class="btn btn-primary">保&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</a>
+        </div>
+        <table class="table table-bordered" style="margin-bottom:0px;">
+            <tr>
+                <th style="width:150px;">期号</th>
+                <td style="width:150px; text-align:center">
+                    <span id="ProjectCode"></span>
+                </td>
+                <th style="width:100px;">经销店</th>
+                <td style="width: 200px; text-align: center">
+                    <span id="ShopName"></span>
+                </td>
+                <th style="width:100px;">体系号</th>
+                <td style="width: 150px; text-align: center">
+                    <span id="SubjectCode"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>指标</th>
+                <td colspan="5"><textarea class="form-control" rows="2" id="CheckPoint" name="CheckPoint" disabled></textarea></td>
+            </tr>
+            <tr>
+                <th>申诉理由</th>
+                <td colspan="5"><textarea class="form-control" rows="2" id="AppealReason" name="AppealReason" disabled></textarea></td>
+            </tr>
+
+            <tr class="feedback">
+                <th>反馈意见</th>
+                <td colspan="5">
+                    <label><input id="FeedBackStatus" name="FeedBackStatus" type="radio" value="true" disabled />  <font>同意</font></label>
+                    <label><input id="FeedBackStatus" name="FeedBackStatus" type="radio" value="false" disabled /> <font>不同意</font></label>
+                </td>
+            </tr>
+            <tr class="feedback">
+                <th width="180">反馈内容</th>
+                <td colspan="5"><textarea class="form-control" rows="2" id="FeedBackReason" name="FeedBackReason"></textarea></td>
+            </tr>
+            @*@if (Model.MaxFeedBack.HasValue)
+                {
+                    <tr class="feedback Shop-feedback">
+                        <th>经销店接受与否</th>
+                        <td colspan="5">
+                            <label>@Html.RadioButtonFor(m => Model.ShopAcceptChk, "true")  <font>接受</font></label>
+                            <label>@Html.RadioButtonFor(m => Model.ShopAcceptChk, "false") <font>不接受</font></label>
+                        </td>
+                    </tr>
+                    <tr class="feedback Shop-feedback">
+                        <th width="180">经销店理由</th>
+                        <td colspan="5"><textarea class="form-control" rows="2" name="ShopAcceptReason">@Model.ShopAcceptReason</textarea></td>
+                    </tr>
+                }*@
+        </table>
+    </form>
+
+    <table class="table table-bordered">
+        <tr>
+            <th style="width:185px;">附件</th>
+            <td colspan="5">
+                <div id="upload-container" class="container-fluid" style="margin:0;padding:0">
+                    <div id="ossfile"></div>
+                    <div id="console"></div>
+                </div>
+                <div class="container-fluid pull-right">
+                    <button id="selectfiles" class='btn btn-default'>选择文件</button>
+                    <button id="postfiles" class='btn btn-primary'>开始上传</button>
+                </div>
+                <table id="feedback_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
+                    <thead>
+                        <tr>
+                            <th class="col-md-7">文件名</th>
+                            <th class="col-md-1">文件类型</th>
+                            <th class="col-md-1">上传账号</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

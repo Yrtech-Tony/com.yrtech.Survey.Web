@@ -12,10 +12,8 @@
     <link href="~/Content/bootstrap.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="~/Content/font-awesome.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="~/Content/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="~/iCheck/skins/flat/green.css" rel="stylesheet">
+    <link href="~/Content/minimal/_all.css" rel="stylesheet" />
+    <link href="~/Content/minimal/blue.css" rel="stylesheet" />
 
     <!-- bootstrap-progressbar -->
     <link href="~/Content/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
@@ -81,6 +79,13 @@
                                         <li><a href="/ProjectContent/ShopByProjectIndex">执行经销商管理</a></li>
                                     </ul>
                                 </li>
+                                <li>
+                                    <a><i class="fa fa-home"></i> 申诉管理 <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/Appeal/Index">申诉数据生成</a></li>
+                                        <li><a href="/Appeal/AppealIndex">申诉反馈列表</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                         
@@ -139,14 +144,12 @@
     <script src="~/Scripts/bootstrap.min.js"></script>
     <!-- FastClick -->
     <script src="~/Scripts/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="~/Scripts/nprogress.js"></script>
     <!-- gauge.js -->
     <script src="~/Scripts/gauge.min.js"></script>
     <!-- bootstrap-progressbar -->
     <script src="~/Scripts/bootstrap-progressbar.min.js"></script>
     <!-- iCheck -->
-    <script src="~/iCheck/icheck.min.js"></script>
+    <script src="~/Scripts/icheck.js"></script>
     <!-- Skycons -->
     <script src="~/Scripts/skycons.js"></script>
     <!-- DateJS -->
@@ -161,6 +164,17 @@
     <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
     <script src="~/Scripts/jquery.dataTables-zh-CN.js"></script>
     <script src="~/Scripts/comm.js"></script>
+    <script>
+        $.fn.iCheckParser = function () {
+            if (this) {
+                $(this).iCheck({
+                    checkboxClass: 'icheckbox_minimal-blue',
+                    radioClass: 'iradio_minimal-blue',
+                    increaseArea: '20%' // optional
+                })
+            }
+        }
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
