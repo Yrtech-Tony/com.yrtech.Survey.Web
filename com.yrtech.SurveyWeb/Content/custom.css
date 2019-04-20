@@ -5045,7 +5045,7 @@ ul.notifications {
 }
 
 .dealer-li {
-    width: 250px;
+    width: 150px;
     height: 30px;
     line-height: 30px;
     vertical-align: middle;
@@ -5055,4 +5055,8 @@ ul.notifications {
     position: absolute;
     margin-top: 3px;
     margin-left: 3px;
+}
+
+.table-set {
+    table-layout: fixed;
 }

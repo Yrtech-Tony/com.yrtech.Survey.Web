@@ -192,20 +192,25 @@ function loadProjectForAppeal(brandId, year) {
     })
 }
 
+function toNullString(str) {
+    if (str)
+        return str;
+    return "";
+}
+
 //查询申诉反馈
 function loadAppeal(params) {
-    var projectId = $("#brand-sel").val();
+    var pageClick = function (curPage) {
 
-    $.get(baseUrl + "survey/api/Appeal/GetShopAppealInfoByPage", params, function (data) {
-        if (data && data.Status) {
-            var retArr = JSON.parse(data.Body);
-            var total = retArr[0];
+        params.pageNum = curPage || 1;
 
-            var pageLst = retArr[1];
-            var pageClick = function (curPage) {
-                $("#appeal-table tbody").empty();
+        $("#appeal-table tbody").empty();
 
-                curPageNum = curPage;
+        $.get(baseUrl + "survey/api/Appeal/GetShopAppealInfoByPage", params, function (data) {
+            if (data && data.Status) {
+                var retArr = JSON.parse(data.Body);
+                var total = retArr[0];
+                var pageLst = retArr[1];
                 $.each(pageLst, function (i, item) {
                     //page
                     var tr = $("<tr>");
@@ -230,13 +235,15 @@ function loadAppeal(params) {
 
                     $("#appeal-table tbody").append(tr);
                 })
+               
+                createPage(total, curPage, pageSize, pageClick);
+            } else {
+                alert(data.Body);
             }
-            pageClick(curPageNum);
-            createPage(total, curPageNum, pageSize, pageClick);
-        } else {
-            alert(data.Body);
-        }
-    })
+        })
+    }
+
+    pageClick();
 }
 
 //获取某条申诉反馈详情
@@ -249,6 +256,8 @@ function getAppeal(appealId, callback) {
 
             if (callback)
                 callback(objs[0]);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -259,6 +268,8 @@ function appealApply(params, callback) {
         if (data && data.Status) {
             if (callback)
                 callback(data);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -268,6 +279,8 @@ function appealFeedBack(params, callback) {
         if (data && data.Status) {
             if (callback)
                 callback(data);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -277,13 +290,24 @@ function appealFileSave(params, callback) {
         if (data && data.Status) {
             if (callback)
                 callback(data);
+        } else {
+            alert(data.Body);
         }
     });
 }
 
 //获取申诉反馈附件
 function loadFileList(params, callback) {
-    $.get(baseUrl + "survey/api/Appeal/AppealFileSearch", params, callback);
+    $.get(baseUrl + "survey/api/Appeal/AppealFileSearch", params, function (data) {
+        if (data && data.Status) {
+            var objs = JSON.parse(data.Body);
+
+            if (callback)
+                callback(objs);
+        } else {
+            alert(data.Body);
+        }
+    });
 }
 
 
@@ -326,6 +350,8 @@ function loadProjectBindAppeal(brandId,year, callback) {
             var lst = JSON.parse(data.Body);
             if (callback)
                 callback(lst);
+        } else {
+            alert(data.Body);
         }
     })
 }

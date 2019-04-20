@@ -1,17 +1,16 @@
 ﻿@{
-    Layout = "~/Views/Appeal/_AppealLayout.cshtml";
     ViewBag.Title = "申诉编辑";
-    com.yrtech.Survey.ShopSite.DTO.AccountDto accountDto = Session["LoginUser"] as com.yrtech.Survey.ShopSite.DTO.AccountDto;
+    com.yrtech.SurveyWeb.Models.AccountDto accountDto = Session["LoginUser"] as com.yrtech.SurveyWeb.Models.AccountDto;
 }
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
-<script src="~/Scripts/oss-upload-direct/upload.js?20170928"></script>
-<script src="~/Scripts/custom/form-serialize.js"></script>
 
 @section scripts{
+    <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+    <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+    <script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+    <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+    <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+    <script src="~/Scripts/oss-upload-direct/upload.js?20170928"></script>
+    <script src="~/Scripts/custom/form-serialize.js"></script>
     <script src="~/Scripts/api.js"></script>
     <script>
         var appealId = "@ViewBag.AppealId";
@@ -19,24 +18,28 @@
         var roleType = "@accountDto.RoleType";
         var BrandId = "@accountDto.BrandId";
 
+        var ossClient;
+        var type = "FeedBack";
+        var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
+        var downloadUrlRoot;
         $(function () {
-            if (roleType == "B_Shop") {
-                setFeedBackStatus(false);
-            } else if (roleType == "S") {
-                setFeedBackStatus(true);
-            }
-            var ossClient;
+            $("input[type=checkbox],input[type=radio]").iCheckParser();
+
             getAppeal(appealId, function (data) {
-                console.log(data);
                 $("#appeal-form").setForm(data);
+                $("input[name=FeedBackStatus]").each(function () {
+                    if (data.FeedBackStatus == ($(this).val() == 'true')) {
+                        $(this).iCheck('check');;
+                    }
+                });;
                 $("#ProjectCode").html(data.ProjectCode);
                 $("#ShopName").html(data.ShopName);
                 $("#SubjectCode").html(data.SubjectCode);
 
                 var brand_project_appeal = BrandId + '/' + data.ProjectId + '/' + data.AppealId;
-                var osspath = "survey/Appeal/" + brand_project_appeal + "/Shop/";
+                var osspath = "survey/Appeal/" + brand_project_appeal + "/" + type + "/";
+                downloadUrlRoot = ossUrlRoot + osspath;
 
-                console.log(osspath);
                 //初始化LexusReport OSS 数据源
                 ossClient = new OSSClient({
                     fileAddCheck: function () {
@@ -57,77 +60,43 @@
                             userId: userId,
                             fileName: file,
                             serverFileName: args.fileName,
-                            fileType:'Shop',
+                            fileType: 'FeedBack',
                         }, function (data) {
                             loadAppealFiles();
                         });
                     }
                 });
-
-                setFeedBackStatus(data.FeedBackStatus);
             });
-            //loadAppealFiles();
 
+            loadAppealFiles();
 
             $("#btnSave").click(function () {
-                if (roleType == "B_Shop") {
-                    //经销商
-                    if ($("#AppealReason").val().length == 0) {
-                        alert("申诉理由必填");
-                        return false;
-                    }
-                    appealApply({
-                        appealId: appealId,
-                        appealReason: $("#AppealReason").val(),
-                        appealUserId: userId
-                    }, function () { })
-                } else if (roleType == "S") {
-                    //明检人员
-                    //check propertys
-                    if ($("input[name=FeedBackStatus]:checked").length == 0) {
-                        alert("反馈意见必须选择");
-                        return false;
-                    }
-                    if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
-                        alert("反馈意见为不同意时反馈内容必填");
-                        return false;
-                    }
-
-                    appealFeedBack({
-                        appealId: appealId,
-                        feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
-                        feedbackReason: $("#FeedBackReason").val(),
-                        feedbackUserId: userId
-                    }, function () { })
-
+                //复审人员
+                //check propertys
+                if ($("input[name=FeedBackStatus]:checked").length == 0) {
+                    alert("反馈意见必须选择");
+                    return false;
                 }
+                if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
+                    alert("反馈意见为不同意时反馈内容必填");
+                    return false;
+                }
+
+                appealFeedBack({
+                    appealId: appealId,
+                    feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
+                    feedbackReason: $("#FeedBackReason").val(),
+                    feedbackUserId: userId
+                }, function () {
+                    alert("保存反馈信息成功！");
+                })
             });
-
-
         })
-
-        function setFeedBackStatus(feedBackStatus) {
-            if (feedBackStatus) {
-                $("#AppealReason").prop("disabled", true);
-                $("input[name=FeedBackStatus]").iCheck('enable');
-                $("#FeedBackReason").prop("disabled", false);
-
-                $("#selectfiles").hide();
-                $("#postfiles").hide();
-            } else {
-                $("#AppealReason").prop("disabled", false);
-                $("input[name=FeedBackStatus]").iCheck('disabled');
-                $("#FeedBackReason").prop("disabled", true);
-
-                $("#selectfiles").show();
-                $("#postfiles").show();
-            }
-        }
 
         function loadAppealFiles() {
             loadFileList({
                 appealId: appealId,
-                fileType: 'Shop'
+                fileType: 'FeedBack'
             }, function (data) {
                 $("#feedback_file_table tbody").empty();
                 if (data) {
@@ -137,10 +106,11 @@
                         var fileDownName = item.FileName;
                         tr.append($("<td>").html(fileDownName));
                         tr.append($("<td>").html(item.FileTypeName));
-                        tr.append($("<td>").html(item.InUserId));
+                        tr.append($("<td>").html(item.InUserName));
                         //下载
                         var download = $("<a>下载</a>");
-                        download.attr("href", "");
+                        var downloadUrl = downloadUrlRoot + item.ServerFileName;
+                        download.attr("href", downloadUrl);
                         tr.append($("<td></td>").append(download));
 
                         $("#feedback_file_table tbody").append(tr);
@@ -175,16 +145,16 @@
         </div>
         <table class="table table-bordered" style="margin-bottom:0px;">
             <tr>
-                <th style="width:150px;">期号</th>
-                <td style="width:150px; text-align:center">
+                <th style="width:100px;">期号</th>
+                <td style="width:200px; text-align:center">
                     <span id="ProjectCode"></span>
                 </td>
                 <th style="width:100px;">经销店</th>
-                <td style="width: 200px; text-align: center">
+                <td style="width: 300px; text-align: center">
                     <span id="ShopName"></span>
                 </td>
                 <th style="width:100px;">体系号</th>
-                <td style="width: 150px; text-align: center">
+                <td style="width: 200px; text-align: center">
                     <span id="SubjectCode"></span>
                 </td>
             </tr>
@@ -200,8 +170,8 @@
             <tr class="feedback">
                 <th>反馈意见</th>
                 <td colspan="5">
-                    <label><input id="FeedBackStatus" name="FeedBackStatus" type="radio" value="true" disabled />  <font>同意</font></label>
-                    <label><input id="FeedBackStatus" name="FeedBackStatus" type="radio" value="false" disabled /> <font>不同意</font></label>
+                    <label class="dealer-li"><input id="FeedBackStatus" name="FeedBackStatus" type="radio" value="true" />  <font>同意</font></label>
+                    <label class="dealer-li"><input id="FeedBackStatus" name="FeedBackStatus" type="radio" value="false" /> <font>不同意</font></label>
                 </td>
             </tr>
             <tr class="feedback">
@@ -222,33 +192,32 @@
                         <td colspan="5"><textarea class="form-control" rows="2" name="ShopAcceptReason">@Model.ShopAcceptReason</textarea></td>
                     </tr>
                 }*@
-        </table>
-    </form>
 
-    <table class="table table-bordered">
-        <tr>
-            <th style="width:185px;">附件</th>
-            <td colspan="5">
-                <div id="upload-container" class="container-fluid" style="margin:0;padding:0">
-                    <div id="ossfile"></div>
-                    <div id="console"></div>
-                </div>
-                <div class="container-fluid pull-right">
-                    <button id="selectfiles" class='btn btn-default'>选择文件</button>
-                    <button id="postfiles" class='btn btn-primary'>开始上传</button>
-                </div>
-                <table id="feedback_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
-                    <thead>
-                        <tr>
-                            <th class="col-md-7">文件名</th>
-                            <th class="col-md-1">文件类型</th>
-                            <th class="col-md-1">上传账号</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </td>
-        </tr>
-    </table>
+            <tr>
+                <th style="width:185px;">附件</th>
+                <td colspan="5">
+                    <div id="upload-container" class="container-fluid" style="margin:0;padding:0">
+                        <div id="ossfile"></div>
+                        <div id="console"></div>
+                    </div>
+                    <div class="container-fluid pull-right">
+                        <button id="selectfiles" class='btn btn-default'>选择文件</button>
+                        <button id="postfiles" class='btn btn-primary'>开始上传</button>
+                    </div>
+                    <table id="feedback_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
+                        <thead>
+                            <tr>
+                                <th class="col-md-7">文件名</th>
+                                <th class="col-md-1">文件类型</th>
+                                <th class="col-md-1">上传账号</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+    </form>
 </div>
