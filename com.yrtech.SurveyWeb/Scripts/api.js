@@ -231,8 +231,7 @@ function loadAppeal(params) {
                     tr.append($("<td></td>").html(item.FeedBackReason));
                     tr.append($("<td></td>").html(item.FeedBackUserName));
                     tr.append($("<td></td>").html(toNullString(item.FeedBackDateTime).replace('T', ' ')));
-
-
+                    
                     $("#appeal-table tbody").append(tr);
                 })
                
@@ -920,6 +919,33 @@ function loadSubjectType(select, callback) {
         }
         if (callback)
             callback();
+    })
+}
+//复审状态查询
+function loadRecheckStatus(params, callback) {
+    $.get(baseUrl + "survey/api/Recheck/GetRecheckStatus",params, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+           
+            if (callback)
+                callback(lst);
+        }else{
+            alert(data.Body);
+        }       
+    })
+}
+
+//复审详细查询
+function loadRecheckStatusDtl(params, callback) {
+    $.get(baseUrl + "survey/api/Recheck/GetRecheckStatusDtl", params, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+           
+            if (callback)
+                callback(lst);
+        }else{
+            alert(data.Body);
+        }       
     })
 }
 

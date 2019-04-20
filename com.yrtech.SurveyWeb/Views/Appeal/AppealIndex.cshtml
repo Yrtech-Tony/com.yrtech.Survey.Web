@@ -135,6 +135,7 @@
             //查询
             $("#btnSearch").click(function () {
                 var params = getParams();
+                if (!params) return;
                 loadAppeal(params);
             });
 
@@ -142,24 +143,6 @@
                 SearchShopFileInfo();
             });
 
-
-            //经销商自动补全
-            //$("#ShopInput").typeahead({
-            //    source: function (query, process) { //query是输入框输入的文本内容, process是一个回调函数
-            //        $.post("${base}/demo/list", { name: query }, function (data) {
-            //            if (data == "" || data.trim().length == 0) { console.log("没有查询到相关结果"); };
-            //            var results = [];
-            //            for (var i = 0; i < data.length; i++) {
-            //                objects[data[i].name] = data[i].id;
-            //                results.push(data[i].name);
-            //            }
-            //            process(results);
-            //        });
-            //    },
-            //    afterSelect: function (item) {       //选择项之后的事件，item是当前选中的选项
-            //        $("#hidden").val(objects[item]); //为隐藏输入框赋值
-            //    },
-            //});
         });
 
         function getParams() {

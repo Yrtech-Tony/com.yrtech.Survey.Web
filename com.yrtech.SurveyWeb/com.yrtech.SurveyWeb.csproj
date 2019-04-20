@@ -143,6 +143,7 @@
     <Compile Include="Controllers\AppealController.cs" />
     <Compile Include="Controllers\BrandContentController.cs" />
     <Compile Include="Controllers\ProjectContentController.cs" />
+    <Compile Include="Controllers\RecheckController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -406,6 +407,7 @@
     <Content Include="Scripts\oss-upload-direct\lib\plupload-2.1.2\examples\jquery\s3.php" />
     <Content Include="Scripts\oss-upload-direct\lib\plupload-2.1.2\examples\upload.php" />
     <Content Include="Scripts\oss-upload-direct\lib\plupload-2.1.2\readme.md" />
+    <Content Include="Views\Recheck\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
