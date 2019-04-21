@@ -408,6 +408,7 @@
     <Content Include="Scripts\oss-upload-direct\lib\plupload-2.1.2\examples\upload.php" />
     <Content Include="Scripts\oss-upload-direct\lib\plupload-2.1.2\readme.md" />
     <Content Include="Views\Recheck\Index.cshtml" />
+    <Content Include="Views\Recheck\Detail.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

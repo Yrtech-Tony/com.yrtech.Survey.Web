@@ -949,6 +949,21 @@ function loadRecheckStatusDtl(params, callback) {
     })
 }
 
+//复审详细
+function getShopNeedRecheckSubject(params, callback) {
+    $.get(baseUrl + "survey/api/Recheck/GetShopNeedRecheckSubject", params, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            if (callback)
+                callback(lst);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
+
 function parseParams(data) {
     try {
         var tempArr = [];
