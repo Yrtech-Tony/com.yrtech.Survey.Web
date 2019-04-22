@@ -5033,11 +5033,12 @@ ul.notifications {
     /* height: 30px; */
     padding-top: 5px;
 }
-.input-page-div input[type=text]{
-    width:40px;
-}
 
-.record-div{
+    .input-page-div input[type=text] {
+        width: 40px;
+    }
+
+.record-div {
     padding-right: 5px;
     float: left;
     height: 40px;
@@ -5051,12 +5052,24 @@ ul.notifications {
     vertical-align: middle;
 }
 
-.dealer-li font {
-    position: absolute;
-    margin-top: 3px;
-    margin-left: 3px;
-}
+    .dealer-li font {
+        position: absolute;
+        margin-top: 3px;
+        margin-left: 3px;
+    }
 
 .table-set {
     table-layout: fixed;
+}
+
+    .table-set td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+.list th, .list td {
+    word-break: keep-all;
+    white-space: nowrap;
+    text-align: center;
 }

@@ -32,7 +32,7 @@
                         $(this).iCheck('check');;
                     }
                 });;
-                $("#ProjectCode").html(data.ProjectCode);
+                $("#ProjectCode").html(data.ProjectName);
                 $("#ShopName").html(data.ShopName);
                 $("#SubjectCode").html(data.SubjectCode);
 
@@ -138,15 +138,16 @@
     </script>
 }
 
-<div class="requir col-md-10">
+<div class="requir col-md-12">
     <form id="appeal-form">
         <div style="width:100%;padding-bottom:5px;" class="text-right">
-            <a id="btnSave" class="btn btn-primary">保&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</a>
+            <a id="btnBack" class="btn btn-default" href="/Appeal/AppealIndex">返&nbsp;&nbsp;&nbsp;&nbsp;回</a>
+            <a id="btnSave" class="btn btn-primary">保&nbsp;&nbsp;&nbsp;&nbsp;存</a>            
         </div>
         <table class="table table-bordered" style="margin-bottom:0px;">
             <tr>
                 <th style="width:100px;">期号</th>
-                <td style="width:200px; text-align:center">
+                <td style="width:300px; text-align:center">
                     <span id="ProjectCode"></span>
                 </td>
                 <th style="width:100px;">经销店</th>

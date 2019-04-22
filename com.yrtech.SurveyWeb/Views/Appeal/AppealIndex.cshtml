@@ -13,29 +13,21 @@
 </style>
 <div id="container" class="col-md-12">
     <form id="searchForm" class="form-horizontal">
-        <table class="table table-bordered" style="border:solid 1px #666">
+        <table class="table table-bordered" style="border:solid 1px #666">           
             <tr>
-                <th width="85" align="center">
-                    经销商
-                </th>
-                <td colspan="5">
-                    <input type="text" id="ShopInput" name="ShopInput" class="form-control" style="width:300px" />
-                </td>
-            </tr>
-            <tr>
-                <th width="85" align="center">
+                <th width="100" align="center">
                     品牌
                 </th>
-                <td width="150px;">
+                <td width="200px;">
                     <select id="Brand" name="Brand" class="form-control selectpicker"></select>
                 </td>
                 <th width="85" align="center">
                     年份
                 </th>
-                <td width="150px;">
+                <td width="200px;">
                     <select id="Year" class="form-control selectpicker"></select>
                 </td>
-                <th width="85" align="center">
+                <th width="100" align="center">
                     期号
                 </th>
                 <td>
@@ -45,7 +37,13 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="6" class="text-right">
+                <th width="100" align="center">
+                    经销商
+                </th>
+                <td colspan="3">
+                    <input type="text" id="ShopInput" name="ShopInput" class="form-control" style="width:300px" />
+                </td>
+                <td colspan="2" class="text-right">
                     <button type="button" class="btn btn-default" style="width:100px;" id="btnClear">清&nbsp;空</button>
                     <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;询</button>
                 </td>
@@ -64,14 +62,13 @@
                         <th style="width:80px">体系号</th>
                         <th style="width:300px">检查点</th>
                         <th style="width:50px">得分</th>
-                        <th style="width:300px">失分说明</th>
                         <th style="width:70px">申诉人</th>
-                        <th style="width:130px">申诉时间</th>
+                        <th style="width:140px">申诉时间</th>
                         <th style="width:200px">申诉理由</th>
                         <th style="width:90px">反馈状态</th>
                         <th style="width:200px">反馈理由</th>
                         <th style="width:70px">反馈人</th>
-                        <th style="width:130px">反馈时间</th>
+                        <th style="width: 140px">反馈时间</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -115,12 +112,13 @@
                 loadProjectBindAppeal($("#Brand").val(), $("#Year").val(), function (data) {
                     $("#ProjectListDiv").empty();
                     $.each(data, function (i, item) {
-                        var shop = $('<label class="dealer-li"> </label>');
-                        shop.append($('<input name="Project" type="radio">').val(item.ProjectId))
-                            .append($('<font>').text(item.ProjectCode));
-                        $("#ProjectListDiv").append(shop);
+                        var project = $('<label class="dealer-li"> </label>');
+                        project.append($('<input name="Project" type="radio">').val(item.ProjectId))
+                            .append($('<font>').text(item.ProjectName));
+                        $("#ProjectListDiv").append(project);
                     })
                     $("#ProjectListDiv input[type=radio]").iCheckParser();
+                    $("#ProjectListDiv input[type=radio]:last").iCheck("check");
                 });
             });
 
@@ -143,6 +141,10 @@
                 SearchShopFileInfo();
             });
 
+            $("#Brand").change();
+            setTimeout(function () {
+                $("#btnSearch").click();
+            }, 1000);
         });
 
         function getParams() {
@@ -151,7 +153,7 @@
                 alert("请选择期号！");
                 return;
             }
-            alert($('#ShopInput').val())
+
             return {
                 projectId: project||'',
                 businessType: '',
@@ -162,7 +164,7 @@
                 shopIdStr: '',
                 keyword: $('#ShopInput').val(),
                 pageNum: 1,
-                pageCount: 10
+                pageCount: 15
             };
         }
 

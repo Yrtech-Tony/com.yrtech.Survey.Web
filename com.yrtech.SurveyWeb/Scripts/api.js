@@ -201,9 +201,7 @@ function toNullString(str) {
 //查询申诉反馈
 function loadAppeal(params) {
     var pageClick = function (curPage) {
-
         params.pageNum = curPage || 1;
-
         $("#appeal-table tbody").empty();
 
         $.get(baseUrl + "survey/api/Appeal/GetShopAppealInfoByPage", params, function (data) {
@@ -222,8 +220,7 @@ function loadAppeal(params) {
                     tr.append($("<td></td>").html(item.ShopName));
                     tr.append($("<td></td>").html(item.SubjectCode));
                     tr.append($("<td></td>").html(item.CheckPoint));
-                    tr.append($("<td></td>").html(item.ImportScore));
-                    tr.append($("<td></td>").html(item.ImportLossResult));
+                    tr.append($("<td></td>").html(item.Score));
                     tr.append($("<td></td>").html(item.AppealUserName));
                     tr.append($("<td></td>").html(toNullString(item.AppealDateTime).replace('T', ' ')));
                     tr.append($("<td></td>").html(item.AppealReason));
@@ -378,15 +375,12 @@ function loadProject() {
                     //page
                     var tr = $("<tr>");
 
-                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
                     tr.append($("<td></td>").html(item.ProjectCode));
                     tr.append($("<td></td>").html(item.ProjectName));
                     tr.append($("<td></td>").html(item.Year));
                     tr.append($("<td></td>").html(item.Quarter));
                     tr.append($("<td></td>").html(item.OrderNO));
-                    //tr.append($("<td></td>").html(item.InUserId));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
                     var edit = $("<a href='#'>编辑</a>");
                     edit.click(function () {
