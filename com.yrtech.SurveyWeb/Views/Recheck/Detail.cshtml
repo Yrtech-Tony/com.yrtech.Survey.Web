@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "复审详细";
+    com.yrtech.SurveyWeb.Models.AccountDto accountDto = Session["LoginUser"] as com.yrtech.SurveyWeb.Models.AccountDto;
+}
+
+@section scripts{
+    <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+    <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+    <script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+    <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+    <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+    <script src="~/Scripts/oss-upload-direct/upload.js?20170928"></script>
+    <script src="~/Scripts/custom/form-serialize.js"></script>
+    <script src="~/Scripts/api.js"></script>
+    <script>
+        var projectId = "@ViewBag.ProjectId";
+        var shopId = "@ViewBag.ShopId";
+        var subjectRecheckTypeId = "@ViewBag.SubjectRecheckTypeId";
+        var statusName = "@ViewBag.StatusName";
+
+        var userId = "@accountDto.Id";
+        var roleType = "@accountDto.RoleType";
+        var BrandId = "@accountDto.BrandId";
+
+        var ossClient;
+        var type = "FeedBack";
+        var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
+        var downloadUrlRoot;
+        $(function () {
+            $("input[type=checkbox],input[type=radio]").iCheckParser();
+
+            getShopNeedRecheckSubject(appealId, function (data) {
+                $("#appeal-form").setForm(data);
+                $("input[name=FeedBackStatus]").each(function () {
+                    if (data.FeedBackStatus == ($(this).val() == 'true')) {
+                        $(this).iCheck('check');;
+                    }
+                });;
+                $("#ProjectCode").html(data.ProjectCode);
+                $("#ShopName").html(data.ShopName);
+                $("#SubjectCode").html(data.SubjectCode);
+
+                var brand_project_appeal = BrandId + '/' + data.ProjectId + '/' + data.AppealId;
+                var osspath = "survey/Appeal/" + brand_project_appeal + "/" + type + "/";
+                downloadUrlRoot = ossUrlRoot + osspath;
+
+                //初始化LexusReport OSS 数据源
+                ossClient = new OSSClient({
+                    fileAddCheck: function () {
+                        return true;
+                    },
+                    fileAddCheckMsg: "请填写题号，再选择上传附件",
+                    osspath: osspath,
+                    uploaded: function (args) {
+                        console.log("args", args);
+                        var file = '';
+                        if (args.fileName.indexOf('_') >= 0) {
+                            file = args.fileName.substr(args.fileName.indexOf('_') + 1);
+                        }
+
+                        appealFileSave({
+                            appealId: data.AppealId,
+                            seqNo: 0,
+                            userId: userId,
+                            fileName: file,
+                            serverFileName: args.fileName,
+                            fileType: 'FeedBack',
+                        }, function (data) {
+                            loadAppealFiles();
+                        });
+                    }
+                });
+            });
+
+            loadAppealFiles();
+
+            $("#btnSave").click(function () {
+                //复审人员
+                //check propertys
+                if ($("input[name=FeedBackStatus]:checked").length == 0) {
+                    alert("反馈意见必须选择");
+                    return false;
+                }
+                if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
+                    alert("反馈意见为不同意时反馈内容必填");
+                    return false;
+                }
+
+                appealFeedBack({
+                    appealId: appealId,
+                    feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
+                    feedbackReason: $("#FeedBackReason").val(),
+                    feedbackUserId: userId
+                }, function () {
+                    alert("保存反馈信息成功！");
+                })
+            });
+        })
+
+        function loadAppealFiles() {
+            loadFileList({
+                appealId: appealId,
+                fileType: 'FeedBack'
+            }, function (data) {
+                $("#feedback_file_table tbody").empty();
+                if (data) {
+                    $.each(data, function (i, item) {
+                        var tr = $("<tr>");
+
+                        var fileDownName = item.FileName;
+                        tr.append($("<td>").html(fileDownName));
+                        tr.append($("<td>").html(item.FileTypeName));
+                        tr.append($("<td>").html(item.InUserName));
+                        //下载
+                        var download = $("<a>下载</a>");
+                        var downloadUrl = downloadUrlRoot + item.ServerFileName;
+                        download.attr("href", downloadUrl);
+                        tr.append($("<td></td>").append(download));
+
+                        $("#feedback_file_table tbody").append(tr);
+                    });
+                }
+            });
+        }
+
+
+        function delFile(id, filename) {
+            confirm("确定要删除该文件吗？", function () {
+                $.ajax("/Appeal/DeleteFile", {
+                    method: "POST",
+                    data: {
+                        id: id,
+                        filename: filename
+                    },
+                    type: 'json',
+                    success: function (data) {
+                        loadFileList();
+                    }
+                });
+            });
+        }
+    </script>
+}
+
+<div id="container" class="col-md-12">
+    <div class="col-md-5 col-sm-5 col-xs-12">
+        <div class="x_panel tile fixed_height_320">
+            <div class="x_title">
+                <h2>基本信息</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="form-group">
+                    <label class="control-label col-md-1 col-sm-1 col-xs-12 left" for="Brand">
+                        得分：
+                    </label>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        3
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-1 col-sm-1 col-xs-12 left" for="Brand">
+                        备注：
+                    </label>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        备注备注备注备注
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="x_panel tile fixed_height_320">
+            <div class="x_title">
+                <h2>操作</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="form-group">
+                    <label class="control-label col-md-1 col-sm-1 col-xs-12 left" for="Brand">
+                        通过与否：
+                    </label>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        3
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-1 col-sm-1 col-xs-12 left" for="Brand">
+                        错误类型：
+                    </label>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        备注备注备注备注
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-1 col-sm-1 col-xs-12 left" for="Brand">
+                        复审意见：
+                    </label>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        备注备注备注备注
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 col-sm-1 col-xs-6">
+        <div class="form-group">
+            <button class="btn btn-default">上一步</button>
+            <button class="btn btn-primary">下一步（保存）</button>
+        </div>
+    </div>
+
+</div>
