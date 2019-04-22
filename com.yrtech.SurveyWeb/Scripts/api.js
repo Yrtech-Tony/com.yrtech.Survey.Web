@@ -280,6 +280,7 @@ function appealFeedBack(params, callback) {
         }
     })
 }
+
 //提交申诉反馈附件
 function appealFileSave(params, callback) {
     $.post(baseUrl + "survey/api/Appeal/AppealFileSave", params, function (data) {
@@ -300,6 +301,18 @@ function loadFileList(params, callback) {
 
             if (callback)
                 callback(objs);
+        } else {
+            alert(data.Body);
+        }
+    });
+}
+
+//删除申诉反馈附件
+function appealFileDelete(params, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealFileDelete", params, function (data) {
+        if (data && data.Status) {
+            if (callback)
+                callback();
         } else {
             alert(data.Body);
         }

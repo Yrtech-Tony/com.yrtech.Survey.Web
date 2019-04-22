@@ -95,7 +95,7 @@ function init_uploader(options) {
                     var item = $('<div id="' + file.id + '" class="col-md-12 upload-item">' + file.name + ' (' + plupload.formatSize(file.size) + ')<b></b>'
                     + '<div class="progress"><div class="progress-bar" style="width: 0%;text-align:right;"></div></div>'
                     + '</div>');
-                    var close = $("<img />").addClass("close-img").attr("src", "../../Content/images/uploadify-cancel.png")
+                    var close = $("<img />").addClass("close-img").attr("src", "../../Content/image/uploadify-cancel.png")
                         .appendTo(item);
                     close.click(function () {                       
                         for (var i in uploader.files) {
