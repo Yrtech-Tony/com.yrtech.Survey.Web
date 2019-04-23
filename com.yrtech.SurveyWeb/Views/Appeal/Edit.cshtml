@@ -55,11 +55,10 @@
                         }
 
                         appealFileSave({
-                            appealId: data.AppealId,
-                            seqNo: 0,
-                            userId: userId,
-                            fileName: file,
-                            serverFileName: args.fileName,
+                            AppealId: data.AppealId,
+                            InUserId: userId,
+                            FileName: file,
+                            ServerFileName: args.fileName,
                             fileType: 'FeedBack',
                         }, function (data) {
                             loadAppealFiles();
@@ -96,7 +95,7 @@
         function loadAppealFiles() {
             loadFileList({
                 appealId: appealId,
-                fileType: 'FeedBack'
+                fileType: ''
             }, function (data) {
                 $("#feedback_file_table tbody").empty();
                 if (data) {
@@ -112,6 +111,14 @@
                         var downloadUrl = downloadUrlRoot + item.ServerFileName;
                         download.attr("href", downloadUrl);
                         tr.append($("<td></td>").append(download));
+                        //删除
+                        var delBtn = $("<a href='#'>删除</a>");
+                        delBtn.click(function () {
+                            console.log(item)
+                            delFile(item.FileId);
+                            return false;
+                        });
+                        tr.append($("<td></td>").append(delBtn));
 
                         $("#feedback_file_table tbody").append(tr);
                     });
@@ -119,19 +126,10 @@
             });
         }
 
-
-        function delFile(id, filename) {
+        function delFile(fileId) {
             confirm("确定要删除该文件吗？", function () {
-                $.ajax("/Appeal/DeleteFile", {
-                    method: "POST",
-                    data: {
-                        id: id,
-                        filename: filename
-                    },
-                    type: 'json',
-                    success: function (data) {
-                        loadFileList();
-                    }
+                appealFileDelete({ fileId: fileId }, function () {
+                    loadAppealFiles();
                 });
             });
         }
@@ -211,7 +209,8 @@
                                 <th class="col-md-7">文件名</th>
                                 <th class="col-md-1">文件类型</th>
                                 <th class="col-md-1">上传账号</th>
-                                <th>操作</th>
+                                <th>下载</th>
+                                <th>删除</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

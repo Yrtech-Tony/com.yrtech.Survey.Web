@@ -5073,3 +5073,10 @@ ul.notifications {
     white-space: nowrap;
     text-align: center;
 }
+
+.close-img {
+    position: absolute;
+    top: 5px;
+    right: 14px;
+    cursor: pointer;
+}

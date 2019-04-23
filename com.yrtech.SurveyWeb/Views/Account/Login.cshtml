@@ -172,7 +172,11 @@
                 login(params, function (data) {
                     if (data.Status) {
                         $.post("../Account/AfterLogin", { loginUser: data.Body }, function () {
-                            location.href = $("#valueReturnUrl").val();
+                            var returnUrl = $("#valueReturnUrl").val();
+                            if (returnUrl == '/') {
+                                returnUrl = "/System/BrandIndex";
+                            }
+                            location.href = returnUrl;
                         }).complete(function () {
                             $("#btnLogin").button('reset');
                         });
