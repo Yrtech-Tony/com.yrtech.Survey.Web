@@ -205,6 +205,7 @@ function loadAppeal(params) {
         $("#appeal-table tbody").empty();
 
         $.get(baseUrl + "survey/api/Appeal/GetShopAppealInfoByPage", params, function (data) {
+            $("#btnSearch").button('reset');
             if (data && data.Status) {
                 var retArr = JSON.parse(data.Body);
                 var total = retArr[0];

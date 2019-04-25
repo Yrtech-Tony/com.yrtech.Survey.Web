@@ -140,20 +140,20 @@
     <form id="appeal-form">
         <div style="width:100%;padding-bottom:5px;" class="text-right">
             <a id="btnBack" class="btn btn-default" href="/Appeal/AppealIndex">返&nbsp;&nbsp;&nbsp;&nbsp;回</a>
-            <a id="btnSave" class="btn btn-primary">保&nbsp;&nbsp;&nbsp;&nbsp;存</a>            
+            <a id="btnSave" class="btn btn-primary">保&nbsp;&nbsp;&nbsp;&nbsp;存</a>
         </div>
         <table class="table table-bordered" style="margin-bottom:0px;">
             <tr>
-                <th style="width:100px;">期号</th>
+                <th style="width:180px;">期号</th>
                 <td style="width:300px; text-align:center">
                     <span id="ProjectCode"></span>
                 </td>
-                <th style="width:100px;">经销店</th>
-                <td style="width: 300px; text-align: center">
+                <th style="width: 180px;">经销店</th>
+                <td style="text-align: center">
                     <span id="ShopName"></span>
                 </td>
-                <th style="width:100px;">体系号</th>
-                <td style="width: 200px; text-align: center">
+                <th style="width: 180px;">体系号</th>
+                <td style="width: 300px; text-align: center">
                     <span id="SubjectCode"></span>
                 </td>
             </tr>
@@ -177,47 +177,33 @@
                 <th width="180">反馈内容</th>
                 <td colspan="5"><textarea class="form-control" rows="2" id="FeedBackReason" name="FeedBackReason"></textarea></td>
             </tr>
-            @*@if (Model.MaxFeedBack.HasValue)
-                {
-                    <tr class="feedback Shop-feedback">
-                        <th>经销店接受与否</th>
-                        <td colspan="5">
-                            <label>@Html.RadioButtonFor(m => Model.ShopAcceptChk, "true")  <font>接受</font></label>
-                            <label>@Html.RadioButtonFor(m => Model.ShopAcceptChk, "false") <font>不接受</font></label>
-                        </td>
-                    </tr>
-                    <tr class="feedback Shop-feedback">
-                        <th width="180">经销店理由</th>
-                        <td colspan="5"><textarea class="form-control" rows="2" name="ShopAcceptReason">@Model.ShopAcceptReason</textarea></td>
-                    </tr>
-                }*@
-
-            <tr>
-                <th style="width:185px;">附件</th>
-                <td colspan="5">
-                    <div id="upload-container" class="container-fluid" style="margin:0;padding:0">
-                        <div id="ossfile"></div>
-                        <div id="console"></div>
-                    </div>
-                    <div class="container-fluid pull-right">
-                        <button id="selectfiles" class='btn btn-default'>选择文件</button>
-                        <button id="postfiles" class='btn btn-primary'>开始上传</button>
-                    </div>
-                    <table id="feedback_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
-                        <thead>
-                            <tr>
-                                <th class="col-md-7">文件名</th>
-                                <th class="col-md-1">文件类型</th>
-                                <th class="col-md-1">上传账号</th>
-                                <th>下载</th>
-                                <th>删除</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </td>
-            </tr>
         </table>
-
     </form>
+    <table class="table table-bordered">
+        <tr>
+            <th style="width: 180px;">附件</th>
+            <td colspan="5">
+                <div id="upload-container" class="container-fluid" style="margin:0;padding:0">
+                    <div id="ossfile"></div>
+                    <div id="console"></div>
+                </div>
+                <div class="container-fluid pull-right">
+                    <button id="selectfiles" class='btn btn-default'>选择文件</button>
+                    <button id="postfiles" class='btn btn-primary'>开始上传</button>
+                </div>
+                <table id="feedback_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
+                    <thead>
+                        <tr>
+                            <th class="col-md-7">文件名</th>
+                            <th class="col-md-1">文件类型</th>
+                            <th class="col-md-1">上传账号</th>
+                            <th>下载</th>
+                            <th>删除</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
 </div>

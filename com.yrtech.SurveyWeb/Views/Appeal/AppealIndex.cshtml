@@ -134,6 +134,7 @@
             $("#btnSearch").click(function () {
                 var params = getParams();
                 if (!params) return;
+                $("#btnSearch").button('loading');
                 loadAppeal(params);
             });
 
