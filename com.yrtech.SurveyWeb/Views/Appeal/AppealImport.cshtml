@@ -68,7 +68,8 @@
                             ProjectId:projectId,
                             ShopCode: item["经销商代码"],
                             SubjectCode: item["体系号"],
-                            Score: item["得分"]
+                            ImportScore: item["得分"],
+                            ImportLossResult:''
                         });
                     })
                     importAnswer({ AnswerList: answers });
