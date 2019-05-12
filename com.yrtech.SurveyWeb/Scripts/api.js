@@ -6,12 +6,12 @@ var dta = {};
 var pageSize = 15;
 var curPageNum = 1;
 
-var loginUser = {
-    TenantId: 1,
-    UserId: 1,
-    AccountId: 'sysadmin',
-    AccountName: '管理员'
-};
+//var loginUser = {
+//    TenantId: 1,
+//    UserId: 1,
+//    AccountId: 'sysadmin',
+//    AccountName: '管理员'
+//};
 
 //加载列表
 function exeQuery(data) {
@@ -72,7 +72,7 @@ function loadTenant() {
 function loadBrandBindDropdownList(callback) {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
-        userId: loginUser.UserId,
+        userId: loginUser.Id,
         brandId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -404,8 +404,8 @@ function saveProject() {
         //新增
         params.TenantId = loginUser.TenantId;
         params.BrandId = brandId;
-        params.InUserId = loginUser.UserId;
-        params.ModifyUserId = loginUser.UserId;
+        params.InUserId = loginUser.Id;
+        params.ModifyUserId = loginUser.Id;
     }
 
     $.post(baseUrl + "survey/api/Master/SaveProject", params, function (data) {
@@ -582,8 +582,8 @@ function saveSubject() {
     } else {
         //新增
         params.ProjectId = projectId;
-        params.InUserId = loginUser.UserId;
-        params.ModifyUserId = loginUser.UserId;
+        params.InUserId = loginUser.Id;
+        params.ModifyUserId = loginUser.Id;
     }
 
     $.post(baseUrl + "survey/api/Master/SaveSubject", params, function (data) {
@@ -833,7 +833,7 @@ function saveSubjectLink() {
     } else {
         //新增
         params.ProjectId = projectId;
-        params.InUserId = loginUser.UserId;
+        params.InUserId = loginUser.Id;
     }
 
     $.post(baseUrl + "survey/api/Master/SaveSubjectLink", params, function (data) {

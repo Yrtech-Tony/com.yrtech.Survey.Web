@@ -19,7 +19,7 @@
     <link href="~/Content/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
     <!-- bootstrap-daterangepicker -->
     <link href="~/Content/daterangepicker.css" rel="stylesheet">
-   
+
     <!-- Datatables -->
     <link href="~/Content/dataTables.bootstrap.min.css" rel="stylesheet">
     <link href="~/Content/buttons.bootstrap.min.css" rel="stylesheet">
@@ -68,7 +68,7 @@
                                         <li><a href="/BrandContent/ShopIndex">经销商信息管理</a></li>
                                         @*<li><a href="/BrandContent/SbjectTypeExamIndex">试卷类型管理</a></li>*@
                                         <li><a href="/BrandContent/ProjectIndex">期号管理</a></li>
-                                        
+
                                     </ul>
                                 </li>
                                 <li>
@@ -94,12 +94,12 @@
                                 </li>
                             </ul>
                         </div>
-                        
+
                     </div>
                     <!-- /sidebar menu -->
                     <!-- /menu footer buttons -->
                     @*<div class="sidebar-footer hidden-small" style="height:40px;">
-                    </div>*@
+                        </div>*@
                     <!-- /menu footer buttons -->
                 </div>
             </div>
@@ -108,8 +108,8 @@
                 <div class="nav_menu">
                     <nav>
                         @*<div class="nav toggle">
-                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-                        </div>*@
+                                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                            </div>*@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -126,7 +126,6 @@
                 </div>
             </div>
             <!-- /top navigation -->
-
             <!-- page content -->
             <div class="right_col" role="main">
                 @RenderBody()
@@ -134,16 +133,19 @@
             <!-- /page content -->
             <!-- footer content -->
             @*<footer>
-                <div class="pull-right">
-                    明检云平台
-                </div>
-                <div class="clearfix"></div>
-            </footer>*@
+                    <div class="pull-right">
+                        明检云平台
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>*@
             <!-- /footer content -->
 
         </div>
     </div>
-
+    <script>
+        var loginUser = JSON.parse('@Html.Raw(Json.Encode(LoginUser))');
+        console.log(loginUser)
+    </script>
     <!-- jQuery -->
     <script src="~/Scripts/jquery.min.js"></script>
     <!-- Bootstrap -->
@@ -179,7 +181,7 @@
                     increaseArea: '20%' // optional
                 })
             }
-        }
+        }       
     </script>
     @RenderSection("scripts", required: false)
 </body>
