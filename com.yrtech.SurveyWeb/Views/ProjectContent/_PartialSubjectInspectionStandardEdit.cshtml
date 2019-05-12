@@ -27,8 +27,8 @@
             //新增
             params.SubjectId = $("#SubjectId").val();
             params.SeqNO = parseInt($("#standardMaxSeqNO").val()) + 1;
-            params.InUserId = loginUser.UserId;
-            params.ModifyUserId = loginUser.UserId;
+            params.InUserId = loginUser.Id;
+            params.ModifyUserId = loginUser.Id;
         }
 
         $.post(baseUrl + "survey/api/Master/SaveSubjectInspectionStandard", params, function (data) {
