@@ -8,7 +8,7 @@
     </div>
 </div>
 <form id="upload-form" style="display:none">
-    <input type='file' id='uploadFile' onchange="uploadAppeal()">
+    <input type='file' id='uploadFile'>
     <input type="hidden" value="0" id="UpProjectId" />
 </form>
 <div class="operation col-md-offset-9 form-horizontal">
@@ -57,14 +57,16 @@
 
             $("#brand-sel").change(function () {
                 loadProjectForAppeal($("#brand-sel").val());
-            })            
+            })
+
+            $("#uploadFile").change(uploadAppeal);
         })
 
         function uploadAppeal() {
             var file_obj = document.getElementById('uploadFile').files[0];
             var projectId = $("#UpProjectId").val();
             readWorkbookFromLocalFile(file_obj, function (workbook) {
-                file_obj.value = "";
+                document.getElementById('uploadFile').value='';
                 var worksheet = workbook.Sheets["Appeal"];
                 var json = XLSX.utils.sheet_to_json(worksheet);
                 if (json && json.length > 0) {
