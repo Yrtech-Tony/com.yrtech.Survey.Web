@@ -139,59 +139,6 @@ function loadBrand() {
     })
 }
 
-//申诉数据导入准备期号数据
-function loadProjectForAppeal(brandId, year) {
-    $.get(baseUrl + "survey/api/Master/GetProject", {
-        brandId: brandId,
-        projectId: loginUser.TenantId,
-        year: year
-    }, function (data) {
-        if (data && data.Status) {
-            var lst = JSON.parse(data.Body);
-            $("#appeal-table tbody").empty();
-
-            $.each(lst, function (i, item) {
-                var tr = $("<tr>");
-
-                tr.append($("<td></td>").html(item.ProjectId));
-                tr.append($("<td></td>").html(item.ProjectCode));
-                tr.append($("<td></td>").html(item.ProjectName));
-                tr.append($("<td></td>").html(item.Year));
-                tr.append($("<td></td>").html(item.Quarter));
-                tr.append($("<td></td>").html(item.DataScore));
-             
-                var uploadBtn = $("<a href='#'>上传</a>");
-                uploadBtn.click(function () {
-                    $("#UpProjectId").val(item.ProjectId);
-                    $("#uploadFile").click();
-                    return false;
-                })
-                tr.append($("<td></td>").append(uploadBtn));
-
-                var applyBtn = $("<a href='#'>开始申诉</a>");
-                applyBtn.click(function () {
-
-                    return false;
-                })
-                tr.append($("<td></td>").append(applyBtn));
-
-                if (item.AppealStartDate) {
-                    tr.append($("<td></td>").html(item.AppealStartDate.replace('T', ' ')));
-                } else {
-                    tr.append($("<td></td>").html(''));
-                }
-                
-
-                $("#appeal-table tbody").append(tr);
-
-            })
-            
-        } else {
-            alert(data.Body);
-        }
-    })
-}
-
 function toNullString(str) {
     if (str)
         return str;
@@ -216,6 +163,16 @@ function loadAppeal(params) {
 
                     var edit = $("<a href='/Appeal/Edit?appealId=" + item.AppealId + "'>申诉/详细</a>");
                     tr.append($("<td></td>").append(edit));
+                    var del = $("<a href='#'>删除</a>");
+                    del.click(function () {
+                        confirm("确定要删除该申诉反馈吗？", function () {
+                            appealDelete(item.AppealId, function () {
+                                pageClick(curPage);
+                            })
+                        })                        
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(del));
 
                     tr.append($("<td></td>").html(item.ShopCode));
                     tr.append($("<td></td>").html(item.ShopName));
@@ -241,6 +198,20 @@ function loadAppeal(params) {
     }
 
     pageClick();
+}
+
+function appealDelete(appealId, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealDelete", {
+        appealId: appealId
+    }, function (data) {
+        if (data && data.Status) {
+            alert("删除成功");
+            if (callback)
+                callback();
+        } else {
+            alert(data.Body);
+        }
+    })
 }
 
 //获取某条申诉反馈详情
@@ -971,6 +942,68 @@ function getShopNeedRecheckSubject(params, callback) {
     })
 }
 
+
+//申诉数据导入准备期号数据
+function loadProjectForAppeal(brandId, year) {
+    $.get(baseUrl + "survey/api/Master/GetProject", {
+        brandId: brandId,
+        projectId: loginUser.TenantId,
+        year: year
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            $("#appeal-table tbody").empty();
+
+            $.each(lst, function (i, item) {
+                var tr = $("<tr>");
+
+                tr.append($("<td></td>").html(item.ProjectId));
+                tr.append($("<td></td>").html(item.ProjectCode));
+                tr.append($("<td></td>").html(item.ProjectName));
+                tr.append($("<td></td>").html(item.Year));
+                tr.append($("<td></td>").html(item.Quarter));
+                tr.append($("<td></td>").html(item.DataScore));
+
+                var uploadBtn = $("<a href='#'>上传</a>");
+                uploadBtn.click(function () {
+                    $("#UpProjectId").val(item.ProjectId);
+                    $("#uploadFile").click();
+                    return false;
+                })
+                tr.append($("<td></td>").append(uploadBtn));
+
+                var applyBtn = $("<a href='#'>开始申诉</a>");
+                applyBtn.click(function () {
+                    createAppealInfoByProject({
+                        Project: item.ProjectId
+                    }, function () {
+                        loadProjectForAppeal({
+                            brandId: brandId,
+                            projectId: loginUser.TenantId,
+                            year: item.Year
+                        });
+                    })
+                    return false;
+                })
+                tr.append($("<td></td>").append(applyBtn));
+
+                if (item.AppealStartDate) {
+                    tr.append($("<td></td>").html(item.AppealStartDate.replace('T', ' ')));
+                } else {
+                    tr.append($("<td></td>").html(''));
+                }
+
+
+                $("#appeal-table tbody").append(tr);
+
+            })
+
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
 //生成申诉数据
 function importAnswer(params, callback) {
     $.post(baseUrl + "survey/api/Answer/ImportAnswer", params, function (data) {
@@ -986,7 +1019,7 @@ function importAnswer(params, callback) {
 
 //开始申诉
 function createAppealInfoByProject(params, callback) {
-    $.get(baseUrl + "survey/api/Appeal/CreateAppealInfoByProject", params, function (data) {
+    $.post(baseUrl + "survey/api/Appeal/CreateAppealInfoByProject", params, function (data) {
         if (data && data.Status) {
             alert(data.Body);
             if (callback)
