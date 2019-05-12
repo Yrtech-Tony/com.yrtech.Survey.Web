@@ -28,9 +28,10 @@ function login(params, success, error) {
     $.get(baseUrl + "survey/api/Account/Login", params, success).error(error);
 }
 
+//租户管理，没有使用
 function loadTenant() {
     $.get(baseUrl + "survey/api/Master/GetTenant", {
-        tenantId: "1",
+        tenantId: "",
         brandId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -86,6 +87,7 @@ function loadBrandBindDropdownList(callback) {
 function loadBrand() {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
+        userId: loginUser.Id,
         brandId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -338,10 +340,10 @@ function loadProjectBindAppeal(brandId,year, callback) {
 }
 
 //查询期号
-function loadProject() {
+function loadProject(year) {
     var brandId = $("#brand-sel").val();
     $.get(baseUrl + "survey/api/Master/GetProject", {
-        brandId: brandId,
+        brandId: brandId||'',
         year: '',
         projectId: ""
     }, function (data) {
@@ -487,7 +489,7 @@ function loadShop() {
 
 //体系查询
 function loadSubject() {
-    var projectId = "1";
+    var projectId = $("#project-sel").val();
     $.get(baseUrl + "survey/api/Master/GetSubject", {
         projectId: projectId,
         subjectId: ""
@@ -774,8 +776,9 @@ function loadSubjectTypeScoreRegion(projectId, subjectId) {
 
 //流程类型管理
 function loadSubjectLink() {
+    var projectId = $("#project-sel").val();
     $.get(baseUrl + "survey/api/Master/GetSubjectLink", {
-        projectId: "1"
+        projectId: projectId||""
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -848,8 +851,9 @@ function saveSubjectLink() {
 }
 //经销商管理
 function loadShopByProject() {
+    var projectId = $("#project-sel").val();
     $.get(baseUrl + "survey/api/Master/GetShopByProjectId", {
-        projectId: "1"
+        projectId: projectId||''
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);

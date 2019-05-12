@@ -19,7 +19,6 @@
 <div class="operation col-md-offset-9">
     <div class="col-md-8">
         <select id="brand-sel" class="form-control">
-            <option value="1">奔驰</option>
         </select>
     </div>
     <button id="btnAdd" class="btn btn-primary right">新&nbsp;&nbsp;增</button>
@@ -67,8 +66,15 @@
     <script src="~/Scripts/page.js"></script>
     <script>
         $(function () {
-            loadProject();
-
+            loadBrandBindDropdownList(function (data) {
+                $.each(data, function () {
+                    $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
+                })
+                $("#brand-sel").change();
+            });
+            $("#brand-sel").change(function () {
+                loadProject();
+            })
             $("#btnAdd").click(function () {
                 $("#Modal").modal("show");
                 $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {
