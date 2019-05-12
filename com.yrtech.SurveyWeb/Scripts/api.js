@@ -975,7 +975,7 @@ function loadProjectForAppeal(brandId) {
                 var applyBtn = $("<a href='#'>开始申诉</a>");
                 applyBtn.click(function () {
                     createAppealInfoByProject({
-                        Project: item.ProjectId
+                        ProjectId: item.ProjectId
                     }, function () {
                         loadProjectForAppeal(brandId);
                     })
