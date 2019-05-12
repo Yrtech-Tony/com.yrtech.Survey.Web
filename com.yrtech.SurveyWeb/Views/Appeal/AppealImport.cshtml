@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "巡检系统-申诉数据导入";
+    com.yrtech.SurveyWeb.Models.AccountDto accountDto = Session["LoginUser"] as com.yrtech.SurveyWeb.Models.AccountDto;
 }
 <div class="page-title">
     <div class="title_left">
@@ -40,52 +41,52 @@
 @section scripts{
     <script src="~/Scripts/api.js"></script>
     <script src="~/Scripts/page.js"></script>
+    <script src="~/Scripts/xlsx.core.min.js"></script>
     <script>
+        var UserId = "@accountDto.Id";
+        var TenantId = "@accountDto.TenantId";
+        var BrandId = "@accountDto.BrandId";
+
         $(function () {
-            loadProjectForAppeal($("#brand-sel").val(),'');
+            loadProjectForAppeal($("#brand-sel").val(), '');
         })
-        function jqSubmit() {
-            var file_obj = document.getElementById('fafafa').files[0];
 
-            var fd = new FormData();
-            fd.append('username', 'root')
-            fd.append('fafafa', file_obj);
-
-            $.ajax({
-                url:'/upload_file/',
-                type:'POST',
-                data:fd,
-                processData:false,  //tell jQuery not to process the data
-                contentType: false,  //tell jQuery not to set contentType
-                //这儿的三个参数其实就是XMLHttpRequest里面带的信息。
-                success:function (arg,a1,a2) {
-                    console.log(arg);
-                    console.log(a1);
-                    console.log(a2);
-                }
-
-            })
-        }
         function uploadAppeal() {
             var file_obj = document.getElementById('uploadFile').files[0];
-
-            var fd = new FormData();
-            fd.append('UpProjectId', $("#UpProjectId").val())
-            fd.append('uploadFile', file_obj);
-
-            $.ajax({
-                url: 'Appeal/uploadAppealFile',
-                type: 'POST',
-                data: fd,
-                processData: false,  //tell jQuery not to process the data
-                contentType: false,  //tell jQuery not to set contentType
-                //这儿的三个参数其实就是XMLHttpRequest里面带的信息。
-                success: function (arg, a1, a2) {
-                    console.log(arg);
-                    console.log(a1);
-                    console.log(a2);
-                }
+            var projectId = $("#UpProjectId").val();
+            readWorkbookFromLocalFile(file_obj, function (workbook) {
+                file_obj.value = "";
+                var worksheet = workbook.Sheets["Appeal"];
+                var json = XLSX.utils.sheet_to_json(worksheet);
+                if (json && json.length > 0) {
+                    var answers = [];
+                    $.each(json, function (i, item) {
+                        answers.push({
+                            TenantId:TenantId,
+                            BrandId: BrandId,
+                            InUserId: UserId,
+                            ProjectId:projectId,
+                            ShopCode: item["经销商代码"],
+                            SubjectCode: item["体系号"],
+                            Score: item["得分"]
+                        });
+                    })
+                    importAnswer({ AnswerList: answers });
+                } else {
+                    alert("Excel中没有申诉数据！");
+                }                
             })
+        }
+
+        // 读取本地excel文件
+        function readWorkbookFromLocalFile(file, callback) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, { type: 'binary' });
+                if (callback) callback(workbook);
+            };
+            reader.readAsBinaryString(file);
         }
     </script>
 }

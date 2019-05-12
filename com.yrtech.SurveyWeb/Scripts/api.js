@@ -971,6 +971,31 @@ function getShopNeedRecheckSubject(params, callback) {
     })
 }
 
+//生成申诉数据
+function importAnswer(params, callback) {
+    $.post(baseUrl + "survey/api/Answer/ImportAnswer", params, function (data) {
+        if (data && data.Status) {
+            alert("申述数据上传成功！");
+            if (callback)
+                callback();
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
+//开始申诉
+function createAppealInfoByProject(params, callback) {
+    $.get(baseUrl + "survey/api/Appeal/CreateAppealInfoByProject", params, function (data) {
+        if (data && data.Status) {
+            alert(data.Body);
+            if (callback)
+                callback();
+        } else {
+            alert(data.Body);
+        }
+    })
+}
 
 function parseParams(data) {
     try {
