@@ -1,6 +1,6 @@
 ﻿
-var baseUrl = 'http://123.57.229.128:8001/';
-//var baseUrl = 'http://localhost:57328/';
+//var baseUrl = 'http://123.57.229.128:8001/';
+var baseUrl = 'http://localhost:57328/';
 
 var dta = {};
 var pageSize = 15;
@@ -826,7 +826,7 @@ function loadSubjectLink() {
 //保存流程类型
 function saveSubjectLink() {
     $("#save_button").button("loading");
-    var projectId = "1";
+    var projectId = $("#project-sel").val();
     var params = $("#subject-link-form").serializeJson();
     var json = $("#subject-link-form").data("json");
     if (json && json.length > 0) {
