@@ -16,7 +16,6 @@
         <label class="control-label col-md-4">品牌</label>
         <div class="col-md-8">
             <select id="brand-sel" class="form-control">
-                <option value="1">奔驰</option>
             </select>
         </div>
     </div>
@@ -48,7 +47,17 @@
         var BrandId = "@accountDto.BrandId";
 
         $(function () {
-            loadProjectForAppeal($("#brand-sel").val(), '');
+            loadBrandBindDropdownList(function (data) {
+                $.each(data, function () {
+                    $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
+                })
+
+                $("#brand-sel").change();
+            });
+
+            $("#brand-sel").change(function () {
+                loadProjectForAppeal($("#brand-sel").val());
+            })            
         })
 
         function uploadAppeal() {

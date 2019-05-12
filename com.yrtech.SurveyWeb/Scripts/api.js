@@ -944,11 +944,11 @@ function getShopNeedRecheckSubject(params, callback) {
 
 
 //申诉数据导入准备期号数据
-function loadProjectForAppeal(brandId, year) {
-    $.get(baseUrl + "survey/api/Master/GetProject", {
+function loadProjectForAppeal(brandId) {
+    $.get(baseUrl + "survey/api/Master/GetProject", {       
         brandId: brandId,
-        projectId: loginUser.TenantId,
-        year: year
+        projectId: '',
+        year: ''
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -977,11 +977,7 @@ function loadProjectForAppeal(brandId, year) {
                     createAppealInfoByProject({
                         Project: item.ProjectId
                     }, function () {
-                        loadProjectForAppeal({
-                            brandId: brandId,
-                            projectId: loginUser.TenantId,
-                            year: item.Year
-                        });
+                        loadProjectForAppeal(brandId);
                     })
                     return false;
                 })
