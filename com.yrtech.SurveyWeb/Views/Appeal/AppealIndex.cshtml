@@ -19,13 +19,13 @@
                     品牌
                 </th>
                 <td width="200px;">
-                    <select id="Brand" name="Brand" class="form-control selectpicker"></select>
+                    <select id="brand-sel" class="form-control selectpicker"></select>
                 </td>
                 <th width="85" align="center">
                     年份
                 </th>
                 <td width="200px;">
-                    <select id="Year" class="form-control selectpicker"></select>
+                    <select id="year" class="form-control selectpicker"></select>
                 </td>
                 <th width="100" align="center">
                     期号
@@ -106,7 +106,7 @@
         $(function () {
             $("input[type=checkbox]").iCheckParser();
             for (var i = 2019; i < 2030; i++) {
-                $("#Year").append($("<option>").text(i + "").val(i + ""));
+                $("#year").append($("<option>").text(i + "").val(i + ""));
             }
 
             $("#Year,#Brand").change(function () {
@@ -125,10 +125,10 @@
 
             loadBrandBindDropdownList(function (data) {
                 $.each(data, function () {
-                    $("#Brand").append($("<option>").val(this.BrandId).text(this.BrandName));
+                    $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
                 })
 
-                $("#Year").change();
+                $("#year").change();
             });
 
             //查询
@@ -143,7 +143,7 @@
                 SearchShopFileInfo();
             });
 
-            $("#Brand").change();
+            $("#brand-sel").change();
             setTimeout(function () {
                 $("#btnSearch").click();
             }, 1000);
