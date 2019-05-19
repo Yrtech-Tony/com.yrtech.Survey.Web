@@ -71,7 +71,36 @@ namespace com.yrtech.SurveyWeb.Controllers
 
             return View();
         }
-
+        #region 复审错误类型
+        public ActionResult RecheckErrorTypeIndex()
+        {
+            return View();
+        }
+        public ActionResult RecheckErrorTypeEdit()
+        {
+            return PartialView("_PartialRecheckErrorTypeEdit");
+        }
+        #endregion
+        #region 复审类型
+        public ActionResult RecheckTypeIndex()
+        {
+            return View();
+        }
+        public ActionResult RecheckTypeEdit()
+        {
+            return PartialView("_PartialRecheckTypeEdit");
+        }
+        #endregion
+        #region 试卷类型
+        public ActionResult SubjectTypeExamIndex()
+        {
+            return View();
+        }
+        public ActionResult SubjectTypeExamEdit()
+        {
+            return PartialView("_PartialSubjectTypeExamEdit");
+        }
+        #endregion
         public ActionResult LoadPartial(string view)
         {
             return PartialView(view);

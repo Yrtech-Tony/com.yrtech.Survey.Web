@@ -94,7 +94,7 @@
 
         $(function () {
             $("#Brand").change(function () {
-                loadProjectBindAppeal($("#Brand").val(), '', function (data) {
+                loadProjectBindDropdownList($("#Brand").val(), '', function (data) {
                     $("#ProjectListDiv").empty();
                     $.each(data, function (i, item) {
                         var shop = $('<option>').val(item.ProjectId).text(item.ProjectCode);

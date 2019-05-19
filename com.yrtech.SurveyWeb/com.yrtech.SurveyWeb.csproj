@@ -131,6 +131,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\ProjectContent\RecheckErrorType\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -410,6 +411,12 @@
     <Content Include="Views\Recheck\Index.cshtml" />
     <Content Include="Views\Recheck\Detail.cshtml" />
     <None Include="Properties\PublishProfiles\Deploy.pubxml" />
+    <Content Include="Views\ProjectContent\RecheckErrorTypeIndex.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialRecheckErrorTypeEdit.cshtml" />
+    <Content Include="Views\ProjectContent\RecheckTypeIndex.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialRecheckTypeEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectTypeExamEdit.cshtml" />
+    <Content Include="Views\ProjectContent\SubjectTypeExamIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,6 +1,6 @@
 ﻿
-var baseUrl = 'http://123.57.229.128:8001/';
-//var baseUrl = 'http://localhost:57328/';
+//var baseUrl = 'http://123.57.229.128:8001/';
+var baseUrl = 'http://localhost:57328/';
 
 var dta = {};
 var pageSize = 15;
@@ -12,7 +12,6 @@ var curPageNum = 1;
 //    AccountId: 'sysadmin',
 //    AccountName: '管理员'
 //};
-
 //加载列表
 function exeQuery(data) {
     $.ajax({
@@ -68,7 +67,7 @@ function loadTenant() {
         }
     })
 }
-
+// 通用下拉框绑定方法
 function loadBrandBindDropdownList(callback) {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
@@ -79,6 +78,21 @@ function loadBrandBindDropdownList(callback) {
             var lst = JSON.parse(data.Body);
             if (callback)
                 callback(lst);                    
+        }
+    })
+}
+function loadProjectBindDropdownList(brandId, year, callback) {
+    $.get(baseUrl + "survey/api/Master/GetProject", {
+        brandId: brandId,
+        year: year,
+        projectId: ""
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            if (callback)
+                callback(lst);
+        } else {
+            alert(data.Body);
         }
     })
 }
@@ -321,21 +335,7 @@ function loadUserInfoByBrandId(obj) {
 }
 
 //查询绑定申诉界面的期号列表
-function loadProjectBindAppeal(brandId,year, callback) {
-    $.get(baseUrl + "survey/api/Master/GetProject", {
-        brandId: brandId,
-        year: year,
-        projectId: ""
-    }, function (data) {
-        if (data && data.Status) {
-            var lst = JSON.parse(data.Body);
-            if (callback)
-                callback(lst);
-        } else {
-            alert(data.Body);
-        }
-    })
-}
+
 
 //查询期号
 function loadProject() {
@@ -596,9 +596,6 @@ function saveSubject() {
         }
     })
 }
-
-
-
 //查询体系详情
 function loadSubjectDetail() {
     var projectId = $("#ProjectId").val();
@@ -846,6 +843,132 @@ function saveSubjectLink() {
         }
     })
 }
+//复审错误管理
+function loadRecheckErrorType(projectId,recheckErrorTypeId) {
+    $.get(baseUrl + "survey/api/Master/GetRecheckErrorType", {
+        projectId: projectId,
+        recheckErrorTypeId: recheckErrorTypeId
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            var pageClick = function (curPage) {
+                $("#recheckErrorType-table tbody").empty();
+
+                curPageNum = curPage;
+                var pageLst = lst.filter(function (item, i, self) {
+                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                    return (i >= start && i < (start + pageSize));
+                })
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/ProjectContent/RecheckErrorTypeEdit", {}, function () {
+                            $("#recheckErrorType-form").setForm(item);
+                            $("#recheckErrorType-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
+                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
+                    tr.append($("<td></td>").html(item.RecheckErrorTypeId));
+                    tr.append($("<td></td>").html(item.RecheckErrorName));
+                    tr.append($("<td></td>").html(item.UseChk));
+                    tr.append($("<td></td>").html(item.InDateTime ? item.InDateTime.replace('T', ' ') : ''));
+                    tr.append($("<td></td>").html(item.ModifyDateTime ? item.ModifyDateTime.replace('T', ' ') : ''));
+                    
+
+                    $("#recheckErrorType-table tbody").append(tr);
+                })
+
+                //$("#subjectlink-table tbody [type=checkbox]").iCheck();
+            }
+            pageClick(curPageNum);
+            createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+//复审类型管理
+function loadRecheckType(projectId, subjectRecheckTypeId) {
+    $.get(baseUrl + "survey/api/Master/GetSubjectRecheckType", {
+        projectId: projectId,
+        subjectRecheckTypeId: subjectRecheckTypeId
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            var pageClick = function (curPage) {
+                $("#recheckType-table tbody").empty();
+
+                curPageNum = curPage;
+                var pageLst = lst.filter(function (item, i, self) {
+                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                    return (i >= start && i < (start + pageSize));
+                })
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/ProjectContent/RecheckTypeEdit", {}, function () {
+                            $("#recheckType-form").setForm(item);
+                            $("#recheckType-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
+                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
+                    tr.append($("<td></td>").html(item.RecheckTypeId));
+                    tr.append($("<td></td>").html(item.RecheckTypeName));
+                    tr.append($("<td></td>").html(item.UseChk));
+                    tr.append($("<td></td>").html(item.InDateTime ? item.InDateTime.replace('T', ' ') : ''));
+                    tr.append($("<td></td>").html(item.ModifyDateTime ? item.ModifyDateTime.replace('T', ' ') : ''));
+
+
+                    $("#recheckType-table tbody").append(tr);
+                })
+
+                //$("#subjectlink-table tbody [type=checkbox]").iCheck();
+            }
+            pageClick(curPageNum);
+            createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+//保存流程类型
+function saveSubjectLink() {
+    $("#save_button").button("loading");
+    var projectId = "1";
+    var params = $("#subject-link-form").serializeJson();
+    var json = $("#subject-link-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.ProjectId = projectId;
+        params.InUserId = loginUser.Id;
+    }
+
+    $.post(baseUrl + "survey/api/Master/SaveSubjectLink", params, function (data) {
+        $("#save_button").button("reset");
+        if (data && data.Status) {
+            closeModel();
+            loadSubjectLink();
+        } else {
+            alert(data.Body);
+        }
+    })
+}
 //经销商管理
 function loadShopByProject() {
     $.get(baseUrl + "survey/api/Master/GetShopByProjectId", {
@@ -1040,7 +1163,6 @@ function parseParams(data) {
         return '';
     }
 }
-
 
 function createPage(total, curPageNum, pageSize, pageClick) {
     var pageCount = total % pageSize == 0 ? Math.floor(total / pageSize) : Math.floor(total / pageSize + 1);

@@ -110,7 +110,7 @@
             }
 
             $("#Year,#Brand").change(function () {
-                loadProjectBindAppeal($("#Brand").val(), $("#Year").val(), function (data) {
+                loadProjectBindDropdownList($("#Brand").val(), $("#Year").val(), function (data) {
                     $("#ProjectListDiv").empty();
                     $.each(data, function (i, item) {
                         var project = $('<label class="dealer-li"> </label>');
