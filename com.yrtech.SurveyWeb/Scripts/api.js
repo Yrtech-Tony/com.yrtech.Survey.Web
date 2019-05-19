@@ -367,6 +367,7 @@ function loadProject(year) {
                     tr.append($("<td></td>").html(item.Year));
                     tr.append($("<td></td>").html(item.Quarter));
                     tr.append($("<td></td>").html(item.OrderNO));
+                    tr.append($("<td></td>").html(item.DataScore));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
                     var edit = $("<a href='#'>编辑</a>");
@@ -896,6 +897,32 @@ function loadRecheckErrorType(projectId,recheckErrorTypeId) {
         }
     })
 }
+function saveRecheckErrorType() {
+    $("#save_button").button("loading");
+    var projectId = $("#recheckErrorType-Project").val();
+    var params = $("#recheckErrorType-form").serializeJson();
+    var json = $("#recheckErrorType-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.ProjectId = projectId;
+        params.InUserId = loginUser.Id;
+        params.ModifyUserId = loginUser.Id;
+    }
+
+    $.post(baseUrl + "survey/api/Master/SaveRecheckErrorType", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadRecheckErrorType(projectId,"");
+        } else {
+            alert(data.Body);
+        }
+        $("#save_button").button("reset");
+    })
+}
 //复审类型管理
 function loadRecheckType(projectId, subjectRecheckTypeId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectRecheckType", {
@@ -944,6 +971,107 @@ function loadRecheckType(projectId, subjectRecheckTypeId) {
         } else {
             alert(data.Body);
         }
+    })
+}
+function saveRecheckType() {
+    $("#save_button").button("loading");
+    var projectId = $("#recheckType-Project").val();
+    var params = $("#recheckType-form").serializeJson();
+    var json = $("#recheckType-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.ProjectId = projectId;
+        params.InUserId = loginUser.Id;
+        params.ModifyUserId = loginUser.Id;
+    }
+
+    $.post(baseUrl + "survey/api/Master/SaveSubjectRecheckType", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadRecheckType(projectId, "");
+        } else {
+            alert(data.Body);
+        }
+        $("#save_button").button("reset");
+    })
+}
+//试卷类型
+function loadSubjectTypeExam(projectId, subjectTypeExamId) {
+    $.get(baseUrl + "survey/api/Master/GetSubjectTypeExam", {
+        projectId: projectId,
+        subjectTypeExamId: subjectTypeExamId
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            var pageClick = function (curPage) {
+                $("#subjectTypeExam-table tbody").empty();
+
+                curPageNum = curPage;
+                var pageLst = lst.filter(function (item, i, self) {
+                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                    return (i >= start && i < (start + pageSize));
+                })
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/ProjectContent/SubjectTypeExamEdit", {}, function () {
+                            $("#subjectTypeExam-form").setForm(item);
+                            $("#subjectTypeExam-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
+                    //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
+                    tr.append($("<td></td>").html(item.SubjectTypeExamId));
+                    tr.append($("<td></td>").html(item.SubjectTypeExamName));
+                    tr.append($("<td></td>").html(item.InDateTime ? item.InDateTime.replace('T', ' ') : ''));
+                    tr.append($("<td></td>").html(item.ModifyDateTime ? item.ModifyDateTime.replace('T', ' ') : ''));
+
+
+                    $("#subjectTypeExam-table tbody").append(tr);
+                })
+
+                //$("#subjectlink-table tbody [type=checkbox]").iCheck();
+            }
+            pageClick(curPageNum);
+            createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+function saveSubjectTypeExam() {
+    $("#save_button").button("loading");
+    var projectId = $("#subjectTypeExam-Project").val();
+    var params = $("#subjectTypeExam-form").serializeJson();
+    var json = $("#subjectTypeExam-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.ProjectId = projectId;
+        params.InUserId = loginUser.Id;
+        params.ModifyUserId = loginUser.Id;
+    }
+
+    $.post(baseUrl + "survey/api/Master/SaveSubjectTypeExam", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadSubjectTypeExam(projectId, "");
+        } else {
+            alert(data.Body);
+        }
+        $("#save_button").button("reset");
     })
 }
 //保存流程类型
@@ -1142,7 +1270,7 @@ function importAnswer(params, callback) {
 
 //开始申诉
 function createAppealInfoByProject(params, callback) {
-    $.post(baseUrl + "survey/api/Appeal/CreateAppealInfoByProject", params, function (data) {
+    $.get(baseUrl + "survey/api/Appeal/CreateAppealInfoByProject", params, function (data) {
         if (data && data.Status) {
             alert(data.Body);
             if (callback)

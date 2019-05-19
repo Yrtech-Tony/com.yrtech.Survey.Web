@@ -43,9 +43,25 @@
 <div id="pagination" class="pull-right">
     <ul id="pageUl"></ul>
 </div>
-
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveRecheckType()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts{
     <script src="~/Scripts/api.js"></script>
+    <script src="~/Scripts/form-serialize.js"></script>
     <script src="~/Scripts/page.js"></script>
     <script>
         $(function () {
@@ -65,11 +81,11 @@
                     });
                 });
             });
-            //查询错误类型
+            //查询复审类型
             $("#btnRecheckType-Search").click(function () {
                 loadRecheckType($("#recheckType-Project").val(), "");
             });
-            // 新增错误类型
+            // 新增复审类型
             $("#btnRecheckType-Add").click(function () {
                 $("#Modal").modal("show");
                 $("#Modal .modal-body").load("/ProjectContent/RecheckTypeEdit", {}, function () {
