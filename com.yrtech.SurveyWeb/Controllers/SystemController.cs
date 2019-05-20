@@ -31,5 +31,9 @@ namespace com.yrtech.SurveyWeb.Controllers
             ViewBag.BrandName = BrandName;
             return PartialView("_PartialUserInfoForBrand");
         }
+        public ActionResult BrandEdit()
+        {
+            return PartialView("_PartialBrandEdit");
+        }
 	}
 }

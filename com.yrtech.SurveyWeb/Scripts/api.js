@@ -73,6 +73,7 @@ function loadBrandBindDropdownList(callback) {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
         userId: loginUser.Id,
+        roleType:loginUser.RoleType,
         brandId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -97,11 +98,12 @@ function loadProjectBindDropdownList(brandId, year, callback) {
         }
     })
 }
-
+// 品牌管理
 function loadBrand() {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
         userId: loginUser.Id,
+        roleType: loginUser.RoleType,
         brandId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -120,6 +122,16 @@ function loadBrand() {
                     var tr = $("<tr>");
 
                     //tr.append($('<td><input type="checkbox" id="check-all" class="flat"></td>'));
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/System/BrandEdit", {}, function () {
+                            $("#brand-form").setForm(item);
+                            $("#brand-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
                     tr.append($("<td></td>").html(item.BrandCode));
                     tr.append($("<td></td>").html(item.BrandName));
                     tr.append($("<td></td>").html(item.Remark));
@@ -129,7 +141,7 @@ function loadBrand() {
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
                     var userManager = $("<a href='#'>账号管理</a>");
                     userManager.click(function () {
-                        $("#Modal").modal("show");
+                        $("#DetailModal").modal("show");
                         var params = {
                             BrandId: item.BrandId,
                             BrandCode: item.BrandCode,
@@ -154,7 +166,31 @@ function loadBrand() {
         }
     })
 }
+function saveBrand() {
+    $("#save_button").button("loading");
+    var params = $("#brand-form").serializeJson();
+    var json = $("#brand-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.TenantId = loginUser.TenantId;
+        params.InUserId = loginUser.Id;
+        params.ModifyUserId = loginUser.Id;
+    }
 
+    $.post(baseUrl + "survey/api/Master/SaveBrand", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadBrand();
+        } else {
+            alert(data.Body);
+        }
+        $("#save_button").button("reset");
+    })
+}
 function toNullString(str) {
     if (str)
         return str;
