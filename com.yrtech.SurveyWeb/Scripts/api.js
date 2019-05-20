@@ -403,10 +403,12 @@ function saveProject() {
         //编辑
         json = JSON.parse(json);
         params = $.extend(json, params);
+        params.DataScore = $("#DataScore").val();
     } else {
         //新增
         params.TenantId = loginUser.TenantId;
         params.BrandId = brandId;
+        params.DataScore = $("#DataScore").val();
         params.InUserId = loginUser.Id;
         params.ModifyUserId = loginUser.Id;
     }
