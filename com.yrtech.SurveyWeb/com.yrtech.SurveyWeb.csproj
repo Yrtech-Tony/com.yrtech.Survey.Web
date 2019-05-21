@@ -418,6 +418,7 @@
     <Content Include="Views\ProjectContent\SubjectTypeExamIndex.cshtml" />
     <Content Include="Views\System\_PartialBrandEdit.cshtml" />
     <Content Include="Views\Account\AccountIndex.cshtml" />
+    <Content Include="Views\Account\_PartialAccountEdit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

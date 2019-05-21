@@ -44,6 +44,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult AccountEdit()
+        {
+            return PartialView("_PartialAccountEdit");
+        }
         #endregion
     }
 }
