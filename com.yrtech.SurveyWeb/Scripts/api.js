@@ -139,7 +139,7 @@ function loadBrand() {
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
                     //tr.append($("<td></td>").html(item.ModifyUserId));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                    var userManager = $("<a href='#'>账号管理</a>");
+                    var userManager = $("<a href='#'>账号列表</a>");
                     userManager.click(function () {
                         $("#DetailModal").modal("show");
                         var params = {
@@ -147,7 +147,7 @@ function loadBrand() {
                             BrandCode: item.BrandCode,
                             BrandName: item.BrandName
                         };
-                        $("#Modal .modal-body").load("/System/UserInfoForBrand", params, function () {
+                        $("#DetailModal .modal-body").load("/System/UserInfoForBrand", params, function () {
                             loadUserInfoByBrandId(params);
                         })
                         return false;
@@ -189,6 +189,58 @@ function saveBrand() {
             alert(data.Body);
         }
         $("#save_button").button("reset");
+    })
+}
+// 用户信息管理
+function loadUserInfo() {
+    $.get(baseUrl + "survey/api/Master/GetUserInfoByBrandId", {
+        brandId: $("#account-brand").val()
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            var pageClick = function (curPage) {
+                $("#account-table tbody").empty();
+
+                curPageNum = curPage;
+                var pageLst = lst.filter(function (item, i, self) {
+                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                    return (i >= start && i < (start + pageSize));
+                })
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+
+                    //tr.append($('<td><input type="checkbox" id="check-all" class="flat"></td>'));
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/System/UserInfoEdit", {}, function () {
+                            $("#account-form").setForm(item);
+                            $("#account-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
+                    tr.append($("<td></td>").html(item.AccountId));
+                    tr.append($("<td></td>").html(item.Password));
+                    tr.append($("<td></td>").html(item.AccountName));
+                    tr.append($("<td></td>").html(item.RoleType));
+                    tr.append($("<td></td>").html(item.UseChk));
+                    tr.append($("<td></td>").html(item.Email));
+                    tr.append($("<td></td>").html(item.TelNO));
+                    tr.append($("<td></td>").html(item.HeadPicUrl));
+                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                    
+                    $("#account-table tbody").append(tr);
+                })
+            }
+            pageClick(curPageNum);
+            createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
+        }
     })
 }
 function toNullString(str) {

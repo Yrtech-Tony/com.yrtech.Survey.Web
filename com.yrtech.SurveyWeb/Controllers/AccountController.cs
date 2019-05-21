@@ -39,5 +39,11 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        #region 账号管理
+        public ActionResult AccountIndex()
+        {
+            return View();
+        }
+        #endregion
     }
 }
