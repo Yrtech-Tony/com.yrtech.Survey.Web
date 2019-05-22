@@ -15,21 +15,21 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult ShopEdit()
+        {
+            return PartialView("_PartialShopEdit");
 
+        }
         public ActionResult ProjectIndex()
         {
             return View();
         }
 
-        public ActionResult SbjectTypeExamIndex()
-        {
-            return View();
-        }
 
         public ActionResult ProjectEdit()
         {
             return PartialView("_PartialProjectEdit");
         }
-        
+
     }
 }

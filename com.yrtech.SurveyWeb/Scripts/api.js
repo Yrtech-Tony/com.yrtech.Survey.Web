@@ -246,6 +246,7 @@ function saveAccount() {
     $("#save_button").button("loading");
     var params = $("#account-form").serializeJson();
     var json = $("#account-form").data("json");
+    var brandId = $("#account-brand").val()
     if (json && json.length > 0) {
         //编辑
         json = JSON.parse(json);
@@ -253,7 +254,7 @@ function saveAccount() {
     } else {
         //新增
         params.TenantId = loginUser.TenantId;
-        paras.BrandId = loginUser.TenantId;
+        paras.BrandId = brandId;
         params.InUserId = loginUser.Id;
         params.ModifyUserId = loginUser.Id;
     }
@@ -537,30 +538,13 @@ function saveProject() {
 }
 
 var allShop;
-function searchShop(key,projectId, callback) {
-    if (allShop) {
-        callback(allShop);
-    } else {
-        $.get(baseUrl + "survey/api/Master/GetShop", {
-            projectId: "1",
-            shopId: ""
-        }, function (data) {
-            if (data && data.Status) {
-                allShop = JSON.parse(data.Body);
-                callback(allShop);
-            } else {
-                alert(data.Body);
-            }
-        })
-    }
-    
-}
 
 //经销商管理
 function loadShop() {
     $.get(baseUrl + "survey/api/Master/GetShop", {
-        projectId: "1",
-        shopId: ""
+        brandId: $("#shop-brand").val(),
+        shopId: "",
+        key:$("#ShopKey").val()
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -576,7 +560,16 @@ function loadShop() {
                 $.each(pageLst, function (i, item) {
                     //page
                     var tr = $("<tr>");
-
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/BrandContent/ShopEdit", {}, function () {
+                            $("#shop-form").setForm(item);
+                            $("#shop-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
                     //tr.append($('<input type="checkbox" id="check-all" class="flat">'));
                     tr.append($("<td></td>").html(item.ShopCode));
                     tr.append($("<td></td>").html(item.ShopName));
@@ -601,7 +594,33 @@ function loadShop() {
         }
     })
 }
+function saveShop() {
+    $("#save_button").button("loading");
+    var brandId = $("#shop-brand").val();
+    var params = $("#shop-form").serializeJson();
+    var json = $("#shop-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.TenantId = loginUser.TenantId;
+        params.BrandId = brandId;
+        params.InUserId = loginUser.Id;
+        params.ModifyUserId = loginUser.Id;
+    }
 
+    $.post(baseUrl + "survey/api/Master/SaveShop", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadShop();
+        } else {
+            alert(data.Body);
+        }
+        $("#save_button").button("reset");
+    })
+}
 //体系查询
 function loadSubject() {
     var projectId = $("#project-sel").val();
