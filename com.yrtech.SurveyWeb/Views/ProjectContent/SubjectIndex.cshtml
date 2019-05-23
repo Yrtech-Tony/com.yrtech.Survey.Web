@@ -104,8 +104,11 @@
             $("#btnAdd").click(function () {
                 $("#Modal").modal("show");
                 $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
-                    loadSubjectTypeExamDrop($("#SubjectTypeExamId"), function () {
-                    });
+                    var projectId = $("#project-sel").val()
+                    loadBrandBindDropdownList(projectId,function (data) {
+                        $.each(data, function () {
+                            $("#SubjectTypeExamId").append($("<option>").val(this.SubjectTypeExamId).text(this.SubjectTypeExamName));
+                        })
                 })
                 return false;
             })

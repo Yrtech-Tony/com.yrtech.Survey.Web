@@ -61,7 +61,7 @@
             loadBrandBindDropdownList(function (data) {
                 $.each(data, function () {
                     $("#shop-brand").append($("<option>").val(this.BrandId).text(this.BrandName));
-                })
+                });
                 $("#shop-brand").change();
             });
             $("#shop-brand").change(function () {

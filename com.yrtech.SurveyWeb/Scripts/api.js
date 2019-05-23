@@ -6,12 +6,6 @@ var dta = {};
 var pageSize = 15;
 var curPageNum = 1;
 
-//var loginUser = {
-//    TenantId: 1,
-//    UserId: 1,
-//    AccountId: 'sysadmin',
-//    AccountName: '管理员'
-//};
 //加载列表
 function exeQuery(data) {
     $.ajax({
@@ -22,11 +16,6 @@ function exeQuery(data) {
         "success": data.fnCallback
     });
 }
-
-function login(params, success, error) {
-    $.get(baseUrl + "survey/api/Account/Login", params, success).error(error);
-}
-
 //租户管理，没有使用
 function loadTenant() {
     $.get(baseUrl + "survey/api/Master/GetTenant", {
@@ -68,7 +57,41 @@ function loadTenant() {
         }
     })
 }
-// 通用下拉框绑定方法
+// 共同方法
+function toNullString(str) {
+    if (str)
+        return str;
+    return "";
+}
+function parseParams(data) {
+    try {
+        var tempArr = [];
+        for (var i in data) {
+            var key = encodeURIComponent(i);
+            var value = encodeURIComponent(data[i]);
+            tempArr.push(key + '=' + value);
+        }
+        var urlParamsStr = tempArr.join('&');
+        return urlParamsStr;
+    } catch (err) {
+        return '';
+    }
+}
+function createPage(total, curPageNum, pageSize, pageClick) {
+    var pageCount = total % pageSize == 0 ? Math.floor(total / pageSize) : Math.floor(total / pageSize + 1);
+    createPageNav({ $container: $("#pagination"), pageCount: pageCount, currentNum: curPageNum, totalCount: total, afterFun: pageClick });
+}
+function closeModel() {
+    $("#Modal").modal("hide");
+}
+// 登陆
+function login(params, success, error) {
+    $.get(baseUrl + "survey/api/Account/Login", params, success).error(error);
+}
+
+//  通用下拉框绑定方法
+
+// 绑定品牌
 function loadBrandBindDropdownList(callback) {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
@@ -80,15 +103,48 @@ function loadBrandBindDropdownList(callback) {
             var lst = JSON.parse(data.Body);
             if (callback)
                 callback(lst);                    
+        } else {
+            alert(data.Body);
         }
     })
 }
+// 绑定期号
 function loadProjectBindDropdownList(brandId, year, callback) {
     $.get(baseUrl + "survey/api/Master/GetProject", {
         brandId: brandId,
         year: year,
         projectId: ""
     }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            if (callback)
+                callback(lst);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+// 绑定权限类型
+function loadRoleTypeBindDropdownList(callback) {
+    $.get(baseUrl + "survey/api/Master/GetRoleType", {
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            if (callback)
+                callback(lst);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+// 绑定试卷类型
+function loadSubjectTypeExamBindDropdownList(projectId, callback) {
+    $.get(baseUrl + "survey/api/Master/GetSubjectTypeExam",
+        {
+            projectId: projectId,
+            subjectTypeExamId: ""
+        },
+        function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
             if (callback)
@@ -268,163 +324,6 @@ function saveAccount() {
         $("#save_button").button("reset");
     })
 }
-function toNullString(str) {
-    if (str)
-        return str;
-    return "";
-}
-
-//查询申诉反馈
-function loadAppeal(params) {
-    var pageClick = function (curPage) {
-        params.pageNum = curPage || 1;
-        $("#appeal-table tbody").empty();
-
-        $.get(baseUrl + "survey/api/Appeal/GetShopAppealInfoByPage", params, function (data) {
-            $("#btnSearch").button('reset');
-            if (data && data.Status) {
-                var retArr = JSON.parse(data.Body);
-                var total = retArr[0];
-                var pageLst = retArr[1];
-                $.each(pageLst, function (i, item) {
-                    //page
-                    var tr = $("<tr>");
-
-                    var edit = $("<a href='/Appeal/Edit?appealId=" + item.AppealId + "'>申诉/详细</a>");
-                    tr.append($("<td></td>").append(edit));
-                    var del = $("<a href='#'>删除</a>");
-                    del.click(function () {
-                        confirm("确定要删除该申诉反馈吗？", function () {
-                            appealDelete(item.AppealId, function () {
-                                pageClick(curPage);
-                            })
-                        })                        
-                        return false;
-                    })
-                    tr.append($("<td></td>").append(del));
-
-                    tr.append($("<td></td>").html(item.ShopCode));
-                    tr.append($("<td></td>").html(item.ShopName));
-                    tr.append($("<td></td>").html(item.SubjectCode));
-                    tr.append($("<td></td>").html(item.CheckPoint));
-                    tr.append($("<td></td>").html(item.Score));
-                    tr.append($("<td></td>").html(item.AppealUserName));
-                    tr.append($("<td></td>").html(toNullString(item.AppealDateTime).replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.AppealReason));
-                    tr.append($("<td></td>").html(item.FeedBackStatusStr));
-                    tr.append($("<td></td>").html(item.FeedBackReason));
-                    tr.append($("<td></td>").html(item.FeedBackUserName));
-                    tr.append($("<td></td>").html(toNullString(item.FeedBackDateTime).replace('T', ' ')));
-                    
-                    $("#appeal-table tbody").append(tr);
-                })
-               
-                createPage(total, curPage, pageSize, pageClick);
-            } else {
-                alert(data.Body);
-            }
-        })
-    }
-
-    pageClick();
-}
-
-function appealDelete(appealId, callback) {
-    $.post(baseUrl + "survey/api/Appeal/AppealDelete", {
-        appealId: appealId
-    }, function (data) {
-        if (data && data.Status) {
-            alert("删除成功");
-            if (callback)
-                callback();
-        } else {
-            alert(data.Body);
-        }
-    })
-}
-
-//获取某条申诉反馈详情
-function getAppeal(appealId, callback) {
-    $.get(baseUrl + "survey/api/Appeal/GetShopSubjectAppeal", {
-        appealId: appealId
-    }, function (data) {
-        if (data && data.Status) {
-            var objs = JSON.parse(data.Body);
-
-            if (callback)
-                callback(objs[0]);
-        } else {
-            alert(data.Body);
-        }
-    })
-}
-
-//提交申诉
-function appealApply(params, callback) {
-    $.post(baseUrl + "survey/api/Appeal/AppealApply", params, function (data) {
-        if (data && data.Status) {
-            if (callback)
-                callback(data);
-        } else {
-            alert(data.Body);
-        }
-    })
-}
-//提交反馈
-function appealFeedBack(params, callback) {
-    $.post(baseUrl + "survey/api/Appeal/AppealFeedBack", params, function (data) {
-        if (data && data.Status) {
-            if (callback)
-                callback(data);
-        } else {
-            alert(data.Body);
-        }
-    })
-}
-
-//提交申诉反馈附件
-function appealFileSave(params, callback) {
-    $.post(baseUrl + "survey/api/Appeal/AppealFileSave", params, function (data) {
-        if (data && data.Status) {
-            if (callback)
-                callback(data);
-        } else {
-            alert(data.Body);
-        }
-    });
-}
-
-//获取申诉反馈附件
-function loadFileList(params, callback) {
-    $.get(baseUrl + "survey/api/Appeal/AppealFileSearch", params, function (data) {
-        if (data && data.Status) {
-            var objs = JSON.parse(data.Body);
-
-            if (callback)
-                callback(objs);
-        } else {
-            alert(data.Body);
-        }
-    });
-}
-
-//删除申诉反馈附件
-function appealFileDelete(params, callback) {
-    $.post(baseUrl + "survey/api/Appeal/AppealFileDelete", params, function (data) {
-        if (data && data.Status) {
-            if (callback)
-                callback();
-        } else {
-            alert(data.Body);
-        }
-    });
-}
-
-
-function closeModel() {
-    $("#Modal").modal("hide");
-}
-
 function loadUserInfoByBrandId(obj) {
     $.get(baseUrl + "survey/api/Master/GetUserInfoByBrandId", {
         brandId: obj.BrandId
@@ -448,11 +347,7 @@ function loadUserInfoByBrandId(obj) {
         }
     })
 }
-
-//查询绑定申诉界面的期号列表
-
-
-//查询期号
+//期号管理
 function loadProject(year) {
     var brandId = $("#brand-sel").val();
     $.get(baseUrl + "survey/api/Master/GetProject", {
@@ -506,7 +401,6 @@ function loadProject(year) {
         }
     })
 }
-//保存期号
 function saveProject() {
     $("#save_button").button("loading");
     var brandId = $("#brand-sel").val();
@@ -536,9 +430,6 @@ function saveProject() {
         $("#save_button").button("reset");
     })
 }
-
-var allShop;
-
 //经销商管理
 function loadShop() {
     $.get(baseUrl + "survey/api/Master/GetShop", {
@@ -621,7 +512,7 @@ function saveShop() {
         $("#save_button").button("reset");
     })
 }
-//体系查询
+//体系管理
 function loadSubject() {
     var projectId = $("#project-sel").val();
     $.get(baseUrl + "survey/api/Master/GetSubject", {
@@ -685,26 +576,6 @@ function loadSubject() {
         }
     })
 }
-
-//加载试卷类型下拉列表
-function loadSubjectTypeExamDrop(select, callback) {
-    $.get(baseUrl + "survey/api/Master/GetSubjectTypeExam", {}, function (data) {
-        if (data && data.Status) {
-            var lst = JSON.parse(data.Body);
-            if (lst) {
-                for (i in lst) {
-                    $(select).append($("<option>").val(lst[i].SubjectTypeExamId).html(lst[i].SubjectTypeExamName));
-                }
-            }
-            if (callback)
-                callback();
-        } else {
-            alert(data.Body);
-        }
-    })
-}
-
-//体系保存
 function saveSubject() {
     $("#save_button").button("loading");
 
@@ -732,7 +603,6 @@ function saveSubject() {
         }
     })
 }
-//查询体系详情
 function loadSubjectDetail() {
     var projectId = $("#ProjectId").val();
     var subjectId = $("#SubjectId").val();
@@ -741,7 +611,6 @@ function loadSubjectDetail() {
     loadSubjectLossResult(projectId, subjectId);
     loadSubjectTypeScoreRegion(projectId, subjectId);
 }
-
 //标准照片管理
 function loadSubjectFile(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectFile", {
@@ -783,7 +652,6 @@ function loadSubjectFile(projectId, subjectId) {
         }
     })
 }
-
 //检查标准管理
 function loadSubjectInspectionStandard(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectInspectionStandard", {
@@ -823,7 +691,6 @@ function loadSubjectInspectionStandard(projectId, subjectId) {
         }
     })
 }
-
 //失分描述管理
 function loadSubjectLossResult(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectLossResult", {
@@ -863,7 +730,6 @@ function loadSubjectLossResult(projectId, subjectId) {
         }
     })
 }
-
 //体系分数管理
 function loadSubjectTypeScoreRegion(projectId, subjectId) {
     $.get(baseUrl + "survey/api/Master/GetSubjectTypeScoreRegion", {
@@ -904,7 +770,6 @@ function loadSubjectTypeScoreRegion(projectId, subjectId) {
         }
     })
 }
-
 //流程类型管理
 function loadSubjectLink() {
     var projectId = $("#project-sel").val();
@@ -1274,7 +1139,6 @@ function loadShopByProject() {
         }
     })
 }
-
 function loadSubjectType(select, callback) {
     $.get(baseUrl + "survey/api/Master/GetSubjectType", {
     }, function (data) {
@@ -1301,7 +1165,6 @@ function loadRecheckStatus(params, callback) {
         }       
     })
 }
-
 //复审详细查询
 function loadRecheckStatusDtl(params, callback) {
     $.get(baseUrl + "survey/api/Recheck/GetRecheckStatusDtl", params, function (data) {
@@ -1315,7 +1178,6 @@ function loadRecheckStatusDtl(params, callback) {
         }       
     })
 }
-
 //复审详细
 function getShopNeedRecheckSubject(params, callback) {
     $.get(baseUrl + "survey/api/Recheck/GetShopNeedRecheckSubject", params, function (data) {
@@ -1329,8 +1191,6 @@ function getShopNeedRecheckSubject(params, callback) {
         }
     })
 }
-
-
 //申诉数据导入准备期号数据
 function loadProjectForAppeal(brandId) {
     $.get(baseUrl + "survey/api/Master/GetProject", {       
@@ -1387,7 +1247,6 @@ function loadProjectForAppeal(brandId) {
         }
     })
 }
-
 //生成申诉数据
 function importAnswer(params, callback) {
     $.post(baseUrl + "survey/api/Answer/ImportAnswer", params, function (data) {
@@ -1400,7 +1259,6 @@ function importAnswer(params, callback) {
         }
     })
 }
-
 //开始申诉
 function createAppealInfoByProject(params, callback) {
     $.get(baseUrl + "survey/api/Appeal/CreateAppealInfoByProject", params, function (data) {
@@ -1413,23 +1271,147 @@ function createAppealInfoByProject(params, callback) {
         }
     })
 }
+//查询申诉反馈
+function loadAppeal(params) {
+    var pageClick = function (curPage) {
+        params.pageNum = curPage || 1;
+        $("#appeal-table tbody").empty();
 
-function parseParams(data) {
-    try {
-        var tempArr = [];
-        for (var i in data) {
-            var key = encodeURIComponent(i);
-            var value = encodeURIComponent(data[i]);
-            tempArr.push(key + '=' + value);
-        }
-        var urlParamsStr = tempArr.join('&');
-        return urlParamsStr;
-    } catch (err) {
-        return '';
+        $.get(baseUrl + "survey/api/Appeal/GetShopAppealInfoByPage", params, function (data) {
+            $("#btnSearch").button('reset');
+            if (data && data.Status) {
+                var retArr = JSON.parse(data.Body);
+                var total = retArr[0];
+                var pageLst = retArr[1];
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+
+                    var edit = $("<a href='/Appeal/Edit?appealId=" + item.AppealId + "'>申诉/详细</a>");
+                    tr.append($("<td></td>").append(edit));
+                    var del = $("<a href='#'>删除</a>");
+                    del.click(function () {
+                        confirm("确定要删除该申诉反馈吗？", function () {
+                            appealDelete(item.AppealId, function () {
+                                pageClick(curPage);
+                            })
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(del));
+
+                    tr.append($("<td></td>").html(item.ShopCode));
+                    tr.append($("<td></td>").html(item.ShopName));
+                    tr.append($("<td></td>").html(item.SubjectCode));
+                    tr.append($("<td></td>").html(item.CheckPoint));
+                    tr.append($("<td></td>").html(item.Score));
+                    tr.append($("<td></td>").html(item.AppealUserName));
+                    tr.append($("<td></td>").html(toNullString(item.AppealDateTime).replace('T', ' ')));
+                    tr.append($("<td></td>").html(item.AppealReason));
+                    tr.append($("<td></td>").html(item.FeedBackStatusStr));
+                    tr.append($("<td></td>").html(item.FeedBackReason));
+                    tr.append($("<td></td>").html(item.FeedBackUserName));
+                    tr.append($("<td></td>").html(toNullString(item.FeedBackDateTime).replace('T', ' ')));
+
+                    $("#appeal-table tbody").append(tr);
+                })
+
+                createPage(total, curPage, pageSize, pageClick);
+            } else {
+                alert(data.Body);
+            }
+        })
     }
+
+    pageClick();
+}
+function appealDelete(appealId, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealDelete", {
+        appealId: appealId
+    }, function (data) {
+        if (data && data.Status) {
+            alert("删除成功");
+            if (callback)
+                callback();
+        } else {
+            alert(data.Body);
+        }
+    })
 }
 
-function createPage(total, curPageNum, pageSize, pageClick) {
-    var pageCount = total % pageSize == 0 ? Math.floor(total / pageSize) : Math.floor(total / pageSize + 1);
-    createPageNav({ $container: $("#pagination"), pageCount: pageCount, currentNum: curPageNum, totalCount: total, afterFun: pageClick });
+//获取某条申诉反馈详情
+function getAppeal(appealId, callback) {
+    $.get(baseUrl + "survey/api/Appeal/GetShopSubjectAppeal", {
+        appealId: appealId
+    }, function (data) {
+        if (data && data.Status) {
+            var objs = JSON.parse(data.Body);
+
+            if (callback)
+                callback(objs[0]);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
+//提交申诉
+function appealApply(params, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealApply", params, function (data) {
+        if (data && data.Status) {
+            if (callback)
+                callback(data);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+//提交反馈
+function appealFeedBack(params, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealFeedBack", params, function (data) {
+        if (data && data.Status) {
+            if (callback)
+                callback(data);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
+//提交申诉反馈附件
+function appealFileSave(params, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealFileSave", params, function (data) {
+        if (data && data.Status) {
+            if (callback)
+                callback(data);
+        } else {
+            alert(data.Body);
+        }
+    });
+}
+
+//获取申诉反馈附件
+function loadFileList(params, callback) {
+    $.get(baseUrl + "survey/api/Appeal/AppealFileSearch", params, function (data) {
+        if (data && data.Status) {
+            var objs = JSON.parse(data.Body);
+
+            if (callback)
+                callback(objs);
+        } else {
+            alert(data.Body);
+        }
+    });
+}
+
+//删除申诉反馈附件
+function appealFileDelete(params, callback) {
+    $.post(baseUrl + "survey/api/Appeal/AppealFileDelete", params, function (data) {
+        if (data && data.Status) {
+            if (callback)
+                callback();
+        } else {
+            alert(data.Body);
+        }
+    });
 }
