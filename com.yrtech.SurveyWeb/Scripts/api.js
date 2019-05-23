@@ -248,8 +248,9 @@ function saveBrand() {
 }
 // 账号信息管理
 function loadAccount() {
-    $.get(baseUrl + "survey/api/Master/GetUserInfoByBrandId", {
-        brandId: $("#account-brand").val()
+    $.get(baseUrl + "survey/api/Account/GetUserInfo", {
+        tenantId: loginUser.TenantId,
+        userId:""
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
