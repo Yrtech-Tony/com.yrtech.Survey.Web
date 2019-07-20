@@ -1,10 +1,13 @@
 ﻿
-//var baseUrl = 'http://123.57.229.128:8001/';
-var baseUrl = 'http://localhost:57328/';
+var baseUrl = 'http://123.57.229.128:8001/';
+var easyPhotoUrl = 'http://localhost:57328/';
+//var easyPhotoUrl = 'http://123.57.229.128:8020/'
 
 var dta = {};
 var pageSize = 15;
 var curPageNum = 1;
+
+
 
 //加载列表
 function exeQuery(data) {
@@ -84,6 +87,67 @@ function createPage(total, curPageNum, pageSize, pageClick) {
 function closeModel() {
     $("#Modal").modal("hide");
 }
+
+// EasyPhoto
+
+// 查询轻松拍的期号
+function loadEasyPhotoProject(year) {
+    $.get(easyPhotoUrl + "easyPhoto/api/Master/GetProject", {
+        tenantId: loginUser.TenantId,
+        projectId: "",
+        year: year || "",
+        expireDateTimeCheck:""
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            var pageClick = function (curPage) {
+                $("#project-table tbody").empty();
+
+                curPageNum = curPage;
+                var pageLst = lst.filter(function (item, i, self) {
+                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                    return (i >= start && i < (start + pageSize));
+                })
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+
+                    tr.append($("<td></td>").html(item.ProjectCode));
+                    tr.append($("<td></td>").html(item.ProjectName));
+                    tr.append($("<td></td>").html(item.Year));
+                    tr.append($("<td></td>").html(item.Quarter));
+                    tr.append($("<td></td>").html(item.OrderNO));
+                    tr.append($("<td></td>").html(item.ScoreShow));
+                    tr.append($("<td></td>").html(item.OtherPropertyShow));
+                    tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
+                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
+                            $("#project-form").setForm(item);
+                            $("#project-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
+
+                    $("#project-table tbody").append(tr);
+                })
+
+                //$("#project-table tbody [type=checkbox]").iCheck();
+            }
+            pageClick(curPageNum);
+            createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
+
 // 登陆
 function login(params, success, error) {
     $.get(baseUrl + "survey/api/Account/Login", params, success).error(error);
