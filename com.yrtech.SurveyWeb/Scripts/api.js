@@ -146,7 +146,31 @@ function loadEasyPhotoProject(year) {
         }
     })
 }
+function saveEasyPhotoProject() {
+    $("#save_button").button("loading");
+    var params = $("#project-form").serializeJson();
+    var json = $("#project-form").data("json");
+    if (json && json.length > 0) {
+        //编辑
+        json = JSON.parse(json);
+        params = $.extend(json, params);
+    } else {
+        //新增
+        params.TenantId = loginUser.TenantId;
+        params.InUserId = loginUser.Id;
+        params.ModifyUserId = loginUser.Id;
+    }
 
+    $.post(easyPhotoUrl + "easyPhoto/api/Master/SaveProject", params, function (data) {
+        if (data && data.Status) {
+            closeModel();
+            loadProject();
+        } else {
+            alert(data.Body);
+        }
+        $("#save_button").button("reset");
+    })
+}
 
 // 登陆
 function login(params, success, error) {
