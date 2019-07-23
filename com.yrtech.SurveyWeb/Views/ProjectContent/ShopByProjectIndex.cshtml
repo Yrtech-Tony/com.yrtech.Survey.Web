@@ -7,23 +7,23 @@
         <h3>执行经销商管理 <small></small></h3>
     </div>
 </div>
-<div class="operation col-md-offset-4 form-group">
-    <div class="form-horizontal col-md-12">
+<div class="operation col-md-offset-4">
+    <div class="form-horizontal">
         <div class="form-group col-md-4">
-            <label class="control-label col-md-2">品牌</label>
-            <div class="form-group col-md-10">
+            <label class="control-label col-md-3">品牌</label>
+            <div class="form-group col-md-9">
                 <select id="brand-sel" class="form-control"></select>
             </div>
         </div>
         <div class="form-group col-md-4">
-            <label class="control-label col-md-2">年份</label>
-            <div class="form-group col-md-10">
+            <label class="control-label col-md-3">年份</label>
+            <div class="form-group col-md-9">
                 <select id="year" class="form-control selectpicker"></select>
             </div>
         </div>
         <div class="form-group col-md-4">
-            <label class="control-label col-md-2">期号</label>
-            <div class="form-group col-md-10">
+            <label class="control-label col-md-3">期号</label>
+            <div class="form-group col-md-9">
                 <select id="project-sel" class="form-control"></select>
             </div>
         </div>
@@ -65,7 +65,7 @@
             });
 
             $("#brand-sel,#year").change(function () {
-                loadProjectBindAppeal($("#brand-sel").val(), $("#year").val(), function (data) {
+                loadProjectBindDropdownList($("#brand-sel").val(), $("#year").val(), function (data) {
                     $("#project-sel").empty();
                     $.each(data, function (i, item) {
                         $("#project-sel").append($('<option>').val(item.ProjectId).text(item.ProjectName));

@@ -80,7 +80,7 @@
             });
 
             $("#brand-sel,#year").change(function () {
-                loadProjectBindAppeal($("#brand-sel").val(), $("#year").val(), function (data) {
+                loadProjectBindDropdownList($("#brand-sel").val(), $("#year").val(), function (data) {
                     $("#project-sel").empty();
                     $.each(data, function (i, item) {
                         $("#project-sel").append($('<option>').val(item.ProjectId).text(item.ProjectName));

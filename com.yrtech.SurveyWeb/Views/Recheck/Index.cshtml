@@ -11,78 +11,77 @@
         vertical-align: middle;
     }
 </style>
-<div id="container" class="col-md-12">
-    <form id="searchForm" class="form-horizontal" style="width:80%">
-        <div class="item form-group">
-            <label class="control-label col-md-1 col-sm-1 col-xs-12 left" for="Brand">
-                品&nbsp;&nbsp;牌：
-            </label>
-            <div class="col-md-3 col-sm-3 col-xs-12">
-                <select id="Brand" name="Brand" class="form-control selectpicker"></select>
-            </div>
-            <label class="control-label col-md-1 col-sm-1 col-xs-12 left" for="Project">
-                期&nbsp;&nbsp;号：
-            </label>
-            <div class="col-md-3 col-sm-3 col-xs-12">
-                <select id="Project" class="form-control selectpicker"></select>
-            </div>
-            <div class="col-md-2 col-sm-2 col-xs-12 right">
-                <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;&nbsp;询</button>
-            </div>
+<div class="page-title">
+    <div class="title_left">
+        <h3>复审列表 <small></small></h3>
+    </div>
+</div>
+<div class="operation col-md-offset-6 form-horizontal">
+    <form id="searchForm" class="row">
+        <label class="control-label col-md-1" for="Brand">品牌：</label>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <select id="Brand" name="Brand" class="form-control selectpicker"></select>
+        </div>
+        <label class="control-label col-md-1" for="Project">期号： </label>       
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <select id="Project" class="form-control selectpicker"></select>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-primary form-control" id="btnSearch">查&nbsp;&nbsp;询</button>
         </div>
     </form>
+</div>
 
-    <div class="row ">
-        <div class="col-md-6 col-sm-6 col-xs-12 list" style="overflow:auto;">
-            <div class="title_left">
-                <h5>流程类型 <small></small></h5>
-            </div>
-            <table id="recheck-state-table" class="table table-bordered table-set">
-                <thead>
-                    <tr>
-                        <th style="width:110px">经销店代码</th>
-                        <th style="width:250px">经销店名称</th>
-                        <th style="width:70px">提交人</th>
-                        <th style="width:130px">提交时间</th>
-                        <th style="width: 70px">复审状态</th>
-                        <th style="width: 70px">详细</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+<div class="row">
+    <div class="col-md-6 col-sm-6 col-xs-12 list" style="overflow:auto;">
+        <div class="title_left">
+            <h5>流程类型 <small></small></h5>
         </div>
-        <div class="col-md-6 col-sm-6 col-xs-12 list" style="overflow:auto;">
-            <div class="title_left">
-                <h5>流程详细 <small></small></h5>
-            </div>
-            <table id="recheck-detail-table" class="table table-bordered table-set">
-                <thead>
-                    <tr>
-                        <th style="width: 100px">复审类型</th>
-                        <th style="width:80px">复审人</th>
-                        <th style="width: 130px">复审完毕时间</th>
-                        <th style="width: 80px">复审</th>
-                        <th style="width: 80px">复审完毕</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+        <table id="recheck-state-table" class="table table-bordered table-set">
+            <thead>
+                <tr>
+                    <th style="width:110px">经销店代码</th>
+                    <th style="width:250px">经销店名称</th>
+                    <th style="width:70px">提交人</th>
+                    <th style="width:130px">提交时间</th>
+                    <th style="width: 70px">复审状态</th>
+                    <th style="width: 70px">详细</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
+    <div class="col-md-6 col-sm-6 col-xs-12 list" style="overflow:auto;">
+        <div class="title_left">
+            <h5>流程详细 <small></small></h5>
+        </div>
+        <table id="recheck-detail-table" class="table table-bordered table-set">
+            <thead>
+                <tr>
+                    <th style="width: 100px">复审类型</th>
+                    <th style="width:80px">复审人</th>
+                    <th style="width: 130px">复审完毕时间</th>
+                    <th style="width: 80px">复审</th>
+                    <th style="width: 80px">复审完毕</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
 
-    <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-body">
-                </div>
-                <div class="modal-footer">
-                    <button id="save_button" type="button" onclick="saveProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
-                    <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
-                </div>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
@@ -117,7 +116,7 @@
                 if (!params) return;
                 loadRecheckStatus(params, function (data) {
                     $("#recheck-state-table tbody").empty();
-                    $.each(data, function (i, item) {                       
+                    $.each(data, function (i, item) {
                         var tr = $("<tr>");
 
                         tr.append($("<td></td>").html(item.ShopCode));

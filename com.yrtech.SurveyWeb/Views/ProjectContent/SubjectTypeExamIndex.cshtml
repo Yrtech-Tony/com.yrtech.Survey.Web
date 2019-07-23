@@ -12,13 +12,13 @@
         <div class="col-md-3">
             <select id="subjectTypeExam-Brand" name="subjectTypeExam-Brand" class="form-control selectpicker"></select>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <select id="subjectTypeExam-Project" name="subjectTypeExam-Project" class="form-control selectpicker"></select>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <button id="btnSubjectTypeExam-Search" class="btn btn-primary form-control">查&nbsp;&nbsp;询</button>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <button id="btnSubjectTypeExam-Add" class="btn btn-primary form-control">新&nbsp;&nbsp;增</button>
         </div>
     </div>
@@ -78,6 +78,8 @@
                     $.each(data, function () {
                         $("#subjectTypeExam-Project").append($("<option>").val(this.ProjectId).text(this.ProjectName));
                     });
+
+                    $("#btnSubjectTypeExam-Search").click();
                 });
             });
             //查询试卷类型
