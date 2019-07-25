@@ -21,5 +21,13 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialEasyPhotoProjectEdit");
         }
+        public ActionResult EasyPhotoUserInfoIndex()
+        {
+            return View();
+        }
+        public ActionResult EasyPhotoUserInfoEdit()
+        {
+            return PartialView("_PartialEasyPhotoUserInfoEdit");
+        }
     }
 }

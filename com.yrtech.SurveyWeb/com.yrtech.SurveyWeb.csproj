@@ -422,6 +422,8 @@
     <Content Include="Views\BrandContent\_PartialShopEdit.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoProjectIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoProjectEdit.cshtml" />
+    <Content Include="Views\EasyPhoto\EasyPhotoUserInfoIndex.cshtml" />
+    <Content Include="Views\EasyPhoto\_PartialEasyPhotoUserInfoEdit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
