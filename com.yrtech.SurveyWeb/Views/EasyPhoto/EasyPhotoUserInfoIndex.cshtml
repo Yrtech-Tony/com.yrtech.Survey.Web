@@ -1,26 +1,22 @@
 ﻿@{
     ViewBag.Title = "轻松拍-账号管理";
 }
-<style>
-    .operation {
-        padding: 10px 0px;
-        text-align: right;
-    }
-
-        .operation .btn {
-            width: 100px;
-        }
-</style>
 <div class="page-title">
     <div class="title_left">
         <h3>账号管理 <small></small></h3>
     </div>
 </div>
-<div class="operation col-md-offset-6">
-    <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;询</button>
-</div>
-<div class="operation col-md-offset-6">
-    <button id="btnAdd" class="btn btn-primary right">新&nbsp;&nbsp;增</button>
+
+<div class="operation col-md-offset-2 form-group">
+    <div class="row">
+        <div class="col-md-10"> </div>
+        <div class="col-md-1">
+            <button id="btnSearch" class="btn btn-primary form-control">查&nbsp;&nbsp;询</button>
+        </div>
+        <div class="col-md-1">
+            <button id="btnAdd" class="btn btn-primary form-control">新&nbsp;&nbsp;增</button>
+        </div>
+    </div>
 </div>
 <table id="userInfo-table" class="table table-striped table-bordered dt-responsive">
     <thead>
@@ -52,7 +48,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveEasyPhotoProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveEasyPhotoUserInfo()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -75,6 +71,72 @@
                 return false;
             });
         })
+
+
+        //保存轻松拍的账号
+        function saveEasyPhotoUserInfo() {
+            saveEasyPhotoCommonObject("SaveUserInfo", $("#userInfo-form"), {
+                //新增
+                TenantId: loginUser.TenantId,
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, function () {
+                $("#btnSearch").click();
+            });
+        }
+
+        // 查询账号
+        function loadEasyPhotoUserInfo(accountId, telNo, expireDateTimeCheck, key) {
+            loadEasyPhotoMasterCommonGet("GetUserInfo", {
+                tenantId: loginUser.TenantId,
+                accountId: accountId || "",
+                telNo: telNo || "",
+                expireDateTimeCheck: expireDateTimeCheck || "",
+                key: key || ""
+            }, function (data) {
+                var pageClick = function (curPage) {
+                    bindTable(data, $("#userInfo-table"), curPage);
+                }
+                pageClick(curPageNum);
+                createPage(data.length, curPageNum, pageSize, pageClick);
+            })
+
+        }
+
+
+        function bindTable(data, table, curPage) {
+            $("tbody", table).empty();
+
+            var pageLst = data.filter(function (item, i, self) {
+                var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                return (i >= start && i < (start + pageSize));
+            })
+            $.each(pageLst, function (i, item) {
+                //page
+                var tr = $("<tr>");
+
+                tr.append($("<td></td>").html(item.AccountId));
+                tr.append($("<td></td>").html(item.AccountName));
+                tr.append($("<td></td>").html(item.Password));
+                tr.append($("<td></td>").html(item.Email));
+                tr.append($("<td></td>").html(item.TelNo));
+                tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
+                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                var edit = $("<a href='#'>编辑</a>");
+                edit.click(function () {
+                    $("#Modal").modal("show");
+                    $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoEdit", {}, function () {
+                        $("#userInfo-form").setForm(item);
+                        $("#userInfo-form").data("json", JSON.stringify(item));
+                    })
+                    return false;
+                })
+                tr.append($("<td></td>").append(edit));
+
+                $("tbody", table).append(tr);
+            })
+        }
     </script>
 }
 

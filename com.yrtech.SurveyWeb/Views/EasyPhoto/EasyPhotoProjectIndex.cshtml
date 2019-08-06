@@ -2,26 +2,22 @@
     ViewBag.Title = "轻松拍-期号管理";
 }
 <style>
-    .operation {
-        padding: 10px 0px;
-        text-align: right;
-    }
-
-        .operation .btn {
-            width: 100px;
-        }
 </style>
 <div class="page-title">
     <div class="title_left">
         <h3>期号管理 <small></small></h3>
     </div>
 </div>
-<div class="operation col-md-offset-6">
-    <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;询</button>
-    <select id="year" class="form-control selectpicker"></select>
-</div>
-<div class="operation col-md-offset-6">
-    <button id="btnAdd" class="btn btn-primary right">新&nbsp;&nbsp;增</button>
+<div class="operation col-md-offset-2 form-group">
+    <div class="row">
+        <div class="col-md-10"> </div>
+        <div class="col-md-1">
+            <button id="btnSearch" class="btn btn-primary form-control">查&nbsp;&nbsp;询</button>
+        </div>
+        <div class="col-md-1">
+            <button id="btnAdd" class="btn btn-primary form-control">新&nbsp;&nbsp;增</button>
+        </div>
+    </div>
 </div>
 <table id="project-table" class="table table-striped table-bordered dt-responsive">
     <thead>
@@ -67,10 +63,8 @@
     <script src="~/Scripts/page.js"></script>
     <script>
         $(function () {
-            $("input[type=checkbox]").iCheckParser();
-            for (var i = 2019; i < 2030; i++) {
-                $("#year").append($("<option>").text(i + "").val(i + ""));
-            };
+            $("input[type=checkbox]").iCheckParser();            
+
             $("#btnSearch").click(function () {
                 loadEasyPhotoProject($("#year").val());
             });
@@ -82,6 +76,70 @@
                 return false;
             });
         })
+
+        //保存轻松拍的期号
+        function saveEasyPhotoProject() {
+            saveEasyPhotoCommonObject("SaveProject", $("#project-form"), {
+                //新增
+                TenantId: loginUser.TenantId,
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, function () {
+                $("#btnSearch").click();
+            });
+
+        }
+        // 查询轻松拍的期号
+        function loadEasyPhotoProject(year) {
+            loadEasyPhotoMasterCommonGet("GetProject",{
+                tenantId: loginUser.TenantId,
+                projectId: "",
+                year: year || "",
+                expireDateTimeCheck: ""
+            }, function (data) {
+                var pageClick = function (curPage) {
+                    bindTable(data, $("#project-table"), curPage);
+                }
+                pageClick(curPageNum);
+                createPage(data.length, curPageNum, pageSize, pageClick);
+            })
+        }
+
+        function bindTable(data, table,curPage) {
+            $("tbody", table).empty();
+
+            var pageLst = data.filter(function (item, i, self) {
+                var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                return (i >= start && i < (start + pageSize));
+            })
+            $.each(pageLst, function (i, item) {
+                //page
+                var tr = $("<tr>");
+
+                tr.append($("<td></td>").html(item.ProjectCode));
+                tr.append($("<td></td>").html(item.ProjectName));
+                tr.append($("<td></td>").html(item.Year));
+                tr.append($("<td></td>").html(item.Quarter));
+                tr.append($("<td></td>").html(item.OrderNO));
+                tr.append($("<td></td>").html(item.ScoreShow));
+                tr.append($("<td></td>").html(item.OtherPropertyShow));
+                tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
+                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                var edit = $("<a href='#'>编辑</a>");
+                edit.click(function () {
+                    $("#Modal").modal("show");
+                    $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
+                        $("#project-form").setForm(item);
+                        $("#project-form").data("json", JSON.stringify(item));
+                    })
+                    return false;
+                })
+                tr.append($("<td></td>").append(edit));
+
+                $("tbody", table).append(tr);
+            })
+        }
     </script>
 }
 

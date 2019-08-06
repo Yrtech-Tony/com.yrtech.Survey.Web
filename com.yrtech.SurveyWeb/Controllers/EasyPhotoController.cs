@@ -29,5 +29,32 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialEasyPhotoUserInfoEdit");
         }
+
+        public ActionResult EasyPhotoNoteIndex()
+        {
+            return View();
+        }
+        public ActionResult EasyPhotoNoteEdit()
+        {
+            return PartialView("_PartialEasyPhotoNoteEdit");
+        }
+        
+        public ActionResult EasyPhotoPhotoListIndex()
+        {
+            return View();
+        }
+        public ActionResult EasyPhotoPhotoListEdit()
+        {
+            return PartialView("_PartialEasyPhotoPhotoListEdit");
+        }
+        
+        public ActionResult EasyPhotoOtherPropertyIndex()
+        {
+            return View();
+        }
+        public ActionResult EasyPhotoOtherPropertyEdit()
+        {
+            return PartialView("_PartialEasyPhotoOtherPropertyEdit");
+        }
     }
 }
