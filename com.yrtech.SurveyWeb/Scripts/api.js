@@ -7,8 +7,6 @@ var dta = {};
 var pageSize = 15;
 var curPageNum = 1;
 
-
-
 //加载列表
 function exeQuery(data) {
     $.ajax({
@@ -88,101 +86,51 @@ function closeModel() {
     $("#Modal").modal("hide");
 }
 
-// EasyPhoto
+//EasyPhoto 模块 **************** 开始
 
-// 查询轻松拍的期号
-function loadEasyPhotoProject(year) {
-    $.get(easyPhotoUrl + "easyPhoto/api/Master/GetProject", {
-        tenantId: loginUser.TenantId,
-        projectId: "",
-        year: year || "",
-        expireDateTimeCheck:""
-    }, function (data) {
+// 登陆
+function login(params, success, error) {
+    $.get(baseUrl + "survey/api/Account/Login", params, success).error(error);
+}
+
+function loadEasyPhotoMasterCommonGet(action,params,callback) {
+    $.get(easyPhotoUrl + "easyPhoto/api/Master/" + action, params, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
-
-            var pageClick = function (curPage) {
-                $("#project-table tbody").empty();
-
-                curPageNum = curPage;
-                var pageLst = lst.filter(function (item, i, self) {
-                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                    return (i >= start && i < (start + pageSize));
-                })
-                $.each(pageLst, function (i, item) {
-                    //page
-                    var tr = $("<tr>");
-
-                    tr.append($("<td></td>").html(item.ProjectCode));
-                    tr.append($("<td></td>").html(item.ProjectName));
-                    tr.append($("<td></td>").html(item.Year));
-                    tr.append($("<td></td>").html(item.Quarter));
-                    tr.append($("<td></td>").html(item.OrderNO));
-                    tr.append($("<td></td>").html(item.ScoreShow));
-                    tr.append($("<td></td>").html(item.OtherPropertyShow));
-                    tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                    var edit = $("<a href='#'>编辑</a>");
-                    edit.click(function () {
-                        $("#Modal").modal("show");
-                        $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
-                            $("#project-form").setForm(item);
-                            $("#project-form").data("json", JSON.stringify(item));
-                        })
-                        return false;
-                    })
-                    tr.append($("<td></td>").append(edit));
-
-                    $("#project-table tbody").append(tr);
-                })
-
-                //$("#project-table tbody [type=checkbox]").iCheck();
+            if (callback) {
+                callback(lst);
             }
-            pageClick(curPageNum);
-            createPage(lst.length, curPageNum, pageSize, pageClick);
-        } else {
-            alert(data.Body);
         }
     })
 }
-//保存轻松拍的期号
-function saveEasyPhotoProject() {
+
+
+//轻松拍通用保存方法
+function saveEasyPhotoCommonObject(action,form,addDefObj,loadFun) {
     $("#save_button").button("loading");
-    var params = $("#project-form").serializeJson();
-    var json = $("#project-form").data("json");
+    var params = $(form).serializeJson();
+    var json = $(form).data("json");
     if (json && json.length > 0) {
         //编辑
         json = JSON.parse(json);
         params = $.extend(json, params);
     } else {
         //新增
-        params.TenantId = loginUser.TenantId;
-        params.InUserId = loginUser.Id;
-        params.ModifyUserId = loginUser.Id;
+        params = $.extend(addDefObj, params);
     }
 
-    $.post(easyPhotoUrl + "easyPhoto/api/Master/SaveProject", params, function (data) {
+    $.post(easyPhotoUrl + "easyPhoto/api/Master/" + action, params, function (data) {
         if (data && data.Status) {
             closeModel();
-            loadProject();
+            if (loadFun)
+                loadFun();
         } else {
             alert(data.Body);
         }
         $("#save_button").button("reset");
     })
 }
-// 查询账号
-function loadEasyPhotoUserInfo(accountId,telNo,expireDateTimeCheck, key) {
-    $.get(easyPhotoUrl + "easyPhoto/api/Master/GetUserInfo", {
-        tenantId: loginUser.TenantId,
-        accountId: accountId||"",
-        telNo: telNo || "",
-        expireDateTimeCheck: expireDateTimeCheck || "",
-        key:key||""
-    }, function (data) {
-        if (data && data.Status) {
-            var lst = JSON.parse(data.Body);
+//EasyPhoto 模块 **************** 结束
 
             var pageClick = function (curPage) {
                 $("#userInfo-table tbody").empty();
