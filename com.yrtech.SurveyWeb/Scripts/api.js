@@ -132,6 +132,57 @@ function saveEasyPhotoCommonObject(action,form,addDefObj,loadFun) {
 }
 //EasyPhoto 模块 **************** 结束
 
+            var pageClick = function (curPage) {
+                $("#userInfo-table tbody").empty();
+
+                curPageNum = curPage;
+                var pageLst = lst.filter(function (item, i, self) {
+                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+                    return (i >= start && i < (start + pageSize));
+                })
+                $.each(pageLst, function (i, item) {
+                    //page
+                    var tr = $("<tr>");
+
+                    tr.append($("<td></td>").html(item.AccountId));
+                    tr.append($("<td></td>").html(item.AccountName));
+                    tr.append($("<td></td>").html(item.Password));
+                    tr.append($("<td></td>").html(item.Email));
+                    tr.append($("<td></td>").html(item.TelNo));
+                    tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
+                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                    var edit = $("<a href='#'>编辑</a>");
+                    edit.click(function () {
+                        $("#Modal").modal("show");
+                        $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoEdit", {}, function () {
+                            $("#userInfo-form").setForm(item);
+                            $("#userInfo-form").data("json", JSON.stringify(item));
+                        })
+                        return false;
+                    })
+                    tr.append($("<td></td>").append(edit));
+
+                    $("#userInfo-table tbody").append(tr);
+                })
+
+                //$("#project-table tbody [type=checkbox]").iCheck();
+            }
+            pageClick(curPageNum);
+            createPage(lst.length, curPageNum, pageSize, pageClick);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
+
+
+// 登陆
+function login(params, success, error) {
+    $.get(baseUrl + "survey/api/Account/Login", params, success).error(error);
+}
+
 //  通用下拉框绑定方法
 
 // 绑定品牌
