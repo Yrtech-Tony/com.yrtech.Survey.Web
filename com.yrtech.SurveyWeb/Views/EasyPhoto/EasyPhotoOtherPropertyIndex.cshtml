@@ -33,7 +33,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveEasyPhotoOhterProperty()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveEasyPhotoOtherProperty()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -76,11 +76,12 @@
         }
 
         //保存轻松拍的其他属性
-        function saveEasyPhotoOhterProperty() {
-            saveEasyPhotoCommonObject("SaveOhterProperty", $("#other-property-form"), {
-                InUserId: loginUser.Id,
-                ModifyUserId: loginUser.Id,
-                ProjectId: $("#project-sel").val()
+        function saveEasyPhotoOtherProperty() {
+            saveEasyPhotoCommonObject("SaveOtherProperty", $("#other-property-form"), {
+                //TenantId: loginUser.TenantId,
+                //InUserId: loginUser.Id,
+                //ModifyUserId: loginUser.Id,
+                //ProjectId: $("#project-sel").val()
             }, function () {
                 $("#btnSearch").click();
             });

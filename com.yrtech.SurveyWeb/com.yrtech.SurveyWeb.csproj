@@ -432,6 +432,9 @@
     <Content Include="Views\EasyPhoto\EasyPhotoOtherPropertyIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoOtherPropertyEdit.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialSearchCondition.cshtml" />
+    <Content Include="Views\EasyPhoto\_PartialSearchCondition2.cshtml" />
+    <Content Include="Views\EasyPhoto\EasyPhotoCheckTypeIndex.cshtml" />
+    <Content Include="Views\EasyPhoto\_PartialEasyPhotoCheckTypeEdit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

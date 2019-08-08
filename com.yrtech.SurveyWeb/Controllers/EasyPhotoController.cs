@@ -56,5 +56,14 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialEasyPhotoOtherPropertyEdit");
         }
+
+        public ActionResult EasyPhotoCheckTypeIndex()
+        {
+            return View();
+        }
+        public ActionResult EasyPhotoCheckTypeEdit()
+        {
+            return PartialView("_PartialEasyPhotoCheckTypeEdit");
+        }
     }
 }
