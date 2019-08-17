@@ -93,7 +93,8 @@ function login(params, success, error) {
     $.get(baseUrl + "survey/api/Account/Login", params, success).error(error);
 }
 
-function loadEasyPhotoMasterCommonGet(action,params,callback) {
+//轻松拍通用查询方法
+function loadEasyPhotoMasterCommonGet(action, params, callback) {
     $.get(easyPhotoUrl + "easyPhoto/api/Master/" + action, params, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -106,7 +107,7 @@ function loadEasyPhotoMasterCommonGet(action,params,callback) {
 
 
 //轻松拍通用保存方法
-function saveEasyPhotoCommonObject(action,form,addDefObj,loadFun) {
+function saveEasyPhotoCommonObject(action, form, addDefObj, loadFun) {
     $("#save_button").button("loading");
     var params = $(form).serializeJson();
     var json = $(form).data("json");
@@ -132,51 +133,6 @@ function saveEasyPhotoCommonObject(action,form,addDefObj,loadFun) {
 }
 //EasyPhoto 模块 **************** 结束
 
-            var pageClick = function (curPage) {
-                $("#userInfo-table tbody").empty();
-
-                curPageNum = curPage;
-                var pageLst = lst.filter(function (item, i, self) {
-                    var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                    return (i >= start && i < (start + pageSize));
-                })
-                $.each(pageLst, function (i, item) {
-                    //page
-                    var tr = $("<tr>");
-
-                    tr.append($("<td></td>").html(item.AccountId));
-                    tr.append($("<td></td>").html(item.AccountName));
-                    tr.append($("<td></td>").html(item.Password));
-                    tr.append($("<td></td>").html(item.Email));
-                    tr.append($("<td></td>").html(item.TelNo));
-                    tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                    var edit = $("<a href='#'>编辑</a>");
-                    edit.click(function () {
-                        $("#Modal").modal("show");
-                        $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoEdit", {}, function () {
-                            $("#userInfo-form").setForm(item);
-                            $("#userInfo-form").data("json", JSON.stringify(item));
-                        })
-                        return false;
-                    })
-                    tr.append($("<td></td>").append(edit));
-
-                    $("#userInfo-table tbody").append(tr);
-                })
-
-                //$("#project-table tbody [type=checkbox]").iCheck();
-            }
-            pageClick(curPageNum);
-            createPage(lst.length, curPageNum, pageSize, pageClick);
-        } else {
-            alert(data.Body);
-        }
-    })
-}
-
-
 
 // 登陆
 function login(params, success, error) {
@@ -190,13 +146,13 @@ function loadBrandBindDropdownList(callback) {
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
         userId: loginUser.Id,
-        roleType:loginUser.RoleType,
+        roleType: loginUser.RoleType,
         brandId: ""
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
             if (callback)
-                callback(lst);                    
+                callback(lst);
         } else {
             alert(data.Body);
         }
@@ -239,14 +195,14 @@ function loadSubjectTypeExamBindDropdownList(projectId, callback) {
             subjectTypeExamId: ""
         },
         function (data) {
-        if (data && data.Status) {
-            var lst = JSON.parse(data.Body);
-            if (callback)
-                callback(lst);
-        } else {
-            alert(data.Body);
-        }
-    })
+            if (data && data.Status) {
+                var lst = JSON.parse(data.Body);
+                if (callback)
+                    callback(lst);
+            } else {
+                alert(data.Body);
+            }
+        })
 }
 // 品牌管理
 function loadBrand() {
@@ -344,7 +300,7 @@ function saveBrand() {
 function loadAccount() {
     $.get(baseUrl + "survey/api/Account/GetUserInfo", {
         tenantId: loginUser.TenantId,
-        userId:""
+        userId: ""
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -382,7 +338,7 @@ function loadAccount() {
                     tr.append($("<td></td>").html(item.HeadPicUrl));
                     tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
                     tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                    
+
                     $("#account-table tbody").append(tr);
                 })
             }
@@ -446,7 +402,7 @@ function loadUserInfoByBrandId(obj) {
 function loadProject(year) {
     var brandId = $("#brand-sel").val();
     $.get(baseUrl + "survey/api/Master/GetProject", {
-        brandId: brandId||'',
+        brandId: brandId || '',
         year: '',
         projectId: ""
     }, function (data) {
@@ -530,7 +486,7 @@ function loadShop() {
     $.get(baseUrl + "survey/api/Master/GetShop", {
         brandId: $("#shop-brand").val(),
         shopId: "",
-        key:$("#ShopKey").val()
+        key: $("#ShopKey").val()
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -869,7 +825,7 @@ function loadSubjectTypeScoreRegion(projectId, subjectId) {
 function loadSubjectLink() {
     var projectId = $("#project-sel").val();
     $.get(baseUrl + "survey/api/Master/GetSubjectLink", {
-        projectId: projectId||""
+        projectId: projectId || ""
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -941,7 +897,7 @@ function saveSubjectLink() {
     })
 }
 //复审错误管理
-function loadRecheckErrorType(projectId,recheckErrorTypeId) {
+function loadRecheckErrorType(projectId, recheckErrorTypeId) {
     $.get(baseUrl + "survey/api/Master/GetRecheckErrorType", {
         projectId: projectId,
         recheckErrorTypeId: recheckErrorTypeId
@@ -976,7 +932,7 @@ function loadRecheckErrorType(projectId,recheckErrorTypeId) {
                     tr.append($("<td></td>").html(item.UseChk));
                     tr.append($("<td></td>").html(item.InDateTime ? item.InDateTime.replace('T', ' ') : ''));
                     tr.append($("<td></td>").html(item.ModifyDateTime ? item.ModifyDateTime.replace('T', ' ') : ''));
-                    
+
 
                     $("#recheckErrorType-table tbody").append(tr);
                 })
@@ -1009,7 +965,7 @@ function saveRecheckErrorType() {
     $.post(baseUrl + "survey/api/Master/SaveRecheckErrorType", params, function (data) {
         if (data && data.Status) {
             closeModel();
-            loadRecheckErrorType(projectId,"");
+            loadRecheckErrorType(projectId, "");
         } else {
             alert(data.Body);
         }
@@ -1197,7 +1153,7 @@ function saveSubjectLink() {
 function loadShopByProject() {
     var projectId = $("#project-sel").val();
     $.get(baseUrl + "survey/api/Master/GetShopByProjectId", {
-        projectId: projectId||''
+        projectId: projectId || ''
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
@@ -1249,15 +1205,15 @@ function loadSubjectType(select, callback) {
 }
 //复审状态查询
 function loadRecheckStatus(params, callback) {
-    $.get(baseUrl + "survey/api/Recheck/GetRecheckStatus",params, function (data) {
+    $.get(baseUrl + "survey/api/Recheck/GetRecheckStatus", params, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
-           
+
             if (callback)
                 callback(lst);
-        }else{
+        } else {
             alert(data.Body);
-        }       
+        }
     })
 }
 //复审详细查询
@@ -1265,12 +1221,12 @@ function loadRecheckStatusDtl(params, callback) {
     $.get(baseUrl + "survey/api/Recheck/GetRecheckStatusDtl", params, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
-           
+
             if (callback)
                 callback(lst);
-        }else{
+        } else {
             alert(data.Body);
-        }       
+        }
     })
 }
 //复审详细
@@ -1288,7 +1244,7 @@ function getShopNeedRecheckSubject(params, callback) {
 }
 //申诉数据导入准备期号数据
 function loadProjectForAppeal(brandId) {
-    $.get(baseUrl + "survey/api/Master/GetProject", {       
+    $.get(baseUrl + "survey/api/Master/GetProject", {
         brandId: brandId,
         projectId: '',
         year: ''
