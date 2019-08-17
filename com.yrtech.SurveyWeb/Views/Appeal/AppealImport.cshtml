@@ -15,8 +15,7 @@
     <div class="form-group">
         <label class="control-label col-md-4">品牌</label>
         <div class="col-md-8">
-            <select id="brand-sel" class="form-control">
-            </select>
+            <select id="brand-sel" class="form-control"></select>
         </div>
     </div>
 </div>
@@ -38,7 +37,8 @@
 </table>
 
 @section scripts{
-    <script src="~/Scripts/api.js"></script>
+    <script src="~/Scripts/api/common.js"></script>
+    <script src="~/Scripts/api/appeal.js"></script>
     <script src="~/Scripts/page.js"></script>
     <script src="~/Scripts/xlsx.core.min.js"></script>
     <script>
@@ -66,27 +66,27 @@
             var file_obj = document.getElementById('uploadFile').files[0];
             var projectId = $("#UpProjectId").val();
             readWorkbookFromLocalFile(file_obj, function (workbook) {
-                document.getElementById('uploadFile').value='';
+                document.getElementById('uploadFile').value = '';
                 var worksheet = workbook.Sheets["Appeal"];
                 var json = XLSX.utils.sheet_to_json(worksheet);
                 if (json && json.length > 0) {
                     var answers = [];
                     $.each(json, function (i, item) {
                         answers.push({
-                            TenantId:TenantId,
+                            TenantId: TenantId,
                             BrandId: BrandId,
                             InUserId: UserId,
-                            ProjectId:projectId,
+                            ProjectId: projectId,
                             ShopCode: item["经销商代码"],
                             SubjectCode: item["体系号"],
                             ImportScore: item["得分"],
-                            ImportLossResult:''
+                            ImportLossResult: ''
                         });
                     })
                     importAnswer({ AnswerList: answers });
                 } else {
                     alert("Excel中没有申诉数据！");
-                }                
+                }
             })
         }
 

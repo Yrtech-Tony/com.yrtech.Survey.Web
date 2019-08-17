@@ -58,17 +58,18 @@
     </div>
 </div>
 @section scripts{
-    <script src="~/Scripts/api.js"></script>
+    <script src="~/Scripts/api/common.js"></script>
+    <script src="~/Scripts/api/easyphoto.js"></script>
     <script src="~/Scripts/form-serialize.js"></script>
     <script src="~/Scripts/page.js"></script>
     <script>
         $(function () {
-            $("input[type=checkbox]").iCheckParser();            
+            $("input[type=checkbox]").iCheckParser();
 
             $("#btnSearch").click(function () {
                 loadEasyPhotoProject($("#year").val());
             });
-            
+
             $("#btnAdd").click(function () {
                 $("#Modal").modal("show");
                 $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
@@ -91,7 +92,7 @@
         }
         // 查询轻松拍的期号
         function loadEasyPhotoProject(year) {
-            loadEasyPhotoMasterCommonGet("GetProject",{
+            loadEasyPhotoMasterCommonGet("GetProject", {
                 tenantId: loginUser.TenantId,
                 projectId: "",
                 year: year || "",
@@ -105,7 +106,7 @@
             })
         }
 
-        function bindTable(data, table,curPage) {
+        function bindTable(data, table, curPage) {
             $("tbody", table).empty();
 
             var pageLst = data.filter(function (item, i, self) {
