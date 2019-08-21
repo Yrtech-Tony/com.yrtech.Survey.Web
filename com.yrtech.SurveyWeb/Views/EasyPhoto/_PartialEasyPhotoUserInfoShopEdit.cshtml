@@ -1,0 +1,97 @@
+﻿<div>
+    <form class="form-horizontal form-label-left" id="userInfoShop-form">
+        <fieldset>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AccountId">
+                    期号<span class="required">*</span>
+                </label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <input id="ProjectName" name="ProjectName" required="required" type="text" class="form-control" readonly>
+                    <input id="ProjectId" name="ProjectId" type="hidden">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AccountName">
+                    账号
+                </label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <select id="UserId" name="UserId" class="form-control bootstrap-select"></select>
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Email">
+                    经销商
+                </label>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <select id="ShopId" name="ShopId" class="form-control bootstrap-select"></select>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<script>
+    $(".bootstrap-select").prop("title", "请选择").data("live-search", true);
+    var shopList,userList;
+    //查询用户信息
+    loadEasyPhotoMasterCommonGet("GetUserInfo", {
+        tenantId: loginUser.TenantId,
+        accountId: "",
+        telNo: "",
+        expireDateTimeCheck: "",
+        key: ""
+    }, function (data) {
+        userList = data;
+ 
+        $("#UserId").empty();
+        $("#UserId").append($('<option>'));
+        var itemJson = $("#userInfoShop-form").data("json");
+        var selId;
+        if (itemJson) {
+            selId = JSON.parse(itemJson).Id;
+        }       
+        $.each(data, function (i, item) {
+            var text = item.AccountName + "(" + item.AccountId + ")";
+            if (selId == item.Id) {
+                $("#UserId").append($('<option selected>').val(item.Id).text(text));
+            } else {
+                $("#UserId").append($('<option>').val(item.Id).text(text));
+            }
+        })
+        $("#UserId").selectpicker("refresh");
+    })
+    var loadShopTimer = setInterval(function () {
+        if ($("#project-sel").val()) {
+            //查询经销商信息
+            $.get(baseUrl + "survey/api/Master/GetShopByProjectId", {
+                projectId: $("#project-sel").val()
+            }, function (data) {
+                if (data && data.Status) {
+                    var lst = JSON.parse(data.Body);
+                    shopList = lst;
+
+                    $("#ShopId").empty();
+                    $("#ShopId").append($('<option>'));
+                    var itemJson = $("#userInfoShop-form").data("json");
+                    var selId;
+                    if (itemJson) {
+                        selId = JSON.parse(itemJson).ShopId;
+                    }
+                    $.each(lst, function (i, item) {
+                        var text = item.ShopName + "(" + item.ShopCode + ")";
+                        if (selId == item.ShopId) {
+                            $("#ShopId").append($('<option selected>').val(item.ShopId).text(text));
+                        } else {
+                            $("#ShopId").append($('<option>').val(item.ShopId).text(text));
+                        }
+                       
+                    })
+                    $("#ShopId").selectpicker("refresh");
+                }
+            })
+
+            clearInterval(loadShopTimer);
+        }
+
+    }, 500);
+</script>
+

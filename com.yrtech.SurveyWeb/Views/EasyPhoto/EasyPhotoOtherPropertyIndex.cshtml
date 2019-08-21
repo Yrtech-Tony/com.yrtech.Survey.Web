@@ -40,13 +40,25 @@
     </div>
 </div>
 @section scripts{
-   <script src="~/Scripts/api/common.js"></script>
-<script src="~/Scripts/api/easyphoto.js"></script>
+    <script src="~/Scripts/api/common.js"></script>
+    <script src="~/Scripts/api/easyphoto.js"></script>
     <script src="~/Scripts/form-serialize.js"></script>
     <script src="~/Scripts/page.js"></script>
-    <script src="~/Scripts/custom/search-condition.js"></script>
     <script>
         $(function () {
+            loadEasyPhotoProjectDropList();           
+            $("#project-sel").change(function () {
+                loadEasyPhotoMasterCommonGet("GetOtherPropertyType", {
+                    projectId: $("#project-sel").val()
+                }, function (data) {
+                    $("#othertype-sel").empty();
+                    if (data) {
+                        $.each(data, function () {
+                            $("#othertype-sel").append($("<option>").val(this.OtherType).text(this.OtherType));
+                        });
+                    }
+                })
+            })
 
             $("#btnSearch").click(function () {
                 loadEasyPhotoOhterProperty($("#project-sel").val(), $("#othertype-sel").val());
@@ -125,6 +137,4 @@
         }
     </script>
 }
-
-
 

@@ -6,7 +6,6 @@
         <h3>账号管理 <small></small></h3>
     </div>
 </div>
-
 <div class="operation col-md-offset-2 form-group">
     <div class="row">
         <div class="col-md-10"> </div>
@@ -104,7 +103,6 @@
 
         }
 
-
         function bindTable(data, table, curPage) {
             $("tbody", table).empty();
 
@@ -123,7 +121,11 @@
                 tr.append($("<td></td>").html(item.TelNo));
                 tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
                 tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                if (item.ModifyDateTime) {
+                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+                } else {
+                    tr.append($("<td></td>").html(''));
+                }
                 var edit = $("<a href='#'>编辑</a>");
                 edit.click(function () {
                     $("#Modal").modal("show");
@@ -140,6 +142,4 @@
         }
     </script>
 }
-
-
 

@@ -29,6 +29,7 @@
 
     <!-- Custom Theme Style -->
     <link href="~/Content/custom.css" rel="stylesheet" />
+    <link href="~/Content/select/css/bootstrap-select.css" rel="stylesheet" />
 </head>
 <body class="nav-md">
     <div class="container body">
@@ -99,10 +100,13 @@
                                     <ul class="nav child_menu">
                                         <li><a href="/EasyPhoto/EasyPhotoProjectIndex">期号管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoUserInfoIndex">账号管理</a></li>
+                                        <li><a href="/EasyPhoto/EasyPhotoUserInfoShopIndex">账号经销商管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoNoteIndex">备注管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoPhotoListIndex">拍照定义管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoOtherPropertyIndex">其他属性管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoCheckTypeIndex">检查类型管理</a></li>
+                                        <li><a href="/EasyPhoto/EasyPhotoAnswerIndex">清单管理</a></li>
+                                        
                                     </ul>
                                 </li>
                             </ul>
@@ -184,6 +188,7 @@
     <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
     <script src="~/Scripts/jquery.dataTables-zh-CN.js"></script>
     <script src="~/Scripts/comm.js"></script>
+    <script src="~/Content/select/js/bootstrap-select.min.js"></script>
     <script>
         $.fn.iCheckParser = function () {
             if (this) {
@@ -193,7 +198,7 @@
                     increaseArea: '20%' // optional
                 })
             }
-        }       
+        }
     </script>
     @RenderSection("scripts", required: false)
 </body>

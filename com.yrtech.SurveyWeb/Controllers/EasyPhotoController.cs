@@ -11,8 +11,6 @@ namespace com.yrtech.SurveyWeb.Controllers
     [AuthenAdmin]
     public class EasyPhotoController : Controller
     {
-
-        
         public ActionResult EasyPhotoProjectIndex()
         {
             return View();
@@ -63,7 +61,26 @@ namespace com.yrtech.SurveyWeb.Controllers
         }
         public ActionResult EasyPhotoCheckTypeEdit()
         {
-            return PartialView("_PartialEasyPhotoCheckTypeEdit");
+            return PartialView("_PartialEasyPhotoUserInfoShopEdit");
         }
+
+        public ActionResult EasyPhotoUserInfoShopIndex()
+        {
+            return View();
+        }
+        public ActionResult EasyPhotoUserInfoShopEdit()
+        {
+            return PartialView("_PartialEasyPhotoUserInfoShopEdit");
+        }
+
+        public ActionResult EasyPhotoAnswerIndex()
+        {
+            return View();
+        }
+        public ActionResult EasyPhotoAnswerEdit()
+        {
+            return PartialView("_PartialEasyAnswerEdit");
+        }
+        
     }
 }

@@ -45,9 +45,23 @@
 <script src="~/Scripts/api/easyphoto.js"></script>
     <script src="~/Scripts/form-serialize.js"></script>
     <script src="~/Scripts/page.js"></script>
-    <script src="~/Scripts/custom/search-condition.js"></script>
     <script>
         $(function () {
+            loadEasyPhotoProjectDropList();
+            $("#project-sel").change(function () {
+                loadEasyPhotoMasterCommonGet("GetCheckTypeList", {
+                    projectId: $("#project-sel").val(),
+                    checkTypeId: '',
+                    checkTypeName: '',
+                }, function (data) {
+                    $("#checktype-sel").empty();
+                    if (data) {
+                        $.each(data, function () {
+                            $("#checktype-sel").append($("<option>").val(this.CheckTypeId).text(this.CheckTypeName));
+                        });
+                    }
+                })
+            })
 
             $("#btnSearch").click(function () {
                 loadEasyPhotoNote($("#project-sel").val(), $("#checktype-sel").val());
@@ -60,7 +74,6 @@
                 return false;
             });
         })
-
         // 查询轻松拍的备注
         function loadEasyPhotoNote(projectId, checkTypeId) {
             loadEasyPhotoMasterCommonGet("GetNote", {
