@@ -158,8 +158,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\autocomplete\autocomplete.css" />
-    <Content Include="Content\autocomplete\autocomplete.js" />
     <Content Include="Content\autocomplete\autocomplete.min.css" />
     <Content Include="Content\autocomplete\autocomplete.min.js" />
     <Content Include="Content\bootstrap-progressbar-3.3.4.min.css" />
