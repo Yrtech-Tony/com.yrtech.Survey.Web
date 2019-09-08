@@ -3,143 +3,147 @@
     com.yrtech.SurveyWeb.Models.AccountDto accountDto = Session["LoginUser"] as com.yrtech.SurveyWeb.Models.AccountDto;
 }
 
-@section scripts{
-    <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
-    <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
-    <script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
-    <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
-    <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
-    <script src="~/Scripts/oss-upload-direct/upload.js?20170928"></script>
-    <script src="~/Scripts/custom/form-serialize.js"></script>
-    <script src="~/Scripts/api.js"></script>
-    <script>
-        var appealId = "@ViewBag.AppealId";
-        var userId = "@accountDto.Id";
-        var roleType = "@accountDto.RoleType";
-        var BrandId = "@accountDto.BrandId";
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20170928"></script>
+<script src="~/Scripts/custom/form-serialize.js"></script>
+<script src="~/Scripts/api.js"></script>
+<script>
+    var appealId = "@ViewBag.AppealId";
+    var userId = "@accountDto.Id";
+    var roleType = "@accountDto.RoleType";
+    var BrandId = "@accountDto.BrandId";
 
-        var ossClient;
-        var type = "FeedBack";
-        var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
-        var downloadUrlRoot;
-        $(function () {
-            $("input[type=checkbox],input[type=radio]").iCheckParser();
+    var ossClient;
+    var type = "FeedBack";
+    var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
+    var downloadUrlRoot;
+    $(function () {
+        $("input[type=checkbox],input[type=radio]").iCheckParser();
 
-            getAppeal(appealId, function (data) {
-                $("#appeal-form").setForm(data);
-                $("input[name=FeedBackStatus]").each(function () {
-                    if (data.FeedBackStatus == ($(this).val() == 'true')) {
-                        $(this).iCheck('check');;
-                    }
-                });;
-                $("#ProjectCode").html(data.ProjectName);
-                $("#ShopName").html(data.ShopName);
-                $("#SubjectCode").html(data.SubjectCode);
-
-                var brand_project_appeal = BrandId + '/' + data.ProjectId + '/' + data.AppealId;
-                var osspath = "survey/Appeal/" + brand_project_appeal + "/" + type + "/";
-                downloadUrlRoot = ossUrlRoot + osspath;
-
-                //初始化LexusReport OSS 数据源
-                ossClient = new OSSClient({
-                    fileAddCheck: function () {
-                        return true;
-                    },
-                    fileAddCheckMsg: "请填写题号，再选择上传附件",
-                    osspath: osspath,
-                    uploaded: function (args) {
-                        console.log("args", args);
-                        var file = '';
-                        if (args.fileName.indexOf('_') >= 0) {
-                            file = args.fileName.substr(args.fileName.indexOf('_') + 1);
-                        }
-
-                        appealFileSave({
-                            AppealId: data.AppealId,
-                            InUserId: userId,
-                            FileName: file,
-                            ServerFileName: args.fileName,
-                            fileType: 'FeedBack',
-                        }, function (data) {
-                            loadAppealFiles();
-                        });
-                    }
-                });
-            });
-
-            loadAppealFiles();
-
-            $("#btnSave").click(function () {
-                //复审人员
-                //check propertys
-                if ($("input[name=FeedBackStatus]:checked").length == 0) {
-                    alert("反馈意见必须选择");
-                    return false;
+        getAppeal(appealId, function (data) {
+            $("#appeal-form").setForm(data);
+            $("input[name=FeedBackStatus]").each(function () {
+                if (data.FeedBackStatus == ($(this).val() == 'true')) {
+                    $(this).iCheck('check');;
                 }
-                if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
-                    alert("反馈意见为不同意时反馈内容必填");
-                    return false;
-                }
+            });;
+            $("#ProjectCode").html(data.ProjectName);
+            $("#ShopName").html(data.ShopName);
+            $("#SubjectCode").html(data.SubjectCode);
 
-                appealFeedBack({
-                    appealId: appealId,
-                    feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
-                    feedbackReason: $("#FeedBackReason").val(),
-                    feedbackUserId: userId
-                }, function () {
-                    alert("保存反馈信息成功！");
-                })
-            });
-        })
+            var brand_project_appeal = BrandId + '/' + data.ProjectId + '/' + data.AppealId;
+            var osspath = "survey/Appeal/" + brand_project_appeal + "/" + type + "/";
+            downloadUrlRoot = ossUrlRoot + osspath;
 
-        function loadAppealFiles() {
-            loadFileList({
-                appealId: appealId,
-                fileType: ''
-            }, function (data) {
-                $("#feedback_file_table tbody").empty();
-                if (data) {
-                    $.each(data, function (i, item) {
-                        var tr = $("<tr>");
+            //初始化LexusReport OSS 数据源
+            ossClient = new OSSClient({
+                fileAddCheck: function () {
+                    return true;
+                },
+                fileAddCheckMsg: "请填写题号，再选择上传附件",
+                osspath: osspath,
+                uploaded: function (args) {
+                    console.log("args", args);
+                    var file = '';
+                    if (args.fileName.indexOf('_') >= 0) {
+                        file = args.fileName.substr(args.fileName.indexOf('_') + 1);
+                    }
 
-                        var fileDownName = item.FileName;
-                        tr.append($("<td>").html(fileDownName));
-                        tr.append($("<td>").html(item.FileTypeName));
-                        tr.append($("<td>").html(item.InUserName));
-                        //下载
-                        var download = $("<a>下载</a>");
-                        var downloadUrl = downloadUrlRoot + item.ServerFileName;
-                        download.attr("href", downloadUrl);
-                        tr.append($("<td></td>").append(download));
-                        //删除
-                        var delBtn = $("<a href='#'>删除</a>");
-                        delBtn.click(function () {
-                            console.log(item)
-                            delFile(item.FileId);
-                            return false;
-                        });
-                        tr.append($("<td></td>").append(delBtn));
-
-                        $("#feedback_file_table tbody").append(tr);
+                    appealFileSave({
+                        AppealId: data.AppealId,
+                        InUserId: userId,
+                        FileName: file,
+                        ServerFileName: args.fileName,
+                        fileType: 'FeedBack',
+                    }, function (data) {
+                        loadAppealFiles();
                     });
                 }
             });
-        }
+        });
 
-        function delFile(fileId) {
-            confirm("确定要删除该文件吗？", function () {
-                appealFileDelete({ fileId: fileId }, function () {
-                    loadAppealFiles();
+        loadAppealFiles();
+
+        $("#btnSave").click(function () {
+            //复审人员
+            //check propertys
+            if ($("input[name=FeedBackStatus]:checked").length == 0) {
+                alert("反馈意见必须选择");
+                return false;
+            }
+            if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
+                alert("反馈意见为不同意时反馈内容必填");
+                return false;
+            }
+
+            appealFeedBack({
+                appealId: appealId,
+                feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
+                feedbackReason: $("#FeedBackReason").val(),
+                feedbackUserId: userId
+            }, function () {
+                alert("保存反馈信息成功！");
+            })
+        });
+    })
+
+    function loadAppealFiles() {
+        loadFileList({
+            appealId: appealId,
+            fileType: ''
+        }, function (data) {
+            $("#feedback_file_table tbody").empty();
+            if (data) {
+                $.each(data, function (i, item) {
+                    var tr = $("<tr>");
+
+                    var fileDownName = item.FileName;
+                    tr.append($("<td>").html(fileDownName));
+                    tr.append($("<td>").html(item.FileTypeName));
+                    tr.append($("<td>").html(item.InUserName));
+                    //下载
+                    var download = $("<a>下载</a>");
+                    var downloadUrl = downloadUrlRoot + item.ServerFileName;
+                    download.attr("href", downloadUrl);
+                    tr.append($("<td></td>").append(download));
+                    //删除
+                    var delBtn = $("<a href='#'>删除</a>");
+                    delBtn.click(function () {
+                        console.log(item)
+                        delFile(item.FileId);
+                        return false;
+                    });
+                    tr.append($("<td></td>").append(delBtn));
+
+                    $("#feedback_file_table tbody").append(tr);
                 });
+            }
+        });
+    }
+
+    function delFile(fileId) {
+        confirm("确定要删除该文件吗？", function () {
+            appealFileDelete({ fileId: fileId }, function () {
+                loadAppealFiles();
             });
-        }
-    </script>
-}
+        });
+    }
+
+    function backToAppealIndex(){
+        $(".right_col").load('/Appeal/AppealIndex', {}, function () {
+
+        })
+    }
+</script>
 
 <div class="requir col-md-12">
     <form id="appeal-form">
         <div style="width:100%;padding-bottom:5px;" class="text-right">
-            <a id="btnBack" class="btn btn-default" href="/Appeal/AppealIndex">返&nbsp;&nbsp;&nbsp;&nbsp;回</a>
+            <a id="btnBack" class="btn btn-default" href="#" onclick="backToAppealIndex()">返&nbsp;&nbsp;&nbsp;&nbsp;回</a>
             <a id="btnSave" class="btn btn-primary">保&nbsp;&nbsp;&nbsp;&nbsp;存</a>
         </div>
         <table class="table table-bordered" style="margin-bottom:0px;">

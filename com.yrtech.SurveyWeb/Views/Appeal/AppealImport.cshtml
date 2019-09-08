@@ -36,71 +36,70 @@
     <tbody></tbody>
 </table>
 
-@section scripts{
-    <script src="~/Scripts/api/common.js"></script>
-    <script src="~/Scripts/api/appeal.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script src="~/Scripts/xlsx.core.min.js"></script>
-    <script>
-        var UserId = "@accountDto.Id";
-        var TenantId = "@accountDto.TenantId";
-        var BrandId = "@accountDto.BrandId";
 
-        $(function () {
-            loadBrandBindDropdownList(function (data) {
-                $.each(data, function () {
-                    $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
-                })
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/appeal.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script src="~/Scripts/xlsx.core.min.js"></script>
+<script>
+    var UserId = "@accountDto.Id";
+    var TenantId = "@accountDto.TenantId";
+    var BrandId = "@accountDto.BrandId";
 
-                $("#brand-sel").change();
-            });
-
-            $("#brand-sel").change(function () {
-                loadProjectForAppeal($("#brand-sel").val());
+    $(function () {
+        loadBrandBindDropdownList(function (data) {
+            $.each(data, function () {
+                $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
             })
 
-            $("#uploadFile").change(uploadAppeal);
+            $("#brand-sel").change();
+        });
+
+        $("#brand-sel").change(function () {
+            loadProjectForAppeal($("#brand-sel").val());
         })
 
-        function uploadAppeal() {
-            var file_obj = document.getElementById('uploadFile').files[0];
-            var projectId = $("#UpProjectId").val();
-            readWorkbookFromLocalFile(file_obj, function (workbook) {
-                document.getElementById('uploadFile').value = '';
-                var worksheet = workbook.Sheets["Appeal"];
-                var json = XLSX.utils.sheet_to_json(worksheet);
-                if (json && json.length > 0) {
-                    var answers = [];
-                    $.each(json, function (i, item) {
-                        answers.push({
-                            TenantId: TenantId,
-                            BrandId: BrandId,
-                            InUserId: UserId,
-                            ProjectId: projectId,
-                            ShopCode: item["经销商代码"],
-                            SubjectCode: item["体系号"],
-                            ImportScore: item["得分"],
-                            ImportLossResult: ''
-                        });
-                    })
-                    importAnswer({ AnswerList: answers });
-                } else {
-                    alert("Excel中没有申诉数据！");
-                }
-            })
-        }
+        $("#uploadFile").change(uploadAppeal);
+    })
 
-        // 读取本地excel文件
-        function readWorkbookFromLocalFile(file, callback) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                var data = e.target.result;
-                var workbook = XLSX.read(data, { type: 'binary' });
-                if (callback) callback(workbook);
-            };
-            reader.readAsBinaryString(file);
-        }
-    </script>
-}
+    function uploadAppeal() {
+        var file_obj = document.getElementById('uploadFile').files[0];
+        var projectId = $("#UpProjectId").val();
+        readWorkbookFromLocalFile(file_obj, function (workbook) {
+            document.getElementById('uploadFile').value = '';
+            var worksheet = workbook.Sheets["Appeal"];
+            var json = XLSX.utils.sheet_to_json(worksheet);
+            if (json && json.length > 0) {
+                var answers = [];
+                $.each(json, function (i, item) {
+                    answers.push({
+                        TenantId: TenantId,
+                        BrandId: BrandId,
+                        InUserId: UserId,
+                        ProjectId: projectId,
+                        ShopCode: item["经销商代码"],
+                        SubjectCode: item["体系号"],
+                        ImportScore: item["得分"],
+                        ImportLossResult: ''
+                    });
+                })
+                importAnswer({ AnswerList: answers });
+            } else {
+                alert("Excel中没有申诉数据！");
+            }
+        })
+    }
+
+    // 读取本地excel文件
+    function readWorkbookFromLocalFile(file, callback) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, { type: 'binary' });
+            if (callback) callback(workbook);
+        };
+        reader.readAsBinaryString(file);
+    }
+</script>
 
 

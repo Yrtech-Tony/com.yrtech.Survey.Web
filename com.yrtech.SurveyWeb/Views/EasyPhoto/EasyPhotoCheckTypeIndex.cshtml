@@ -55,91 +55,91 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api/common.js"></script>
-    <script src="~/Scripts/api/easyphoto.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            $("input[type=checkbox]").iCheckParser();
-            
-            loadEasyPhotoProjectDropList();
 
-            $("#btnSearch").click(function () {
-                loadEasyPhotoCheckType($("#project-sel").val());
-            });
 
-            $("#btnAdd").click(function () {
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/easyphoto.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        $("input[type=checkbox]").iCheckParser();
+
+        loadEasyPhotoProjectDropList();
+
+        $("#btnSearch").click(function () {
+            loadEasyPhotoCheckType($("#project-sel").val());
+        });
+
+        $("#btnAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoCheckTypeEdit", {}, function () {
+            })
+            return false;
+        });
+    })
+
+    // 查询轻松拍的备注
+    function loadEasyPhotoCheckType(projectId) {
+        loadEasyPhotoMasterCommonGet("GetCheckTypeList", {
+            projectId: projectId,
+            checkTypeId: '',
+            checkTypeName: ''
+        }, function (data) {
+            var pageClick = function (curPage) {
+                bindTable(data, $("#check-type-table"), curPage);
+            }
+            pageClick(curPageNum);
+            createPage(data.length, curPageNum, pageSize, pageClick);
+        })
+    }
+
+    //保存轻松拍的备注
+    function saveEasyPhotoCheckType() {
+        saveEasyPhotoCommonObject("SaveCheckType", $("#check-type-form"), {
+            InUserId: loginUser.Id,
+            ModifyUserId: loginUser.Id,
+            ProjectId: $("#project-sel").val()
+        }, function () {
+            $("#btnSearch").click();
+        });
+    }
+
+    function bindTable(data, table, curPage) {
+        $("tbody", table).empty();
+
+        var pageLst = data.filter(function (item, i, self) {
+            var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+            return (i >= start && i < (start + pageSize));
+        })
+        $.each(pageLst, function (i, item) {
+            //page
+            var tr = $("<tr>");
+
+            tr.append($("<td></td>").html(item.CheckTypeId));
+            tr.append($("<td></td>").html(item.CheckTypeName));
+            tr.append($("<td></td>").html(item.InDateTime || item.InDateTime.replace('T', ' ')));
+            if (item.ModifyDateTime) {
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+            } else {
+                tr.append($("<td></td>").html(''));
+            }
+
+            var edit = $("<a href='#'>编辑</a>");
+            edit.click(function () {
                 $("#Modal").modal("show");
                 $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoCheckTypeEdit", {}, function () {
+                    $("#check-type-form").setForm(item);
+                    $("#check-type-form").data("json", JSON.stringify(item));
                 })
                 return false;
-            });
+            })
+            tr.append($("<td></td>").append(edit));
+
+            $("tbody", table).append(tr);
         })
-
-        // 查询轻松拍的备注
-        function loadEasyPhotoCheckType(projectId) {
-            loadEasyPhotoMasterCommonGet("GetCheckTypeList", {
-                projectId: projectId,
-                checkTypeId: '',
-                checkTypeName: ''
-            }, function (data) {
-                var pageClick = function (curPage) {
-                    bindTable(data, $("#check-type-table"), curPage);
-                }
-                pageClick(curPageNum);
-                createPage(data.length, curPageNum, pageSize, pageClick);
-            })
-        }
-
-        //保存轻松拍的备注
-        function saveEasyPhotoCheckType() {
-            saveEasyPhotoCommonObject("SaveCheckType", $("#check-type-form"), {
-                InUserId: loginUser.Id,
-                ModifyUserId: loginUser.Id,
-                ProjectId: $("#project-sel").val()
-            }, function () {
-                $("#btnSearch").click();
-            });
-        }
-
-        function bindTable(data, table, curPage) {
-            $("tbody", table).empty();
-
-            var pageLst = data.filter(function (item, i, self) {
-                var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                return (i >= start && i < (start + pageSize));
-            })
-            $.each(pageLst, function (i, item) {
-                //page
-                var tr = $("<tr>");
-
-                tr.append($("<td></td>").html(item.CheckTypeId));
-                tr.append($("<td></td>").html(item.CheckTypeName));
-                tr.append($("<td></td>").html(item.InDateTime || item.InDateTime.replace('T', ' ')));
-                if (item.ModifyDateTime) {
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                } else {
-                    tr.append($("<td></td>").html(''));
-                }
-
-                var edit = $("<a href='#'>编辑</a>");
-                edit.click(function () {
-                    $("#Modal").modal("show");
-                    $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoCheckTypeEdit", {}, function () {
-                        $("#check-type-form").setForm(item);
-                        $("#check-type-form").data("json", JSON.stringify(item));
-                    })
-                    return false;
-                })
-                tr.append($("<td></td>").append(edit));
-
-                $("tbody", table).append(tr);
-            })
-        }
-    </script>
-}
+    }
+</script>
 
 
 

@@ -130,7 +130,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -143,6 +142,7 @@
     <Compile Include="Controllers\EasyPhotoController.cs" />
     <Compile Include="Controllers\AppealController.cs" />
     <Compile Include="Controllers\BrandContentController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProjectContentController.cs" />
     <Compile Include="Controllers\RecheckController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
@@ -503,6 +503,7 @@
     <Content Include="Views\EasyPhoto\EasyPhotoUserInfoShopIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoUserInfoShopEdit.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoAnswerIndex.cshtml" />
+    <Content Include="Views\Home\index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

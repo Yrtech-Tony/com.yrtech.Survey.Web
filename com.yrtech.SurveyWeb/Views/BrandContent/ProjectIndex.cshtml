@@ -57,31 +57,30 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api/common.js"></script>
-    <script src="~/Scripts/api/brand.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            loadBrandBindDropdownList(function (data) {
-                $.each(data, function () {
-                    $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
-                })
-                $("#brand-sel").change();
-            });
-            $("#brand-sel").change(function () {
-                loadProject();
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/brand.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        loadBrandBindDropdownList(function (data) {
+            $.each(data, function () {
+                $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
             })
-            $("#btnAdd").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {
-                })
-                return false;
-            })
+            $("#brand-sel").change();
+        });
+        $("#brand-sel").change(function () {
+            loadProject();
         })
-    </script>
-}
+        $("#btnAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {
+            })
+            return false;
+        })
+    })
+</script>
 
 
 

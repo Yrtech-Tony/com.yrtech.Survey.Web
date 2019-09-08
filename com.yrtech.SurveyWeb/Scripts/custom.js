@@ -72,6 +72,7 @@ function init_sidebar() {
     $SIDEBAR_MENU.find('a').on('click', function (ev) {
         console.log('clicked - sidebar_menu');
         var $li = $(this).parent();
+        $SIDEBAR_MENU.find('li.active').removeClass('active');
 
         if ($li.is('.active')) {
             $li.removeClass('active active-sm');
@@ -95,6 +96,14 @@ function init_sidebar() {
                 setContentHeight();
             });
         }
+        var url = $(this).prop("href");
+        if (url) {
+            $(".right_col").load(url, {}, function () {
+
+            })
+        }
+        
+        return false;
     });
 
     // toggle small or large menu 
@@ -124,6 +133,10 @@ function init_sidebar() {
     }).parent('li').addClass('current-page').parents('ul').slideDown(function () {
         setContentHeight();
     }).parent().addClass('active');
+
+    $SIDEBAR_MENU.find('li.active').find('ul').slideDown(function () {
+        setContentHeight();
+    }).find(".main-page a").click();
 
     // recompute content when resizing
     $(window).smartresize(function () {

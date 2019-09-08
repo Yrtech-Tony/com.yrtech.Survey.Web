@@ -58,135 +58,131 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api/common.js"></script>
-    <script src="~/Scripts/api/easyphoto.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            loadEasyPhotoProjectDropList();            
 
-            $("#btnSearch").click(function () {
-                loadEasyPhotoUserInfoShop($("#project-sel").val(), "", "", "");
-            });
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/easyphoto.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        loadEasyPhotoProjectDropList();
 
-            $("#btnAdd").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoShopEdit", {}, function () {
-                    $("#ProjectId").val($("#project-sel").val());
-                    $("#ProjectName").val($("#project-sel").text());
-                })
-                return false;
-            });
+        $("#btnSearch").click(function () {
+            loadEasyPhotoUserInfoShop($("#project-sel").val(), "", "", "");
+        });
+
+        $("#btnAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoShopEdit", {}, function () {
+                $("#ProjectId").val($("#project-sel").val());
+                $("#ProjectName").val($("#project-sel").text());
+            })
+            return false;
+        });
+    })
+
+    //保存轻松拍的账号经销商
+    function saveEasyPhotoUserInfo() {
+        //API接口使用了UploadData  接受集合的json字符串
+        var selShop = findShop();
+        var selUser = findUser();
+        saveEasyPhotoCommonList("SaveUserInfoShop", $("#userInfoShop-form"), {
+            //新增
+            TenantId: loginUser.TenantId,
+            InUserId: loginUser.Id,
+            ModifyUserId: loginUser.Id,
+            AccountId: selUser.AccountId,
+            AccountName: selUser.AccountName,
+            ShopCode: selShop.ShopCode,
+            ShopName: selShop.ShopName,
+        }, function () {
+            $("#btnSearch").click();
+        });
+    }
+
+    function findShop() {
+        var selShop = {};
+        if (shopList) {
+            var findArr = shopList.filter(function (shop) {
+                return (shop.ShopId == $("#ShopId").val());
+            })
+            if (findArr.length > 0) {
+                selShop = findArr[0]
+            }
+        }
+        return selShop;
+    }
+    function findUser() {
+        var selUser = {};
+        if (userList) {
+            var findArr = userList.filter(function (user) {
+                return (user.Id == $("#UserId").val());
+            })
+            if (findArr.length > 0) {
+                selUser = findArr[0]
+            }
+        }
+        return selUser;
+    }
+
+    // 查询账号
+    function loadEasyPhotoUserInfoShop(projectId, shopId, key, userId) {
+        loadEasyPhotoMasterCommonGet("GetUserInfoShop", {
+            projectId: projectId,
+            shopId: shopId || "",
+            key: key || "",
+            userId: loginUser.Id
+        }, function (data) {
+            var pageClick = function (curPage) {
+                bindTable(data, $("#userInfoShop-table"), curPage);
+            }
+            pageClick(curPageNum);
+            createPage(data.length, curPageNum, pageSize, pageClick);
         })
 
-        //保存轻松拍的账号经销商
-        function saveEasyPhotoUserInfo() {
-            //API接口使用了UploadData  接受集合的json字符串
-            var selShop = findShop();            
-            var selUser = findUser();
-            saveEasyPhotoCommonList("SaveUserInfoShop", $("#userInfoShop-form"), {
-                //新增
-                TenantId: loginUser.TenantId,
-                InUserId: loginUser.Id,
-                ModifyUserId: loginUser.Id,
-                AccountId:selUser.AccountId,
-                AccountName: selUser.AccountName,
-                ShopCode: selShop.ShopCode,
-                ShopName: selShop.ShopName,
-            }, function () {
-                $("#btnSearch").click();
-            });
-        }
+    }
 
-        function findShop() {
-            var selShop = {};
-            if (shopList) {
-                var findArr = shopList.filter(function (shop) {
-                    return (shop.ShopId == $("#ShopId").val());
-                })
-                if (findArr.length > 0) {
-                    selShop = findArr[0]
-                }
-            }
-            return selShop;
-        }
-        function findUser() {
-            var selUser = {};
-            if (userList) {
-                var findArr = userList.filter(function (user) {
-                    return (user.Id == $("#UserId").val());
-                })
-                if (findArr.length > 0) {
-                    selUser = findArr[0]
-                }
-            }
-            return selUser;
-        }
 
-        // 查询账号
-        function loadEasyPhotoUserInfoShop(projectId, shopId, key, userId) {
-            loadEasyPhotoMasterCommonGet("GetUserInfoShop", {
-                projectId: projectId,
-                shopId: shopId || "",
-                key: key || "",
-                userId: loginUser.Id
-            }, function (data) {
-                var pageClick = function (curPage) {
-                    bindTable(data, $("#userInfoShop-table"), curPage);
-                }
-                pageClick(curPageNum);
-                createPage(data.length, curPageNum, pageSize, pageClick);
+    function bindTable(data, table, curPage) {
+        $("tbody", table).empty();
+
+        var pageLst = data.filter(function (item, i, self) {
+            var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+            return (i >= start && i < (start + pageSize));
+        })
+        $.each(pageLst, function (i, item) {
+            //page
+            var tr = $("<tr>");
+
+            tr.append($("<td></td>").html(item.AccountId));
+            tr.append($("<td></td>").html(item.AccountName));
+            tr.append($("<td></td>").html(item.ShopCode));
+            tr.append($("<td></td>").html(item.ShopName));
+            tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+            //if (item.ModifyDateTime) {
+            //    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+            //} else {
+            //    tr.append($("<td></td>").html(''));
+            //}
+            var edit = $("<a href='#'>删除</a>");
+            edit.click(function () {
+                confirm("确定删除记录吗？", function () {
+                    $.post(easyPhotoUrl + "easyPhoto/api/Master/DeleteUserInfoShop", {
+                        AnswerListJson: JSON.stringify([item])
+                    }, function (data) {
+                        if (data && data.Status) {
+                            $("#btnSearch").click();
+                        } else {
+                            alert(data.Body);
+                        }
+                    })
+                });
+                return false;
             })
+            tr.append($("<td></td>").append(edit));
 
-        }
+            $("tbody", table).append(tr);
+        })
+    }
 
-
-        function bindTable(data, table, curPage) {
-            $("tbody", table).empty();
-
-            var pageLst = data.filter(function (item, i, self) {
-                var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                return (i >= start && i < (start + pageSize));
-            })
-            $.each(pageLst, function (i, item) {
-                //page
-                var tr = $("<tr>");
-
-                tr.append($("<td></td>").html(item.AccountId));
-                tr.append($("<td></td>").html(item.AccountName));
-                tr.append($("<td></td>").html(item.ShopCode));
-                tr.append($("<td></td>").html(item.ShopName));
-                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                //if (item.ModifyDateTime) {
-                //    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                //} else {
-                //    tr.append($("<td></td>").html(''));
-                //}
-                var edit = $("<a href='#'>删除</a>");
-                edit.click(function () {
-                    confirm("确定删除记录吗？", function () {
-                        $.post(easyPhotoUrl + "easyPhoto/api/Master/DeleteUserInfoShop", {
-                            AnswerListJson: JSON.stringify([item])
-                        }, function (data) {
-                            if (data && data.Status) {
-                                $("#btnSearch").click();
-                            } else {
-                                alert(data.Body);
-                            }
-                        })
-                    });
-                    return false;
-                })
-                tr.append($("<td></td>").append(edit));
-
-                $("tbody", table).append(tr);
-            })
-        }
-
-    </script>
-}
-
-
-
+</script>

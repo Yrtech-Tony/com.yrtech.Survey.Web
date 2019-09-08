@@ -134,7 +134,12 @@ function loadAppeal(params) {
                     //page
                     var tr = $("<tr>");
 
-                    var edit = $("<a href='/Appeal/Edit?appealId=" + item.AppealId + "'>申诉/详细</a>");
+                    var edit = $('<a href="#">申诉/详细</a>');
+                    edit.click(function () {
+                        $(".right_col").load("/Appeal/Edit?appealId=" + item.AppealId, {}, function () {
+
+                        })                        
+                    })
                     tr.append($("<td></td>").append(edit));
                     var del = $("<a href='#'>删除</a>");
                     del.click(function () {
