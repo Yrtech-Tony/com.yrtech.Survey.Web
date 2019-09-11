@@ -34,14 +34,15 @@
     <thead>
         <tr>
             <th width="100">经销商编号</th>
-            <th width="100">经销商名称</th>
+            <th width="200">经销商名称</th>
             <th width="100">检查序号</th>
             <th width="80">检查类型</th>
             <th width="80">其他属性</th>
             <th width="100">是否新增</th>
             <th width="180">登记时间</th>
             <th width="180">最新修改时间</th>
-            <th width="100">操作</th>
+            <th width="60">操作</th>
+            <th width="60">照片</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -50,15 +51,47 @@
     <ul id="pageUl"></ul>
 </div>
 <form id="answer-import-form"></form>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
 
+            </div>
+            <div class="modal-footer">
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
+<style>
+    .baguetteBox {
+        display: none;
+    }
 
+        .baguetteBox a {
+            width: 240px;
+            height: 180px;
+            display: inline-block;
+            overflow: hidden;
+            margin: 4px 6px;
+            box-shadow: 0 0 4px -1px #000;
+        }
+</style>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/api/easyphoto.js"></script>
 <script src="~/Scripts/form-serialize.js"></script>
 <script src="~/Scripts/page.js"></script>
 <script src="~/Scripts/xlsx.core.min.js"></script>
+
+<script src="~/Content/baguetteBox/baguetteBox.js"></script>
 <script>
     var shopList, checkTypeList;
+    var ossUrl = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/EasyPhoto/';
     $(function () {
         $(".bootstrap-select").prop("title", "请选择").data("live-search", true);
 
@@ -262,9 +295,39 @@
             })
             tr.append($("<td></td>").append(del));
 
+            var showImg = $("<a href='#'>显示图片</a>");
+            showImg.click(function () {
+                createImageList(1, 1, 1, ['12345678901234567_新增1_20190721120609176.jpg', '12345678901234567_新增1_201907211248010.jpg']);
+
+            })
+            tr.append($("<td></td>").append(showImg));
+
             $("tbody", table).append(tr);
         })
     }
 
-</script>
+    function createImageList(tenantId, projectId, shopId, imgNames) {
+        var div = $('<div class="baguetteBox">');
+        $.each(imgNames, function (i, imgName) {
+            var imgUrl = ossUrl + tenantId + '/' + projectId + '/' + shopId + '/' + imgName;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<a></a>');
+            var img = $('<img>').attr('src', imgThumbUrl);
+            $(imagA).append(img);
+            $(imagA).attr('href', imgUrl).data('caption', imgName);
 
+            div.append(imagA);
+        })
+        debugger
+        //$("#Modal .modal-body").empty().append(div);
+        //$("#Modal").modal("show");
+        $(".baguetteBox").remove();
+        $(document.body).append(div);
+        baguetteBox.run('.baguetteBox');
+        setTimeout(function () {
+            div.find("a:first img").click();
+        },100)
+              
+    }
+
+</script>
