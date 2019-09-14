@@ -1,7 +1,16 @@
 ﻿@{
     ViewBag.Title = "巡检系统-品牌管理";
 }
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
 
+        .operation .btn {
+            width: 100px;
+        }
+</style>
 <div class="page-title">
     <div class="title_left">
         <h3>品牌管理 <small></small></h3>
@@ -61,22 +70,23 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            loadBrand();
-            $("#btnBrandAdd").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/System/BrandEdit", {}, function () {
-                })
-                return false;
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/brand.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        loadBrand();
+        $("#btnBrandAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/System/BrandEdit", {}, function () {
             })
+            return false;
         })
-    </script>
-}
+    })
+</script>
+
 
 
 

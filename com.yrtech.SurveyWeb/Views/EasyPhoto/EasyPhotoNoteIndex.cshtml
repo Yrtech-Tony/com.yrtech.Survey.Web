@@ -40,91 +40,105 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script src="~/Scripts/custom/search-condition.js"></script>
-    <script>
-        $(function () {
 
-            $("#btnSearch").click(function () {
-                loadEasyPhotoNote($("#project-sel").val(), $("#checktype-sel").val());
-            });
 
-            $("#btnAdd").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoNoteEdit", {}, function () {
-                })
-                return false;
-            });
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/easyphoto.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        loadEasyPhotoProjectDropList();
+        $("#project-sel").change(function () {
+            loadEasyPhotoMasterCommonGet("GetCheckTypeList", {
+                projectId: $("#project-sel").val(),
+                checkTypeId: '',
+                checkTypeName: '',
+            }, function (data) {
+                $("#checktype-sel").empty();
+                if (data) {
+                    $.each(data, function () {
+                        $("#checktype-sel").append($("<option>").val(this.CheckTypeId).text(this.CheckTypeName));
+                    });
+                }
+            })
         })
 
-        // 查询轻松拍的备注
-        function loadEasyPhotoNote(projectId, checkTypeId) {
-            loadEasyPhotoMasterCommonGet("GetNote", {
-                projectId: projectId,
-                checkTypeId: checkTypeId,
-                addCheck: ''
-            }, function (data) {
-                var pageClick = function (curPage) {
-                    bindTable(data, $("#note-table"), curPage);
-                }
-                pageClick(curPageNum);
-                createPage(data.length, curPageNum, pageSize, pageClick);
+        $("#btnSearch").click(function () {
+            loadEasyPhotoNote($("#project-sel").val(), $("#checktype-sel").val());
+        });
+
+        $("#btnAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoNoteEdit", {}, function () {
             })
-        }
+            return false;
+        });
+    })
+    // 查询轻松拍的备注
+    function loadEasyPhotoNote(projectId, checkTypeId) {
+        loadEasyPhotoMasterCommonGet("GetNote", {
+            projectId: projectId,
+            checkTypeId: checkTypeId,
+            addCheck: ''
+        }, function (data) {
+            var pageClick = function (curPage) {
+                bindTable(data, $("#note-table"), curPage);
+            }
+            pageClick(curPageNum);
+            createPage(data.length, curPageNum, pageSize, pageClick);
+        })
+    }
 
-        //保存轻松拍的备注
-        function saveEasyPhotoNote() {
-            saveEasyPhotoCommonObject("SaveNote", $("#note-form"), {
-                InUserId: loginUser.Id,
-                ModifyUserId: loginUser.Id,
-                AddCheck: 'Y',
-                ProjectId: $("#project-sel").val(),
-                CheckTypeId: $("#checktype-sel").val()
-            }, function () {
-                $("#btnSearch").click();
-            });
-        }
+    //保存轻松拍的备注
+    function saveEasyPhotoNote() {
+        saveEasyPhotoCommonObject("SaveNote", $("#note-form"), {
+            InUserId: loginUser.Id,
+            ModifyUserId: loginUser.Id,
+            AddCheck: 'Y',
+            ProjectId: $("#project-sel").val(),
+            CheckTypeId: $("#checktype-sel").val()
+        }, function () {
+            $("#btnSearch").click();
+        });
+    }
 
-        function bindTable(data, table, curPage) {
-            $("tbody", table).empty();
+    function bindTable(data, table, curPage) {
+        $("tbody", table).empty();
 
-            var pageLst = data.filter(function (item, i, self) {
-                var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                return (i >= start && i < (start + pageSize));
-            })
-            $.each(pageLst, function (i, item) {
-                //page
-                var tr = $("<tr>");
+        var pageLst = data.filter(function (item, i, self) {
+            var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+            return (i >= start && i < (start + pageSize));
+        })
+        $.each(pageLst, function (i, item) {
+            //page
+            var tr = $("<tr>");
 
-                tr.append($("<td></td>").html(item.NoteID));
-                tr.append($("<td></td>").html(item.NoteName));
-                tr.append($("<td></td>").html(item.AddCheck == 'Y' ? '是' : '否'));
-                tr.append($("<td></td>").html(item.InDateTime || item.InDateTime.replace('T', ' ')));
-                if (item.ModifyDateTime) {
-                    tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                } else {
-                    tr.append($("<td></td>").html(''));
-                }
+            tr.append($("<td></td>").html(item.NoteID));
+            tr.append($("<td></td>").html(item.NoteName));
+            tr.append($("<td></td>").html(item.AddCheck == 'Y' ? '是' : '否'));
+            tr.append($("<td></td>").html(item.InDateTime || item.InDateTime.replace('T', ' ')));
+            if (item.ModifyDateTime) {
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+            } else {
+                tr.append($("<td></td>").html(''));
+            }
 
-                var edit = $("<a href='#'>编辑</a>");
-                edit.click(function () {
-                    $("#Modal").modal("show");
-                    $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoNoteEdit", {}, function () {
-                        $("#note-form").setForm(item);
-                        $("#note-form").data("json", JSON.stringify(item));
-                    })
-                    return false;
+            var edit = $("<a href='#'>编辑</a>");
+            edit.click(function () {
+                $("#Modal").modal("show");
+                $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoNoteEdit", {}, function () {
+                    $("#note-form").setForm(item);
+                    $("#note-form").data("json", JSON.stringify(item));
                 })
-                tr.append($("<td></td>").append(edit));
-
-                $("tbody", table).append(tr);
+                return false;
             })
-        }
-    </script>
-}
+            tr.append($("<td></td>").append(edit));
+
+            $("tbody", table).append(tr);
+        })
+    }
+</script>
 
 
 

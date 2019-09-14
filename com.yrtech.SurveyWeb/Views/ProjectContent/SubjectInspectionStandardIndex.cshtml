@@ -12,7 +12,7 @@
         <tr>
             @*<th><input type="checkbox" id="check-all" class="flat"></th>*@
             <th>序号</th>
-            <th>标准描述</th>           
+            <th>标准描述</th>
             @*<th>添加人</th>*@
             <th>添加时间</th>
             @*<th>修改人</th>*@
@@ -25,15 +25,15 @@
     <ul id="pageUl"></ul>
 </div>
 
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            loadSubjectInspectionStandard();
-        })
-    </script>
-}
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/project.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        loadSubjectInspectionStandard();
+    })
+</script>
 
 
 

@@ -15,7 +15,7 @@
         </div>
         <label class="control-label col-md-1">年份</label>
         <div class="col-md-2">
-            <select id="year" class="form-control selectpicker"></select>
+            <select id="year" class="form-control"></select>
         </div>
         <label class="control-label col-md-1">期号</label>
         <div class="col-md-3">
@@ -63,56 +63,56 @@
     </div>
 </div>
 
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script>
-        $(function () {
-            for (var i = 2019; i < 2030; i++) {
-                $("#year").append($("<option>").text(i + "").val(i + ""));
-            }
-            loadBrandBindDropdownList(function (data) {
-                $.each(data, function () {
-                    $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/project.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script>
+    $(function () {
+        for (var i = 2019; i < 2030; i++) {
+            $("#year").append($("<option>").text(i + "").val(i + ""));
+        }
+        loadBrandBindDropdownList(function (data) {
+            $.each(data, function () {
+                $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
+            })
+            $("#brand-sel").change();
+        });
+
+        $("#brand-sel,#year").change(function () {
+            loadProjectBindDropdownList($("#brand-sel").val(), $("#year").val(), function (data) {
+                $("#project-sel").empty();
+                $.each(data, function (i, item) {
+                    $("#project-sel").append($('<option>').val(item.ProjectId).text(item.ProjectName));
                 })
-                $("#brand-sel").change();
+                $("#project-sel").change();
             });
+        })
 
-            $("#brand-sel,#year").change(function () {
-                loadProjectBindDropdownList($("#brand-sel").val(), $("#year").val(), function (data) {
-                    $("#project-sel").empty();
-                    $.each(data, function (i, item) {
-                        $("#project-sel").append($('<option>').val(item.ProjectId).text(item.ProjectName));
+        $("#project-sel").change(function () {
+            loadSubject();
+        })
+
+        var page = '@ViewBag.Page';
+        if (page) {
+            curPageNum = page;
+        }
+        
+        $("#btnAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
+                var projectId = $("#project-sel").val()
+                loadSubjectTypeExamBindDropdownList(projectId, function (data) {
+                    $.each(data, function () {
+                        $("#SubjectTypeExamId").append($("<option>").val(this.SubjectTypeExamId).text(this.SubjectTypeExamName));
                     })
-                    $("#project-sel").change();
-                });
-            })
-
-            $("#project-sel").change(function () {
-                loadSubject();
-            })
-
-            var page = '@ViewBag.Page';
-            if (page) {
-                curPageNum = page;
-            }
-
-            $("#btnAdd").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
-                    var projectId = $("#project-sel").val()
-                    loadBrandBindDropdownList(projectId, function (data) {
-                        $.each(data, function () {
-                            $("#SubjectTypeExamId").append($("<option>").val(this.SubjectTypeExamId).text(this.SubjectTypeExamName));
-                        })
-                    })
-                    return false;
                 })
+                return false;
             })
         })
-    </script>
-}
+    })
+</script>
 
 
 

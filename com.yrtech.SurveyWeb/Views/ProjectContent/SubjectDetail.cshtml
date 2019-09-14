@@ -11,9 +11,9 @@
     </div>
 </div>
 
-<input id="fileMaxSeqNO" type="hidden" /> 
-<input id="lossMaxSeqNO" type="hidden" /> 
-<input id="standardMaxSeqNO" type="hidden" /> 
+<input id="fileMaxSeqNO" type="hidden" />
+<input id="lossMaxSeqNO" type="hidden" />
+<input id="standardMaxSeqNO" type="hidden" />
 <div class="row">
     <div class="col-md-6 col-sm-6 col-xs-12">
         <div class="x_panel tile fixed_height_320">
@@ -160,44 +160,44 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script>
-        $(function () {
-            loadSubjectDetail();
 
-            $("#btnAddFile").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectFileEdit" }, function () {
-                })
-                return false;
-            })
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/project.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script>
+    $(function () {
+        loadSubjectDetail();
 
-            $("#btnAddStandard").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectInspectionStandardEdit" }, function () {
-                })
-                return false;
+        $("#btnAddFile").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectFileEdit" }, function () {
             })
-
-            $("#btnAddLoss").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectLossResultEdit" }, function () {
-                })
-                return false;
-            })
-
-            $("#btnAddScore").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectTypeScoreRegionEdit" }, function () {
-                    loadSubjectType($("#SubjectTypeId"), function () { });
-                })
-                return false;
-            })
+            return false;
         })
-    </script>
-}
+
+        $("#btnAddStandard").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectInspectionStandardEdit" }, function () {
+            })
+            return false;
+        })
+
+        $("#btnAddLoss").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectLossResultEdit" }, function () {
+            })
+            return false;
+        })
+
+        $("#btnAddScore").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/ProjectContent/LoadPartial", { view: "_PartialSubjectTypeScoreRegionEdit" }, function () {
+                loadSubjectType($("#SubjectTypeId"), function () { });
+            })
+            return false;
+        })
+    })
+</script>
 
 
 

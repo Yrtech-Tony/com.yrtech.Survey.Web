@@ -29,6 +29,7 @@
 
     <!-- Custom Theme Style -->
     <link href="~/Content/custom.css" rel="stylesheet" />
+    <link href="~/Content/select/css/bootstrap-select.css" rel="stylesheet" />
 </head>
 <body class="nav-md">
     <div class="container body">
@@ -55,12 +56,11 @@
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
                             <ul class="nav side-menu">
-                                <li>
+                                <li class="active">
                                     <a><i class="fa fa-home"></i> 基本信息管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        @*<li><a href="/System/TenantIndex">租户管理</a></li>*@
                                         <li><a href="/System/BrandIndex">品牌</a></li>
-                                        <li><a href="/Account/AccountIndex">账号</a></li>
+                                        <li class="main-page"><a href="/Account/AccountIndex">账号</a></li>
                                     </ul>
                                 </li>
                                 <li>
@@ -99,21 +99,19 @@
                                     <ul class="nav child_menu">
                                         <li><a href="/EasyPhoto/EasyPhotoProjectIndex">期号管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoUserInfoIndex">账号管理</a></li>
+                                        <li><a href="/EasyPhoto/EasyPhotoUserInfoShopIndex">账号经销商管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoNoteIndex">备注管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoPhotoListIndex">拍照定义管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoOtherPropertyIndex">其他属性管理</a></li>
                                         <li><a href="/EasyPhoto/EasyPhotoCheckTypeIndex">检查类型管理</a></li>
+                                        <li><a href="/EasyPhoto/EasyPhotoAnswerIndex">清单管理</a></li>
+                                        
                                     </ul>
                                 </li>
                             </ul>
                         </div>
 
                     </div>
-                    <!-- /sidebar menu -->
-                    <!-- /menu footer buttons -->
-                    @*<div class="sidebar-footer hidden-small" style="height:40px;">
-                        </div>*@
-                    <!-- /menu footer buttons -->
                 </div>
             </div>
             <!-- top navigation -->
@@ -143,16 +141,6 @@
             <div class="right_col" role="main">
                 @RenderBody()
             </div>
-            <!-- /page content -->
-            <!-- footer content -->
-            @*<footer>
-                    <div class="pull-right">
-                        明检云平台
-                    </div>
-                    <div class="clearfix"></div>
-                </footer>*@
-            <!-- /footer content -->
-
         </div>
     </div>
     <script>
@@ -184,6 +172,7 @@
     <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
     <script src="~/Scripts/jquery.dataTables-zh-CN.js"></script>
     <script src="~/Scripts/comm.js"></script>
+    <script src="~/Content/select/js/bootstrap-select.min.js"></script>
     <script>
         $.fn.iCheckParser = function () {
             if (this) {
@@ -193,7 +182,15 @@
                     increaseArea: '20%' // optional
                 })
             }
-        }       
+        }
+
+        function loadView(url) {
+            
+        }
+
+        $(function () {
+        })
+        loadView()
     </script>
     @RenderSection("scripts", required: false)
 </body>

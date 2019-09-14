@@ -57,22 +57,19 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            loadAccount();
-            $("#btnAccountAdd").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
-                })
-                return false;
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/baseinfo.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        loadAccount();
+        $("#btnAccountAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
             })
+            return false;
         })
-    </script>
-}
-
-
+    })
+</script>
 

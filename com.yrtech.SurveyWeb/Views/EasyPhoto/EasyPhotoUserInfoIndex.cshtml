@@ -6,7 +6,6 @@
         <h3>账号管理 <small></small></h3>
     </div>
 </div>
-
 <div class="operation col-md-offset-2 form-group">
     <div class="row">
         <div class="col-md-10"> </div>
@@ -54,91 +53,93 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            $("#btnSearch").click(function () {
-                loadEasyPhotoUserInfo("", "", "", "");
-            });
 
-            $("#btnAdd").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoEdit", {}, function () {
-                })
-                return false;
-            });
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/easyphoto.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        $("#btnSearch").click(function () {
+            loadEasyPhotoUserInfo("", "", "", "");
+        });
+
+        $("#btnAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoEdit", {}, function () {
+            })
+            return false;
+        });
+    })
+
+
+    //保存轻松拍的账号
+    function saveEasyPhotoUserInfo() {
+        saveEasyPhotoCommonObject("SaveUserInfo", $("#userInfo-form"), {
+            //新增
+            TenantId: loginUser.TenantId,
+            InUserId: loginUser.Id,
+            ModifyUserId: loginUser.Id
+        }, function () {
+            $("#btnSearch").click();
+        });
+    }
+
+    // 查询账号
+    function loadEasyPhotoUserInfo(accountId, telNo, expireDateTimeCheck, key) {
+        loadEasyPhotoMasterCommonGet("GetUserInfo", {
+            tenantId: loginUser.TenantId,
+            accountId: accountId || "",
+            telNo: telNo || "",
+            expireDateTimeCheck: expireDateTimeCheck || "",
+            key: key || ""
+        }, function (data) {
+            var pageClick = function (curPage) {
+                bindTable(data, $("#userInfo-table"), curPage);
+            }
+            pageClick(curPageNum);
+            createPage(data.length, curPageNum, pageSize, pageClick);
         })
 
+    }
 
-        //保存轻松拍的账号
-        function saveEasyPhotoUserInfo() {
-            saveEasyPhotoCommonObject("SaveUserInfo", $("#userInfo-form"), {
-                //新增
-                TenantId: loginUser.TenantId,
-                InUserId: loginUser.Id,
-                ModifyUserId: loginUser.Id
-            }, function () {
-                $("#btnSearch").click();
-            });
-        }
+    function bindTable(data, table, curPage) {
+        $("tbody", table).empty();
 
-        // 查询账号
-        function loadEasyPhotoUserInfo(accountId, telNo, expireDateTimeCheck, key) {
-            loadEasyPhotoMasterCommonGet("GetUserInfo", {
-                tenantId: loginUser.TenantId,
-                accountId: accountId || "",
-                telNo: telNo || "",
-                expireDateTimeCheck: expireDateTimeCheck || "",
-                key: key || ""
-            }, function (data) {
-                var pageClick = function (curPage) {
-                    bindTable(data, $("#userInfo-table"), curPage);
-                }
-                pageClick(curPageNum);
-                createPage(data.length, curPageNum, pageSize, pageClick);
-            })
+        var pageLst = data.filter(function (item, i, self) {
+            var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+            return (i >= start && i < (start + pageSize));
+        })
+        $.each(pageLst, function (i, item) {
+            //page
+            var tr = $("<tr>");
 
-        }
-
-
-        function bindTable(data, table, curPage) {
-            $("tbody", table).empty();
-
-            var pageLst = data.filter(function (item, i, self) {
-                var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                return (i >= start && i < (start + pageSize));
-            })
-            $.each(pageLst, function (i, item) {
-                //page
-                var tr = $("<tr>");
-
-                tr.append($("<td></td>").html(item.AccountId));
-                tr.append($("<td></td>").html(item.AccountName));
-                tr.append($("<td></td>").html(item.Password));
-                tr.append($("<td></td>").html(item.Email));
-                tr.append($("<td></td>").html(item.TelNo));
-                tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
-                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+            tr.append($("<td></td>").html(item.AccountId));
+            tr.append($("<td></td>").html(item.AccountName));
+            tr.append($("<td></td>").html(item.Password));
+            tr.append($("<td></td>").html(item.Email));
+            tr.append($("<td></td>").html(item.TelNo));
+            tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
+            tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+            if (item.ModifyDateTime) {
                 tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                var edit = $("<a href='#'>编辑</a>");
-                edit.click(function () {
-                    $("#Modal").modal("show");
-                    $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoEdit", {}, function () {
-                        $("#userInfo-form").setForm(item);
-                        $("#userInfo-form").data("json", JSON.stringify(item));
-                    })
-                    return false;
+            } else {
+                tr.append($("<td></td>").html(''));
+            }
+            var edit = $("<a href='#'>编辑</a>");
+            edit.click(function () {
+                $("#Modal").modal("show");
+                $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoEdit", {}, function () {
+                    $("#userInfo-form").setForm(item);
+                    $("#userInfo-form").data("json", JSON.stringify(item));
                 })
-                tr.append($("<td></td>").append(edit));
-
-                $("tbody", table).append(tr);
+                return false;
             })
-        }
-    </script>
-}
+            tr.append($("<td></td>").append(edit));
 
-
+            $("tbody", table).append(tr);
+        })
+    }
+</script>
 

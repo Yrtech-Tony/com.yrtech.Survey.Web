@@ -57,25 +57,17 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            $("input[type=checkbox]").iCheckParser();            
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/easyphoto.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        $("input[type=checkbox]").iCheckParser();
 
-            $("#btnSearch").click(function () {
-                loadEasyPhotoProject($("#year").val());
-            });
-            
-            $("#btnAdd").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
-                })
-                return false;
-            });
-        })
+        $("#btnSearch").click(function () {
+            loadEasyPhotoProject($("#year").val());
+        });
 
         //保存轻松拍的期号
         function saveEasyPhotoProject() {
@@ -104,45 +96,72 @@
                 pageClick(curPageNum);
                 createPage(data.length, curPageNum, pageSize, pageClick);
             })
-        }
+            return false;
+        });
+    })
 
-        function bindTable(data, table,curPage) {
-            $("tbody", table).empty();
+    //保存轻松拍的期号
+    function saveEasyPhotoProject() {
+        saveEasyPhotoCommonObject("SaveProject", $("#project-form"), {
+            //新增
+            TenantId: loginUser.TenantId,
+            InUserId: loginUser.Id,
+            ModifyUserId: loginUser.Id
+        }, function () {
+            $("#btnSearch").click();
+        });
 
-            var pageLst = data.filter(function (item, i, self) {
-                var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                return (i >= start && i < (start + pageSize));
-            })
-            $.each(pageLst, function (i, item) {
-                //page
-                var tr = $("<tr>");
+    }
+    // 查询轻松拍的期号
+    function loadEasyPhotoProject(year) {
+        loadEasyPhotoMasterCommonGet("GetProject", {
+            tenantId: loginUser.TenantId,
+            projectId: "",
+            year: year || "",
+            expireDateTimeCheck: ""
+        }, function (data) {
+            var pageClick = function (curPage) {
+                bindTable(data, $("#project-table"), curPage);
+            }
+            pageClick(curPageNum);
+            createPage(data.length, curPageNum, pageSize, pageClick);
+        })
+    }
 
-                tr.append($("<td></td>").html(item.ProjectCode));
-                tr.append($("<td></td>").html(item.ProjectName));
-                tr.append($("<td></td>").html(item.Year));
-                tr.append($("<td></td>").html(item.Quarter));
-                tr.append($("<td></td>").html(item.OrderNO));
-                tr.append($("<td></td>").html(item.ScoreShow));
-                tr.append($("<td></td>").html(item.OtherPropertyShow));
-                tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
-                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                var edit = $("<a href='#'>编辑</a>");
-                edit.click(function () {
-                    $("#Modal").modal("show");
-                    $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
-                        $("#project-form").setForm(item);
-                        $("#project-form").data("json", JSON.stringify(item));
-                    })
-                    return false;
+    function bindTable(data, table, curPage) {
+        $("tbody", table).empty();
+
+        var pageLst = data.filter(function (item, i, self) {
+            var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+            return (i >= start && i < (start + pageSize));
+        })
+        $.each(pageLst, function (i, item) {
+            //page
+            var tr = $("<tr>");
+
+            tr.append($("<td></td>").html(item.ProjectCode));
+            tr.append($("<td></td>").html(item.ProjectName));
+            tr.append($("<td></td>").html(item.Year));
+            tr.append($("<td></td>").html(item.Quarter));
+            tr.append($("<td></td>").html(item.OrderNO));
+            tr.append($("<td></td>").html(item.ScoreShow));
+            tr.append($("<td></td>").html(item.OtherPropertyShow));
+            tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
+            tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+            tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+            var edit = $("<a href='#'>编辑</a>");
+            edit.click(function () {
+                $("#Modal").modal("show");
+                $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
+                    $("#project-form").setForm(item);
+                    $("#project-form").data("json", JSON.stringify(item));
                 })
-                tr.append($("<td></td>").append(edit));
-
-                $("tbody", table).append(tr);
+                return false;
             })
-        }
-    </script>
-}
+            tr.append($("<td></td>").append(edit));
 
-
+            $("tbody", table).append(tr);
+        })
+    }
+</script>
 

@@ -1,0 +1,333 @@
+﻿@{
+    ViewBag.Title = "轻松拍-清单管理";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>清单管理 <small></small></h3>
+    </div>
+</div>
+<div class="operation col-md-offset-4 form-horizontal">
+    <div class="row">
+        <div class="col-md-10">
+            <label class="control-label col-md-offset-2 col-md-1">期号</label>
+            <div class="col-md-4">
+                <select id="project-sel" class="form-control"></select>
+            </div>
+            <label class="control-label col-md-1">经销商</label>
+            <div class="col-md-4">
+                <select id="shop-sel" class="form-control bootstrap-select"></select>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <button id="btnSearch" class="btn btn-primary form-control">查&nbsp;&nbsp;询</button>
+        </div>
+        <div class="col-md-1">
+            <button id="btnImport" class="btn btn-primary " style="width:100%" disabled>导&nbsp;&nbsp;入</button>
+        </div>
+    </div>
+</div>
+<form id="upload-form" style="display:none">
+    <input type='file' id='uploadFile'>
+    <input type="hidden" value="0" id="UpProjectId" />
+</form>
+<table id="answer-table" class="table table-striped table-bordered dt-responsive">
+    <thead>
+        <tr>
+            <th width="100">经销商编号</th>
+            <th width="200">经销商名称</th>
+            <th width="100">检查序号</th>
+            <th width="80">检查类型</th>
+            <th width="80">其他属性</th>
+            <th width="100">是否新增</th>
+            <th width="180">登记时间</th>
+            <th width="180">最新修改时间</th>
+            <th width="60">操作</th>
+            <th width="60">照片</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<div id="pagination" class="pull-right">
+    <ul id="pageUl"></ul>
+</div>
+<form id="answer-import-form"></form>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
+<style>
+    .baguetteBox {
+        display: none;
+    }
+
+        .baguetteBox a {
+            width: 240px;
+            height: 180px;
+            display: inline-block;
+            overflow: hidden;
+            margin: 4px 6px;
+            box-shadow: 0 0 4px -1px #000;
+        }
+</style>
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/easyphoto.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script src="~/Scripts/xlsx.core.min.js"></script>
+
+<script src="~/Content/baguetteBox/baguetteBox.js"></script>
+<script>
+    var shopList, checkTypeList;
+    var ossUrl = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/EasyPhoto/';
+    $(function () {
+        $(".bootstrap-select").prop("title", "请选择").data("live-search", true);
+
+        //加载期号
+        loadEasyPhotoProjectDropList();
+
+        //期号选择事件查询经销商
+        $("#project-sel").change(function () {
+            //查询经销商信息
+            $.get(baseUrl + "survey/api/Master/GetShopByProjectId", {
+                projectId: $("#project-sel").val()
+            }, function (data) {
+                if (data && data.Status) {
+                    var lst = JSON.parse(data.Body);
+                    shopList = lst;
+                    checkImpoertPreCondition();
+
+                    $("#shop-sel").empty();
+                    $("#shop-sel").append($('<option>'));
+                    $.each(lst, function (i, item) {
+                        var text = item.ShopName + "(" + item.ShopCode + ")";
+                        $("#shop-sel").append($('<option>').val(item.ShopId).text(text));
+                    })
+                    $("#shop-sel").selectpicker("refresh");
+                }
+            })
+        })
+        //查询类型列表
+        loadEasyPhotoMasterCommonGet("GetCheckTypeList", {
+            projectId: $("#project-sel").val(),
+            checkTypeId: '',
+            checkTypeName: ''
+        }, function (data) {
+            checkTypeList = data;
+            checkImpoertPreCondition();
+        })
+
+
+        //查询事件
+        $("#btnSearch").click(function () {
+            loadEasyPhotoAnswer($("#project-sel").val(), $("#shop-sel").val());
+        });
+        //导入事件
+        $("#btnImport").click(function () {
+            $("#UpProjectId").val($("#project-sel").val());
+            $("#uploadFile").click();
+            return false;
+        });
+
+        //导入文件事件
+        $("#uploadFile").change(uploadEasyPhotoAnswer);
+    })
+
+    //检查导入前置条件，检查成功导入按钮可用
+    function checkImpoertPreCondition() {
+        if (checkTypeList && shopList) {
+            $("#btnImport").prop("disabled", false);
+        }
+    }
+
+    function uploadEasyPhotoAnswer() {
+        var file_obj = document.getElementById('uploadFile').files[0];
+        var projectId = $("#UpProjectId").val();
+        readWorkbookFromLocalFile(file_obj, function (workbook) {
+            document.getElementById('uploadFile').value = '';
+            var worksheet = workbook.Sheets["检查信息列表"];
+            var json = XLSX.utils.sheet_to_json(worksheet);
+            if (json && json.length > 0) {
+                var answers = [];
+                $.each(json, function (i, item) {
+                    try {
+                        var shopCode = item["店铺代码"].trim();
+                        var checkTypeCode = item["类型"].trim();
+                        var checkCode = item["检查信息编号"].trim();
+                        var otherProperty = item["其他信息"].trim();
+
+                        var findShops = shopList.filter(function (shop) {
+                            return shop.ShopCode == shopCode;
+                        });
+                        var findCheckTypes = checkTypeList.filter(function (checkType) {
+                            return checkType.CheckTypeName == checkTypeCode;
+                        });
+                        var findShop = {}, findCheckType = {};
+                        if (findShops.length > 0) {
+                            findShop = findShops[0];
+                        }
+                        if (findCheckTypes.length > 0) {
+                            findCheckType = findCheckTypes[0];
+                        }
+                        answers.push({
+                            ProjectId: projectId,
+                            ShopCode: findShop.ShopCode,
+                            ShopName: findShop.ShopName,
+                            ShopId: findShop.ShopId,
+                            CheckTypeId: findCheckType.CheckTypeId,
+                            CheckTypeName: findCheckType.CheckTypeName,
+                            OtherProperty: otherProperty,
+                            CheckCode: checkCode
+                        });
+
+                    } catch (e) {
+                        console.error('处理清单出错', e);
+                    }
+
+                })
+                importEasyPhotoAnswer(projectId, answers);
+            } else {
+                alert("Excel中没有清单数据！");
+            }
+        })
+    }
+
+    // 读取本地excel文件
+    function readWorkbookFromLocalFile(file, callback) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, { type: 'binary' });
+            if (callback) callback(workbook);
+        };
+        reader.readAsBinaryString(file);
+    }
+
+    //导入轻松拍清单
+    function importEasyPhotoAnswer(projectId, answers) {
+        {
+            AnswerList: answers
+        }
+        $.post(easyPhotoUrl + "easyPhoto/api/Answer/ImportAnswerList", {
+            //新增
+            UserId: loginUser.Id,
+            ProjectId: projectId,
+            AnswerListJson: JSON.stringify(answers)
+        }, function (data) {
+            if (data && data.Status) {
+                $("#btnSearch").click();;
+            } else {
+                alert(data.Body);
+            }
+        })
+    }
+
+    // 查询轻松拍清单
+    function loadEasyPhotoAnswer(projectId, shopId) {
+        $.get(easyPhotoUrl + "easyPhoto/api/Answer/GetShopAnswerList", {
+            projectId: projectId || "",
+            shopId: shopId || "",
+            checkCode: '',
+            checkTypeId: '',
+            photoCheck: '',
+            addCheck: ''
+        }, function (data) {
+            if (data && data.Status) {
+                var lst = JSON.parse(data.Body);
+                var pageClick = function (curPage) {
+                    bindTable(lst, $("#answer-table"), curPage);
+                }
+                pageClick(curPageNum);
+                createPage(lst.length, curPageNum, pageSize, pageClick);
+            }
+        })
+    }
+
+    function bindTable(data, table, curPage) {
+        $("tbody", table).empty();
+
+        var pageLst = data.filter(function (item, i, self) {
+            var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
+            return (i >= start && i < (start + pageSize));
+        })
+        $.each(pageLst, function (i, item) {
+            //page
+            var tr = $("<tr>");
+
+            tr.append($("<td></td>").html(item.ShopCode));
+            tr.append($("<td></td>").html(item.ShopName));
+            tr.append($("<td></td>").html(item.CheckCode));
+            tr.append($("<td></td>").html(item.CheckTypeName));
+            tr.append($("<td></td>").html(item.OtherProperty));
+            tr.append($("<td></td>").html(item.AddCheck == 'Y' ? '是' : '否'));
+            tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
+            if (item.ModifyDateTime) {
+                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
+            } else {
+                tr.append($("<td></td>").html(''));
+            }
+            var del = $("<a href='#'>删除</a>");
+            del.click(function () {
+                confirm("确定删除记录吗？", function () {
+                    $.post(easyPhotoUrl + "easyPhoto/api/Answer/DeleteAnswerList", {
+                        AnswerListJson: JSON.stringify([item])
+                    }, function (data) {
+                        if (data && data.Status) {
+                            $("#btnSearch").click();
+                        } else {
+                            alert(data.Body);
+                        }
+                    })
+                });
+                return false;
+            })
+            tr.append($("<td></td>").append(del));
+
+            var showImg = $("<a href='#'>显示图片</a>");
+            showImg.click(function () {
+                createImageList(1, 1, 1, ['12345678901234567_新增1_20190721120609176.jpg', '12345678901234567_新增1_201907211248010.jpg']);
+
+            })
+            tr.append($("<td></td>").append(showImg));
+
+            $("tbody", table).append(tr);
+        })
+    }
+
+    function createImageList(tenantId, projectId, shopId, imgNames) {
+        var div = $('<div class="baguetteBox">');
+        $.each(imgNames, function (i, imgName) {
+            var imgUrl = ossUrl + tenantId + '/' + projectId + '/' + shopId + '/' + imgName;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<a></a>');
+            var img = $('<img>').attr('src', imgThumbUrl);
+            $(imagA).append(img);
+            $(imagA).attr('href', imgUrl).data('caption', imgName);
+
+            div.append(imagA);
+        })
+        debugger
+        //$("#Modal .modal-body").empty().append(div);
+        //$("#Modal").modal("show");
+        $(".baguetteBox").remove();
+        $(document.body).append(div);
+        baguetteBox.run('.baguetteBox');
+        setTimeout(function () {
+            div.find("a:first img").click();
+        },100)
+              
+    }
+
+</script>

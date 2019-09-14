@@ -135,7 +135,7 @@
             <p class="text-center">
                 建议使用Chrome，火狐或IE10以上版本，若使用360浏览器请在极速模式下打开系统<br />
                 如系统出现错误或异常，影响正常使用，请记录错误并通过以下方式通知管理员，以便及时为您解决问题！ <br />
-                工作时间：9:00-20:00  /   邮箱：506011382@163.com
+                工作时间：9:00-20:00  /   邮箱：506011382@QQ.com
             </p>
         </div>
     </div>
@@ -143,7 +143,9 @@
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/comm.js"></script>
     <script src="~/Scripts/common.js"></script>
-    <script src="~/Scripts/api.js"></script>
+    <script src="~/Scripts/api/common.js"></script>
+    <script src="~/Scripts/api/login.js"></script>
+
     <script type="text/javascript" language="javascript">
         $(function () {
             document.onkeydown = function (e) {
@@ -173,8 +175,8 @@
                     if (data.Status) {
                         $.post("../Account/AfterLogin", { loginUser: data.Body }, function () {
                             var returnUrl = $("#valueReturnUrl").val();
-                            if (returnUrl == '/') {
-                                returnUrl = "/System/BrandIndex";
+                            if (!returnUrl || returnUrl == '/') {
+                                returnUrl = "/Home/Index";
                             }
                             location.href = returnUrl;
                         }).complete(function () {

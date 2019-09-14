@@ -1,7 +1,6 @@
 ﻿@{
     ViewBag.Title = "巡检系统-期号内容管理-试卷类型";
 }
-
 <div class="page-title">
     <div class="title_left">
         <h3>试卷类型 <small></small></h3>
@@ -23,7 +22,6 @@
         </div>
     </div>
 </div>
-
 <table id="subjectTypeExam-table" class="table table-striped table-bordered dt-responsive">
     <thead>
         <tr>
@@ -58,46 +56,43 @@
         </div>
     </div>
 </div>
-@section scripts{
-    <script src="~/Scripts/api.js"></script>
-    <script src="~/Scripts/form-serialize.js"></script>
-    <script src="~/Scripts/page.js"></script>
-    <script>
-        $(function () {
-            // 绑定品牌
-            loadBrandBindDropdownList(function (data) {
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/project.js"></script>
+<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        // 绑定品牌
+        loadBrandBindDropdownList(function (data) {
+            $.each(data, function () {
+                $("#subjectTypeExam-Brand").append($("<option>").val(this.BrandId).text(this.BrandName));
+            });
+            $("#subjectTypeExam-Brand").change();
+        });
+        // 品牌变动绑定期号
+        $("#subjectTypeExam-Brand").change(function () {
+            loadProjectBindDropdownList($("#subjectTypeExam-Brand").val(), "", function (data) {
+                $("#subjectTypeExam-Project").empty();
                 $.each(data, function () {
-                    $("#subjectTypeExam-Brand").append($("<option>").val(this.BrandId).text(this.BrandName));
+                    $("#subjectTypeExam-Project").append($("<option>").val(this.ProjectId).text(this.ProjectName));
                 });
-                $("#subjectTypeExam-Brand").change();
-            });
-            // 品牌变动绑定期号
-            $("#subjectTypeExam-Brand").change(function () {
-                loadProjectBindDropdownList($("#subjectTypeExam-Brand").val(), "", function (data) {
-                    $("#subjectTypeExam-Project").empty();
-                    $.each(data, function () {
-                        $("#subjectTypeExam-Project").append($("<option>").val(this.ProjectId).text(this.ProjectName));
-                    });
 
-                    $("#btnSubjectTypeExam-Search").click();
-                });
+                $("#btnSubjectTypeExam-Search").click();
             });
-            //查询试卷类型
-            $("#btnSubjectTypeExam-Search").click(function () {
-                loadSubjectTypeExam($("#subjectTypeExam-Project").val(), "");
+        });
+        //查询试卷类型
+        $("#btnSubjectTypeExam-Search").click(function () {
+            loadSubjectTypeExam($("#subjectTypeExam-Project").val(), "");
+        });
+        // 新增试卷类型
+        $("#btnSubjectTypeExam-Add").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/ProjectContent/SubjectTypeExamEdit", {}, function () {
+
             });
-            // 新增试卷类型
-            $("#btnSubjectTypeExam-Add").click(function () {
-                $("#Modal").modal("show");
-                $("#Modal .modal-body").load("/ProjectContent/SubjectTypeExamEdit", {}, function () {
-
-                });
-                return false;
-            })
-
+            return false;
         })
-    </script>
-}
 
-
+    })
+</script>
 
