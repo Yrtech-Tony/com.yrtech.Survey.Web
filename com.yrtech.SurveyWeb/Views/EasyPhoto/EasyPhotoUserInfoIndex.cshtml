@@ -79,6 +79,7 @@
         saveEasyPhotoCommonObject("SaveUserInfo", $("#userInfo-form"), {
             //新增
             TenantId: loginUser.TenantId,
+            TenantName: loginUser.TenantName,
             InUserId: loginUser.Id,
             ModifyUserId: loginUser.Id
         }, function () {
@@ -119,7 +120,7 @@
             tr.append($("<td></td>").html(item.AccountName));
             tr.append($("<td></td>").html(item.Password));
             tr.append($("<td></td>").html(item.Email));
-            tr.append($("<td></td>").html(item.TelNo));
+            tr.append($("<td></td>").html(item.TelNO));
             tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
             tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
             if (item.ModifyDateTime) {

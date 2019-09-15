@@ -131,7 +131,8 @@
             projectId: projectId,
             shopId: shopId || "",
             key: key || "",
-            userId: loginUser.Id
+            userId: loginUser.Id,
+            roleType:loginUser.RoleType
         }, function (data) {
             var pageClick = function (curPage) {
                 bindTable(data, $("#userInfoShop-table"), curPage);
