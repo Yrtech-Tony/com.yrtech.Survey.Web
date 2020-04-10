@@ -1,6 +1,6 @@
 ﻿var baseUrl = 'http://123.57.229.128:8001/';
-var easyPhotoUrl = 'http://localhost:57328/';
-//var easyPhotoUrl = 'http://123.57.229.128:8020/'
+//var easyPhotoUrl = 'http://localhost:57328/';
+var easyPhotoUrl = 'http://123.57.229.128:8020/'
 
 var dta = {};
 var pageSize = 15;
@@ -48,6 +48,7 @@ function closeModel() {
 
 // 绑定品牌
 function loadBrandBindDropdownList(callback) {
+    debugger
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
         userId: loginUser.Id,

@@ -66,6 +66,31 @@ function loadBrand() {
         }
     })
 }
+
+function loadUserInfoByBrandId(obj) {
+    $.get(baseUrl + "survey/api/Master/GetUserInfoByBrandId", {
+        brandId: obj.BrandId
+    }, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+            $.each(lst, function (i, item) {
+                var tr = $("<tr>");
+
+                tr.append($("<td></td>").html(obj.BrandName));
+                tr.append($("<td></td>").html(item.AccountName));
+                tr.append($("<td></td>").html(item.UserType));
+                tr.append($("<td></td>").html(item.RoleType));
+                tr.append($("<td></td>").html(item.Email));
+                tr.append($("<td></td>").html(item.TelNO));
+
+                $("#brand-user-table tbody").append(tr);
+            })
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
 function saveBrand() {
     $("#save_button").button("loading");
     var params = $("#brand-form").serializeJson();

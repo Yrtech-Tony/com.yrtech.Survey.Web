@@ -91,10 +91,9 @@
     //保存轻松拍的其他属性
     function saveEasyPhotoOtherProperty() {
         saveEasyPhotoCommonObject("SaveOtherProperty", $("#other-property-form"), {
-            //TenantId: loginUser.TenantId,
-            //InUserId: loginUser.Id,
-            //ModifyUserId: loginUser.Id,
-            //ProjectId: $("#project-sel").val()
+            InUserId: loginUser.Id,
+            ModifyUserId: loginUser.Id,
+            ProjectId: $("#project-sel").val()
         }, function () {
             $("#btnSearch").click();
         });

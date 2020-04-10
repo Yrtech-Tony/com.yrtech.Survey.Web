@@ -103,22 +103,6 @@
             })
             return false;
         };
-        // 查询轻松拍的期号
-        function loadEasyPhotoProject(year) {
-            loadEasyPhotoMasterCommonGet("GetProject", {
-                tenantId: loginUser.TenantId,
-                projectId: "",
-                brandId:"",
-                year: year || "",
-                expireDateTimeCheck: ""
-            }, function (data) {
-                var pageClick = function (curPage) {
-                    bindTable(data, $("#project-table"), curPage);
-                }
-                pageClick(curPageNum);
-                createPage(data.length, curPageNum, pageSize, pageClick);
-            })
-        }
         function bindTable(data, table, curPage) {
             $("tbody", table).empty();
 

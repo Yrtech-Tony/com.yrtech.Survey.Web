@@ -217,9 +217,6 @@
 
     //导入轻松拍清单
     function importEasyPhotoAnswer(projectId, answers) {
-        {
-            AnswerList: answers
-        }
         $.post(easyPhotoUrl + "easyPhoto/api/Answer/ImportAnswerList", {
             //新增
             UserId: loginUser.Id,
@@ -298,7 +295,6 @@
             var showImg = $("<a href='#'>显示图片</a>");
             showImg.click(function () {
                 createImageList(1, 1, 1, ['12345678901234567_新增1_20190721120609176.jpg', '12345678901234567_新增1_201907211248010.jpg']);
-
             })
             tr.append($("<td></td>").append(showImg));
 
@@ -312,16 +308,15 @@
             var imgUrl = ossUrl + tenantId + '/' + projectId + '/' + shopId + '/' + imgName;
             var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
             var imagA = $('<a></a>');
-            var img = $('<img>').attr('src', imgThumbUrl);
+            var img = $('<img>').attr('src', imgUrl);
             $(imagA).append(img);
             $(imagA).attr('href', imgUrl).data('caption', imgName);
 
             div.append(imagA);
         })
-        debugger
         //$("#Modal .modal-body").empty().append(div);
         //$("#Modal").modal("show");
-        $(".baguetteBox").remove();
+        //$(".baguetteBox").remove();
         $(document.body).append(div);
         baguetteBox.run('.baguetteBox');
         setTimeout(function () {

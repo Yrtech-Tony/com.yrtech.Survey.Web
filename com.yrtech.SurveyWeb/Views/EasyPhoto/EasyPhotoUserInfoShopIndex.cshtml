@@ -74,8 +74,9 @@
         $("#btnAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoUserInfoShopEdit", {}, function () {
+                var projectName = $("#project-sel").find("option:selected").text();;
                 $("#ProjectId").val($("#project-sel").val());
-                $("#ProjectName").val($("#project-sel").text());
+                $("#ProjectName").val(projectName);
             })
             return false;
         });

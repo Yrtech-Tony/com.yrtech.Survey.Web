@@ -61,7 +61,7 @@ namespace com.yrtech.SurveyWeb.Controllers
         }
         public ActionResult EasyPhotoCheckTypeEdit()
         {
-            return PartialView("_PartialEasyPhotoUserInfoShopEdit");
+            return PartialView("_PartialEasyPhotoCheckTypeEdit");
         }
 
         public ActionResult EasyPhotoUserInfoShopIndex()
