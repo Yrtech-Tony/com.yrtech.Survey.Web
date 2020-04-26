@@ -205,6 +205,7 @@ function loadShop() {
     $.get(baseUrl + "survey/api/Master/GetShop", {
         brandId: $("#shop-brand").val(),
         shopId: "",
+        shopCode:'',
         key: $("#ShopKey").val()
     }, function (data) {
         if (data && data.Status) {

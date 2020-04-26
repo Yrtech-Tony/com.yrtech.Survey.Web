@@ -1085,7 +1085,8 @@ plupload.Uploader = function(options) {
 						}
 					});
 
-					fileInput.bind('mousedown', function() {
+					fileInput.bind('mousedown', function () {
+                        alert()
 						self.trigger('Browse');
 					});
 

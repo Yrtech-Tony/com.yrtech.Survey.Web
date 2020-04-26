@@ -1,4 +1,44 @@
 ﻿
+//复审状态查询
+function loadRecheckStatus(params, callback) {
+    $.get(baseUrl + "survey/api/Recheck/GetRecheckStatus", params, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            if (callback)
+                callback(lst);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+//复审详细查询
+function loadRecheckStatusDtl(params, callback) {
+    $.get(baseUrl + "survey/api/Recheck/GetRecheckStatusDtl", params, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            if (callback)
+                callback(lst);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+//复审详细
+function getShopNeedRecheckSubject(params, callback) {
+    $.get(baseUrl + "survey/api/Recheck/GetShopNeedRecheckSubject", params, function (data) {
+        if (data && data.Status) {
+            var lst = JSON.parse(data.Body);
+
+            if (callback)
+                callback(lst);
+        } else {
+            alert(data.Body);
+        }
+    })
+}
+
 //复审错误管理
 function loadRecheckErrorType(projectId, recheckErrorTypeId) {
     $.get(baseUrl + "survey/api/Master/GetRecheckErrorType", {

@@ -1,0 +1,464 @@
+﻿@{
+    ViewBag.Title = "巡检报告系统-报告上传";
+}
+
+<link href="~/Content/seachform.css" rel="stylesheet" />
+<style>
+    .link-btn-cell {
+        margin: 3px 5px 0px;
+        cursor: pointer;
+    }
+
+    #searchForm th {
+        vertical-align: middle;
+    }
+</style>
+<div id="container" class="col-md-12">
+    <form id="searchForm" style="display:none">
+        <table class="table table-bordered" style="border:solid 1px #666">
+            <tr>
+                <th width="120" align="center">
+                    品牌：
+                </th>
+                <td>
+                    <select id="brand-sel" class="selectpicker"></select>
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    年份
+                </th>
+                <td colspan="5">
+                    <select id="year" class="selectpicker"></select>
+                </td>
+            </tr>
+            <tr>
+                <th width="120" align="center">
+                    期号：
+                </th>
+                <td>
+                    <div id="ProjectListDiv">
+
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6" class="text-center" style="line-height:40px;">
+                    <button type="button" class="btn btn-default" style="width:100px; margin-right:20px" id="btnClear">清&nbsp;空</button>
+                    <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;询</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="opens">开启搜索</div>
+    <div class="sechform"><div class="collapse1 text-center"><div class="i"><font></font></div></div></div>
+    <form class="form-inline pull-left mb15">
+        <div class="form-group">
+            <input type="text" class="form-control" name="keyword" id="keyword" placeholder="经销商代码/名称" value="">
+            <button type="button" id="btnSearchByKey" class="btn btn-default">搜 索</button>
+        </div>
+
+    </form>
+    <div class="pull-right">
+        <a href="javascript:void()" id="btnDeleteFile" class="btn btn-default">删除文件</a>
+        <a href="javascript:void()" id="btnUploadFile" class="btn btn-default">批量上传文件</a>
+        <a href="javascript:void()" id="btnUploadVideo" class="btn btn-default">批量上传视频</a>
+        <a href="javascript:void()" id="btnDownloadReport" class="btn btn-default">导出文件</a>
+    </div>
+    <p></p>
+    <div class="list" style="overflow:auto; width:100%">
+        <table id="report-table" class="table table-bordered table-set"></table>
+    </div>
+    <div id="pagination" class="pull-right">
+        <ul id="pageUl"></ul>
+    </div>
+</div>
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
+
+@*文件列表详细弹出框*@
+<div class="modal bs-example-modal-lg fade" id="DetailModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">文件列表</h4>
+            </div>
+            <div class="modal-body">
+                <div style="max-height: 600px; overflow: auto;">
+                    <table id="files-table" class="table table-striped table-bordered dt-responsive"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/page.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
+<script>
+    var ossFileUploader;
+    var ossVideoUploader;
+    var osspath;
+
+    $(function () {
+        $('.i,.opens').click(function () {
+            $('.i').children("font").toggleClass("other");
+            $('#searchForm').slideToggle();
+            $('#searchForm').toggleClass('none');
+            $('.opens').slideToggle();
+            $('.opens').toggleClass('none');
+        });
+
+        $("input[type=checkbox]").iCheckParser();
+        //$(".selectpicker").selectpicker();
+
+        for (var i = 2019; i < 2029; i++) {
+            $("#year").append($("<option>").text(i + "").val(i + ""));
+        }
+        $("#year").val("2019");
+        $("#year").selectpicker();
+        //加载品牌
+        loadBrandBindDropdownList(function (data) {
+            $.each(data, function () {
+                $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
+            })
+            $("#brand-sel").selectpicker("refresh");
+            $("#brand-sel").change();
+        });
+
+        //加载期号
+        $("#brand-sel,#year").change(function () {
+            loadProject();
+        })
+
+        //报告上传查询
+        $("#btnSearch").click(function () {
+            search();
+        });
+
+        //报告上传查询
+        $("#btnSearch").click(function () {
+            search();
+        });
+
+        $("#btnSearchByKey").click(function () {
+            search();
+        });
+        $("#btnUploadFile,#btnUploadVideo").click(function () {
+            selShopId = undefined;
+        });        
+
+        initTable();
+    });
+
+    function initOss() {
+        getParams();
+        osspath = "Survey/" + $("#year").val() + "/" + selProject + "/";
+        ossFileUploader = new OSSClient({
+            osspath: osspath + "files/",
+            selectfiles: "btnUploadFile",
+            fileAddCheck: function () {
+                return true;
+            },
+            fileAddCheckMsg: "",
+            uploaded: function (file) {
+                //调用导入方法
+                importFiles(file, "01");
+            }
+        });
+
+        ossVideoUploader = new OSSClient({
+            osspath: osspath + "videos/",
+            selectfiles: "btnUploadVideo",
+            osspath: osspath,
+            fileAddCheck: function () {
+                return true;
+            },
+            fileAddCheckMsg: "",
+
+            uploaded: function (file) {
+                //调用导入方法
+                importFiles(file, "02");
+            }
+        });
+    }
+
+    function importFiles(fileObj, fileType) {
+        debugger
+        getParams();
+        if (selShopId) {
+            $.commonPost("ReportFile/ReportFileSave", {
+                ProjectId: selProject,
+                ShopId: selShopId,
+                ReportFileType: fileType,
+                ReportFileName: fileObj.fileName,
+                Url_OSS: fileObj.osspath,
+                InUserId: loginUser.Id
+            }, function (data) {
+                search();
+            });
+        } else {
+            var ufiles = [];
+            var shopCode = fileObj.fileName.substr(0, fileObj.fileName.indexOf("_"));
+            ufiles.push({
+                TenantId: loginUser.TenantId,
+                BrandId: loginUser.BrandId,
+                ProjectId: selProject,
+                ShopCode: shopCode,
+                ReportFileType: fileType,
+                ReportFileName: fileObj.fileName,
+                Url_OSS: fileObj.osspath,
+                InUserId: loginUser.Id
+            });
+
+            $.commonPost("ReportFile/ReportFileListSave", {
+                ListJson: JSON.stringify(ufiles)
+            }, function (data) {
+                search();
+            });
+        }
+    }
+
+    var oneShopUploaders = [];
+    function search() {
+        var params = getParams();
+        if (!params) return;
+
+        $.commonGet("ReportFile/ReportFileListUploadSearch", params, function (data) {
+            $('#report-table').bootstrapTable("load", data);
+
+            if (oneShopUploaders) {
+                $.each(oneShopUploaders, function () {
+                    $(this).trigger("onDestroy");
+                })
+            }            
+            oneShopUploaders = [];
+            $.each(data, function (i, item) {
+                var uploader = new OSSClient({
+                    osspath: osspath + "files/",
+                    selectfiles: "shopFileUploaderA_" + item.ShopId,
+                    fileAddCheck: function () {
+                        return true;
+                    },
+                    fileAddCheckMsg: "",
+                    uploaded: function (file) {
+                        //调用导入方法
+                        importFiles(file, "01");
+                    }
+                });
+                oneShopUploaders.push(uploader);
+
+                oneShopUploaders.push(new OSSClient({
+                    osspath: osspath + "files/",
+                    selectfiles: "shopVideoUploaderA_" + item.ShopId,
+                    fileAddCheck: function () {
+                        return true;
+                    },
+                    fileAddCheckMsg: "",
+                    uploaded: function (file) {
+                        //调用导入方法
+                        importFiles(file, "02");
+                    }
+                }));
+            })
+
+        })
+    }
+
+    function initTable() {
+        //生成用户数据
+        $('#report-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            height: 560,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [5, 10, 20, 50],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                width: 400,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "文件数",
+                field: "ReportFileCount_File",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:return false;" style="min-width:100px" onclick="GoDetail(' + row.ShopId + ')">' + value + '</a>';
+                }
+            }, {
+                title: "文件上传",
+                field: "",
+                width: 400,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a id="shopFileUploaderA_' + row.ShopId + '" href="javascript:return false;"  onclick="uploadFile(' + row.ShopId + ');" style="min-width:100px">文件上传</a>';
+                }
+            }, {
+                title: "视频数",
+                field: "ReportFileCount_Video",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:return false;" style="min-width:100px" onclick="GoDetail(' + row.ShopId + ')">' + value + '</a>';
+                }
+            }, {
+                title: "视频上传",
+                field: "",
+                width: 400,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a id="shopVideoUploaderA_' + row.ShopId + '" href="javascript:return false;" onclick="uploadFile(' + row.ShopId + ');" style="min-width:100px">视频上传</a>';
+                }
+            }]
+        });
+
+    }
+
+    //单经销商上传    
+    function uploadFile(shopId) {
+        debugger
+        selShopId = shopId;
+    }
+
+    var fileTable;
+    var selProject;
+    var selShopId;
+    var selFileType;
+    function GoDetail(shopId) {
+        $("#DetailModal").modal("show");
+        getParams();
+        selShopId = shopId;
+        $.commonGet("ReportFile/ReportFileSearch", {
+            ProjectId: selProject,
+            ShopId: selShopId
+        }, function (data) {
+            if (fileTable) {
+                fileTable.bootstrapTable("load", data);
+            } else {
+                fileTable = $('#files-table').bootstrapTable({
+                    pagination: false,
+                    striped: true, //是否显示行间隔色
+                    height: 500,
+                    showColumns: false, // 开启自定义列显示功能
+                    sortable: true,
+                    columns: [{
+                        title: "序号",
+                        field: 'Seq',
+                        width: 100,
+                        valign: "middle",
+                        align: "center"
+                    }, {
+                        title: "文件名称",
+                        field: "ReportFileName",
+                        width: 400,
+                        valign: "middle",
+                        align: "center",
+                        sortable: false
+                    }, {
+                        title: "上传时间",
+                        field: "InDateTime",
+                        width: 100,
+                        valign: "middle",
+                        align: "center",
+                        sortable: false,
+                        formatter: function (value, row, index) {
+                            return value;
+                        }
+                    }, {
+                        title: "删除",
+                        field: "",
+                        width: 400,
+                        valign: "middle",
+                        align: "center",
+                        sortable: false,
+                        formatter: function (value, row, index) {
+                            return '<a href="javascript:return false;" style="min-width:100px" onclick="deleteFile(' + row.Seq + ')">删除</a>';
+                        }
+                    }]
+                });
+            }
+        })
+    }
+
+    //删除文件
+    function deleteFile(seq) {
+        $.commonPost("ReportFile/ReportFileListSave", {
+            ListJson: JSON.stringify([{
+                ProjectId: selProject,
+                ShopId: selShopId,
+                Seq: seq
+            }])
+        }, function (data) {
+            search();
+        });
+    }
+
+
+    function loadProject() {
+        loadProjectBindDropdownList($("#brand-sel").val(), $("#year").val(), function (data) {
+            $("#ProjectListDiv").empty();
+            if (data) {
+                if (data.length == 0) {
+                    alert("当前年份无期号！");
+                    return;
+                }
+                for (i in data) {
+                    var item = data[i];
+                    var project = $('<label class="dealer-li"> </label>');
+                    project.append($('<input name="Project" type="radio">').val(item.ProjectId))
+                        .append($('<font>').text(item.ProjectName));
+                    $("#ProjectListDiv").append(project);
+                }
+            }
+            $("#ProjectListDiv input[type=radio]").iCheckParser();
+            $("#ProjectListDiv input[type=radio]:first").iCheck("check");
+
+            search();
+            initOss();
+        });
+    }
+
+    function getParams() {
+        var project = $("[name=Project]:checked").val();
+        if (!project) {
+            alert("请选择期号！");
+            return;
+        }
+        selProject = project;
+        $("#brand-sel").val(), $("#year").val()
+        return {
+            projectId: project || '',
+            keyword: $('#keyword').val(),
+            pageNum: 1,
+            pageCount: 15
+        };
+    }
+
+</script>

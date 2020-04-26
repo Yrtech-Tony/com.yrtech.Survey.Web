@@ -21,11 +21,14 @@
     <link href="~/Content/daterangepicker.css" rel="stylesheet">
 
     <!-- Datatables -->
-    <link href="~/Content/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="~/Content/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="~/Content/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="~/Content/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="~/Content/scroller.bootstrap.min.css" rel="stylesheet">
+    @*<link href="~/Content/dataTables.bootstrap.min.css" rel="stylesheet">
+        <link href="~/Content/buttons.bootstrap.min.css" rel="stylesheet">
+        <link href="~/Content/fixedHeader.bootstrap.min.css" rel="stylesheet">
+        <link href="~/Content/responsive.bootstrap.min.css" rel="stylesheet">
+        <link href="~/Content/scroller.bootstrap.min.css" rel="stylesheet">*@
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css">
 
     <!-- Custom Theme Style -->
     <link href="~/Content/custom.css" rel="stylesheet" />
@@ -41,15 +44,15 @@
                     </div>
                     <div class="clearfix"></div>
                     <!-- menu profile quick info -->
-                    <div class="profile clearfix">
-                        <div class="profile_pic">
-                            <img src="/Content/image/user.png" alt="..." class="img-circle profile_img">
-                        </div>
-                        <div class="profile_info">
-                            <span>欢迎,</span>
-                            <h2>@LoginUser.AccountName</h2>
-                        </div>
-                    </div>
+                    @*<div class="profile clearfix">
+                            <div class="profile_pic">
+                                <img src="/Content/image/user.png" alt="..." class="img-circle profile_img">
+                            </div>
+                            <div class="profile_info">
+                                <span>欢迎,</span>
+                                <h2>@LoginUser.AccountName</h2>
+                            </div>
+                        </div>*@
                     <!-- /menu profile quick info -->
                     <br />
                     <!-- sidebar menu -->
@@ -66,19 +69,26 @@
                                 <li>
                                     <a><i class="fa fa-home"></i> 品牌内容管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/BrandContent/ShopIndex">经销商信息</a></li>
-                                        <li><a href="/BrandContent/ProjectIndex">期号</a></li>
+                                        <li><a href="/BrandContent/ShopIndex">经销商管理</a></li>
+                                        <li><a href="/BrandContent/ProjectIndex">期号管理</a></li>
+                                        <li><a href="/BrandContent/ProjectIndex">区域管理</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a><i class="fa fa-home"></i> 期号内容管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/ProjectContent/SubjectIndex">体系</a></li>
-                                        <li><a href="/ProjectContent/SubjectLinkIndex">流程类型</a></li>
+                                        @*<li><a href="/ProjectContent/SubjectIndex">体系</a></li>
+                                            <li><a href="/ProjectContent/SubjectLinkIndex">流程类型</a></li>*@
                                         <li><a href="/ProjectContent/ShopByProjectIndex">执行经销商</a></li>
-                                        <li><a href="/ProjectContent/RecheckErrorTypeIndex">复审错误类型</a></li>
-                                        <li><a href="/ProjectContent/RecheckTypeIndex">复审类型</a></li>
-                                        <li><a href="/ProjectContent/SubjectTypeExamIndex">试卷类型</a></li>
+                                        @*<li><a href="/ProjectContent/RecheckErrorTypeIndex">复审错误类型</a></li>
+                                            <li><a href="/ProjectContent/RecheckTypeIndex">复审类型</a></li>
+                                            <li><a href="/ProjectContent/SubjectTypeExamIndex">试卷类型</a></li>*@
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-home"></i> 报告管理 <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/Report/Index">报告上传</a></li>
                                     </ul>
                                 </li>
                                 <li>
@@ -88,26 +98,26 @@
                                         <li><a href="/Appeal/AppealIndex">申诉反馈列表</a></li>
                                     </ul>
                                 </li>
-                                <li>
-                                    <a><i class="fa fa-home"></i> 复审管理 <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="/Recheck/Index">复审列表</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-home"></i> 轻松拍 <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="/EasyPhoto/EasyPhotoProjectIndex">期号管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoUserInfoIndex">账号管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoUserInfoShopIndex">账号经销商</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoCheckTypeIndex">检查类型管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoNoteIndex">备注管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoPhotoListIndex">照片名称管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoOtherPropertyIndex">其他属性管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoAnswerIndex">清单管理</a></li>
-                                        
-                                    </ul>
-                                </li>
+                                @*<li>
+                                        <a><i class="fa fa-home"></i> 复审管理 <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/Recheck/Index">复审列表</a></li>
+                                        </ul>
+                                    </li>*@
+                                @*<li>
+                                        <a><i class="fa fa-home"></i> 轻松拍 <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/EasyPhoto/EasyPhotoProjectIndex">期号管理</a></li>
+                                            <li><a href="/EasyPhoto/EasyPhotoUserInfoIndex">账号管理</a></li>
+                                            <li><a href="/EasyPhoto/EasyPhotoUserInfoShopIndex">账号经销商</a></li>
+                                            <li><a href="/EasyPhoto/EasyPhotoCheckTypeIndex">检查类型管理</a></li>
+                                            <li><a href="/EasyPhoto/EasyPhotoNoteIndex">备注管理</a></li>
+                                            <li><a href="/EasyPhoto/EasyPhotoPhotoListIndex">照片名称管理</a></li>
+                                            <li><a href="/EasyPhoto/EasyPhotoOtherPropertyIndex">其他属性管理</a></li>
+                                            <li><a href="/EasyPhoto/EasyPhotoAnswerIndex">清单管理</a></li>
+
+                                        </ul>
+                                    </li>*@
                             </ul>
                         </div>
 
@@ -124,7 +134,7 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="/Content/image/user.png" alt="">@LoginUser.AccountName
+                                    <img src="/Content/image/user.png" alt="">欢迎, @LoginUser.AccountName &nbsp;
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right" style="width:100px">
@@ -139,6 +149,7 @@
             <!-- /top navigation -->
             <!-- page content -->
             <div class="right_col" role="main">
+                @*<iframe id="ContentFrame" width="100%" border="0" frameborder="no" style="overflow-x: hidden"></iframe>*@
                 @RenderBody()
             </div>
         </div>
@@ -167,12 +178,14 @@
     <script src="~/Scripts/daterangepicker.js"></script>
     <!-- Custom Theme Scripts -->
     <script src="~/Scripts/custom.js"></script>
-    <!-- Datatables -->
-    <script src="~/Scripts/jquery.dataTables.js"></script>
-    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
-    <script src="~/Scripts/jquery.dataTables-zh-CN.js"></script>
+
     <script src="~/Scripts/comm.js"></script>
     <script src="~/Content/select/js/bootstrap-select.min.js"></script>
+
+
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+
     <script>
         $.fn.iCheckParser = function () {
             if (this) {
@@ -183,14 +196,6 @@
                 })
             }
         }
-
-        function loadView(url) {
-            
-        }
-
-        $(function () {
-        })
-        loadView()
     </script>
     @RenderSection("scripts", required: false)
 </body>

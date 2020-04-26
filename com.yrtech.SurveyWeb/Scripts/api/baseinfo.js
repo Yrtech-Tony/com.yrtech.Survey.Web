@@ -6,7 +6,7 @@ function loadAccount() {
     }, function (data) {
         if (data && data.Status) {
             var lst = JSON.parse(data.Body);
-
+            
             var pageClick = function (curPage) {
                 $("#account-table tbody").empty();
 

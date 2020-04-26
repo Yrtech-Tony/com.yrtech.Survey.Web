@@ -420,7 +420,7 @@ html, body {
     }
 
 body .container.body .right_col {
-    background: #F7F7F7;
+    background: #fff;
 }
 
 .nav-md .container.body .right_col {
@@ -3850,7 +3850,7 @@ ul.project_files li {
 }
 
 .form-group .btn {
-    margin-bottom: -6px;
+    margin-bottom: 0px;
 }
 
 .input-group-btn .btn {

@@ -1,6 +1,12 @@
-﻿@{
+﻿@using com.yrtech.SurveyWeb.Models
+@{
     ViewBag.Title = "巡检系统-申诉管理";
+    AccountDto accountDto = Session["LoginUser"] as AccountDto;
+    accountDto.BusinessAreaList = new List<AreaDto>();
+    accountDto.BusinessAreaList.Add(new AreaDto(){AreaId=1,AreaName="销售"});
+    var BusinessAreaList = new SelectList(accountDto.BusinessAreaList, "AreaId", "AreaName");
 }
+<link href="~/Content/seachform.css" rel="stylesheet" />
 <style>
     .link-btn-cell {
         margin: 3px 5px 0px;
@@ -11,53 +17,102 @@
         vertical-align: middle;
     }
 </style>
+
 <div id="container" class="col-md-12">
-    <form id="searchForm" class="form-horizontal">
+    <form id="searchForm" style="display:none">
         <table class="table table-bordered" style="border:solid 1px #666">
             <tr>
-                <th width="100" align="center">
-                    品牌
+                <th width="85" align="center">
+                    业务类型
                 </th>
-                <td width="200px;">
-                    <select id="brand-sel" class="form-control"></select>
+                <td width="150px;">
+                    @Html.DropDownList("BusinessArea", BusinessAreaList, new { @class = "selectpicker" })
                 </td>
                 <th width="85" align="center">
-                    年份
+                    广域区域
                 </th>
-                <td width="200px;">
-                    <select id="year" class="form-control"></select>
+                <td width="150px;">
+                    <select id="WideArea" name="WideArea" class="selectpicker"></select>
                 </td>
-                <th width="100" align="center">
-                    期号
+                <th width="85" align="center">
+                    大区
+                </th>
+                <td width="150px;">
+                    <select id="BigArea" name="BigArea" class="selectpicker"></select>
+                </td>
+            </tr>
+            <tr>
+                <th width="85" align="center">
+                    中区
                 </th>
                 <td>
-                    <div id="ProjectListDiv">
+                    <select id="MiddleArea" name="MiddleArea" class="selectpicker"></select>
+                </td>
+                <th width="85" align="center">
+                    小区
+                </th>
+                <td>
+                    <select id="SmallArea" name="SmallArea" class="selectpicker"></select>
+                </td>
+                <th width="85" align="center">
+                </th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>
+                    经销商
+                </th>
+                <td colspan="5">
+                    <div id="ShopListDiv">
+
                     </div>
                 </td>
             </tr>
             <tr>
-                <th width="100" align="center">
-                    经销商
+                <th width="85" align="center">
+                    年份
+                </th>
+                <td>
+                    <select id="Year" class="selectpicker"></select>
+                </td>
+                <th width="85" align="center">
+                    期号
                 </th>
                 <td colspan="3">
-                    <input type="text" id="ShopInput" name="ShopInput" class="form-control" style="width:300px" />
+                    <div id="ProjectListDiv">
+
+                    </div>
                 </td>
-                <td colspan="2" class="text-right">
-                    <button type="button" class="btn btn-default" style="width:100px;" id="btnClear">清&nbsp;空</button>
+            </tr>
+            <tr>
+                <td colspan="6" class="text-center" style="line-height:40px;">
+                    <button type="button" class="btn btn-default" style="width:100px; margin-right:20px" id="btnClear">清&nbsp;空</button>
                     <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;询</button>
                 </td>
             </tr>
         </table>
     </form>
-    <div class="list" style="overflow:auto;">
+    <div class="opens">开启搜索</div>
+    <div class="sechform"><div class="collapse1 text-center"><div class="i"><font></font></div></div></div>
+    <form class="form-inline pull-left mb15">
+        <div class="form-group">
+            <input type="text" class="form-control" name="keyword" id="keyword" placeholder="经销商代码/名称" value="">
+        </div>
+        <button type="button" id="btnShopCodeOrNameSearch" class="btn btn-default">搜 索</button>
+    </form>
+    <div class="pull-right">
+        <a href="javascript:void()" id="btnDownloadReport" class="btn btn-default">导出文件</a>
+    </div>
+    <p></p>
+    <div class="list" style="overflow:auto; width:100%">
         <div class="table-responsive comm-table-div">
             <table id="appeal-table" class="table table-bordered table-set">
                 <thead>
                     <tr>
                         <th style="width:90px">操作</th>
                         <th style="width:70px">删除</th>
-                        <th style="width:110px">经销店代码</th>
-                        <th style="width:250px">经销店名称</th>
+                        <th style="width:110px">经销商代码</th>
+                        <th style="width:250px">经销商名称</th>
                         <th style="width:80px">体系号</th>
                         <th style="width:300px">检查点</th>
                         <th style="width:50px">得分</th>
@@ -94,44 +149,112 @@
         </div>
     </div>
 </div>
+
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/api/appeal.js"></script>
 <script src="~/Scripts/page.js"></script>
 <script>
-
+    var brandId = @accountDto.BrandId
     $(function () {
-        $("input[type=checkbox]").iCheckParser();
-        for (var i = 2019; i < 2030; i++) {
-            $("#year").append($("<option>").text(i + "").val(i + ""));
-        }
-
-        $("#year,#brand-sel").change(function () {
-            loadProjectBindDropdownList($("#brand-sel").val(), $("#year").val(), function (data) {
-                $("#ProjectListDiv").empty();
-                $.each(data, function (i, item) {
-                    var project = $('<label class="dealer-li"> </label>');
-                    project.append($('<input name="Project" type="radio">').val(item.ProjectId))
-                        .append($('<font>').text(item.ProjectName));
-                    $("#ProjectListDiv").append(project);
-                })
-                $("#ProjectListDiv input[type=radio]").iCheckParser();
-                $("#ProjectListDiv input[type=radio]:first").iCheck("check");
-            });
+        $('.i,.opens').click(function () {
+            $('.i').children("font").toggleClass("other");
+            $('#searchForm').slideToggle();
+            $('#searchForm').toggleClass('none');
+            $('.opens').slideToggle();
+            $('.opens').toggleClass('none');
         });
 
-        loadBrandBindDropdownList(function (data) {
-            $.each(data, function () {
-                $("#brand-sel").append($("<option>").val(this.BrandId).text(this.BrandName));
+        $("input[type=checkbox]").iCheckParser();
+
+        $("#Year").change(function () {
+            loadProjectBindDropdownList(brandId, $(this).val(), function (data) {
+                $("#ProjectListDiv").empty();
+                if (data) {
+                    if (data.length == 0) {
+                        alert("当前年份无期号！");
+                        return;
+                    }
+                    for (i in data) {
+                        var item = data[i];
+                        var project = $('<label class="dealer-li"> </label>');
+                        project.append($('<input name="Project" type="radio">').val(item.ProjectId))
+                            .append($('<font>').text(item.ProjectName));
+                        $("#ProjectListDiv").append(project);
+                    }
+                }
+                $("#ProjectListDiv input[type=radio]").iCheckParser();
+                $("#ProjectListDiv input[type=radio]:last").iCheck("check");
             })
 
-            $("#year").change();
+        });
+        for (var i = 2019; i < 2030; i++) {
+            $("#Year").append($("<option>").text(i + "").val(i + ""));
+        }
+        $("#Year").change();
+
+        var loadChildArea = function (pType, cType, callback) {
+            $.post("/Appeal/GetAreaListByParent", {
+                area: $("#" + pType).val(),
+                type: pType
+            }, function (data) {
+                $("#" + cType).empty();
+                if (data) {
+                    for (i in data) {
+                        var item = data[i];
+                        $("#" + cType).append($("<option>").text(item.AreaName).val(item.AreaId));
+                    }
+                }
+                setRoleType(cType);
+
+                $("#" + cType).selectpicker("refresh");
+                if (callback) callback();
+            })
+        }
+
+        $("#BusinessArea").change(function () {
+            loadChildArea("BusinessArea", "WideArea");
+        });
+
+        $("#WideArea").change(function () {
+            loadChildArea("WideArea", "BigArea");
+        });
+
+        $("#BigArea").change(function () {
+            loadChildArea("BigArea", "MiddleArea");
+        });
+
+        $("#MiddleArea").change(function () {
+            loadChildArea("MiddleArea", "SmallArea");
+        });
+
+        $("#SmallArea").change(function () {
+            $.post("/Appeal/GetShopListByArea", {
+                SmallArea: $(this).val()
+            }, function (data) {
+                $("#ShopListDiv").empty();
+
+                if (data) {
+                    for (i in data) {
+                        var item = data[i];
+                        var shop = $('<label class="dealer-li"> </label>');
+                        shop.append($('<input type="checkbox">').val(item.ShopId))
+                            .append($('<font>').text(item.ShopName));
+                        $("#ShopListDiv").append(shop);
+                    }
+                }
+                $("#ShopListDiv input[type=checkbox]").iCheckParser();
+                if (roleType == "B_Shop") {
+                    $("#ShopListDiv input[type=checkbox]").iCheck("check");
+                }
+            })
         });
 
         //查询
         $("#btnSearch").click(function () {
+            $("#btnSearch").button('loading');
             var params = getParams();
             if (!params) return;
-            $("#btnSearch").button('loading');
             loadAppeal(params);
         });
 
@@ -139,9 +262,11 @@
             SearchShopFileInfo();
         });
 
-        $("#brand-sel").change();
+        $("#BusinessArea").change();
+
         setTimeout(function () {
             $("#btnSearch").click();
+            $(".selectpicker").selectpicker("refresh");
         }, 1000);
     });
 

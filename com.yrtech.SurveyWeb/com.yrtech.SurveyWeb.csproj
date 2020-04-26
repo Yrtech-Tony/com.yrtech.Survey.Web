@@ -145,6 +145,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProjectContentController.cs" />
     <Compile Include="Controllers\RecheckController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -209,6 +210,7 @@
     <Content Include="Content\responsive.bootstrap.min.css" />
     <Content Include="Content\scroller.bootstrap.css" />
     <Content Include="Content\scroller.bootstrap.min.css" />
+    <Content Include="Content\seachform.css" />
     <Content Include="Content\select\css\bootstrap-select.css" />
     <Content Include="Content\select\css\bootstrap-select.min.css" />
     <Content Include="Content\select\js\bootstrap-select.js" />
@@ -275,6 +277,7 @@
     <Content Include="Scripts\api\easyphoto.js" />
     <Content Include="Scripts\api\login.js" />
     <Content Include="Scripts\api\project.js" />
+    <Content Include="Scripts\api\report.js" />
     <Content Include="Scripts\api\recheck.js" />
     <Content Include="Scripts\bootstrap-progressbar.js" />
     <Content Include="Scripts\bootstrap-progressbar.min.js" />
@@ -505,7 +508,8 @@
     <Content Include="Views\EasyPhoto\EasyPhotoUserInfoShopIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoUserInfoShopEdit.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoAnswerIndex.cshtml" />
-    <Content Include="Views\Home\index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Report\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

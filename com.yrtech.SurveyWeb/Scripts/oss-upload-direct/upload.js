@@ -1,75 +1,66 @@
-//document.write("<script language='javascript' src='../../Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js'></script>");
-//document.write("<script language='javascript' src='../../Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js'></script>");
-//document.write("<script language='javascript' src='../../Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js'></script>");
-//document.write("<script language='javascript' src='../../Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js'></script>");
-//document.write("<script language='javascript' src='../../Scripts/oss-upload-direct/lib/base64.js'></script>");
-
 
 function OSSClient(options) {
-    options = options || {
-        osspath: "LexusReport/Appeal/"
-    };
+    if (!options) {
+        console.log("初始化OSSClient，options不能为空");
+        return;
+    }
+    
     if (!options.complete) {
-        options.complete  = function () {
-            $("#postfiles").attr("disabled", false);
-            $("#selectfiles").attr("disabled", false);
+        options.complete = function () {
+            if (options.postfiles) {
+                $("#" + options.postfiles).attr("disabled", false);
+            }
+            if (options.selectfiles) {
+                $("#" + options.selectfiles).attr("disabled", false);
+            }           
             $("#ossfile").empty();
         }
     }
-    var uploader = init_uploader({
-        fileAddCheck: options.fileAddCheck,
-        fileAddCheckMsg: options.fileAddCheckMsg,
-        filepath: options.osspath,
-        uploaded: function (args) {
-            if (options.uploaded) options.uploaded(args);
-        },
-        complete: function () {
-            $("#postfiles").attr("disabled", false);
-            $("#selectfiles").attr("disabled", false);
-            $("#ossfile").empty();
-        }
-    });
-    $("#postfiles").click(function () {
-        if ($("#ossfile .progress").length == 0) {
-            alert("请选择要上传的文件！");
-            return false;
-        }
-        uploader.start();
-        $(this).attr("disabled", true);
-        $("#selectfiles").attr("disabled", true);
-    });
+
+    var uploader = init_uploader(options);
+    if (options.postfiles) {
+        $("#" + options.postfiles).click(function () {
+            uploader.start();
+            $(this).attr("disabled", true);
+            if (options.selectfiles) {
+                $("#" + options.selectfiles).attr("disabled", true);
+            }
+        });
+    }
+
+    return uploader;    
 }
 function init_uploader(options) {
     var policyText = {
-        "expiration": "2020-01-01T12:00:00.000Z", //设置该Policy的失效时间，超过这个失效时间之后，就没有办法通过这个policy上传文件了
+        "expiration": "2021-01-01T12:00:00.000Z", //设置该Policy的失效时间，超过这个失效时间之后，就没有办法通过这个policy上传文件了
         "conditions": [
         ["content-length-range", 0, 1048576000] // 设置上传文件的大小限制
         ]
     };
 
-    accessid = '3JkljJxvXgjLz80X';
-    accesskey = 'L2ERHORPk3WkjqfGUb27RlxvT8x5f3';
-    host = 'http://yrsurvey.oss-cn-beijing.aliyuncs.com';
+    accessid = 'LTAI4FknXd6u5KvkU9EGgoxP';
+    accesskey = 'RtWE4s9G0dNFCPDcaNvs5k4arOMHCo';
+    osshost = 'http://yrsurvey.oss-cn-beijing.aliyuncs.com';
 
     var policyBase64 = Base64.encode(JSON.stringify(policyText))
     message = policyBase64
     var bytes = Crypto.HMAC(Crypto.SHA1, message, accesskey, { asBytes: true });
     var signature = Crypto.util.bytesToBase64(bytes);
-    var time1 = new Date().Format("yyyyMMddhhmmss");
-    var filename = time1 + '_' + '${filename}';
+    var time1 = new Date().Format("yyyyMMddhhmmssS");
+    var filename = '${filename}' + "_" + time1;
     var uploader = new plupload.Uploader({
         runtimes: 'html5,flash,silverlight,html4',
-        browse_button: 'selectfiles',
+        browse_button: options.selectfiles,
         //runtimes : 'flash',
         container: document.getElementById('upload-container'),
         flash_swf_url: 'lib/plupload-2.1.2/js/Moxie.swf',
         silverlight_xap_url: 'lib/plupload-2.1.2/js/Moxie.xap',
 
-        url: host,
-            multipart_params: {
-        'Content-Disposition': 'attachment;',
+        url: osshost,
+
+        multipart_params: {
             'Filename': filename,
-            'key': options.filepath + filename,
+            'key': options.osspath + filename,
             'policy': policyBase64,
             'OSSAccessKeyId': accessid,
             'success_action_status': '200', //让服务端返回200,不然，默认会返回204
@@ -89,29 +80,16 @@ function init_uploader(options) {
                     }
                 }
                 plupload.each(files, function (file) {
-                   // var strArr =  file.name.split('_');
-                    //if (strArr.length < 4)
-                    //{
-                    //    alert("文件命名不正确!");
-                    //    return;
-                    //}
+                   var item = $('<div id="' + file.id + '" class="col-md-12 upload-item">' + file.name + ' (' + plupload.formatSize(file.size) + ')<b></b>'
+                    + '<div class="progress"><div class="progress-bar progress-bar-success" style="width: 0%;text-align:right;padding-right:10px;"></div></div>'
+                    + '</div>');                   
 
-                    var item = $('<div id="' + file.id + '" class="col-md-12 upload-item">' + file.name + ' (' + plupload.formatSize(file.size) + ')<b></b>'
-                    + '<div class="progress"><div class="progress-bar" style="width: 0%;text-align:right;"></div></div>'
-                    + '</div>');
-                    var close = $("<img />").addClass("close-img").attr("src", "../../Content/image/uploadify-cancel.png")
-                        .appendTo(item);
-                    close.click(function () {                       
-                        for (var i in uploader.files) {
-                            if (uploader.files[i].id === file.id) {
-                                toremove = i;
-                            }
-                        }
-                        uploader.files.splice(toremove, 1);
-                        item.remove();
-                    })
-                    $("#ossfile").append(item);
+                   $("#ossfile").append(item);
                 });
+                if ($("#ossfile div.progress").length > 0) {
+                    uploader.start();
+                    $("#" + options.selectfiles).attr("disabled", true);
+                }
             },
 
             UploadProgress: function (up, file) {                
@@ -128,17 +106,15 @@ function init_uploader(options) {
             },
 
             FileUploaded: function (up, file, info) {
-                var fileName = up.settings.multipart_params.key.replace("${filename}", file.name);
-                var filepath = "";
-                if (fileName.lastIndexOf("/") >= 0) {
-                    filepath = fileName.substr(0, fileName.lastIndexOf("/") + 1);
-                    fileName = fileName.substr(fileName.lastIndexOf("/") + 1);
+                var osspath = up.settings.multipart_params.key.replace("${filename}", file.name);
+                var fileName = '';
+                if (osspath.lastIndexOf("/") >= 0) {
+                    fileName = osspath.substr(osspath.lastIndexOf("/") + 1);
                 }
-
                 if (info.status == 200) {
                     //保存文件信息
                     var args = {};
-                    args.filepath = filepath;
+                    args.osspath = osspath;
                     args.fileName = fileName;
                     if (options.uploaded) {
                         options.uploaded(args);

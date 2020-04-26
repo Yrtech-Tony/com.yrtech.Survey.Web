@@ -2,6 +2,9 @@
 //var easyPhotoUrl = 'http://localhost:57328/';
 var easyPhotoUrl = 'http://123.57.229.128:8020/'
 
+
+var baseApi = baseUrl + "survey/api/";
+
 var dta = {};
 var pageSize = 15;
 var curPageNum = 1;
@@ -15,6 +18,62 @@ function exeQuery(data) {
         "data": data.aoData,
         "success": data.fnCallback
     });
+}
+
+$.commonGet = function (url, params, callback, err) {
+    $.get(baseApi + url, params, function (data) {
+        if (data && data.Status) {
+            if (data.Body) {
+                var lst = JSON.parse(data.Body);
+                if (callback) {
+                    callback(lst);
+                }
+            } else {
+                if (callback) {
+                    callback();
+                }
+            }
+        } else {
+            if (err) {
+                err();
+            }
+            console.log(url + " execute error " + data.Body);
+            layer.alert(data.Body);
+        }
+    }).error(function (jqXHR, textStatus, errorThrown) {
+        console.log(url + " execute error ");
+        if (err) {
+            err();
+        }
+    })
+}
+
+$.commonPost = function (url, params, callback, err) {
+    $.post(baseApi + url, params, function (data) {
+        if (data && data.Status) {
+            if (data.Body) {
+                var lst = JSON.parse(data.Body);
+                if (callback) {
+                    callback(lst);
+                }
+            } else {
+                if (callback) {
+                    callback();
+                }
+            }
+        } else {
+            if (err) {
+                err();
+            }
+            console.log(url + " execute error " + data.Body);
+            layer.alert(data.Body);
+        }
+    }).error(function (jqXHR, textStatus, errorThrown) {
+        console.log(url + " execute error ");
+        if (err) {
+            err();
+        }
+    })
 }
 
 // 共同方法
@@ -48,7 +107,6 @@ function closeModel() {
 
 // 绑定品牌
 function loadBrandBindDropdownList(callback) {
-    debugger
     $.get(baseUrl + "survey/api/Master/GetBrand", {
         tenantId: loginUser.TenantId,
         userId: loginUser.Id,
