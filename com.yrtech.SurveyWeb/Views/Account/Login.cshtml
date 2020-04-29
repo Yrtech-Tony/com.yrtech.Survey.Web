@@ -108,6 +108,13 @@
                     <span>输入用户名和密码.</span>
                 </div>
                 <div class="form-group">
+                    <label class="sr-only" for="tenantCode">公司代码</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="icon-user"></i></span>
+                        <input type="text" class="form-control" id="tenantCode" name="tenantCode" placeholder="公司代码" value="MaxSight" />
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="sr-only" for="txtUsername">用户名</label>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="icon-user"></i></span>
@@ -153,10 +160,16 @@
                     $("#btnLogin").trigger("click");
             };
 
+            $("#tenantCode").popover({ content: "公司代码不能为空", placement: "bottom", trigger: "manual" });
             $("#txtUsername").popover({ content: "用户名不能为空", placement: "bottom", trigger: "manual" });
             $("#txtPassword").popover({ content: "密码不能为空", placement: "bottom", trigger: "manual" });
 
             $("#btnLogin").click(function () {
+                if ($("#tenantCode").val().trim() == '') {
+                    $("#tenantCode").popover("show");
+                    setTimeout(function () { $("#tenantCode").popover("hide"); }, 1000);
+                    return;
+                }
                 if ($("#txtUsername").val().trim() == '') {
                     $("#txtUsername").popover("show");
                     setTimeout(function () { $("#txtUsername").popover("hide"); }, 1000);
@@ -169,10 +182,15 @@
                 }
 
                 $("#btnLogin").button('loading');
-                var params = { accountId: $("#txtUsername").val(), password: $("#txtPassword").val() };
+                var params = {
+                    tenantCode: $("#tenantCode").val(),
+                    accountId: $("#txtUsername").val(),
+                    password: $("#txtPassword").val()
+                };
 
                 login(params, function (data) {
                     if (data.Status) {
+                        window.localStorage.userJson = data.Body;
                         $.post("../Account/AfterLogin", { loginUser: data.Body }, function () {
                             var returnUrl = $("#valueReturnUrl").val();
                             if (!returnUrl || returnUrl == '/') {

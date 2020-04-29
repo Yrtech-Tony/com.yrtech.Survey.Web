@@ -22,6 +22,9 @@ namespace com.yrtech.SurveyWeb.Models
         public string TelNO { get; set; }
         public string Email { get; set; }
         public string HeadPicUrl { get; set; }
+
+        public List<Tenant> TenantList { get; set; }
+        public List<Brand> BrandList { get; set; } 
         public List<ShopDto> ShopList { get; set; }
         public List<AreaDto> SmallAreaList { get; set; }
         public List<AreaDto> MiddleAreaList { get; set; }

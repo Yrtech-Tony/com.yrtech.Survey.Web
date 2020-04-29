@@ -154,8 +154,10 @@
     <Compile Include="Models\AppealDto.cs" />
     <Compile Include="Models\AppealFileDto.cs" />
     <Compile Include="Models\AreaDto.cs" />
+    <Compile Include="Models\Brand.cs" />
     <Compile Include="Models\GroupDto.cs" />
     <Compile Include="Models\ShopDto.cs" />
+    <Compile Include="Models\Tenant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
