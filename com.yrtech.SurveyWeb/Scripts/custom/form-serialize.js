@@ -37,7 +37,12 @@ $.fn.setForm = function (jsonValue) {
     $.each(jsonValue, function (name, ival) {
         var $oinput = obj.find("input[name=" + name + "]");
         if ($oinput.attr("type") == "checkbox") {
-            if (ival !== null) {
+            if (ival === true || ival === 'true') {
+                var checkboxObj = $("[name=" + name + "]");
+                checkboxObj.click();
+            } else if (ival === false || ival === 'false') {
+
+            } else if (ival !== null) {
                 var checkboxObj = $("[name=" + name + "]");
                 var checkArray = ival.split(";");
                 for (var i = 0; i < checkboxObj.length; i++) {

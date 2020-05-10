@@ -66,12 +66,7 @@
         <a href="javascript:void()" id="btnDownloadReport" class="btn btn-default">导出文件</a>
     </div>
     <p></p>
-    <div class="list" style="overflow:auto; width:100%">
-        <table id="report-table" class="table table-bordered table-set"></table>
-    </div>
-    <div id="pagination" class="pull-right">
-        <ul id="pageUl"></ul>
-    </div>
+    <table id="report-table" class="table table-bordered table-set"></table>
 </div>
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
@@ -79,16 +74,14 @@
 
 @*文件列表详细弹出框*@
 <div class="modal bs-example-modal-lg fade" id="DetailModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="width:1000px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">文件列表</h4>
             </div>
-            <div class="modal-body">
-                <div style="max-height: 600px; overflow: auto;">
-                    <table id="files-table" class="table table-striped table-bordered dt-responsive"></table>
-                </div>
+            <div class="modal-body" style="height:650px">
+                <table id="files-table"></table>
             </div>
         </div>
     </div>
@@ -355,61 +348,63 @@
         $("#DetailModal").modal("show");
         getParams();
         selShopId = shopId;
+        if (fileTable) {
+            fileTable.bootstrapTable("destroy");
+        }
+        fileTable = $('#files-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            height: 580,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            scroll:false,
+            columns: [{
+                title: "序号",
+                field: 'SeqNO',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "文件名称",
+                field: "ReportFileName",
+                width: 600,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "上传时间",
+                field: "InDateTime",
+                width: 140,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value;
+                }
+            }, {
+                title: "删除",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:return false;" style="min-width:100px" onclick="deleteFile(' + row.Seq + ')">删除</a>';
+                }
+            }]
+        });
+
         $.commonGet("ReportFile/ReportFileSearch", {
             ProjectId: selProject,
             ShopId: selShopId
         }, function (data) {
-            if (fileTable) {
-                fileTable.bootstrapTable("load", data);
-            } else {
-                fileTable = $('#files-table').bootstrapTable({
-                    pagination: false,
-                    striped: true, //是否显示行间隔色
-                    height: 500,
-                    showColumns: false, // 开启自定义列显示功能
-                    sortable: true,
-                    columns: [{
-                        title: "序号",
-                        field: 'Seq',
-                        width: 100,
-                        valign: "middle",
-                        align: "center"
-                    }, {
-                        title: "文件名称",
-                        field: "ReportFileName",
-                        width: 400,
-                        valign: "middle",
-                        align: "center",
-                        sortable: false
-                    }, {
-                        title: "上传时间",
-                        field: "InDateTime",
-                        width: 100,
-                        valign: "middle",
-                        align: "center",
-                        sortable: false,
-                        formatter: function (value, row, index) {
-                            return value;
-                        }
-                    }, {
-                        title: "删除",
-                        field: "",
-                        width: 400,
-                        valign: "middle",
-                        align: "center",
-                        sortable: false,
-                        formatter: function (value, row, index) {
-                            return '<a href="javascript:return false;" style="min-width:100px" onclick="deleteFile(' + row.Seq + ')">删除</a>';
-                        }
-                    }]
-                });
-            }
+            fileTable.bootstrapTable("load", data);
         })
     }
 
     //删除文件
     function deleteFile(seq) {
-        $.commonPost("ReportFile/ReportFileListSave", {
+        $.commonPost("ReportFile/ReportFileDelete", {
             ListJson: JSON.stringify([{
                 ProjectId: selProject,
                 ShopId: selShopId,

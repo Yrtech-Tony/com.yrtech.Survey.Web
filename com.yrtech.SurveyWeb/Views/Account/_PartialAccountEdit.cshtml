@@ -26,6 +26,22 @@
                 </div>
             </div>
             <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AccountName">
+                    权限类型
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="RoleType" name="RoleType" class="form-control col-md-7 col-xs-12"></select>
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="UseChk">
+                    是否可用
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                    <input type="checkbox" id="UseChk" name="UseChk">
+                </div>
+            </div>
+            <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Email">
                     邮箱
                 </label>
@@ -41,7 +57,22 @@
                     <input id="TelNO" name="TelNO" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
-            @*缺使用与否，权限类型，*@
+            <div class="item form-group" style="display:none">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="TelNO">
+                    添加时间
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="InDateTime" name="InDateTime" type="text" class="form-control col-md-7 col-xs-12" disabled>
+                </div>
+            </div>
+            <div class="item form-group" style="display:none">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="TelNO">
+                    最后修改时间
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ModifyDateTime" name="ModifyDateTime" type="text" class="form-control col-md-7 col-xs-12" disabled>
+                </div>
+            </div>
         </fieldset>
     </form>
 </div>

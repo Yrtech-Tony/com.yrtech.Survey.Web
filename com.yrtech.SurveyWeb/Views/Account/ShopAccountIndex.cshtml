@@ -1,0 +1,287 @@
+﻿@{
+    ViewBag.Title = "厂商账号管理";
+}
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .condition {
+        display: flex;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 20px 30px 20px 23px;
+        border-bottom: 1px solid #f2f3f4;
+        background: #fff;
+        box-shadow: 0 1px 4px 0 #e5e7ea;
+        border-radius: 3px;
+    }
+
+    .result {
+        display: flex;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 20px 30px 20px 23px;
+        border-bottom: 1px solid #f2f3f4;
+        background: #fff;
+        box-shadow: 0 1px 4px 0 #e5e7ea;
+        border-radius: 3px;
+    }
+
+    .form-inline div + div {
+        margin-left: 30px;
+    }
+</style>
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">权限:</label>
+            <select id="role-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">账号:</label>
+            <input type="text" class="form-control" id="AccountId" placeholder="账号">
+        </div>
+        <div class="form-group">
+            <label class="control-label">姓名:</label>
+            <input type="text" class="form-control" id="AccountName" placeholder="姓名">
+        </div>
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnAccountAdd" class="btn btn-primary">添加账号</button>
+    </div>
+</div>
+<div class="result">
+    <table id="account-table" class="table table-bordered table-set"></table>
+</div>
+
+
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveAccount()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/baseinfo.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script src="~/Scripts/page.js"></script>
+<script>
+    $(function () {
+        bindBrandSelect();
+        bindRoleTypeSelect();
+
+        initTable();
+
+        $("#btnAccountAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
+                $("input[type=checkbox]").iCheckParser();
+                $("#RoleType").html($("#role-sel").html());
+            })
+            return false;
+        })
+
+        $("#btnQuery").click(function () {
+            loadShopAccount();
+        }).trigger("click")
+    })
+    var curRow;
+    function saveAccount() {
+        var params = $("#account-form").serializeJson();
+        params.UseChk = $("#UseChk").is(":checked");
+        var json = $("#account-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+        } else {
+            //新增
+            params = $.extend({
+                TenantId: loginUser.TenantId,
+                BrandId: $("#brand-sel").val(),
+                InUserId: loginUser.UserId,
+                ModifyUserId: loginUser.UserId
+            }, params);
+        }
+        $.commonPost("Master/SaveUserInfo", params, function () {
+            loadShopAccount();
+            closeModel();
+        });
+    }
+
+    function loadShopAccount() {
+        $.commonGet("Master/GetUserInfo", {
+            tenantId: loginUser.TenantId,
+            brandId: $("#brand-sel").val(),
+            userId: '',
+            accountId: $("#AccountId").val(),
+            accountName: $("#AccountName").val(),
+            roleTypeCode: $("#role-sel").val(),
+            telNO: '',
+            email: ''
+        }, function (data) {
+            $('#account-table').bootstrapTable("load", data);
+        });
+    }
+
+    function initTable() {
+        //生成用户数据
+        $('#account-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            height: 560,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [5, 10, 20, 50],
+            columns: [{
+                title: "账号",
+                field: 'AccountId',
+                width: 100,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "密码",
+                field: "Password",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "姓名",
+                field: "AccountName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "权限类型",
+                field: "RoleType",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "邮箱",
+                field: "Email",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "电话",
+                field: "TelNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "使用与否",
+                field: "UseChk",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "添加时间",
+                field: "InDateTime",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "修改时间",
+                field: "ModifyDateTime",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "设置所属",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:setArea();" style="min-width:100px">设置所属</a>';
+                }
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+    function goEdit(userId) {
+        $.commonGet("Master/GetUserInfo", {
+            tenantId: loginUser.TenantId,
+            brandId: '',
+            userId: userId,
+            accountId: '',
+            accountName: '',
+            roleTypeCode: '',
+            telNO: '',
+            email: ''
+        }, function (data) {
+            if (data && data.length > 0) {
+                var item = data[0];
+                $("#Modal").modal("show");
+                $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
+                    $("#RoleType").html($("#role-sel").html());
+                    $("#account-form").setForm(item);
+                    $("#account-form").data("json", JSON.stringify(item));
+                    $("input[type=checkbox]").iCheckParser();
+                })
+            }
+        });
+    }
+
+    var objectType = "区域";
+    function setArea() {
+        $("#Modal").modal("show");
+        $("#Modal .modal-footer").hide();
+        if (curRow.RoleType == "B_Shop") {
+            $("#Modal .modal-title").html("所属经销商列表");
+            objectType = "经销商";
+        } else if (curRow.RoleType == "B_Group") {
+            $("#Modal .modal-title").html("所属集团列表");
+            objectType = "集团";
+        } else {
+            $("#Modal .modal-title").html("所属区域列表");
+            objectType = "区域";
+        }
+       
+        $("#Modal .modal-body").load("/Account/RelateUserInfoObject", {}, function () {
+            
+        })
+    }
+</script>
+

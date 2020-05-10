@@ -305,7 +305,6 @@
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\daterangepicker.js" />
     <Content Include="Scripts\fastclick.js" />
-    <Content Include="Scripts\form-serialize.js" />
     <Content Include="Scripts\gauge.js" />
     <Content Include="Scripts\gauge.min.js" />
     <Content Include="Scripts\icheck.js" />
@@ -490,7 +489,7 @@
     <Content Include="Views\ProjectContent\_PartialSubjectTypeExamEdit.cshtml" />
     <Content Include="Views\ProjectContent\SubjectTypeExamIndex.cshtml" />
     <Content Include="Views\System\_PartialBrandEdit.cshtml" />
-    <Content Include="Views\Account\AccountIndex.cshtml" />
+    <Content Include="Views\Account\ShopAccountIndex.cshtml" />
     <Content Include="Views\Account\_PartialAccountEdit.cshtml" />
     <Content Include="Views\BrandContent\_PartialShopEdit.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoProjectIndex.cshtml" />
@@ -512,6 +511,8 @@
     <Content Include="Views\EasyPhoto\EasyPhotoAnswerIndex.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
+    <Content Include="Views\Account\SurveyAccountIndex.cshtml" />
+    <Content Include="Views\Account\_PartialUserInfoObject.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

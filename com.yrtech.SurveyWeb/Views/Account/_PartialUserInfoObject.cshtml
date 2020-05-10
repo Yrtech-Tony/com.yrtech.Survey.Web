@@ -1,0 +1,113 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:right;">
+        <div class="col-md-8">
+            <input id="ObjectCode" type="text" maxlength="15" class="form-control ">
+        </div>
+        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveUserInfoObject()"></a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="userinfo-object-table" class="table table-bordered table-set"></table>
+</div>
+<input type="hidden" id="sel-row" />
+<script>
+    $(function () {
+        $("#btnAdd").text("添加" + objectType);
+
+        initObjectTable();
+        loadUserInfoObject();
+    })
+
+    function initObjectTable() {
+        $('#userinfo-object-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色
+            columns: [{
+                title: objectType+"代码",
+                field: 'ObjectCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: objectType + "名称",
+                field: "ObjectName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "删除",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delUserInfoObject(' + row.Id + ');" style="min-width:100px">删除</a>';
+                }
+            }]
+        });
+    }
+
+    function loadUserInfoObject() {
+        $.commonGet("Master/GetUserInfoObject", {
+            tenantId: loginUser.TenantId,
+            userId: curRow.Id,
+            objectId: '',
+            roleTypeCode: curRow.RoleType
+        }, function (data) {
+            $('#userinfo-object-table').bootstrapTable("load", data);
+        });
+    }
+    function saveUserInfoObject() {
+        console.log("curRow", curRow)
+        var areaType = curRow.RoleType.replace("B_", "");
+
+        //string brandId, string areaId,string areaCode,string areaName,string areaType,string parentId
+        var url = "Master/GetArea";
+        var objectCode = $("#ObjectCode").val();
+        var params={
+            brandId: curRow.TenantId,
+            areaId: '',
+            areaCode: objectCode,
+            areaName: '',
+            areaType: areaType,
+            parentId: ''
+        };
+        if (curRow.RoleType == "B_Shop") {
+            url = "Master/GetShop";
+            params = {
+                brandId: curRow.TenantId,
+                shopId: '',
+                shopCode: objectCode,
+                key: ''
+            }
+        } else if (curRow.RoleType == "B_Group") {
+            url = "Master/GetGroup";
+            params = {
+                brandId: curRow.TenantId,
+                groupCode: objectCode,
+                groupName: ''
+            }
+        }
+        $.commonGet(url, params, function (data) {
+            if (data.length == 0) {
+                alert("输入的" + objectType + "代码不正确，请重新输入");
+            } else {
+                $.commonPost("Master/SaveUserInfoObject", {
+                    UserId: curRow.Id,
+                    ObjectId: data[0].Id
+                }, function () {
+                    loadUserInfoObject();
+                });
+            }
+        });
+    }
+
+    function delUserInfoObject(id) {
+        $.commonPost("Master/DeleteUserInfoObject", { Id: id }, function () {
+            loadUserInfoObject();
+        });
+    }
+</script>

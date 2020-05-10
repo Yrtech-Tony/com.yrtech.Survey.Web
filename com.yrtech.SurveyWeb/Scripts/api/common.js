@@ -2,7 +2,6 @@
 //var easyPhotoUrl = 'http://localhost:57328/';
 var easyPhotoUrl = 'http://123.57.229.128:8020/'
 
-
 var baseApi = baseUrl + "survey/api/";
 
 var dta = {};
@@ -18,6 +17,15 @@ function exeQuery(data) {
         "data": data.aoData,
         "success": data.fnCallback
     });
+}
+
+//加载登录用户
+var loginUser;
+if (window.localStorage.userJson) {
+    loginUser = JSON.parse(window.localStorage.userJson);
+} else {
+    alert("没有登录用户，跳转到登录界面！");
+    window.location.href="/Account/Login";
 }
 
 $.commonGet = function (url, params, callback, err) {
@@ -38,7 +46,7 @@ $.commonGet = function (url, params, callback, err) {
                 err();
             }
             console.log(url + " execute error " + data.Body);
-            layer.alert(data.Body);
+            alert(data.Body);
         }
     }).error(function (jqXHR, textStatus, errorThrown) {
         console.log(url + " execute error ");
@@ -66,7 +74,7 @@ $.commonPost = function (url, params, callback, err) {
                 err();
             }
             console.log(url + " execute error " + data.Body);
-            layer.alert(data.Body);
+            alert(data.Body);
         }
     }).error(function (jqXHR, textStatus, errorThrown) {
         console.log(url + " execute error ");
@@ -106,22 +114,28 @@ function closeModel() {
 }
 
 // 绑定品牌
-function loadBrandBindDropdownList(callback) {
-    $.get(baseUrl + "survey/api/Master/GetBrand", {
-        tenantId: loginUser.TenantId,
-        userId: loginUser.Id,
-        roleType: loginUser.RoleType,
-        brandId: ""
-    }, function (data) {
-        if (data && data.Status) {
-            var lst = JSON.parse(data.Body);
-            if (callback)
-                callback(lst);
-        } else {
-            alert(data.Body);
-        }
-    })
+function bindBrandSelect() {
+    if (loginUser.BrandList) {
+        loginUser.BrandList.forEach(function (brand) {
+            $("#brand-sel").append($("<option>").val(brand.BrandId).text(brand.BrandName));
+        })
+        $("#brand-sel").change();
+    }
 }
+// 绑定权限类型
+function bindRoleTypeSelect(sync) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetRoleType", {
+        type:'B'
+    }, function (data) {
+        data.forEach(function (role) {
+            $("#role-sel").append($("<option>").val(role.RoleTypeCode).text(role.RoleTypeName));
+        })
+        $("#role-sel").change();       
+    })
+    $.ajaxSettings.async = true;
+}
+
 // 绑定期号
 function loadProjectBindDropdownList(brandId, year, callback) {
     $.get(baseUrl + "survey/api/Master/GetProject", {
@@ -138,19 +152,7 @@ function loadProjectBindDropdownList(brandId, year, callback) {
         }
     })
 }
-// 绑定权限类型
-function loadRoleTypeBindDropdownList(callback) {
-    $.get(baseUrl + "survey/api/Master/GetRoleType", {
-    }, function (data) {
-        if (data && data.Status) {
-            var lst = JSON.parse(data.Body);
-            if (callback)
-                callback(lst);
-        } else {
-            alert(data.Body);
-        }
-    })
-}
+
 // 绑定试卷类型
 function loadSubjectTypeExamBindDropdownList(projectId, callback) {
     $.get(baseUrl + "survey/api/Master/GetSubjectTypeExam",

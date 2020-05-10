@@ -37,14 +37,24 @@ namespace com.yrtech.SurveyWeb.Controllers
             return View();
         }
         #region 账号管理
-        public ActionResult AccountIndex()
+        public ActionResult ShopAccountIndex()
         {
             return View();
         }
+        public ActionResult SurveyAccountIndex()
+        {
+            return View();
+        }
+
         public ActionResult AccountEdit()
         {
             return PartialView("_PartialAccountEdit");
         }
+        public ActionResult RelateUserInfoObject()
+        {
+            return PartialView("_PartialUserInfoObject");
+        }
+        
         #endregion
     }
 }
