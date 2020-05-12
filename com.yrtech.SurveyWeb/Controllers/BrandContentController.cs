@@ -20,15 +20,45 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialShopEdit");
 
         }
+
         public ActionResult ProjectIndex()
         {
             return View();
         }
 
-
         public ActionResult ProjectEdit()
         {
             return PartialView("_PartialProjectEdit");
+        }
+
+        public ActionResult AreaIndex()
+        {
+            return View();
+        }
+
+        public ActionResult AreaEdit()
+        {
+            return PartialView("_PartialAreaEdit");
+        }
+
+        public ActionResult SetChildArea()
+        {
+            return PartialView("_PartialSetChildArea");
+        }
+
+        public ActionResult SetShop()
+        {
+            return PartialView("_PartialSetShop");
+        }
+
+        public ActionResult GroupIndex()
+        {
+            return View();
+        }
+
+        public ActionResult GroupEdit()
+        {
+            return PartialView("_PartialGroupEdit");
         }
 
     }

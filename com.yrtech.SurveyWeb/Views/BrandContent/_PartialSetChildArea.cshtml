@@ -1,0 +1,84 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:right;">
+        <div class="col-md-3">
+            <input id="AreaCode" type="text" maxlength="15" class="form-control" placeholder="区域代码">
+        </div>
+        <div class="col-md-4">
+            <input id="AreaName" type="text" maxlength="15" class="form-control" placeholder="区域名称">
+        </div>
+        <a id="btnAdd" class="btn btn-primary col-md-3" style="margin-right:0px" onclick="saveUserInfoBrand()">添加下级区域</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="child-area-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        initChildAreaTable();
+        loadChildArea();
+    })
+
+    function initChildAreaTable() {
+        $('#child-area-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色
+            columns: [{
+                title: "区域代码",
+                field: 'AreaCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "区域名称",
+                field: "AreaName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "区域类型",
+                field: "AreaTypeName",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }]
+        });
+    }
+
+    function loadChildArea() {
+        $.commonGet("Master/GetArea", {
+            brandId: '',
+            areaId: '',
+            areaCode: '',
+            areaName: '',
+            areaType: '',
+            parentId: curRow.AreaId,
+        }, function (data) {
+            $('#child-area-table').bootstrapTable("load", data);
+        });
+    }
+    function saveChildArea() {
+        console.log("curRow", curRow)
+        var areas = ["Business","WideArea","BigArea","MiddlelArea","SmallArea"];
+        var pTypeIndex = areas.indexOf(curRow.AreaType);
+        var typeIndex = pTypeIndex>(areas.length-2)?areas.length-1:pTypeIndex-1;
+        $.commonPost("Master/SaveArea", {
+            BrandId:curRow.BrandId,
+            AreaCode: curRow.Id,
+            AreaName: data[0].BrandId,
+            Usechk:true,
+            ParentId:curRow.AreaId,
+            areaType: areas[typeIndex],
+            InUserId: loginUser.Id,
+            ModifyUserId:loginUser.Id 
+        }, function () {
+            alert("保存下级区域成功！");
+            $("#AreaCode").val("");
+            $("#AreaName").val("");
+            loadChildArea();
+        });
+    }
+
+</script>

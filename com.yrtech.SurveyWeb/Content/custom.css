@@ -887,9 +887,10 @@ a {
 
     .nav.child_menu li:hover,
     .nav.child_menu li.active {
-        background-color: #2489f2;       
+        background-color: #2489f2; 
+        color:#fff;      
     }
-
+    
     .nav.child_menu li {
         padding-left: 36px;
     }
@@ -929,8 +930,10 @@ a {
 }
 
 .nav.side-menu > li.active > a,
-.nav.child_menu > li.active > a{
-    color: hsla(0,0%,100%,.85);
+.nav.child_menu > li.active > a,
+.nav.side-menu > li:hover > a,
+.nav.child_menu > li:hover > a{
+    color: hsla(0,0%,100%,.85) !important;
 } 
 
 .nav.child_menu li li:hover,
@@ -5085,3 +5088,31 @@ ul.notifications {
     right: 14px;
     cursor: pointer;
 }
+
+ .condition {
+        display: flex;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 20px 30px 20px 23px;
+        border-bottom: 1px solid #f2f3f4;
+        background: #fff;
+        box-shadow: 0 1px 4px 0 #e5e7ea;
+        border-radius: 3px;
+    }
+
+    .result {
+        display: flex;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 20px 30px 20px 23px;
+        border-bottom: 1px solid #f2f3f4;
+        background: #fff;
+        box-shadow: 0 1px 4px 0 #e5e7ea;
+        border-radius: 3px;
+    }
+
+    .form-inline div + div {
+        margin-left: 30px;
+    }

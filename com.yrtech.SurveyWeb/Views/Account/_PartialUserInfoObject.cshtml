@@ -10,7 +10,6 @@
 <div class="item form-group">
     <table id="userinfo-object-table" class="table table-bordered table-set"></table>
 </div>
-<input type="hidden" id="sel-row" />
 <script>
     $(function () {
         $("#btnAdd").text("添加" + objectType);
@@ -95,9 +94,17 @@
             if (data.length == 0) {
                 alert("输入的" + objectType + "代码不正确，请重新输入");
             } else {
+                var objId = "";
+                if (curRow.RoleType == "B_Shop") {
+                    objId = data[0].ShopId;
+                } else if (curRow.RoleType == "B_Group") {
+                    objId = data[0].GroupId;
+                } else {
+                    objId = data[0].AreaId;
+                }
                 $.commonPost("Master/SaveUserInfoObject", {
                     UserId: curRow.Id,
-                    ObjectId: data[0].Id
+                    ObjectId: data[0].ShopId
                 }, function () {
                     loadUserInfoObject();
                 });

@@ -91,24 +91,6 @@ function toNullString(str) {
     return "";
 }
 
-function parseParams(data) {
-    try {
-        var tempArr = [];
-        for (var i in data) {
-            var key = encodeURIComponent(i);
-            var value = encodeURIComponent(data[i]);
-            tempArr.push(key + '=' + value);
-        }
-        var urlParamsStr = tempArr.join('&');
-        return urlParamsStr;
-    } catch (err) {
-        return '';
-    }
-}
-function createPage(total, curPageNum, pageSize, pageClick) {
-    var pageCount = total % pageSize == 0 ? Math.floor(total / pageSize) : Math.floor(total / pageSize + 1);
-    createPageNav({ $container: $("#pagination"), pageCount: pageCount, currentNum: curPageNum, totalCount: total, afterFun: pageClick });
-}
 function closeModel() {
     $("#Modal").modal("hide");
 }
@@ -123,15 +105,29 @@ function bindBrandSelect() {
     }
 }
 // 绑定权限类型
-function bindRoleTypeSelect(sync) {
+function bindRoleTypeSelect(type) {
     $.ajaxSettings.async = false;
     $.commonGet("Master/GetRoleType", {
-        type:'B'
+        type: type
     }, function (data) {
         data.forEach(function (role) {
             $("#role-sel").append($("<option>").val(role.RoleTypeCode).text(role.RoleTypeName));
         })
         $("#role-sel").change();       
+    })
+    $.ajaxSettings.async = true;
+}
+// 绑定区域类型
+function bindAreaTypeSelect(type) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetHiddenCode", {
+        hiddenCodeGroup: '区域类型',
+        hiddenCode:''
+    }, function (data) {
+        data.forEach(function (item) {
+            $("#areaType-sel").append($("<option>").val(item.HiddenCode).text(item.HiddenName));
+        })
+        $("#areaType-sel").change();
     })
     $.ajaxSettings.async = true;
 }

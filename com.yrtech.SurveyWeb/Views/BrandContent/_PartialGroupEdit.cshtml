@@ -1,0 +1,72 @@
+﻿<div>
+    <form class="form-horizontal form-label-left" id="project-form">
+        <fieldset>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectCode">
+                    期号代号<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ProjectCode" name="ProjectCode" required="required" type="text" maxlength="15" class="form-control">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectName">
+                    期号名称<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ProjectName" name="ProjectName" required="required" type="text" maxlength="15" class="form-control">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Year">
+                    年份
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="Year" name="Year" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Quarter">
+                    季度
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="Quarter" name="Quarter" type="text" maxlength="15" class="form-control ">
+                </div>
+            </div>
+            <div class="item form-group" style="display:none">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DataScore">
+                    数据来源
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="DataScore" class="form-control">
+                        <option value=""></option>
+                        <option value="系统打分">系统打分</option>
+                        <option value="Excel导入">Excel导入</option>
+                    </select>
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
+                    序号
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="OrderNO" name="OrderNO" type="text" maxlength="15" class="form-control">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
+                    品牌
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="BrandId" name="BrandId" class="form-control"></select>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<script>
+    $("#Year").html($("#year-sel").html());
+    $("#BrandId").html($("#brand-sel").html());
+</script>
+

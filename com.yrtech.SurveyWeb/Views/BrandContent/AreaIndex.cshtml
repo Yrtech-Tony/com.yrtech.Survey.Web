@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "调研账号管理";
+    ViewBag.Title = "巡检系统-区域管理";
 }
 <style>
     .operation {
@@ -14,27 +14,31 @@
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
-            <label class="control-label">权限:</label>
-            <select id="role-sel" class="form-control" style="width:200px;"></select>
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
         </div>
         <div class="form-group">
-            <label class="control-label">账号:</label>
-            <input type="text" class="form-control" id="AccountId" placeholder="账号">
+            <label class="control-label">区域类型:</label>
+            <select id="areaType-sel" class="form-control" style="width:200px;">
+            </select>
         </div>
         <div class="form-group">
-            <label class="control-label">姓名:</label>
-            <input type="text" class="form-control" id="AccountName" placeholder="姓名">
+            <label class="control-label">区域代码:</label>
+            <input id="AreaCodeQuery" type="text" class="form-control" placeholder="账号">
+        </div>
+        <div class="form-group">
+            <label class="control-label">区域名称:</label>
+            <input id="AreaNameQuery" type="text" class="form-control" placeholder="姓名">
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnAccountAdd" class="btn btn-primary">添加账号</button>
+        <button id="btnAreaAdd" class="btn btn-primary">添加业务类型</button>
     </div>
 </div>
 <div class="result">
-    <table id="account-table" class="table table-bordered table-set"></table>
+    <table id="area-table" class="table table-bordered table-set"></table>
 </div>
-
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -45,7 +49,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveAccount()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveArea()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -56,67 +60,72 @@
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script>
     $(function () {
-        bindRoleTypeSelect("A");
+        $('title').html('@ViewBag.Title')
 
-        initTable();
+        bindBrandSelect();
+        bindAreaTypeSelect();
 
-        $("#btnAccountAdd").click(function () {
-            $("#Modal .modal-body").empty();
-            $("#Modal").modal("show");           
-            $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
+        $("#brand-sel").change(function () {
+            loadArea();
+        })
+        $("#brand-sel").change(function () {
+            loadArea();
+        })
+        $("#btnAreaAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/BrandContent/AreaEdit", {}, function () {
                 $("input[type=checkbox]").iCheckParser();
-                $("#RoleType").html($("#role-sel").html());
             })
             return false;
         })
 
+        initAreaTable();
         $("#btnQuery").click(function () {
-            loadShopAccount();
-        }).trigger("click")
+            loadArea();
+        }).trigger("click");
     })
 
     var curRow;
-    function saveAccount() {
-        var params = $("#account-form").serializeJson();
-        params.UseChk = $("#UseChk").is(":checked");
-        var json = $("#account-form").data("json");
+    function saveArea() {
+        var params = $("#area-form").serializeJson();
+        params.UseChk = $("#UseChk").is(":checked");       
+        var json = $("#area-form").data("json");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
             params = $.extend(json, params);
         } else {
             //新增
+            params.AreaType = 'Business';
             params = $.extend({
                 TenantId: loginUser.TenantId,
-                BrandId: $("#brand-sel").val(),
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
             }, params);
         }
-        $.commonPost("Master/SaveUserInfo", params, function () {
-            loadShopAccount();
+        $.commonPost("Master/SaveArea", params, function () {
+            loadArea();
             closeModel();
         });
     }
 
-    function loadShopAccount() {
-        $.commonGet("Master/GetUserInfo", {
-            tenantId: loginUser.TenantId,
-            brandId: '',
-            userId: '',
-            accountId: $("#AccountId").val(),
-            accountName: $("#AccountName").val(),
-            roleTypeCode: $("#role-sel").val(),
-            telNO: '',
-            email: ''
+    function loadArea() {
+        $.commonGet("Master/GetArea", {
+            brandId: $("#brand-sel").val(),
+            areaId: '',
+            areaCode: $("#AreaCodeQuery").val(),
+            areaType: $("#areaType-sel").val(),
+            areaName: $("#AreaNameQuery").val(),
+            parentId:''
         }, function (data) {
-            $('#account-table').bootstrapTable("load", data);
+            console.log("areas", data)
+            $('#area-table').bootstrapTable("load", data);
         });
     }
 
-    function initTable() {
-        //生成用户数据
-        $('#account-table').bootstrapTable({
+    //初始化经销商表格
+    function initAreaTable() {
+        $('#area-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
             height: 560,
@@ -126,8 +135,8 @@
             pageSize: 15,
             pageList: [5, 10, 20, 50],
             columns: [{
-                title: "账号",
-                field: 'AccountId',
+                title: "区域代码",
+                field: 'AreaCode',
                 width: 100,
                 valign: "middle",
                 align: "center",
@@ -135,40 +144,44 @@
                     return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
                 }
             }, {
-                title: "密码",
-                field: "Password",
+                title: "区域名称",
+                field: "AreaName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false 
+            }, {
+                title: "区域类型",
+                field: "AreaTypeName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },{
+                title: "上级区域",
+                field: "ParentName",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "姓名",
-                field: "AccountName",
+                title: "下级区域添加",
+                field: 'AreaCode',
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goChildArea(' + row.AreaId + ');" style="min-width:100px">下级区域添加</a>';
+                }
             }, {
-                title: "权限类型",
-                field: "RoleType",
+                title: "经销商设置",
+                field: 'AreaCode',
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
-            }, {
-                title: "邮箱",
-                field: "Email",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "电话",
-                field: "TelNO",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goShop(' + row.AreaId + ');" style="min-width:100px">经销商设置</a>';
+                }
             }, {
                 title: "使用与否",
                 field: "UseChk",
@@ -193,16 +206,6 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            }, {
-                title: "关联品牌",
-                field: "",
-                width: 120,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:setUserBrand();" style="min-width:100px">关联品牌</a>';
-                }
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
@@ -210,39 +213,39 @@
         });
     }
 
-    function goEdit(userId) {
-        $.commonGet("Master/GetUserInfo", {
-            tenantId: loginUser.TenantId,
-            brandId: '',
-            userId: userId,
-            accountId: '',
-            accountName: '',
-            roleTypeCode: '',
-            telNO: '',
-            email: ''
-        }, function (data) {
-            if (data && data.length > 0) {
-                var item = data[0];
-                $("#Modal .modal-body").empty();
-                $("#Modal").modal("show");               
-                $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
-                    $("#RoleType").html($("#role-sel").html());
-                    $("#account-form").setForm(item);
-                    $("#account-form").data("json", JSON.stringify(item));
-                    $("input[type=checkbox]").iCheckParser();
-                })
-            }
-        });
-    }
-
-    function setUserBrand() {
+    function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-footer").hide();
-        $("#Modal .modal-title").html("品牌列表");
-        $("#Modal .modal-body").load("/Account/RelateUserInfoBrand", {}, function () {
+        $("#Modal .modal-body").load("/BrandContent/AreaEdit", {}, function () {
+            $("#area-form").setForm(curRow);
+            $("#area-form").data("json", JSON.stringify(curRow));
+            $("input[type=checkbox]").iCheckParser();
 
         })
     }
+
+    function goChildArea() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/BrandContent/SetChildArea", {}, function () {
+            $("#area-form").setForm(curRow);
+            $("#area-form").data("json", JSON.stringify(curRow));
+            $("input[type=checkbox]").iCheckParser();
+
+        })
+    }
+    function goShop() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/BrandContent/SetShop", {}, function () {
+            $("#area-form").setForm(curRow);
+            $("#area-form").data("json", JSON.stringify(curRow));
+            $("input[type=checkbox]").iCheckParser();
+
+        })
+    }
+    
 </script>
+
+
 

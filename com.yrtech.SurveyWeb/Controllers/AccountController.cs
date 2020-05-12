@@ -54,6 +54,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialUserInfoObject");
         }
+        public ActionResult RelateUserInfoBrand()
+        {
+            return PartialView("_PartialUserInfoBrand");
+        }
         
         #endregion
     }

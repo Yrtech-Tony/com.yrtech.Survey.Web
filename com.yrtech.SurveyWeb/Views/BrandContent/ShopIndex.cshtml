@@ -1,47 +1,30 @@
 ﻿@{
     ViewBag.Title = "巡检系统-经销商管理";
 }
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商代码:</label>
+            <input type="text" class="form-control" id="ShopCode" placeholder="账号">
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商名称:</label>
+            <input type="text" class="form-control" id="ShopName" placeholder="姓名">
+        </div>
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnShopAdd" class="btn btn-primary">添加经销商</button>
+    </div>
+</div>
+<div class="result">
+    <table id="shop-table" class="table table-bordered table-set"></table>
+</div>
 
-<div class="page-title">
-    <div class="title_left">
-        <h3>经销商管理 <small></small></h3>
-    </div>
-</div>
-<div class="operation col-md-offset-6 form-horizontal">
-    <div class="row">
-        <div class="col-md-5">
-            <input id="ShopKey" name="ShopKey" required="required" type="text" maxlength="15" class="form-control">
-        </div>
-        <div class="col-md-3">
-            <select id="shop-brand" class="form-control"></select>
-        </div>
-        <div class="col-md-2">
-            <button id="btnShopSearch" class="btn btn-primary form-control">查&nbsp;&nbsp;询</button>
-        </div>
-        <div class="col-md-2">
-            <button id="btnShopAdd" class="btn btn-primary form-control">新&nbsp;&nbsp;增</button>
-        </div>
-    </div>
-</div>
-<table id="shop-table" class="table table-striped table-bordered dt-responsive">
-    <thead>
-        <tr>
-            <th>操作</th>
-            <th>经销商编号</th>
-            <th>经销商名称</th>
-            <th>经销商简称</th>
-            <th>所属省份</th>
-            <th>所属城市</th>
-            <th>是否使用</th>
-            <th>添加时间</th>
-            <th>最新修改时间</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-<div id="pagination" class="pull-right">
-    <ul id="pageUl"></ul>
-</div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -60,30 +43,168 @@
 </div>
 
 <script src="~/Scripts/api/common.js"></script>
-<script src="~/Scripts/api/brand.js"></script>
-<script src="~/Scripts/form-serialize.js"></script>
-<script src="~/Scripts/page.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script>
     $(function () {
-        loadBrandBindDropdownList(function (data) {
-            $.each(data, function () {
-                $("#shop-brand").append($("<option>").val(this.BrandId).text(this.BrandName));
-            });
-            $("#shop-brand").change();
-        });
-        $("#shop-brand").change(function () {
-            loadShop();
-        })
+        $('title').html('@ViewBag.Title')
+
+        bindBrandSelect();
+        initShopTable();
         $("#btnShopAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/BrandContent/ShopEdit", {}, function () {
+                bindGroupSel();
             })
             return false;
         })
-        $("#btnShopSearch").click(function () {
+
+        $("#btnQuery").click(function () {
             loadShop();
-        })
+        }).trigger("click");
     })
+    var curRow;
+    function saveShop() {
+        var params = $("#shop-form").serializeJson();
+        var json = $("#shop-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+        } else {
+            //新增
+            params = $.extend({
+                TenantId: loginUser.TenantId,
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, params);
+        }
+        $.commonPost("Master/SaveShop", params, function () {
+            loadShop();
+            closeModel();
+        });
+    }
+
+    function loadShop() {
+        $.commonGet("Master/GetShop", {
+            brandId: $("#brand-sel").val(),
+            shopId: '',
+            shopCode: $("#ShopCode").val(),
+            key: $("#ShopName").val()
+        }, function (data) {
+            console.log("shops",data)
+            $('#shop-table').bootstrapTable("load", data);
+        });
+    }
+
+    //初始化经销商表格
+    function initShopTable() {
+        $('#shop-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            height: 560,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [5, 10, 20, 50],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 100,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "经销商简称",
+                field: "ShopShortName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "省份",
+                field: "Province",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "城市",
+                field: "City",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "集团",
+                field: "GroupName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "使用与否",
+                field: "UseChk",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '是' : '否';
+                }
+            }, {
+                title: "添加时间",
+                field: "InDateTime",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "修改时间",
+                field: "ModifyDateTime",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+    function goEdit() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/BrandContent/ShopEdit", {}, function () {
+            $("#shop-form").setForm(curRow);
+            $("#shop-form").data("json", JSON.stringify(curRow));
+            bindGroupSel();
+        })
+    }
+
+    function bindGroupSel() {
+        $.commonGet("Master/GetGroup", {
+            brandId: $("#brand-sel").val(),
+            groupId:'',
+            groupCode:'',
+            groupName:''
+        }, function (data) {
+            data.forEach(function (group) {
+                $("#GroupId").append($("<option>").val(group.GroupCode).text(group.GroupName));
+            })
+        })
+        
+    }
 </script>
 
 

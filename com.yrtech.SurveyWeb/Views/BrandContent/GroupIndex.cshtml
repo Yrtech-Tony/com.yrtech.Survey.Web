@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "调研账号管理";
+    ViewBag.Title = "巡检系统-集团管理";
 }
 <style>
     .operation {
@@ -14,27 +14,22 @@
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
-            <label class="control-label">权限:</label>
-            <select id="role-sel" class="form-control" style="width:200px;"></select>
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
         </div>
         <div class="form-group">
-            <label class="control-label">账号:</label>
-            <input type="text" class="form-control" id="AccountId" placeholder="账号">
-        </div>
-        <div class="form-group">
-            <label class="control-label">姓名:</label>
-            <input type="text" class="form-control" id="AccountName" placeholder="姓名">
+            <label class="control-label">区域类型:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnAccountAdd" class="btn btn-primary">添加账号</button>
+        <button id="btnProjectAdd" class="btn btn-primary">添加期号</button>
     </div>
 </div>
 <div class="result">
-    <table id="account-table" class="table table-bordered table-set"></table>
+    <table id="project-table" class="table table-bordered table-set"></table>
 </div>
-
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -45,7 +40,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveAccount()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -56,30 +51,35 @@
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script>
     $(function () {
-        bindRoleTypeSelect("A");
+        $('title').html('@ViewBag.Title')
 
-        initTable();
+        bindBrandSelect();
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        $("#year-sel").val("2020");
 
-        $("#btnAccountAdd").click(function () {
-            $("#Modal .modal-body").empty();
-            $("#Modal").modal("show");           
-            $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
-                $("input[type=checkbox]").iCheckParser();
-                $("#RoleType").html($("#role-sel").html());
+        $("#brand-sel").change(function () {
+            loadProject();
+        })
+        $("#btnProjectAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {                
             })
             return false;
         })
 
+        initProjectTable();
         $("#btnQuery").click(function () {
-            loadShopAccount();
-        }).trigger("click")
+            loadProject();
+        }).trigger("click");
     })
 
     var curRow;
-    function saveAccount() {
-        var params = $("#account-form").serializeJson();
-        params.UseChk = $("#UseChk").is(":checked");
-        var json = $("#account-form").data("json");
+    function saveProject() {
+        debugger
+        var params = $("#project-form").serializeJson();
+        var json = $("#project-form").data("json");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
@@ -88,35 +88,30 @@
             //新增
             params = $.extend({
                 TenantId: loginUser.TenantId,
-                BrandId: $("#brand-sel").val(),
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
             }, params);
         }
-        $.commonPost("Master/SaveUserInfo", params, function () {
-            loadShopAccount();
+        $.commonPost("Master/SaveProject", params, function () {
+            loadProject();
             closeModel();
         });
     }
 
-    function loadShopAccount() {
-        $.commonGet("Master/GetUserInfo", {
-            tenantId: loginUser.TenantId,
-            brandId: '',
-            userId: '',
-            accountId: $("#AccountId").val(),
-            accountName: $("#AccountName").val(),
-            roleTypeCode: $("#role-sel").val(),
-            telNO: '',
-            email: ''
+    function loadProject() { 
+        $.commonGet("Master/GetProject", {
+            brandId: $("#brand-sel").val(),
+            projectId: '',
+            year: $("#year-sel").val()
         }, function (data) {
-            $('#account-table').bootstrapTable("load", data);
+            console.log("projects", data)
+            $('#project-table').bootstrapTable("load", data);
         });
     }
 
-    function initTable() {
-        //生成用户数据
-        $('#account-table').bootstrapTable({
+    //初始化经销商表格
+    function initProjectTable() {
+        $('#project-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
             height: 560,
@@ -126,8 +121,8 @@
             pageSize: 15,
             pageList: [5, 10, 20, 50],
             columns: [{
-                title: "账号",
-                field: 'AccountId',
+                title: "经销商代码",
+                field: 'ProjectCode',
                 width: 100,
                 valign: "middle",
                 align: "center",
@@ -135,36 +130,36 @@
                     return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
                 }
             }, {
-                title: "密码",
-                field: "Password",
+                title: "经销商名称",
+                field: "ProjectName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "经销商简称",
+                field: "ProjectShortName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "省份",
+                field: "Province",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "姓名",
-                field: "AccountName",
+                title: "城市",
+                field: "City",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "权限类型",
-                field: "RoleType",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "邮箱",
-                field: "Email",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "电话",
-                field: "TelNO",
+                title: "集团",
+                field: "GroupName",
                 width: 100,
                 valign: "middle",
                 align: "center",
@@ -193,16 +188,6 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            }, {
-                title: "关联品牌",
-                field: "",
-                width: 120,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:setUserBrand();" style="min-width:100px">关联品牌</a>';
-                }
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
@@ -210,39 +195,16 @@
         });
     }
 
-    function goEdit(userId) {
-        $.commonGet("Master/GetUserInfo", {
-            tenantId: loginUser.TenantId,
-            brandId: '',
-            userId: userId,
-            accountId: '',
-            accountName: '',
-            roleTypeCode: '',
-            telNO: '',
-            email: ''
-        }, function (data) {
-            if (data && data.length > 0) {
-                var item = data[0];
-                $("#Modal .modal-body").empty();
-                $("#Modal").modal("show");               
-                $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
-                    $("#RoleType").html($("#role-sel").html());
-                    $("#account-form").setForm(item);
-                    $("#account-form").data("json", JSON.stringify(item));
-                    $("input[type=checkbox]").iCheckParser();
-                })
-            }
-        });
-    }
-
-    function setUserBrand() {
+    function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-footer").hide();
-        $("#Modal .modal-title").html("品牌列表");
-        $("#Modal .modal-body").load("/Account/RelateUserInfoBrand", {}, function () {
-
+        $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {
+            $("#project-form").setForm(curRow);
+            $("#project-form").data("json", JSON.stringify(curRow));
         })
     }
+
 </script>
+
+
 

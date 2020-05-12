@@ -10,34 +10,6 @@
         .operation .btn {
             width: 100px;
         }
-
-    .condition {
-        display: flex;
-        -ms-flex-pack: justify;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        padding: 20px 30px 20px 23px;
-        border-bottom: 1px solid #f2f3f4;
-        background: #fff;
-        box-shadow: 0 1px 4px 0 #e5e7ea;
-        border-radius: 3px;
-    }
-
-    .result {
-        display: flex;
-        -ms-flex-pack: justify;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        padding: 20px 30px 20px 23px;
-        border-bottom: 1px solid #f2f3f4;
-        background: #fff;
-        box-shadow: 0 1px 4px 0 #e5e7ea;
-        border-radius: 3px;
-    }
-
-    .form-inline div + div {
-        margin-left: 30px;
-    }
 </style>
 <div class="condition">
     <div class="form-inline">
@@ -51,11 +23,11 @@
         </div>
         <div class="form-group">
             <label class="control-label">账号:</label>
-            <input type="text" class="form-control" id="AccountId" placeholder="账号">
+            <input id="AccountIdQuery" type="text" class="form-control" placeholder="账号">
         </div>
         <div class="form-group">
             <label class="control-label">姓名:</label>
-            <input type="text" class="form-control" id="AccountName" placeholder="姓名">
+            <input id="AccountNameQuery" type="text" class="form-control" placeholder="姓名">
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
@@ -66,7 +38,6 @@
 <div class="result">
     <table id="account-table" class="table table-bordered table-set"></table>
 </div>
-
 
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -85,18 +56,17 @@
     </div>
 </div>
 <script src="~/Scripts/api/common.js"></script>
-<script src="~/Scripts/api/baseinfo.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
-<script src="~/Scripts/page.js"></script>
 <script>
     $(function () {
         bindBrandSelect();
-        bindRoleTypeSelect();
+        bindRoleTypeSelect("B");
 
         initTable();
 
         $("#btnAccountAdd").click(function () {
             $("#Modal").modal("show");
+            $("#Modal .modal-body").empty();
             $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
                 $("input[type=checkbox]").iCheckParser();
                 $("#RoleType").html($("#role-sel").html());
@@ -122,8 +92,8 @@
             params = $.extend({
                 TenantId: loginUser.TenantId,
                 BrandId: $("#brand-sel").val(),
-                InUserId: loginUser.UserId,
-                ModifyUserId: loginUser.UserId
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
             }, params);
         }
         $.commonPost("Master/SaveUserInfo", params, function () {
@@ -137,8 +107,8 @@
             tenantId: loginUser.TenantId,
             brandId: $("#brand-sel").val(),
             userId: '',
-            accountId: $("#AccountId").val(),
-            accountName: $("#AccountName").val(),
+            accountId: $("#AccountIdQuery").val(),
+            accountName: $("#AccountNameQuery").val(),
             roleTypeCode: $("#role-sel").val(),
             telNO: '',
             email: ''
@@ -208,7 +178,10 @@
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value?'是':'否';
+                }
             }, {
                 title: "添加时间",
                 field: "InDateTime",
@@ -253,7 +226,8 @@
         }, function (data) {
             if (data && data.length > 0) {
                 var item = data[0];
-                $("#Modal").modal("show");
+                $("#Modal .modal-body").empty();
+                $("#Modal").modal("show");                
                 $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
                     $("#RoleType").html($("#role-sel").html());
                     $("#account-form").setForm(item);
@@ -266,6 +240,7 @@
 
     var objectType = "区域";
     function setArea() {
+        $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .modal-footer").hide();
         if (curRow.RoleType == "B_Shop") {
@@ -278,9 +253,9 @@
             $("#Modal .modal-title").html("所属区域列表");
             objectType = "区域";
         }
-       
+
         $("#Modal .modal-body").load("/Account/RelateUserInfoObject", {}, function () {
-            
+
         })
     }
 </script>
