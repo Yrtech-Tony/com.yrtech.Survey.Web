@@ -513,6 +513,13 @@
     <Content Include="Views\Report\Index.cshtml" />
     <Content Include="Views\Account\SurveyAccountIndex.cshtml" />
     <Content Include="Views\Account\_PartialUserInfoObject.cshtml" />
+    <Content Include="Views\Account\_PartialUserInfoBrand.cshtml" />
+    <Content Include="Views\BrandContent\AreaIndex.cshtml" />
+    <Content Include="Views\BrandContent\GroupIndex.cshtml" />
+    <Content Include="Views\BrandContent\_PartialGroupEdit.cshtml" />
+    <Content Include="Views\BrandContent\_PartialAreaEdit.cshtml" />
+    <Content Include="Views\BrandContent\_PartialSetChildArea.cshtml" />
+    <Content Include="Views\BrandContent\_PartialSetShop.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
