@@ -48,66 +48,36 @@
                         <div class="menu_section">
                             <ul class="nav side-menu">
                                 <li class="active">
-                                    <a><i class="fa fa-home"></i> 基本信息管理 <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li class="main-page"><a href="/Account/ShopAccountIndex">厂商账号管理</a></li>
-                                        <li><a href="/Account/SurveyAccountIndex">调研账号管理</a></li>
-                                        <li><a href="/System/BrandIndex">品牌</a></li>                                        
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-home"></i> 品牌内容管理 <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="/BrandContent/ShopIndex">经销商管理</a></li>
-                                        <li><a href="/BrandContent/ProjectIndex">期号管理</a></li>
-                                        <li><a href="/BrandContent/AreaIndex">区域管理</a></li>
-                                        <li><a href="/BrandContent/GroupIndex">集团管理</a></li>                                        
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-home"></i> 期号内容管理 <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        @*<li><a href="/ProjectContent/SubjectIndex">体系</a></li>
-                                            <li><a href="/ProjectContent/SubjectLinkIndex">流程类型</a></li>*@
-                                        <li><a href="/ProjectContent/ShopByProjectIndex">执行经销商</a></li>
-                                        @*<li><a href="/ProjectContent/RecheckErrorTypeIndex">复审错误类型</a></li>
-                                            <li><a href="/ProjectContent/RecheckTypeIndex">复审类型</a></li>
-                                            <li><a href="/ProjectContent/SubjectTypeExamIndex">试卷类型</a></li>*@
-                                    </ul>
-                                </li>
-                                <li>
                                     <a><i class="fa fa-home"></i> 报告管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/Report/Index">报告上传</a></li>
+                                        <li class="main-page"><a href="/Report/Index">报告上传</a></li>
                                     </ul>
                                 </li>
                                 <li>
+                                    <a><i class="fa fa-home"></i> 基本信息管理 <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/System/BrandIndex">品牌</a></li> 
+                                        <li><a href="/BrandContent/AreaIndex">区域管理</a></li>
+                                        <li><a href="/BrandContent/GroupIndex">集团管理</a></li>
+                                        <li><a href="/BrandContent/ShopIndex">经销商管理</a></li>
+                                        <li><a href="/BrandContent/ProjectIndex">期号管理</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-home"></i>账号管理  <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/Account/ShopAccountIndex">厂商账号管理</a></li>
+                                        <li><a href="/Account/SurveyAccountIndex">调研账号管理</a></li>                                                                              
+                                    </ul>
+                                </li>
+                               
+                                @*<li>
                                     <a><i class="fa fa-home"></i> 申诉管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/Appeal/AppealImport">申诉数据生成</a></li>
                                         <li><a href="/Appeal/AppealIndex">申诉反馈列表</a></li>
                                     </ul>
-                                </li>
-                                @*<li>
-                                        <a><i class="fa fa-home"></i> 复审管理 <span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
-                                            <li><a href="/Recheck/Index">复审列表</a></li>
-                                        </ul>
-                                    </li>*@
-                                @*<li>
-                                        <a><i class="fa fa-home"></i> 轻松拍 <span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
-                                            <li><a href="/EasyPhoto/EasyPhotoProjectIndex">期号管理</a></li>
-                                            <li><a href="/EasyPhoto/EasyPhotoUserInfoIndex">账号管理</a></li>
-                                            <li><a href="/EasyPhoto/EasyPhotoUserInfoShopIndex">账号经销商</a></li>
-                                            <li><a href="/EasyPhoto/EasyPhotoCheckTypeIndex">检查类型管理</a></li>
-                                            <li><a href="/EasyPhoto/EasyPhotoNoteIndex">备注管理</a></li>
-                                            <li><a href="/EasyPhoto/EasyPhotoPhotoListIndex">照片名称管理</a></li>
-                                            <li><a href="/EasyPhoto/EasyPhotoOtherPropertyIndex">其他属性管理</a></li>
-                                            <li><a href="/EasyPhoto/EasyPhotoAnswerIndex">清单管理</a></li>
-
-                                        </ul>
-                                    </li>*@
+                                </li>*@
                             </ul>
                         </div>
 
@@ -177,6 +147,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 
     <script>
+        //加载登录用户
+        var loginUser;
+        if (window.localStorage.userJson) {
+            loginUser = JSON.parse(window.localStorage.userJson);
+        } else {
+            alert("没有登录用户，跳转到登录界面！");
+            window.location.href = "/Account/Login";
+        }
+
         $.fn.iCheckParser = function () {
             if (this) {
                 $(this).iCheck({

@@ -19,15 +19,6 @@ function exeQuery(data) {
     });
 }
 
-//加载登录用户
-var loginUser;
-if (window.localStorage.userJson) {
-    loginUser = JSON.parse(window.localStorage.userJson);
-} else {
-    alert("没有登录用户，跳转到登录界面！");
-    window.location.href="/Account/Login";
-}
-
 $.commonGet = function (url, params, callback, err) {
     $.get(baseApi + url, params, function (data) {
         if (data && data.Status) {
@@ -133,10 +124,10 @@ function bindAreaTypeSelect(type) {
 }
 
 // 绑定期号
-function loadProjectBindDropdownList(brandId, year, callback) {
-    $.get(baseUrl + "survey/api/Master/GetProject", {
-        brandId: brandId,
-        year: year,
+function bindProjectSelect() {
+    $.commonGet("Master/GetProject", {
+        brandId: $("#brand-sel").val(),
+        year: $("#year-sel").val(),
         projectId: ""
     }, function (data) {
         if (data && data.Status) {
@@ -147,22 +138,4 @@ function loadProjectBindDropdownList(brandId, year, callback) {
             alert(data.Body);
         }
     })
-}
-
-// 绑定试卷类型
-function loadSubjectTypeExamBindDropdownList(projectId, callback) {
-    $.get(baseUrl + "survey/api/Master/GetSubjectTypeExam",
-        {
-            projectId: projectId,
-            subjectTypeExamId: ""
-        },
-        function (data) {
-            if (data && data.Status) {
-                var lst = JSON.parse(data.Body);
-                if (callback)
-                    callback(lst);
-            } else {
-                alert(data.Body);
-            }
-        })
 }
