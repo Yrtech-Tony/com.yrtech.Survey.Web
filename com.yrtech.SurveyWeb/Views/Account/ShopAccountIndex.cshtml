@@ -227,7 +227,8 @@
             if (data && data.length > 0) {
                 var item = data[0];
                 $("#Modal .modal-body").empty();
-                $("#Modal").modal("show");                
+                $("#Modal").modal("show");
+                $("#Modal .modal-footer").show();
                 $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
                     $("#RoleType").html($("#role-sel").html());
                     $("#account-form").setForm(item);

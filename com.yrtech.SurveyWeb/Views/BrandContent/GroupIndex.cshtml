@@ -17,30 +17,26 @@
             <label class="control-label">品牌:</label>
             <select id="brand-sel" class="form-control" style="width:200px;"></select>
         </div>
-        <div class="form-group">
-            <label class="control-label">区域类型:</label>
-            <select id="year-sel" class="form-control" style="width:200px;"></select>
-        </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnProjectAdd" class="btn btn-primary">添加期号</button>
+        <button id="btnGroupAdd" class="btn btn-primary">添加集团</button>
     </div>
 </div>
 <div class="result">
-    <table id="project-table" class="table table-bordered table-set"></table>
+    <table id="group-table" class="table table-bordered table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title"></h4>
+                <h4 class="modal-title">集团编辑</h4>
             </div>
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveGroup()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -54,64 +50,58 @@
         $('title').html('@ViewBag.Title')
 
         bindBrandSelect();
-        for (var i = 2020; i <= 2030; i++) {
-            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
-        }
-        $("#year-sel").val("2020");
 
-        $("#brand-sel").change(function () {
-            loadProject();
-        })
-        $("#btnProjectAdd").click(function () {
+        $("#btnGroupAdd").click(function () {
             $("#Modal").modal("show");
-            $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {                
+            $("#Modal .modal-body").load("/BrandContent/GroupEdit", {}, function () {
+                $("input[type=checkbox]").iCheckParser();
             })
             return false;
         })
 
-        initProjectTable();
+        initGroupTable();
         $("#btnQuery").click(function () {
-            loadProject();
+            loadGroup();
         }).trigger("click");
     })
 
     var curRow;
-    function saveProject() {
-        debugger
-        var params = $("#project-form").serializeJson();
-        var json = $("#project-form").data("json");
+    function saveGroup() {
+        var params = $("#group-form").serializeJson();        
+        var json = $("#group-form").data("json");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
             params = $.extend(json, params);
         } else {
             //新增
+            params.BrandId = $("#brand-sel").val();
             params = $.extend({
-                TenantId: loginUser.TenantId,
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
             }, params);
         }
-        $.commonPost("Master/SaveProject", params, function () {
-            loadProject();
+        $.commonPost("Master/SaveGroup", params, function () {
+            loadGroup();
             closeModel();
         });
     }
 
-    function loadProject() { 
-        $.commonGet("Master/GetProject", {
+    function loadGroup() {
+        $.commonGet("Master/GetGroup", {
             brandId: $("#brand-sel").val(),
-            projectId: '',
-            year: $("#year-sel").val()
+            groupId: '',
+            groupCode:  '',
+            groupName:  ''
         }, function (data) {
-            console.log("projects", data)
-            $('#project-table').bootstrapTable("load", data);
+            console.log("groups", data)
+            $('#group-table').bootstrapTable("load", data);
         });
     }
 
-    //初始化经销商表格
-    function initProjectTable() {
-        $('#project-table').bootstrapTable({
+    //初始化集团表格
+    function initGroupTable() {
+        $('#group-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
             height: 560,
@@ -121,8 +111,8 @@
             pageSize: 15,
             pageList: [5, 10, 20, 50],
             columns: [{
-                title: "经销商代码",
-                field: 'ProjectCode',
+                title: "集团代码",
+                field: 'GroupCode',
                 width: 100,
                 valign: "middle",
                 align: "center",
@@ -130,37 +120,9 @@
                     return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
                 }
             }, {
-                title: "经销商名称",
-                field: "ProjectName",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "经销商简称",
-                field: "ProjectShortName",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "省份",
-                field: "Province",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "城市",
-                field: "City",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "集团",
+                title: "集团名称",
                 field: "GroupName",
-                width: 100,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -198,12 +160,14 @@
     function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/BrandContent/ProjectEdit", {}, function () {
-            $("#project-form").setForm(curRow);
-            $("#project-form").data("json", JSON.stringify(curRow));
+        $("#Modal .modal-footer").show();
+        $("#Modal .modal-title").html("集团编辑");
+        $("#Modal .modal-body").load("/BrandContent/GroupEdit", {}, function () {
+            $("#group-form").setForm(curRow);
+            $("#group-form").data("json", JSON.stringify(curRow));
+            $("input[type=checkbox]").iCheckParser();
         })
     }
-
 </script>
 
 

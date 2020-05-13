@@ -48,23 +48,23 @@
                         <div class="menu_section">
                             <ul class="nav side-menu">
                                 <li class="active">
-                                    <a><i class="fa fa-home"></i> 报告管理 <span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-flag"></i> 报告管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li class="main-page"><a href="/Report/Index">报告上传</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a><i class="fa fa-home"></i> 基本信息管理 <span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-info"></i> 基本信息管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/System/BrandIndex">品牌</a></li> 
-                                        <li><a href="/BrandContent/AreaIndex">区域管理</a></li>
                                         <li><a href="/BrandContent/GroupIndex">集团管理</a></li>
+                                        <li><a href="/BrandContent/AreaIndex">区域管理</a></li>                                        
                                         <li><a href="/BrandContent/ShopIndex">经销商管理</a></li>
                                         <li><a href="/BrandContent/ProjectIndex">期号管理</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a><i class="fa fa-home"></i>账号管理  <span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-user"></i>账号管理  <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/Account/ShopAccountIndex">厂商账号管理</a></li>
                                         <li><a href="/Account/SurveyAccountIndex">调研账号管理</a></li>                                                                              
@@ -94,7 +94,7 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="/Content/image/user.png" alt="">欢迎, @LoginUser.AccountName &nbsp;
+                                    <img src="/Content/image/user.png" alt=""> 欢迎, @LoginUser.AccountName &nbsp;
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right" style="width:100px">
@@ -145,7 +145,7 @@
 
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" ></script>
     <script>
         //加载登录用户
         var loginUser;
@@ -165,6 +165,15 @@
                 })
             }
         }
+
+        $(document).on("show.bs.modal", ".modal", function () {
+            // draggable 属性规定元素是否可拖动
+            $(this).draggable({
+                handle: ".modal-header", // 只能点击头部拖动
+                cursor: 'move' //光标呈现为指示链接的指针（一只手）,
+            });
+            $(this).css("overflow", "hidden"); // 防止出现滚动条，出现的话，你会把滚动条一起拖着走的
+        });
     </script>
     @RenderSection("scripts", required: false)
 </body>

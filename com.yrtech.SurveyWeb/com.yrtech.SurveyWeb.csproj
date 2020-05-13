@@ -520,6 +520,7 @@
     <Content Include="Views\BrandContent\_PartialAreaEdit.cshtml" />
     <Content Include="Views\BrandContent\_PartialSetChildArea.cshtml" />
     <Content Include="Views\BrandContent\_PartialSetShop.cshtml" />
+    <Content Include="Views\Home\Main.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

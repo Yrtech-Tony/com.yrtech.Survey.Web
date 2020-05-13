@@ -89,10 +89,10 @@ function closeModel() {
 // 绑定品牌
 function bindBrandSelect() {
     if (loginUser.BrandList) {
+        $("#brand-sel").empty();
         loginUser.BrandList.forEach(function (brand) {
             $("#brand-sel").append($("<option>").val(brand.BrandId).text(brand.BrandName));
         })
-        $("#brand-sel").change();
     }
 }
 // 绑定权限类型
@@ -101,10 +101,10 @@ function bindRoleTypeSelect(type) {
     $.commonGet("Master/GetRoleType", {
         type: type
     }, function (data) {
+        $("#role-sel").empty();
         data.forEach(function (role) {
             $("#role-sel").append($("<option>").val(role.RoleTypeCode).text(role.RoleTypeName));
-        })
-        $("#role-sel").change();       
+        })     
     })
     $.ajaxSettings.async = true;
 }
@@ -115,10 +115,10 @@ function bindAreaTypeSelect(type) {
         hiddenCodeGroup: '区域类型',
         hiddenCode:''
     }, function (data) {
+        $("#areaType-sel").empty();
         data.forEach(function (item) {
             $("#areaType-sel").append($("<option>").val(item.HiddenCode).text(item.HiddenName));
         })
-        $("#areaType-sel").change();
     })
     $.ajaxSettings.async = true;
 }
@@ -130,12 +130,9 @@ function bindProjectSelect() {
         year: $("#year-sel").val(),
         projectId: ""
     }, function (data) {
-        if (data && data.Status) {
-            var lst = JSON.parse(data.Body);
-            if (callback)
-                callback(lst);
-        } else {
-            alert(data.Body);
-        }
+        $("#project-sel").empty();
+        data.forEach(function (item) {
+            $("#project-sel").append($("<option>").val(item.ProjectCode).text(item.ProjectName));
+        })
     })
 }

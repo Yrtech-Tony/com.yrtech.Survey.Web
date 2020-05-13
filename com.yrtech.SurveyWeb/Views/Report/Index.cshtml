@@ -30,68 +30,28 @@
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
-        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnSearch" class="btn btn-primary">查询</button>
     </div>
 </div>
 <div class="result">
-    <table id="account-table" class="table table-bordered table-set"></table>
-</div>
-
-<div id="container" class="col-md-12">
-    <form id="searchForm" style="display:none">
-        <table class="table table-bordered" style="border:solid 1px #666">
-            <tr>
-                <th width="120" align="center">
-                    品牌：
-                </th>
-                <td>
-                    <select id="brand-sel" class="selectpicker"></select>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    年份
-                </th>
-                <td colspan="5">
-                    <select id="year" class="selectpicker"></select>
-                </td>
-            </tr>
-            <tr>
-                <th width="120" align="center">
-                    期号：
-                </th>
-                <td>
-                    <div id="ProjectListDiv">
-
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6" class="text-center" style="line-height:40px;">
-                    <button type="button" class="btn btn-default" style="width:100px; margin-right:20px" id="btnClear">清&nbsp;空</button>
-                    <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;询</button>
-                </td>
-            </tr>
-        </table>
-    </form>
-    <div class="opens">开启搜索</div>
-    <div class="sechform"><div class="collapse1 text-center"><div class="i"><font></font></div></div></div>
-    <form class="form-inline pull-left mb15">
+    <div class="form-inline">
         <div class="form-group">
             <input type="text" class="form-control" name="keyword" id="keyword" placeholder="经销商代码/名称" value="">
-            <button type="button" id="btnSearchByKey" class="btn btn-default">搜 索</button>
+            <button type="button" id="btnSearchByKey" class="btn btn-default ">搜 索</button>
         </div>
-
-    </form>
-    <div class="pull-right">
-        <a href="javascript:void()" id="btnDeleteFile" class="btn btn-default">删除文件</a>
-        <a href="javascript:void()" id="btnUploadFile" class="btn btn-default">批量上传文件</a>
-        <a href="javascript:void()" id="btnUploadVideo" class="btn btn-default">批量上传视频</a>
-        <a href="javascript:void()" id="btnDownloadReport" class="btn btn-default">导出文件</a>
-    </div>
+        <div class="form-group" style="float:right;width:450px;text-align:right">
+            <a href="javascript:void()" id="btnDeleteFile" class="btn btn-default">删除文件</a>
+            <a href="javascript:void()" id="btnUploadFile" class="btn btn-default">批量上传文件</a>
+            <a href="javascript:void()" id="btnUploadVideo" class="btn btn-default">批量上传视频</a>
+            <a href="javascript:void()" id="btnDownloadReport" class="btn btn-default" style="margin-right:0px">导出文件</a>
+        </div>
+    </div>   
     <p></p>
+
     <table id="report-table" class="table table-bordered table-set"></table>
 </div>
+
+
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
@@ -124,18 +84,12 @@
     var ossFileUploader;
     var ossVideoUploader;
     var osspath;
-
     $(function () {
-        bindBrandSelect();
-        for (var i = 2020; i <= 2030; i++) {
-            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
-        }
-        $("#year-sel").val("2020");
 
         //加载期号
         $("#brand-sel,#year-sel").change(function () {
             bindProjectSelect();
-        })
+        });
 
         //报告上传查询
         $("#btnSearch").click(function () {
@@ -152,9 +106,15 @@
         });
         $("#btnUploadFile,#btnUploadVideo").click(function () {
             selShopId = undefined;
-        });        
+        });
 
-        initTable();
+        initReportTable();
+
+        bindBrandSelect();
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        $("#year-sel").change();
     });
 
     function initOss() {
@@ -237,7 +197,7 @@
                 $.each(oneShopUploaders, function () {
                     $(this).trigger("onDestroy");
                 })
-            }            
+            }
             oneShopUploaders = [];
             $.each(data, function (i, item) {
                 var uploader = new OSSClient({
@@ -271,7 +231,7 @@
         })
     }
 
-    function initTable() {
+    function initReportTable() {
         //生成用户数据
         $('#report-table').bootstrapTable({
             pagination: true,
@@ -340,7 +300,7 @@
 
     }
 
-    //单经销商上传    
+    //单经销商上传
     function uploadFile(shopId) {
         debugger
         selShopId = shopId;
@@ -363,7 +323,7 @@
             height: 580,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
-            scroll:false,
+            scroll: false,
             columns: [{
                 title: "序号",
                 field: 'SeqNO',
@@ -447,7 +407,7 @@
     }
 
     function getParams() {
-        var project = $("[name=Project]:checked").val();
+        var project = $("#project-sel").val();
         if (!project) {
             alert("请选择期号！");
             return;
@@ -458,7 +418,7 @@
             projectId: project || '',
             keyword: $('#keyword').val(),
             pageNum: 1,
-            pageCount: 15
+            pageCount: 10000
         };
     }
 

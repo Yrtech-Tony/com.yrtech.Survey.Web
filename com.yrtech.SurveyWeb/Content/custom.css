@@ -5102,7 +5102,7 @@ ul.notifications {
     }
 
     .result {
-        display: flex;
+        display: inline-block;
         -ms-flex-pack: justify;
         justify-content: space-between;
         margin-bottom: 10px;

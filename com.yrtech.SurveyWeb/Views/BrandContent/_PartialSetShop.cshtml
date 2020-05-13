@@ -1,23 +1,23 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
-    <div class="item form-group" style="float:right;">
+    <div class="item form-group" style="float:right; width:60%">
         <div class="col-md-8">
-            <input id="AreaCode" type="text" maxlength="15" class="form-control" placeholder="经销商代码">
+            <input id="ShopCode" type="text" maxlength="15" class="form-control" placeholder="经销商代码">
         </div>
-        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveUserInfoBrand()">添加经销商</a>
+        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveAreaShop()">添加经销商</a>
     </div>
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
-    <table id="child-area-table" class="table table-bordered table-set"></table>
+    <table id="area-shop-table" class="table table-bordered table-set"></table>
 </div>
 <script>
     $(function () {
-        initChildAreaTable();
-        loadChildArea();
+        initAreaShopTable();
+        loadAreaShop();
     })
 
-    function initChildAreaTable() {
-        $('#child-area-table').bootstrapTable({
+    function initAreaShopTable() {
+        $('#area-shop-table').bootstrapTable({
             pagination: false,
             striped: true, //是否显示行间隔色
             columns: [{
@@ -34,51 +34,59 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "经销商类型",
-                field: "AreaTypeName",
+                title: "删除",
+                field: "",
                 width: 120,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delAreaShop(' + row.Id + ');" style="min-width:100px">删除</a>';
+                }
             }]
         });
     }
 
-    function loadChildArea() {
-        $.commonGet("Master/GetArea", {
-            brandId: '',
-            areaId: '',
-            areaCode: '',
-            areaName: '',
-            areaType: '',
-            parentId: curRow.AreaId,
+    function loadAreaShop() {
+        $.commonGet("Master/GetAreaShop", {
+            tenantId: loginUser.TenantId,
+            brandId:  curRow.BrandId,
+            areaId:  curRow.AreaId,
+            shopId: ''
         }, function (data) {
-            $('#child-area-table').bootstrapTable("load", data);
+            $('#area-shop-table').bootstrapTable("load", data);
         });
     }
-    function saveChildArea() {
+    function saveAreaShop() {
         console.log("curRow", curRow)
-        areaCode,areaName ，usechk为页面上的值，parentId=传过来的areaId，areaType 逐级递减，即
-        通过AreaId查询到的Area中AreaTye=‘Business’ 则areaType="WideArea"
-        通过AreaId查询到的Area中AreaTye=‘WideArea’ 则areaType="BigArea"
-        通过AreaId查询到的Area中AreaTye=‘BigArea’ 则areaType="MiddlelArea"
-        通过AreaId查询到的Area中AreaTye=‘MiddleArea’ 则areaType="SmallArea"
-        var areas = ["Business","WideArea","BigArea","MiddlelArea","SmallArea"];
-        var pTypeIndex = areas.indexOf(curRow.AreaType);
-        var typeIndex = pTypeIndex>(areas.length-2)?areas.length-1:pTypeIndex-1;
-        $.commonPost("Master/SaveArea", {
-            BrandId:curRow.BrandId,
-            AreaCode: curRow.Id,
-            AreaName: data[0].BrandId,
-            Usechk:true,
-            ParentId:curRow.AreaId,
-            areaType:areas[typeIndex]
-        }, function () {
-            alert("保存下级经销商成功！");
-            $("#AreaCode").val("");
-            $("#AreaName").val("");
-            loadChildArea();
-        });
+        var url = "Master/GetShop";
+        var params={
+            brandId: curRow.BrandId,
+            shopId:'',
+            shopCode: $("#ShopCode").val(),
+            key:''
+        };
+        
+        $.commonGet(url, params, function (data) {
+            if (data.length == 0) {
+                alert("输入的经销商代码不正确，请重新输入");
+            } else {
+                $.commonPost("Master/SaveAreaShop", {
+                    ShopId: data[0].ShopId,
+                    AreaId: curRow.AreaId
+                }, function () {
+                    alert("添加经销商成功！");
+                    $("#ShopCode").val("");
+                    loadAreaShop();
+                });
+            }
+        });       
     }
 
+
+    function delAreaShop(id) {
+        $.commonPost("Master/DeleteUserInfoBrand", { Id: id }, function () {
+            loadUserInfoBrand();
+        });
+    }
 </script>
