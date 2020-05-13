@@ -66,6 +66,7 @@
     function saveShop() {
         var params = $("#shop-form").serializeJson();
         var json = $("#shop-form").data("json");
+        params.UseChk = $("#UseChk").is(":checked");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
@@ -186,25 +187,14 @@
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .modal-body").load("/BrandContent/ShopEdit", {}, function () {
+            bindGroupSel();
             $("#shop-form").setForm(curRow);
             $("#shop-form").data("json", JSON.stringify(curRow));
-            bindGroupSel();
+            $("input[type=checkbox]").iCheckParser();            
         })
     }
 
-    function bindGroupSel() {
-        $.commonGet("Master/GetGroup", {
-            brandId: $("#brand-sel").val(),
-            groupId:'',
-            groupCode:'',
-            groupName:''
-        }, function (data) {
-            data.forEach(function (group) {
-                $("#GroupId").append($("<option>").val(group.GroupCode).text(group.GroupName));
-            })
-        })
-        
-    }
+   
 </script>
 
 

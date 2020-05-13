@@ -41,7 +41,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:delAreaShop(' + row.Id + ');" style="min-width:100px">删除</a>';
+                    return '<a href="javascript:delAreaShop(' + row.AreaShopId + ');" style="min-width:100px">删除</a>';
                 }
             }]
         });
@@ -85,8 +85,8 @@
 
 
     function delAreaShop(id) {
-        $.commonPost("Master/DeleteUserInfoBrand", { Id: id }, function () {
-            loadUserInfoBrand();
+        $.commonPost("Master/DeleteAreaShop", { AreaShopId: id }, function () {
+            loadAreaShop();
         });
     }
 </script>

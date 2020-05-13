@@ -69,6 +69,7 @@
     function saveGroup() {
         var params = $("#group-form").serializeJson();        
         var json = $("#group-form").data("json");
+        params.UseChk = $("#UseChk").is(":checked");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);

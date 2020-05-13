@@ -125,6 +125,7 @@ function bindAreaTypeSelect(type) {
 
 // 绑定期号
 function bindProjectSelect() {
+    $.ajaxSettings.async = false;
     $.commonGet("Master/GetProject", {
         brandId: $("#brand-sel").val(),
         year: $("#year-sel").val(),
@@ -132,7 +133,25 @@ function bindProjectSelect() {
     }, function (data) {
         $("#project-sel").empty();
         data.forEach(function (item) {
-            $("#project-sel").append($("<option>").val(item.ProjectCode).text(item.ProjectName));
+            $("#project-sel").append($("<option>").val(item.ProjectId).text(item.ProjectName));
         })
     })
+    $.ajaxSettings.async = true;
+}
+// 绑定集团
+function bindGroupSel() {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetGroup", {
+        brandId: $("#brand-sel").val(),
+        groupId: '',
+        groupCode: '',
+        groupName: ''
+    }, function (data) {
+        $("#GroupId").append($("<option>").val('').text('请选择'));
+        data.forEach(function (group) {
+            $("#GroupId").append($("<option>").val(group.GroupId).text(group.GroupName));
+        })
+    })
+    $.ajaxSettings.async = true;
+
 }
