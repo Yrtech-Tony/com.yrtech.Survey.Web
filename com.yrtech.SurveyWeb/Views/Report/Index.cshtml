@@ -64,8 +64,8 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">文件列表</h4>
             </div>
-            <div class="modal-body" style="height:650px">
-                <table id="files-table"></table>
+            <div class="modal-body" style="height:600px; overflow:auto ">
+                <table id="files-table" class="table table-bordered table-set"></table>
             </div>
         </div>
     </div>
@@ -105,7 +105,7 @@
         initReportTable();
 
         bindBrandSelect();
-        for (var i = 2020; i <= 2030; i++) {
+        for (var i = 2019; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
         }
         $("#year-sel").change();
@@ -146,7 +146,6 @@
     }
 
     function importFiles(fileObj, fileType) {
-        debugger
         getParams();
         if (selShopId) {
             $.commonPost("ReportFile/ReportFileSave", {
@@ -232,12 +231,11 @@
         $('#report-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            height: 560,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
             pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageList: [15, 30, 50],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
@@ -298,7 +296,6 @@
 
     //单经销商上传
     function uploadFile(shopId) {
-        debugger
         selShopId = shopId;
     }
 
@@ -314,9 +311,8 @@
             fileTable.bootstrapTable("destroy");
         }
         fileTable = $('#files-table').bootstrapTable({
-            pagination: true,
+            pagination: false,
             striped: true, //是否显示行间隔色
-            height: 580,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             scroll: false,
