@@ -95,9 +95,6 @@
             search();
         });
 
-        $("#btnSearchByKey").click(function () {
-            search();
-        });
         $("#btnUploadFile,#btnUploadVideo").click(function () {
             selShopId = undefined;
         });
@@ -105,12 +102,14 @@
         initReportTable();
 
         bindBrandSelect();
-        for (var i = 2019; i <= 2030; i++) {
+        for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
         }
         $("#year-sel").change();
 
         initOss();
+
+        setTimeout(function () { search();}, 500);
     });
 
     function initOss() {
@@ -407,6 +406,7 @@
         selProject = project;
         $("#brand-sel").val(), $("#year").val()
         return {
+            brandId:$('#brand-sel').val(),
             projectId: project || '',
             keyword: $('#keyword').val(),
             pageNum: 1,
