@@ -175,9 +175,10 @@
         var params = getParams();
         if (!params) return;
 
+        $('#report-table').bootstrapTable("showLoading");
         $.commonGet("ReportFile/ReportFileListUploadSearch", params, function (data) {
             $('#report-table').bootstrapTable("load", data);
-
+            $('#report-table').bootstrapTable("hideLoading");
             if (oneShopUploaders) {
                 $.each(oneShopUploaders, function () {
                     $(this).trigger("onDestroy");
@@ -220,6 +221,7 @@
         //生成用户数据
         $('#report-table').bootstrapTable({
             pagination: true,
+            showLoading: true,
             striped: true, //是否显示行间隔色
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
@@ -284,7 +286,7 @@
             onClickRow: function (row, $element) {
                 curRow = row;
             }
-        });
+        }).bootstrapTable("showLoading"); 
 
     }
 

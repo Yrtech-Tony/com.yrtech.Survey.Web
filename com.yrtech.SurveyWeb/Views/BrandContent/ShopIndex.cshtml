@@ -86,13 +86,14 @@
     }
 
     function loadShop() {
+        $('#shop-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetShop", {
             brandId: $("#brand-sel").val(),
             shopId: '',
             shopCode: $("#ShopCode").val(),
             key: $("#ShopName").val()
         }, function (data) {
-            console.log("shops",data)
+            $('#shop-table').bootstrapTable("hideLoading");
             $('#shop-table').bootstrapTable("load", data);
         });
     }

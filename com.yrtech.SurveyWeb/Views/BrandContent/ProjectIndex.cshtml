@@ -78,7 +78,6 @@
 
     var curRow;
     function saveProject() {
-        debugger
         var params = $("#project-form").serializeJson();
         var json = $("#project-form").data("json");
         if (json && json.length > 0) {
@@ -99,13 +98,14 @@
         });
     }
 
-    function loadProject() { 
+    function loadProject() {
+        $('#project-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetProject", {
             brandId: $("#brand-sel").val(),
             projectId: '',
             year: $("#year-sel").val()
         }, function (data) {
-            console.log("projects", data)
+            $('#project-table').bootstrapTable("hideLoading");
             $('#project-table').bootstrapTable("load", data);
         });
     }

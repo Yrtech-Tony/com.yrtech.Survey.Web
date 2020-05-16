@@ -89,13 +89,14 @@
     }
 
     function loadGroup() {
+        $('#group-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetGroup", {
             brandId: $("#brand-sel").val(),
             groupId: '',
             groupCode:  '',
             groupName:  ''
         }, function (data) {
-            console.log("groups", data)
+            $('#group-table').bootstrapTable("hideLoading");
             $('#group-table').bootstrapTable("load", data);
         });
     }
@@ -155,7 +156,7 @@
             onClickRow: function (row, $element) {
                 curRow = row;
             }
-        });
+        }).bootstrapTable("showLoading");
     }
 
     function goEdit() {

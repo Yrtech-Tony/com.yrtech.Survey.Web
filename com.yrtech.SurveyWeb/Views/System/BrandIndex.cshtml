@@ -76,11 +76,13 @@
     }
 
     function loadBrand() {
+        $('#brand-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetBrand", {
             tenantId: loginUser.TenantId,
             brandId: '',
             brandCode: ''
         }, function (data) {
+            $('#brand-table').bootstrapTable("hideLoading");
             $('#brand-table').bootstrapTable("load", data);
         });
     }

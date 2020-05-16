@@ -113,6 +113,7 @@
     }
 
     function loadArea() {
+        $('#area-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetArea", {
             brandId: $("#brand-sel").val(),
             areaId: '',
@@ -121,7 +122,7 @@
             areaName: $("#AreaNameQuery").val(),
             parentId:''
         }, function (data) {
-            console.log("areas", data)
+            $('#area-table').bootstrapTable("hideLoading");
             $('#area-table').bootstrapTable("load", data);
         });
     }
@@ -131,7 +132,7 @@
         $('#area-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            width: "100%",
+            showLoading:true,
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
@@ -141,15 +142,16 @@
             columns: [{
                 title: "区域代码",
                 field: 'AreaCode',
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                    return '<a href="javascript:goEdit(' + row.Id + ');" >' + value + '</a>';
                 }
             }, {
                 title: "区域名称",
                 field: "AreaName",
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false 
@@ -174,7 +176,11 @@
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goChildArea(' + row.AreaId + ');" style="min-width:100px">下级区域添加</a>';
+                    if (row.AreaType == "SmallArea") {
+                        return ;
+                    } else {
+                        return '<a href="javascript:goChildArea(' + row.AreaId + ');" >下级区域添加</a>';
+                    }                  
                 }
             }, {
                 title: "经销商设置",
@@ -183,7 +189,11 @@
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goShop(' + row.AreaId + ');" style="min-width:100px">经销商设置</a>';
+                    if (row.AreaType == "SmallArea") {                        
+                        return '<a href="javascript:goShop(' + row.AreaId + ');" >经销商设置</a>';
+                    } else {
+                        return ;
+                    }                    
                 }
             }, {
                 title: "使用与否",

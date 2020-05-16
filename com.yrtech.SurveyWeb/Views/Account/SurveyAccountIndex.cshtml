@@ -102,6 +102,7 @@
     }
 
     function loadShopAccount() {
+        $('#account-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetUserInfo", {
             tenantId: loginUser.TenantId,
             brandId: '',
@@ -112,6 +113,7 @@
             telNO: '',
             email: ''
         }, function (data) {
+            $('#account-table').bootstrapTable("hideLoading");
             $('#account-table').bootstrapTable("load", data);
         });
     }

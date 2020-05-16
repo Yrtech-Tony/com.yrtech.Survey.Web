@@ -28,7 +28,7 @@
 
         initReportCountTable();
         $.commonGet("ReportFile/ReportFileCountYear", {}, function (data) {
-            console.log(data)
+            $('#report-count-table').bootstrapTable("hideLoading");
             $("#report-count-table").bootstrapTable("load", data);
         })
     });
@@ -88,6 +88,6 @@
             onClickRow: function (row, $element) {
                 curRow = row;
             }
-        });
+        }).bootstrapTable("showLoading");
     }
 </script>

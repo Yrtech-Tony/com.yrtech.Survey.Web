@@ -105,6 +105,7 @@
     }
 
     function loadShopAccount() {
+        $('#account-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetUserInfo", {
             tenantId: loginUser.TenantId,
             brandId: $("#brand-sel").val(),
@@ -115,6 +116,7 @@
             telNO: '',
             email: ''
         }, function (data) {
+            $('#account-table').bootstrapTable("hideLoading");
             $('#account-table').bootstrapTable("load", data);
         });
     }
@@ -124,7 +126,7 @@
         $('#account-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            width: "100%",
+            //width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
