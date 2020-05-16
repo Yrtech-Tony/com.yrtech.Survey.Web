@@ -105,16 +105,17 @@
         $('#group-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            height: 560,
+            width: "100%",
+            height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
             pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageList: [10, 15, 20, 50],
             columns: [{
                 title: "集团代码",
                 field: 'GroupCode',
-                width: 100,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -123,14 +124,13 @@
             }, {
                 title: "集团名称",
                 field: "GroupName",
-                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "使用与否",
                 field: "UseChk",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -140,14 +140,14 @@
             }, {
                 title: "添加时间",
                 field: "InDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false

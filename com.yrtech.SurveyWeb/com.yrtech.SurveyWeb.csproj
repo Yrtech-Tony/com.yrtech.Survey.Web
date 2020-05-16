@@ -311,6 +311,7 @@
     <Content Include="Scripts\gauge.js" />
     <Content Include="Scripts\gauge.min.js" />
     <Content Include="Scripts\icheck.js" />
+    <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.dataTables-zh-CN.js" />
     <Content Include="Scripts\jquery.dataTables.js" />
     <Content Include="Scripts\jquery.dataTables.min.js" />

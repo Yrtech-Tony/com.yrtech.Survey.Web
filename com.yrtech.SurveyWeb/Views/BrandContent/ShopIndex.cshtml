@@ -102,12 +102,13 @@
         $('#shop-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            height: 560,
+            width: "100%",
+            height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
             pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageList: [10, 15, 20, 50],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
@@ -120,35 +121,34 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
-                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "经销商简称",
                 field: "ShopShortName",
-                width: 200,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "省份",
                 field: "Province",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "城市",
                 field: "City",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "集团",
                 field: "GroupName",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -165,14 +165,14 @@
             }, {
                 title: "添加时间",
                 field: "InDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false

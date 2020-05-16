@@ -121,12 +121,13 @@
         $('#account-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            height: 560,
+            width: "100%",
+            height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
             pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageList: [10, 15, 20, 50],
             columns: [{
                 title: "账号",
                 field: 'AccountId',

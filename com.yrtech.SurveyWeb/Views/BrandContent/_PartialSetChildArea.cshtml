@@ -6,7 +6,7 @@
         <div class="col-md-5">
             <input id="AreaName" type="text" maxlength="15" class="form-control" placeholder="区域名称">
         </div>
-        <a id="btnAdd" class="btn btn-primary col-md-3" style="margin-right:0px" onclick="saveUserInfoBrand()">添加下级区域</a>
+        <a id="btnAdd" class="btn btn-primary col-md-3" style="margin-right:0px" onclick="saveChildArea()">添加下级区域</a>
     </div>
     <div class="clearfix"></div>
 </div>
@@ -61,13 +61,14 @@
     }
     function saveChildArea() {
         console.log("curRow", curRow)
-        var areas = ["Business","WideArea","BigArea","MiddlelArea","SmallArea"];
+        var areas = ["Bussiness","WideArea","BigArea","MiddlelArea","SmallArea"];
         var pTypeIndex = areas.indexOf(curRow.AreaType);
-        var typeIndex = pTypeIndex>(areas.length-2)?areas.length-1:pTypeIndex-1;
+        var typeIndex = pTypeIndex > (areas.length - 2) ? areas.length - 1 : pTypeIndex + 1;
+        debugger
         $.commonPost("Master/SaveArea", {
             BrandId:curRow.BrandId,
-            AreaCode: curRow.Id,
-            AreaName: data[0].BrandId,
+            AreaCode: $("#AreaCode").val(),
+            AreaName: $("#AreaName").val(),
             Usechk:true,
             ParentId:curRow.AreaId,
             areaType: areas[typeIndex],

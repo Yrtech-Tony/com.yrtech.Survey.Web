@@ -2,18 +2,6 @@
     ViewBag.Title = "报告上传";
 }
 
-<link href="~/Content/seachform.css" rel="stylesheet" />
-<style>
-    .link-btn-cell {
-        margin: 3px 5px 0px;
-        cursor: pointer;
-    }
-
-    #searchForm th {
-        vertical-align: middle;
-    }
-</style>
-
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
@@ -32,22 +20,22 @@
     <div style="float:right;width:200px;text-align:right">
         <button id="btnSearch" class="btn btn-primary">查询</button>
     </div>
+  
 </div>
-<div class="result">
+ 
+<div class="result table-responsive"  >
     <div class="form-inline">
         <div class="form-group">
             <input type="text" class="form-control" name="keyword" id="keyword" placeholder="经销商代码/名称" value="">
             <button type="button" id="btnSearchByKey" class="btn btn-default ">搜 索</button>
         </div>
         <div class="form-group" style="float:right;width:450px;text-align:right">
-            <a id="btnDeleteFile" class="btn btn-default">删除文件</a>
+            <a id="btnDeleteFile" class="btn btn-default" onclick="deleteFileByProject()">删除文件</a>
             <a id="btnUploadFile" class="btn btn-default">批量上传文件</a>
             <a id="btnUploadVideo" class="btn btn-default">批量上传视频</a>
-            <a id="btnDownloadReport" class="btn btn-default" style="margin-right:0px">导出文件</a>
         </div>
-    </div>   
-    <p></p>
-
+    </div>
+    <br />
     <table id="report-table" class="table table-bordered table-set"></table>
 </div>
 
@@ -116,7 +104,7 @@
 
     function initOss() {
         getParams();
-        osspath = "Survey/" + $("#year").val() + "/" + selProject + "/";
+        osspath = "Survey/ReportFile/" + selProject + "/";
         ossFileUploader = new OSSClient({
             osspath: osspath + "files/",
             selectfiles: "btnUploadFile",
@@ -227,7 +215,7 @@
 
         })
     }
-
+    var curRow;
     function initReportTable() {
         //生成用户数据
         $('#report-table').bootstrapTable({
@@ -237,78 +225,82 @@
             sortable: true,
             pageNumber: 1,
             pageSize: 15,
-            pageList: [15, 30, 50],
+            pageList: [10, 15, 20, 50],
+            width: "100%",
+            height: getClientHeight()-300,
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
-                width: 100,
+                width: 150,
                 valign: "middle",
                 align: "center"
             }, {
                 title: "经销商名称",
                 field: "ShopName",
-                width: 400,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "文件数",
                 field: "ReportFileCount_File",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:return false;" style="min-width:100px" onclick="GoDetail(' + row.ShopId + ')">' + value + '</a>';
+                    return '<a href="javascript:GoDetail(1)" style="min-width:100px">' + value + '</a>';
                 }
             }, {
                 title: "文件上传",
                 field: "",
-                width: 400,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a id="shopFileUploaderA_' + row.ShopId + '" href="javascript:return false;"  onclick="uploadFile(' + row.ShopId + ');" style="min-width:100px">文件上传</a>';
+                    return '<a id="shopFileUploaderA_' + row.ShopId + '" href="javascript:return false;"  onclick="uploadFile();" style="min-width:100px">文件上传</a>';
                 }
             }, {
                 title: "视频数",
                 field: "ReportFileCount_Video",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:return false;" style="min-width:100px" onclick="GoDetail(' + row.ShopId + ')">' + value + '</a>';
+                    return '<a href="javascript:GoDetail(2)" style="min-width:100px">' + value + '</a>';
                 }
             }, {
                 title: "视频上传",
                 field: "",
-                width: 400,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a id="shopVideoUploaderA_' + row.ShopId + '" href="javascript:return false;" onclick="uploadFile(' + row.ShopId + ');" style="min-width:100px">视频上传</a>';
+                    return '<a id="shopVideoUploaderA_' + row.ShopId + '" href="javascript:return false;" onclick="uploadFile();" style="min-width:100px">视频上传</a>';
                 }
-            }]
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
         });
 
     }
 
     //单经销商上传
-    function uploadFile(shopId) {
-        selShopId = shopId;
+    function uploadFile() {
+        selShopId = curRow.ShopId;
     }
 
     var fileTable;
     var selProject;
     var selShopId;
     var selFileType;
-    function GoDetail(shopId) {
+    function GoDetail(reportFileType) {
         $("#DetailModal").modal("show");
         getParams();
-        selShopId = shopId;
+        selShopId = curRow.ShopId;
         if (fileTable) {
             fileTable.bootstrapTable("destroy");
         }
@@ -356,7 +348,8 @@
 
         $.commonGet("ReportFile/ReportFileSearch", {
             ProjectId: selProject,
-            ShopId: selShopId
+            ShopId: selShopId,
+            reportFileType: reportFileType===1?'01':'02'
         }, function (data) {
             fileTable.bootstrapTable("load", data);
         })
@@ -365,11 +358,9 @@
     //删除文件
     function deleteFile(seq) {
         $.commonPost("ReportFile/ReportFileDelete", {
-            ListJson: JSON.stringify([{
-                ProjectId: selProject,
-                ShopId: selShopId,
-                Seq: seq
-            }])
+            ProjectId: selProject,
+            ShopId: selShopId,
+            Seq: seq
         }, function (data) {
             search();
         });
@@ -417,4 +408,15 @@
         };
     }
 
+    function deleteFileByProject() {
+        confirm("确定要删除" + $("#project-sel option:selected").text() + "的所有文件数据么", function () {
+            $.commonGet("ReportFile/ReportFileDelete", {
+                ProjectId: selProject,
+                ShopId: '',
+                Seq: ''
+            }, function (data) {
+                search();
+            });
+        }, function () { })
+    }
 </script>

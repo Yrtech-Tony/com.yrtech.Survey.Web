@@ -40,7 +40,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="../Home/Index" class="site_title"><i class="fa fa-paw"></i> <span>报告云平台</span></a>
+                        <a href="../Home/Index" class="site_title">@*<i class="fa fa-paw"></i>*@ <span>调研云平台</span></a>
                     </div>
                     <div class="clearfix"></div>
                     <!-- sidebar menu -->
@@ -146,8 +146,8 @@
     <script src="~/Scripts/comm.js"></script>
     <script src="~/Content/select/js/bootstrap-select.min.js"></script>
 
-
     <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/locale/bootstrap-table-zh-CN.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
@@ -185,6 +185,18 @@
             $(".right_col div").load("/Account/ChangePassword", {}, function () {
 
             })
+        }
+
+        //取窗口可视范围的高度
+        function getClientHeight() {
+            var clientHeight = 0;
+            if (document.body.clientHeight && document.documentElement.clientHeight) {
+                clientHeight = document.documentElement.clientHeight;
+            }
+            else {
+                clientHeight = document.documentElement.clientHeight;
+            }
+            return clientHeight;
         }
     </script>
     @RenderSection("scripts", required: false)

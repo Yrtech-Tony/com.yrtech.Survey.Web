@@ -115,7 +115,8 @@
         $('#project-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            height: 560,
+            width: "100%",
+            height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
@@ -124,7 +125,7 @@
             columns: [{
                 title: "期号代码",
                 field: 'ProjectCode',
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -133,14 +134,13 @@
             }, {
                 title: "期号名称",
                 field: "ProjectName",
-                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "报告发布时间",
                 field: "ReportDeployDate",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -168,14 +168,14 @@
             }, {
                 title: "添加时间",
                 field: "InDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false

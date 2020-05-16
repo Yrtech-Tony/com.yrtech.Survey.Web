@@ -98,8 +98,9 @@
             params = $.extend(json, params);
         } else {
             //新增
-            params.AreaType = 'Business';
+            params.AreaType = 'Bussiness';
             params = $.extend({
+                BrandId:$("#brand-sel").val(),
                 TenantId: loginUser.TenantId,
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
@@ -130,12 +131,13 @@
         $('#area-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            height: 560,
+            width: "100%",
+            height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
             pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageList: [10, 15, 20, 50],
             columns: [{
                 title: "区域代码",
                 field: 'AreaCode',
@@ -148,7 +150,6 @@
             }, {
                 title: "区域名称",
                 field: "AreaName",
-                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false 
@@ -162,14 +163,14 @@
             },{
                 title: "上级区域",
                 field: "ParentName",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "下级区域添加",
                 field: 'AreaCode',
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -178,7 +179,7 @@
             }, {
                 title: "经销商设置",
                 field: 'AreaCode',
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -187,7 +188,7 @@
             }, {
                 title: "使用与否",
                 field: "UseChk",
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -197,14 +198,14 @@
             }, {
                 title: "添加时间",
                 field: "InDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
