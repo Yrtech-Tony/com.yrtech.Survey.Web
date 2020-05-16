@@ -162,9 +162,10 @@
         } else {
             var ufiles = [];
             var shopCode = fileObj.fileName.substr(0, fileObj.fileName.indexOf("_"));
+            debugger
             ufiles.push({
                 TenantId: loginUser.TenantId,
-                BrandId: loginUser.BrandId,
+                BrandId: $("#brand-sel").val(),
                 ProjectId: selProject,
                 ShopCode: shopCode,
                 ReportFileType: fileType,

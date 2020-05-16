@@ -62,11 +62,25 @@
                     <select id="BrandId" name="BrandId" class="form-control"></select>
                 </div>
             </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
+                    报告发布时间
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ReportDeployDate" name="ReportDeployDate" class="form-control" />
+                </div>
+            </div>
         </fieldset>
     </form>
-</div>
+</div> 
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+
 <script>
     $("#Year").html($("#year-sel").html());
     $("#BrandId").html($("#brand-sel").html());
+    $("#ReportDeployDate").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss'
+    });
 </script>
 

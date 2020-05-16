@@ -49,6 +49,7 @@
 
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
 <script>
     $(function () {
         $('title').html('@ViewBag.Title')
@@ -133,6 +134,13 @@
                 title: "期号名称",
                 field: "ProjectName",
                 width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "报告发布时间",
+                field: "ReportDeployDate",
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
