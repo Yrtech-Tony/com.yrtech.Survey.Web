@@ -140,6 +140,11 @@ function init_sidebar() {
         setContentHeight();
     }).parent().addClass('active');
 
+    $SIDEBAR_MENU.find('li.active').find('ul').slideDown(function () {
+        setContentHeight();
+    })
+    $(".main-page a").click();
+
     // recompute content when resizing
     $(window).smartresize(function () {
         setContentHeight();

@@ -143,7 +143,8 @@ function init_sidebar() {
 
     $SIDEBAR_MENU.find('li.active').find('ul').slideDown(function () {
         setContentHeight();
-    }).find(".main-page a").click();
+    })
+    $(".main-page a").click();
 
     // recompute content when resizing
     $(window).smartresize(function () {

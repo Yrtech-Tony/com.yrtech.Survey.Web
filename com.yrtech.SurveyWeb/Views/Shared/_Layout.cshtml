@@ -47,18 +47,21 @@
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
                             <ul class="nav side-menu">
-                                <li class="active">
+                                <li class="main-page">
+                                    <a href="/Home/Main"> <i class="fa fa-home"></i> 首页 </a>
+                                </li>
+                                <li>
                                     <a><i class="fa fa-flag"></i> 报告管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li class="main-page"><a href="/Report/Index">报告上传</a></li>
+                                        <li><a href="/Report/Index">报告上传</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a><i class="fa fa-info"></i> 基本信息管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/System/BrandIndex">品牌</a></li> 
+                                        <li><a href="/System/BrandIndex">品牌</a></li>
                                         <li><a href="/BrandContent/GroupIndex">集团管理</a></li>
-                                        <li><a href="/BrandContent/AreaIndex">区域管理</a></li>                                        
+                                        <li><a href="/BrandContent/AreaIndex">区域管理</a></li>
                                         <li><a href="/BrandContent/ShopIndex">经销商管理</a></li>
                                         <li><a href="/BrandContent/ProjectIndex">期号管理</a></li>
                                     </ul>
@@ -67,17 +70,17 @@
                                     <a><i class="fa fa-user"></i>账号管理  <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/Account/ShopAccountIndex">厂商账号管理</a></li>
-                                        <li><a href="/Account/SurveyAccountIndex">调研账号管理</a></li>                                                                              
+                                        <li><a href="/Account/SurveyAccountIndex">调研账号管理</a></li>
                                     </ul>
                                 </li>
-                               
+
                                 @*<li>
-                                    <a><i class="fa fa-home"></i> 申诉管理 <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="/Appeal/AppealImport">申诉数据生成</a></li>
-                                        <li><a href="/Appeal/AppealIndex">申诉反馈列表</a></li>
-                                    </ul>
-                                </li>*@
+                                        <a><i class="fa fa-home"></i> 申诉管理 <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/Appeal/AppealImport">申诉数据生成</a></li>
+                                            <li><a href="/Appeal/AppealIndex">申诉反馈列表</a></li>
+                                        </ul>
+                                    </li>*@
                             </ul>
                         </div>
 
@@ -88,9 +91,9 @@
             <div class="top_nav">
                 <div class="nav_menu">
                     <nav>
-                        @*<div class="nav toggle">
-                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-                    </div>*@
+                        <div class="nav toggle">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -144,9 +147,9 @@
     <script src="~/Content/select/js/bootstrap-select.min.js"></script>
 
 
-    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>    
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js" ></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
         //加载登录用户
         var loginUser;
@@ -181,7 +184,7 @@
             $(".right_col").append($("<div>"));
             $(".right_col div").load("/Account/ChangePassword", {}, function () {
 
-            })            
+            })
         }
     </script>
     @RenderSection("scripts", required: false)
