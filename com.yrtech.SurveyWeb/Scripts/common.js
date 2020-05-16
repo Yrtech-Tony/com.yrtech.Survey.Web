@@ -69,11 +69,13 @@ function init_sidebar() {
     };
 
     $SIDEBAR_MENU.find('a').on('click', function (ev) {
-        console.log('clicked - sidebar_menu');
         var $li = $(this).parent();
+        $SIDEBAR_MENU.find('li.active').removeClass('active');
 
+        $("span.fa-chevron-up").removeClass("fa-chevron-up").addClass("fa-chevron-down");
         if ($li.is('.active')) {
             $li.removeClass('active active-sm');
+
             $('ul:first', $li).slideUp(function () {
                 setContentHeight();
             });
@@ -82,18 +84,32 @@ function init_sidebar() {
             if (!$li.parent().is('.child_menu')) {
                 $SIDEBAR_MENU.find('li').removeClass('active active-sm');
                 $SIDEBAR_MENU.find('li ul').slideUp();
+                $li.find("span.fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-up");
+
             } else {
                 if ($BODY.is(".nav-sm")) {
                     $SIDEBAR_MENU.find("li").removeClass("active active-sm");
                     $SIDEBAR_MENU.find("li ul").slideUp();
                 }
+                $li.parents("li").find("span.fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-up");
             }
             $li.addClass('active');
+            $li.parents("li").addClass('active');
 
             $('ul:first', $li).slideDown(function () {
                 setContentHeight();
             });
         }
+
+        var url = $(this).prop("href");
+        if (url) {
+            $(".right_col div").remove();
+            $(".right_col").append($("<div>"));
+            $(".right_col div").load(url, {}, function () {
+
+            })
+        }
+        return false;
     });
 
     // toggle small or large menu 
@@ -167,6 +183,8 @@ $(document).ready(function () {
 
         $BOX_PANEL.remove();
     });
+
+    init_sidebar();
 });
 // /Panel toolbox
 
@@ -176,22 +194,4 @@ $(document).ready(function () {
         container: 'body'
     });
 });
-
-// iCheck
-$(document).ready(function () {
-    if ($("input.flat")[0]) {
-        $(document).ready(function () {
-            $('input.flat').iCheck({
-                checkboxClass: 'icheckbox_flat-green',
-                radioClass: 'iradio_flat-green'
-            });
-        });
-    }
-});
-// /iCheck
-
-
-$(document).ready(function () {
-    init_sidebar();
-
-});
+ 

@@ -1,6 +1,6 @@
 ﻿@using com.yrtech.SurveyWeb.Models
 @{
-    ViewBag.Title = "巡检系统-申诉管理";
+    ViewBag.Title = "申诉管理";
     AccountDto accountDto = Session["LoginUser"] as AccountDto;
     accountDto.BusinessAreaList = new List<AreaDto>();
     accountDto.BusinessAreaList.Add(new AreaDto(){AreaId=1,AreaName="销售"});

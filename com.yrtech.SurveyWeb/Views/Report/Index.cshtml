@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "巡检报告系统-报告上传";
+    ViewBag.Title = "报告上传";
 }
 
 <link href="~/Content/seachform.css" rel="stylesheet" />
@@ -85,6 +85,8 @@
     var ossVideoUploader;
     var osspath;
     $(function () {
+        $('title').html('@ViewBag.Title')
+
         //加载期号
         $("#brand-sel,#year-sel").change(function () {
             bindProjectSelect();

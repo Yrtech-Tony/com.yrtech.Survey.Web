@@ -1,6 +1,4 @@
-﻿
-
-function loadRecheckStatus(params, callback) {
+﻿function loadRecheckStatus(params, callback) {
     ReportFileListUploadSearch
     $.get(baseUrl + "survey/api/Recheck/GetRecheckStatus", params, function (data) {
         if (data && data.Status) {
@@ -13,7 +11,6 @@ function loadRecheckStatus(params, callback) {
         }
     })
 }
-
 
 function saveRecheckType() {
     $("#save_button").button("loading");

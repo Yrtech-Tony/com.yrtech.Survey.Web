@@ -95,9 +95,7 @@ function init_sidebar() {
                 $li.parents("li").find("span.fa-chevron-down").removeClass("fa-chevron-down").addClass("fa-chevron-up");
             }
             $li.addClass('active');
-            $li.parents("li").addClass('active');
-           
-            
+            $li.parents("li").addClass('active');            
 
             $('ul:first', $li).slideDown(function () {
                 setContentHeight();
@@ -226,18 +224,18 @@ $(document).ready(function () {
 // /Switchery
 
 
-// iCheck
-$(document).ready(function () {
-    if ($("input.flat")[0]) {
-        $(document).ready(function () {
-            $('input.flat').iCheck({
-                checkboxClass: 'icheckbox_flat-green',
-                radioClass: 'iradio_flat-green'
-            });
-        });
-    }
-});
-// /iCheck
+//// iCheck
+//$(document).ready(function () {
+//    if ($("input.flat")[0]) {
+//        $(document).ready(function () {
+//            $('input.flat').iCheck({
+//                checkboxClass: 'icheckbox_flat-green',
+//                radioClass: 'iradio_flat-green'
+//            });
+//        });
+//    }
+//});
+//// /iCheck
 
 // Table
 $('table input').on('ifChecked', function () {
@@ -291,8 +289,6 @@ function countChecked() {
         $('.bulk-actions').hide();
     }
 }
-
-
 
 // Accordion
 $(document).ready(function () {

@@ -56,6 +56,8 @@
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script>
     $(function () {
+        $('title').html('@ViewBag.Title')
+
         bindRoleTypeSelect("A");
 
         initTable();
