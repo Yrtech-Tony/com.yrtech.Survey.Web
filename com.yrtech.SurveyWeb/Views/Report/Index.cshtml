@@ -29,7 +29,8 @@
             <input type="text" class="form-control" name="keyword" id="keyword" placeholder="经销商代码/名称" value="">
             <button type="button" id="btnSearchByKey" class="btn btn-default ">搜 索</button>
         </div>
-        <div class="form-group" style="float:right;width:450px;text-align:right">
+        <div class="form-group" style="float:right;width:600px;text-align:right">
+            <span style="color:red">文件命名示例：经销商代码_xxxx</span>
             <a id="btnDeleteFile" class="btn btn-default" onclick="deleteFileByProject()">删除文件</a>
             <a id="btnUploadFile" class="btn btn-default">批量上传文件</a>
             <a id="btnUploadVideo" class="btn btn-default">批量上传视频</a>
@@ -137,11 +138,12 @@
     function importFiles(fileObj, fileType) {
         getParams();
         if (selShopId) {
+            var fileNameNoTime = fileObj.fileName.substr(fileObj.fileName.indexOf("_") + 1);
             $.commonPost("ReportFile/ReportFileSave", {
                 ProjectId: selProject,
                 ShopId: selShopId,
                 ReportFileType: fileType,
-                ReportFileName: fileObj.fileName,
+                ReportFileName: fileNameNoTime,
                 Url_OSS: fileObj.osspath,
                 InUserId: loginUser.Id
             }, function (data) {
@@ -149,15 +151,15 @@
             });
         } else {
             var ufiles = [];
-            var shopCode = fileObj.fileName.substr(0, fileObj.fileName.indexOf("_"));
-            debugger
+            var fileNameNoTime = fileObj.fileName.substr(fileObj.fileName.indexOf("_")+1);
+            var shopCode = fileNameNoTime.substr(0, fileNameNoTime.indexOf("_"));
             ufiles.push({
                 TenantId: loginUser.TenantId,
                 BrandId: $("#brand-sel").val(),
                 ProjectId: selProject,
                 ShopCode: shopCode,
                 ReportFileType: fileType,
-                ReportFileName: fileObj.fileName,
+                ReportFileName: fileNameNoTime,
                 Url_OSS: fileObj.osspath,
                 InUserId: loginUser.Id
             });
