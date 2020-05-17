@@ -359,10 +359,10 @@
 
     //删除文件
     function deleteFile(seq) {
-        $.commonPost("ReportFile/ReportFileDelete", {
+        $.commonGet("ReportFile/ReportFileDelete", {
             ProjectId: selProject,
             ShopId: selShopId,
-            Seq: seq
+            SeqNO: seq
         }, function (data) {
             search();
         });
@@ -415,7 +415,7 @@
             $.commonGet("ReportFile/ReportFileDelete", {
                 ProjectId: selProject,
                 ShopId: '',
-                Seq: ''
+                SeqNO: ''
             }, function (data) {
                 search();
             });
