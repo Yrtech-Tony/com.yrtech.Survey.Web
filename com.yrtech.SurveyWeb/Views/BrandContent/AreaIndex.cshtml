@@ -24,14 +24,14 @@
         </div>
         <div class="form-group">
             <label class="control-label">区域代码:</label>
-            <input id="AreaCodeQuery" type="text" class="form-control" placeholder="账号">
+            <input id="AreaCodeQuery" type="text" class="form-control" placeholder="区域代码">
         </div>
         <div class="form-group">
             <label class="control-label">区域名称:</label>
-            <input id="AreaNameQuery" type="text" class="form-control" placeholder="姓名">
+            <input id="AreaNameQuery" type="text" class="form-control" placeholder="区域名称">
         </div>
     </div>
-    <div style="float:right;width:200px;text-align:right">
+    <div style="float:right;width:250px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnAreaAdd" class="btn btn-primary">添加业务类型</button>
     </div>
@@ -89,6 +89,15 @@
 
     var curRow;
     function saveArea() {
+        var data = $('#area-form').data('bootstrapValidator');
+        if (data) {
+            // 修复记忆的组件不验证
+            data.validate();
+
+            if (!data.isValid()) {
+                return false;
+            }
+        }
         var params = $("#area-form").serializeJson();
         params.UseChk = $("#UseChk").is(":checked");       
         var json = $("#area-form").data("json");
@@ -113,6 +122,7 @@
     }
 
     function loadArea() {
+        $("#btnQuery").button('loading');
         $('#area-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetArea", {
             brandId: $("#brand-sel").val(),
@@ -122,6 +132,7 @@
             areaName: $("#AreaNameQuery").val(),
             parentId:''
         }, function (data) {
+            $("#btnQuery").button('reset');
             $('#area-table').bootstrapTable("hideLoading");
             $('#area-table').bootstrapTable("load", data);
         });

@@ -70,6 +70,7 @@
             $("#Modal").modal("show");
             $("#Modal .modal-body").empty();
             $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
+                $("#AccountId").val("");
                 $("input[type=checkbox]").iCheckParser();
                 $("#RoleType").html($("#role-sel").html());
             })
@@ -82,6 +83,15 @@
     })
     var curRow;
     function saveAccount() {
+        var data = $('#account-form').data('bootstrapValidator');
+        if (data) {
+            // 修复记忆的组件不验证
+            data.validate();
+
+            if (!data.isValid()) {
+                return false;
+            }
+        }
         var params = $("#account-form").serializeJson();
         params.UseChk = $("#UseChk").is(":checked");
         var json = $("#account-form").data("json");

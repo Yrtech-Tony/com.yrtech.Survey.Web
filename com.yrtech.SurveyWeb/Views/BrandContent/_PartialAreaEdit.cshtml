@@ -37,6 +37,31 @@
     </form>
 </div>
 <script>
-
+    $('#area-form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            AreaCode: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '区域代码不能为空',
+                    }
+                }
+            },
+            AreadName: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '区域名称不能为空',
+                    }
+                }
+            }
+        }
+    });
 </script>
+
 

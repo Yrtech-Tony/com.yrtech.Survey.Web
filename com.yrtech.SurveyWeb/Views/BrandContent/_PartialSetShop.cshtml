@@ -3,7 +3,7 @@
         <div class="col-md-8">
             <input id="ShopCode" type="text" maxlength="15" class="form-control" placeholder="经销商代码">
         </div>
-        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveAreaShop()">添加经销商</a>
+        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveAreaShop()" data-loading-text="提交中...">添加经销商</a>
     </div>
     <div class="clearfix"></div>
 </div>
@@ -22,13 +22,13 @@
             striped: true, //是否显示行间隔色
             columns: [{
                 title: "经销商代码",
-                field: 'AreaCode',
+                field: 'ShopCode',
                 width: 100,
                 valign: "middle",
                 align: "center"
             }, {
                 title: "经销商名称",
-                field: "AreaName",
+                field: "ShopName",
                 width: 200,
                 valign: "middle",
                 align: "center",
@@ -58,23 +58,29 @@
         });
     }
     function saveAreaShop() {
-        console.log("curRow", curRow)
+        var shopCode = $("#ShopCode").val();
+        if (!shopCode) {
+            alert("请输入经销商代码！");
+            return false;
+        }
         var url = "Master/GetShop";
         var params={
             brandId: curRow.BrandId,
             shopId:'',
-            shopCode: $("#ShopCode").val(),
+            shopCode: shopCode,
             key:''
         };
-        
+        $("#btnAdd").button("loading");
         $.commonGet(url, params, function (data) {
             if (data.length == 0) {
                 alert("输入的经销商代码不正确，请重新输入");
+                $("#btnAdd").button("reset");
             } else {
                 $.commonPost("Master/SaveAreaShop", {
                     ShopId: data[0].ShopId,
                     AreaId: curRow.AreaId
                 }, function () {
+                    $("#btnAdd").button("reset");
                     alert("添加经销商成功！");
                     $("#ShopCode").val("");
                     loadAreaShop();

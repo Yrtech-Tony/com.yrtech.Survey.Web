@@ -3,7 +3,7 @@
         <div class="col-md-8">
             <input id="BrandCode" type="text" maxlength="15" class="form-control ">
         </div>
-        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveUserInfoBrand()">添加品牌</a>
+        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveUserInfoBrand()" data-loading-text="提交中...">添加品牌</a>
     </div>
     <div class="clearfix"></div>
 </div>
@@ -57,23 +57,28 @@
         });
     }
     function saveUserInfoBrand() {
-        console.log("curRow", curRow)
-        var url = "Master/GetBrand";
         var brandCode = $("#BrandCode").val();
+        if (!brandCode) {
+            alert("请输入品牌代码！");
+            return false;
+        }
+        var url = "Master/GetBrand";
         var params={
             tenantId: curRow.TenantId,
             brandId: '',
             brandCode: brandCode
         };
-        
+        $("#btnAdd").button("loading");
         $.commonGet(url, params, function (data) {
             if (data.length == 0) {
                 alert("输入的品牌代码不正确，请重新输入");
+                $("#btnAdd").button("reset");
             } else {
                 $.commonPost("Master/SaveUserInfoBrand", {
                     UserId: curRow.Id,
                     BrandId: data[0].BrandId
                 }, function () {
+                    $("#btnAdd").button("reset");
                     alert("添加品牌成功！");
                     $("#BrandCode").val("");
                     loadUserInfoBrand();

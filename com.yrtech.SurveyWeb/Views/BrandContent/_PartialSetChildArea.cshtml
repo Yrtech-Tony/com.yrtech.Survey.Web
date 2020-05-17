@@ -1,19 +1,19 @@
-﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%" >
     <div class="item form-group" style="float:right; width:80%">
         <div class="col-md-4">
-            <input id="AreaCode" type="text" maxlength="15" class="form-control" placeholder="区域代码">
+            <input id="AreaCode" type="text" class="form-control" placeholder="区域代码" required="required">
         </div>
         <div class="col-md-5">
-            <input id="AreaName" type="text" maxlength="15" class="form-control" placeholder="区域名称">
+            <input id="AreaName" type="text" class="form-control" placeholder="区域名称">
         </div>
-        <a id="btnAdd" class="btn btn-primary col-md-3" style="margin-right:0px" onclick="saveChildArea()">添加下级区域</a>
+        <button id="btnAdd" class="btn btn-primary col-md-3" style="margin-right:0px" onclick="saveChildArea()" data-loading-text="提交中...">添加下级区域</button>
     </div>
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
     <table id="child-area-table" class="table table-bordered table-set"></table>
 </div>
-<script>
+<script>    
     $(function () {
         initChildAreaTable();
         loadChildArea();
@@ -60,21 +60,33 @@
         });
     }
     function saveChildArea() {
-        console.log("curRow", curRow)
-        var areas = ["Bussiness","WideArea","BigArea","MiddlelArea","SmallArea"];
+        var areaCode = $("#AreaCode").val();
+        if (!areaCode) {
+            alert("请输入区域代码！");
+            return false;
+        }
+        var areaName = $("#AreaName").val();
+        if (!areaName) {
+            alert("请输入区域名称！");
+            return false;
+        }
+
+        var areas = ["Bussiness", "WideArea", "BigArea", "MiddlelArea", "SmallArea"];
         var pTypeIndex = areas.indexOf(curRow.AreaType);
         var typeIndex = pTypeIndex > (areas.length - 2) ? areas.length - 1 : pTypeIndex + 1;
-        debugger
+    
+        $("#btnAdd").button("loading");
         $.commonPost("Master/SaveArea", {
-            BrandId:curRow.BrandId,
-            AreaCode: $("#AreaCode").val(),
-            AreaName: $("#AreaName").val(),
-            Usechk:true,
-            ParentId:curRow.AreaId,
+            BrandId: curRow.BrandId,
+            AreaCode: areaCode,
+            AreaName: areaName,
+            Usechk: true,
+            ParentId: curRow.AreaId,
             areaType: areas[typeIndex],
             InUserId: loginUser.Id,
-            ModifyUserId:loginUser.Id 
+            ModifyUserId: loginUser.Id
         }, function () {
+            $("#btnAdd").button("reset");
             alert("保存下级区域成功！");
             $("#AreaCode").val("");
             $("#AreaName").val("");

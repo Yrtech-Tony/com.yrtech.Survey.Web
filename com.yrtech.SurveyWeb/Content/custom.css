@@ -3855,7 +3855,7 @@ ul.project_files li {
 }
 
 .form-group.has-feedback span {
-    display: block !important;
+    /*display: block !important;*/
 }
 
 .form-group .btn {
@@ -5115,4 +5115,8 @@ ul.notifications {
 
     .form-inline div + div {
         margin-left: 30px;
+    }
+
+    .required{
+        color:red;
     }

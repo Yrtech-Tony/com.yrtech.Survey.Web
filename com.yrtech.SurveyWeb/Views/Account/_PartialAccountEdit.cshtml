@@ -3,26 +3,26 @@
         <fieldset>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AccountId">
-                    账号<span class="required">*</span>
+                    账号 <span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="AccountId" name="AccountId" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="AccountId" name="AccountId"  type="text"  class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Password">
-                    密码<span class="required">*</span>
+                    密码 <span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="Password" name="Password" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="Password" name="Password" type="password"  class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AccountName">
-                    姓名
+                    姓名 <span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="AccountName" name="AccountName" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="AccountName" name="AccountName" type="text"  class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
             <div class="item form-group">
@@ -46,7 +46,7 @@
                     邮箱
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="Email" name="Email" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="Email" name="Email" type="text" class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
             <div class="item form-group">
@@ -54,7 +54,7 @@
                     电话
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="TelNO" name="TelNO" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="TelNO" name="TelNO" type="text"  class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
             <div class="item form-group" style="display:none">
@@ -76,3 +76,38 @@
         </fieldset>
     </form>
 </div>
+<script>
+    $('#account-form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            AccountId: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '账号不能为空',
+                    }
+                }
+            },
+            Password: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空',
+                    }
+                }
+            },
+            AccountName: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '姓名不能为空',
+                    }
+                }
+            }
+        }
+    });
+</script>

@@ -1,9 +1,9 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
     <div class="item form-group" style="float:right;">
         <div class="col-md-8">
-            <input id="ObjectCode" type="text" maxlength="15" class="form-control ">
+            <input id="ObjectCode" type="text" maxlength="15" class="form-control" placeholder="">
         </div>
-        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveUserInfoObject()"></a>
+        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveUserInfoObject()" data-loading-text="提交中..."></a>
     </div>
     <div class="clearfix"></div>
 </div>
@@ -13,6 +13,7 @@
 <script>
     $(function () {
         $("#btnAdd").text("添加" + objectType);
+        $("#ObjectCode").attr("placeholder", objectType + "代码");
 
         initObjectTable();
         loadUserInfoObject();
@@ -23,7 +24,7 @@
             pagination: false,
             striped: true, //是否显示行间隔色
             columns: [{
-                title: objectType+"代码",
+                title: objectType + "代码",
                 field: 'ObjectCode',
                 width: 100,
                 valign: "middle",
@@ -60,13 +61,14 @@
         });
     }
     function saveUserInfoObject() {
-        console.log("curRow", curRow)
-        var areaType = curRow.RoleType.replace("B_", "");
-
-        //string brandId, string areaId,string areaCode,string areaName,string areaType,string parentId
-        var url = "Master/GetArea";
         var objectCode = $("#ObjectCode").val();
-        var params={
+        if (!objectCode) {
+            alert("请输入" + objectType + "代码！");
+            return false;
+        }
+        var areaType = curRow.RoleType.replace("B_", "");
+        var url = "Master/GetArea";
+        var params = {
             brandId: curRow.TenantId,
             areaId: '',
             areaCode: objectCode,
@@ -90,9 +92,11 @@
                 groupName: ''
             }
         }
+        $("#btnAdd").button("loading");
         $.commonGet(url, params, function (data) {
             if (data.length == 0) {
                 alert("输入的" + objectType + "代码不正确，请重新输入");
+                $("#btnAdd").button("reset");
             } else {
                 var objId = "";
                 if (curRow.RoleType == "B_Shop") {
@@ -106,6 +110,7 @@
                     UserId: curRow.Id,
                     ObjectId: data[0].ShopId
                 }, function () {
+                    $("#btnAdd").button("reset");
                     loadUserInfoObject();
                 });
             }

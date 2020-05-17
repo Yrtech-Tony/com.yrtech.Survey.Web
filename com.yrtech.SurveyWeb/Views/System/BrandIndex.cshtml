@@ -55,6 +55,15 @@
     })
     var curRow;
     function saveBrand() {
+        var data = $('#brand-form').data('bootstrapValidator');
+        if (data) {
+            // 修复记忆的组件不验证
+            data.validate();
+
+            if (!data.isValid()) {
+                return false;
+            }
+        }
         var params = $("#brand-form").serializeJson();
         var json = $("#brand-form").data("json");
         if (json && json.length > 0) {

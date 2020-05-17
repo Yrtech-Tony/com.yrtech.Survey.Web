@@ -28,4 +28,31 @@
         </fieldset>
     </form>
 </div>
+<script>
+    $('#brand-form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            BrandCode: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '品牌代码不能为空',
+                    }
+                }
+            },
+            BrandName: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '品牌名称不能为空',
+                    }
+                }
+            } 
+        }
+    });
+</script>
 
