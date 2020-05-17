@@ -78,7 +78,8 @@
             } else {
                 $.commonPost("Master/SaveAreaShop", {
                     ShopId: data[0].ShopId,
-                    AreaId: curRow.AreaId
+                    AreaId: curRow.AreaId,
+                    InUserId: curRow.Id
                 }, function () {
                     $("#btnAdd").button("reset");
                     alert("添加经销商成功！");
