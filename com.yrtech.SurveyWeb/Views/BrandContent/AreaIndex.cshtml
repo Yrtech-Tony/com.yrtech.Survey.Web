@@ -72,7 +72,10 @@
             loadArea();
         })
         $("#btnAreaAdd").click(function () {
+            $("#Modal .modal-body").empty();
             $("#Modal").modal("show");
+            $("#Modal .modal-footer").show();
+            $("#Modal .modal-title").html("区域编辑");
             $("#Modal .modal-body").load("/BrandContent/AreaEdit", {}, function () {
                 $("input[type=checkbox]").iCheckParser();
             })

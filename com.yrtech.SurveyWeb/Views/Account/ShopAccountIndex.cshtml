@@ -67,12 +67,15 @@
         initTable();
 
         $("#btnAccountAdd").click(function () {
+            $("#Modal .modal-title").html("编辑账号");
             $("#Modal").modal("show");
             $("#Modal .modal-body").empty();
+            $("#Modal .modal-footer").show();
             $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
                 $("#AccountId").val("");
                 $("input[type=checkbox]").iCheckParser();
                 $("#RoleType").html($("#role-sel").html());
+                $("#RoleType").prepend($("<option selected>").val("").html("请选择"));
             })
             return false;
         })
@@ -167,13 +170,6 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "权限类型",
-                field: "RoleType",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
                 title: "邮箱",
                 field: "Email",
                 width: 100,
@@ -241,14 +237,16 @@
         }, function (data) {
             if (data && data.length > 0) {
                 var item = data[0];
+                $("#Modal .modal-title").html("编辑账号");
                 $("#Modal .modal-body").empty();
                 $("#Modal").modal("show");
                 $("#Modal .modal-footer").show();
                 $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
-                    $("#RoleType").html($("#role-sel").html());
+                    $("#RoleType").html($("#role-sel").html());                    
                     $("#account-form").setForm(item);
                     $("#account-form").data("json", JSON.stringify(item));
                     $("input[type=checkbox]").iCheckParser();
+                    $("#RoleType").attr("disabled",true)
                 })
             }
         });

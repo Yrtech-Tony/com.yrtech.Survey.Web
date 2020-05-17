@@ -108,7 +108,7 @@
                 }
                 $.commonPost("Master/SaveUserInfoObject", {
                     UserId: curRow.Id,
-                    ObjectId: data[0].ShopId
+                    ObjectId: objId
                 }, function () {
                     $("#btnAdd").button("reset");
                     loadUserInfoObject();
