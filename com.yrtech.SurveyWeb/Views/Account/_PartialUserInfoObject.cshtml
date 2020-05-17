@@ -108,7 +108,8 @@
                 }
                 $.commonPost("Master/SaveUserInfoObject", {
                     UserId: curRow.Id,
-                    ObjectId: objId
+                    ObjectId: objId,
+                    InUserId: curRow.Id
                 }, function () {
                     $("#btnAdd").button("reset");
                     loadUserInfoObject();

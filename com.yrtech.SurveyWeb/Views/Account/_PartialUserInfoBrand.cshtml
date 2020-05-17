@@ -76,7 +76,8 @@
             } else {
                 $.commonPost("Master/SaveUserInfoBrand", {
                     UserId: curRow.Id,
-                    BrandId: data[0].BrandId
+                    BrandId: data[0].BrandId,
+                    InUserId: curRow.Id
                 }, function () {
                     $("#btnAdd").button("reset");
                     alert("添加品牌成功！");
