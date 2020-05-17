@@ -220,30 +220,17 @@
     }
 
     function goEdit(userId) {
-        $.commonGet("Master/GetUserInfo", {
-            tenantId: loginUser.TenantId,
-            brandId: '',
-            userId: userId,
-            accountId: '',
-            accountName: '',
-            roleTypeCode: '',
-            telNO: '',
-            email: ''
-        }, function (data) {
-            if (data && data.length > 0) {
-                var item = data[0];
-                $("#Modal .modal-title").html("编辑账号");
-                $("#Modal .modal-body").empty();
-                $("#Modal").modal("show");
-                $("#Modal .modal-footer").show();
-                $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
-                    $("#RoleType").html($("#role-sel").html());
-                    $("#account-form").setForm(item);
-                    $("#account-form").data("json", JSON.stringify(item));
-                    $("input[type=checkbox]").iCheckParser();
-                })
-            }
-        });
+        var item = curRow;
+        $("#Modal .modal-title").html("编辑账号");
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-footer").show();
+        $("#Modal .modal-body").load("/Account/AccountEdit", {}, function () {
+            $("#RoleType").html($("#role-sel").html());
+            $("#account-form").setForm(item);
+            $("#account-form").data("json", JSON.stringify(item));
+            $("input[type=checkbox]").iCheckParser();
+        })
     }
 
     function setUserBrand() {
