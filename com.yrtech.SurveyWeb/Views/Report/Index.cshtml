@@ -345,27 +345,32 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:return false;" style="min-width:100px" onclick="deleteFile(' + row.Seq + ')">删除</a>';
+                    return '<a href="javascript:return false;" style="min-width:100px" onclick="deleteFile(' + row.SeqNO + ',\'' + reportFileType + '\')">删除</a>';
                 }
             }]
         });
 
+        loadFileList(reportFileType);
+    }
+
+    function loadFileList(reportFileType) {
         $.commonGet("ReportFile/ReportFileSearch", {
             ProjectId: selProject,
             ShopId: selShopId,
-            reportFileType: reportFileType===1?'01':'02'
+            reportFileType: reportFileType === 1 ? '01' : '02'
         }, function (data) {
             fileTable.bootstrapTable("load", data);
         })
     }
 
     //删除文件
-    function deleteFile(seq) {
+    function deleteFile(seq, reportFileType) {
         $.commonGet("ReportFile/ReportFileDelete", {
             ProjectId: selProject,
             ShopId: selShopId,
             SeqNO: seq
         }, function (data) {
+            loadFileList(reportFileType);
             search();
         });
     }
