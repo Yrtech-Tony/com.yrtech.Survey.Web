@@ -36,14 +36,14 @@
     function initReportCountTable() {
         //生成用户数据
         $('#report-count-table').bootstrapTable({
-            pagination: true,
+            //pagination: true,
             striped: true, //是否显示行间隔色
             height: 300,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
-            pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            //pageNumber: 1,
+            //pageSize: 15,
+            //pageList: [5, 10, 20, 50],
             columns: [{
                 title: "期号代码",
                 field: 'ProjectCode',
@@ -53,24 +53,10 @@
             }, {
                 title: "期号名称",
                 field: "ProjectName",
-                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
-            }, {
-                title: "经销商代码",
-                field: 'ShopCode',
-                width: 100,
-                valign: "middle",
-                align: "center" 
-            }, {
-                title: "经销商名称",
-                field: "ShopName",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
+            },{
                 title: "报告文件个数",
                 field: "ReportFileCount_File",
                 width: 100,

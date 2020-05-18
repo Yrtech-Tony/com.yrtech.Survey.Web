@@ -5120,3 +5120,7 @@ ul.notifications {
     .required{
         color:red;
     }
+
+    .btn:last-child{
+        margin-right:0px;
+    }
