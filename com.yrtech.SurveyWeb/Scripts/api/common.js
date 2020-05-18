@@ -1,4 +1,4 @@
-﻿var baseUrl = 'http://123.57.229.128:8001/';
+﻿var baseUrl = 'http://123.57.229.128:8003/';
 //var easyPhotoUrl = 'http://localhost:57328/';
 var easyPhotoUrl = 'http://123.57.229.128:8020/'
 
