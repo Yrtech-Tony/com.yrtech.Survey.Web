@@ -45,6 +45,21 @@
     <div id="ossfile"></div>
 </div>
 
+@*上传文件弹出框*@
+<div class="modal bs-example-modal-lg fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">上传文件</h4>
+            </div>
+            <div class="modal-body" style="height:600px; overflow:auto ">
+
+            </div>
+        </div>
+    </div>
+</div>
+
 @*文件列表详细弹出框*@
 <div class="modal bs-example-modal-lg fade" id="DetailModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" style="width:1000px;">
@@ -103,6 +118,7 @@
         setTimeout(function () { search();}, 500);
     });
 
+    var readyFiles = [];
     function initOss() {
         getParams();
         osspath = "Survey/ReportFile/" + selProject + "/";
@@ -113,9 +129,13 @@
                 return true;
             },
             fileAddCheckMsg: "",
-            uploaded: function (file) {
+            success: function (files) {
                 //调用导入方法
-                importFiles(file, "01");
+                importFiles(files, "01", true);
+            },
+            FilesAddComplete: function (files) {
+                readyUploader = ossFileUploader;
+                filesAddComplete(files, "01", true);
             }
         });
 
@@ -127,51 +147,73 @@
                 return true;
             },
             fileAddCheckMsg: "",
-
-            uploaded: function (file) {
+            success: function (file) {
                 //调用导入方法
-                importFiles(file, "02");
+                importFiles(file, "02", true);               
+            },
+            FilesAddComplete: function (files) {
+                readyUploader = ossVideoUploader;
+                filesAddComplete(files, "02", true);
             }
         });
     }
 
-    function importFiles(fileObj, fileType) {
-        getParams();
-        if (selShopId) {
-            var fileNameNoTime = fileObj.fileName.substr(fileObj.fileName.indexOf("_") + 1);
-            $.commonPost("ReportFile/ReportFileSave", {
-                ProjectId: selProject,
-                ShopId: selShopId,
-                ReportFileType: fileType,
-                ReportFileName: fileNameNoTime,
-                Url_OSS: fileObj.osspath,
-                InUserId: loginUser.Id
-            }, function (data) {
-                search();
-            });
-        } else {
-            var ufiles = [];
-            var fileNameNoTime = fileObj.fileName.substr(fileObj.fileName.indexOf("_")+1);
-            var shopCode = fileNameNoTime.substr(0, fileNameNoTime.indexOf("_"));
-            ufiles.push({
-                TenantId: loginUser.TenantId,
-                BrandId: $("#brand-sel").val(),
-                ProjectId: selProject,
-                ShopCode: shopCode,
-                ReportFileType: fileType,
-                ReportFileName: fileNameNoTime,
-                Url_OSS: fileObj.osspath,
-                InUserId: loginUser.Id
-            });
+    function filesAddComplete(files, fileType, isCheck) {
+        readyFiles = getUploadFiles(files, fileType, isCheck);        
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").empty();
+        $("#Modal .modal-title").html(fileType == '01' ? '上传文件' : '上传视频');
+        $("#Modal .modal-body").load("/Report/FileUploading", {}, function () {
 
-            $.commonPost("ReportFile/ReportFileListSave", {
-                ListJson: JSON.stringify(ufiles)
-            }, function (data) {
-                search();
-            });
-        }
+        })
     }
 
+    function getUploadFiles(fileObjs, fileType, isCheck) {
+        selShopId = curRow.ShopId;
+        getParams();
+        var ufiles = [];
+        fileObjs.forEach(function (fileObj) {
+            if (isCheck) {
+                ufiles.push({
+                    TenantId: loginUser.TenantId,
+                    BrandId: $("#brand-sel").val(),
+                    ProjectId: selProject,
+                    ShopCode: fileObj.shopCode,
+                    ReportFileType: fileType,
+                    ReportFileName: fileObj.name,
+                    Url_OSS: fileObj.osspath,
+                    InUserId: loginUser.Id
+                });
+            } else {
+                ufiles.push({
+                    TenantId: loginUser.TenantId,
+                    BrandId: $("#brand-sel").val(),
+                    ProjectId: selProject,
+                    ShopId: selShopId,
+                    ShopCode: curRow.ShopCode,
+                    ReportFileType: fileType,
+                    ReportFileName: fileObj.name,
+                    Url_OSS: fileObj.osspath,
+                    InUserId: loginUser.Id
+                });
+            }
+        })
+
+        return ufiles;
+    }
+
+    function importFiles(fileObjs, fileType, isCheck) {
+        var ufiles = getUploadFiles(fileObjs, fileType, isCheck);
+        $.commonPost("ReportFile/ReportFileListSave", {
+            ListJson: JSON.stringify(ufiles)
+        }, function (data) {
+            search();
+            if (isCheck) {
+                $("#Modal").modal("hide");
+            }
+        });
+    }
+    
     var oneShopUploaders = [];
     function search() {
         var params = getParams();
@@ -188,30 +230,31 @@
             }
             oneShopUploaders = [];
             $.each(data, function (i, item) {
-                var uploader = new OSSClient({
+                oneShopUploaders.push(new OSSClient({
+                    autoupload:true,
                     osspath: osspath + "files/",
                     selectfiles: "shopFileUploaderA_" + item.ShopId,
                     fileAddCheck: function () {
                         return true;
                     },
                     fileAddCheckMsg: "",
-                    uploaded: function (file) {
+                    success: function (files) {
                         //调用导入方法
-                        importFiles(file, "01");
+                        importFiles(files, "01", false);
                     }
-                });
-                oneShopUploaders.push(uploader);
+                }));
 
                 oneShopUploaders.push(new OSSClient({
-                    osspath: osspath + "files/",
+                    autoupload: true,
+                    osspath: osspath + "videos/",
                     selectfiles: "shopVideoUploaderA_" + item.ShopId,
                     fileAddCheck: function () {
                         return true;
                     },
                     fileAddCheckMsg: "",
-                    uploaded: function (file) {
+                    success: function (files) {
                         //调用导入方法
-                        importFiles(file, "02");
+                        importFiles(files, "02", false);
                     }
                 }));
             })
@@ -252,7 +295,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:GoDetail(1)" style="min-width:100px">' + value + '</a>';
+                    return '<a href="javascript:GoDetail(\'01\')" style="min-width:100px">' + value + '</a>';
                 }
             }, {
                 title: "文件上传",
@@ -262,7 +305,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a id="shopFileUploaderA_' + row.ShopId + '" href="javascript:return false;"  onclick="uploadFile();" style="min-width:100px">文件上传</a>';
+                    return '<a id="shopFileUploaderA_' + row.ShopId + '" href="javascript:return false;" style="min-width:100px">文件上传</a>';
                 }
             }, {
                 title: "视频数",
@@ -272,7 +315,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:GoDetail(2)" style="min-width:100px">' + value + '</a>';
+                    return '<a href="javascript:GoDetail(\'02\')" style="min-width:100px">' + value + '</a>';
                 }
             }, {
                 title: "视频上传",
@@ -282,7 +325,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a id="shopVideoUploaderA_' + row.ShopId + '" href="javascript:return false;" onclick="uploadFile();" style="min-width:100px">视频上传</a>';
+                    return '<a id="shopVideoUploaderA_' + row.ShopId + '" href="javascript:return false;" style="min-width:100px">视频上传</a>';
                 }
             }],
             onClickRow: function (row, $element) {
@@ -291,12 +334,7 @@
         }).bootstrapTable("showLoading"); 
 
     }
-
-    //单经销商上传
-    function uploadFile() {
-        selShopId = curRow.ShopId;
-    }
-
+    
     var fileTable;
     var selProject;
     var selShopId;
@@ -357,7 +395,7 @@
         $.commonGet("ReportFile/ReportFileSearch", {
             ProjectId: selProject,
             ShopId: selShopId,
-            reportFileType: reportFileType === 1 ? '01' : '02'
+            reportFileType: reportFileType
         }, function (data) {
             fileTable.bootstrapTable("load", data);
         })

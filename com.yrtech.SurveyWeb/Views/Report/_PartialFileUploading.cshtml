@@ -1,0 +1,77 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:right;">
+        <button id="btnStartUpload" class="btn btn-primary" style="margin-right:0px" onclick="startUpload()" data-loading-text="上传中..." disabled>开始上传</button>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="ready-file-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    var readyUploader;
+    $(function () {
+        initFileTable();
+        loadReadyFiles();
+    })
+
+    function initFileTable() {
+        $('#ready-file-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色
+            columns: [{
+                title: "文件名称",
+                field: "ReportFileName",
+                width: 600,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查状态",
+                field: "ShopCodeCheck",
+                width: 140,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '<span class="green"><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span class="red"><i class="fa fa-times" aria-hidden="true"></i></span>';
+                }
+            }, {
+                title: "删除",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:return false;" style="min-width:100px" onclick="deleteFile(\'' + row.ReportFileName + '\')">删除</a>';
+                }
+            }]
+        });
+    }
+
+    function loadReadyFiles() {
+        $.commonPost("ReportFile/ReportFileListSaveCheck", {
+            ListJson: JSON.stringify(readyFiles)
+        }, function (data) {
+            var chkFail = false;
+            data.forEach(function (item) {
+                if (!item.ShopCodeCheck) {
+                    chkFail = true;
+                    return false;
+                }
+            })
+            $("#btnStartUpload").attr("disabled", chkFail);
+            $('#ready-file-table').bootstrapTable("load", data);
+        });
+    }
+
+    function startUpload() {
+        if (readyUploader)
+            readyUploader.start();
+        $("#btnStartUpload").button("loading");
+    }
+
+    function delFile(fileName) {
+        console.log(fileName)
+    }
+</script>
