@@ -34,10 +34,13 @@
             <button type="button" id="btnSearchByKey" class="btn btn-default ">搜 索</button>
         </div>
         <div class="form-group" style="float:right;width:600px;text-align:right">
+
             <span style="color:red">文件命名示例：经销商代码_xxxx</span>
-            <a id="btnDeleteFile" class="btn btn-default" onclick="deleteFileByProject()">按期号删除文件</a>
-            <a id="btnUploadFile" class="btn btn-default">批量上传文件</a>
-            <a id="btnUploadVideo" class="btn btn-default">批量上传视频</a>
+            <button id="btnUploadFileShop" class="btn btn-default" style="display:none">上传文件</button>
+            <button id="btnUploadVideoShop" class="btn btn-default" style="display: none; ">上传视频</button>
+            <button id="btnDeleteFile" class="btn btn-default" onclick="deleteFileByProject()">按期号删除文件</button>
+            <button id="btnUploadFile" class="btn btn-default">批量上传文件</button>
+            <button id="btnUploadVideo" class="btn btn-default">批量上传视频</button>           
         </div>
     </div>
     <br />
@@ -91,6 +94,7 @@
 <script>
     var ossFileUploader;
     var ossVideoUploader;
+    var ossFileUploaderShop;
     var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
@@ -118,6 +122,7 @@
             curRow = undefined;
         });
 
+
         bindBrandSelect();
         $("#brand-sel").change();
         for (var i = 2020; i <= 2030; i++) {
@@ -139,6 +144,7 @@
             osspath: osspath + "files/",
             selectfiles: "btnUploadFile",  
             success: function (files) {
+                debugger
                 //调用导入方法
                 importFiles(files, "01", true);
             },
@@ -152,15 +158,46 @@
             osspath: osspath + "videos/",
             selectfiles: "btnUploadVideo",
             osspath: osspath, 
-            success: function (file) {
+            success: function (files) {
+                debugger
                 //调用导入方法
-                importFiles(file, "02", true);               
+                importFiles(files, "02", true);
             },
             FilesAddComplete: function (files) {
                 readyUploader = ossVideoUploader;
                 filesAddComplete(files, "02", true);
             }
         });
+
+        ossFileUploaderShop = new OSSClient({
+            osspath: osspath + "files/",
+            selectfiles: "btnUploadFileShop",
+            success: function (files) {
+                //调用导入方法
+                debugger
+                importFiles(files, "01", true);
+            },
+            FilesAddComplete: function (files) {
+                readyUploader = ossFileUploaderShop;
+                filesAddComplete(files, "01", true);
+            }
+        });
+
+        ossVideoUploaderShop = new OSSClient({
+            osspath: osspath + "videos/",
+            selectfiles: "btnUploadVideoShop",
+            osspath: osspath,
+            success: function (files) {
+                debugger
+                //调用导入方法
+                importFiles(files, "02", true);
+            },
+            FilesAddComplete: function (files) {
+                readyUploader = ossVideoUploaderShop;
+                filesAddComplete(files, "02", true);
+            }
+        });
+        
     }
 
     function filesAddComplete(files, fileType, isCheck) {
@@ -173,8 +210,7 @@
         })
     }
 
-    function getUploadFiles(fileObjs, fileType, isCheck) {
-        
+    function getUploadFiles(fileObjs, fileType, isCheck) {        
         getParams();
         var ufiles = [];
         fileObjs.forEach(function (fileObj) {
@@ -215,6 +251,7 @@
         $.commonPost("ReportFile/ReportFileListSave", {
             ListJson: JSON.stringify(ufiles)
         }, function (data) {
+            fileObjs = [];
             search();
             if (isCheck) {
                 $("#Modal").modal("hide");
@@ -231,41 +268,41 @@
         $.commonGet("ReportFile/ReportFileListUploadSearch", params, function (data) {
             $('#report-table').bootstrapTable("load", data);
             $('#report-table').bootstrapTable("hideLoading");
-            if (oneShopUploaders) {
-                $.each(oneShopUploaders, function () {
-                    $(this).trigger("onDestroy");
-                })
-            }
-            oneShopUploaders = [];
-            $.each(data, function (i, item) {
-                var fileUploader = new OSSClient({
-                    osspath: osspath + "files/",
-                    selectfiles: "shopFileUploaderA_" + item.ShopId, 
-                    success: function (files) {
-                        //调用导入方法
-                        importFiles(files, "01", true);
-                    },
-                    FilesAddComplete: function (files) {
-                        readyUploader = fileUploader;
-                        filesAddComplete(files, "01", true);
-                    }
-                });
-                var videoUploader = new OSSClient({
-                    osspath: osspath + "videos/",
-                    selectfiles: "shopVideoUploaderA_" + item.ShopId, 
-                    success: function (files) {
-                        //调用导入方法
-                        importFiles(files, "02", true);
-                    },
-                    FilesAddComplete: function (files) {
-                        readyUploader = videoUploader;
-                        filesAddComplete(files, "02", true);
-                    }
-                })
+            //if (oneShopUploaders) {
+            //    $.each(oneShopUploaders, function () {
+            //        this.destroy();
+            //    })
+            //}
+            //oneShopUploaders = [];
+            //$.each(data, function (i, item) {
+            //    var fileUploader = new OSSClient({
+            //        osspath: osspath + "files/",
+            //        selectfiles: "shopFileUploaderA_" + item.ShopId, 
+            //        success: function (files) {
+            //            //调用导入方法
+            //            importFiles(files, "01", true);
+            //        },
+            //        FilesAddComplete: function (files) {
+            //            readyUploader = fileUploader;
+            //            filesAddComplete(files, "01", true);
+            //        }
+            //    });
+            //    var videoUploader = new OSSClient({
+            //        osspath: osspath + "videos/",
+            //        selectfiles: "shopVideoUploaderA_" + item.ShopId, 
+            //        success: function (files) {
+            //            //调用导入方法
+            //            importFiles(files, "02", true);
+            //        },
+            //        FilesAddComplete: function (files) {
+            //            readyUploader = videoUploader;
+            //            filesAddComplete(files, "02", true);
+            //        }
+            //    })
 
-                oneShopUploaders.push(fileUploader);
-                oneShopUploaders.push(videoUploader);
-            })
+            //    oneShopUploaders.push(fileUploader);
+            //    oneShopUploaders.push(videoUploader);
+            //})
         })
     }
     var curRow;
@@ -312,7 +349,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a id="shopFileUploaderA_' + row.ShopId + '" href="javascript:return false;" style="min-width:100px">文件上传</a>';
+                    return '<a id="shopFileUploaderA_' + row.ShopId + '" href="javascript:openSelectFile(\'01\');" style="min-width:100px">文件上传</a>';
                 }
             }, {
                 title: "视频数",
@@ -332,7 +369,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a id="shopVideoUploaderA_' + row.ShopId + '" href="javascript:return false;" style="min-width:100px">视频上传</a>';
+                    return '<a id="shopVideoUploaderA_' + row.ShopId + '" href="javascript:openSelectFile(\'02\');" style="min-width:100px">视频上传</a>';
                 }
             }],
             onClickRow: function (row, $element) {
@@ -342,6 +379,14 @@
 
     }
     
+    function openSelectFile(fileType) {
+        if (fileType == "01") {
+            $("#btnUploadFileShop").trigger("click");
+        }else{
+            $("#btnUploadVideoShop").trigger("click");
+        }
+    }
+
     var fileTable;
     var selProject;
     var selShopId;

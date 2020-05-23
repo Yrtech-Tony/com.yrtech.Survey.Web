@@ -50,19 +50,25 @@
     }
 
     function loadReadyFiles() {
-        $.commonPost("ReportFile/ReportFileListSaveCheck", {
-            ListJson: JSON.stringify(readyFiles)
-        }, function (data) {
-            var chkFail = false;
-            data.forEach(function (item) {
-                if (!item.ShopCodeCheck) {
-                    chkFail = true;
-                    return false;
-                }
-            })
-            $("#btnStartUpload").attr("disabled", chkFail);
-            $('#ready-file-table').bootstrapTable("load", data);
-        });
+        if (curRow) {
+            $("#btnStartUpload").attr("disabled", false);
+            readyFiles.forEach(function (file) { file.ShopCodeCheck = true});
+            $('#ready-file-table').bootstrapTable("load", readyFiles);
+        } else {
+            $.commonPost("ReportFile/ReportFileListSaveCheck", {
+                ListJson: JSON.stringify(readyFiles)
+            }, function (data) {
+                var chkFail = false;
+                data.forEach(function (item) {
+                    if (!item.ShopCodeCheck) {
+                        chkFail = true;
+                        return false;
+                    }
+                })
+                $("#btnStartUpload").attr("disabled", chkFail);
+                $('#ready-file-table').bootstrapTable("load", data);
+            });
+        }
     }
 
     function startUpload() {

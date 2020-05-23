@@ -64,11 +64,38 @@
 
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 <script>
-    var ossFileUploader;
+    var ossUploader;
     var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
+
+        osspath = "Survey/BaseInfo/";
+        ossUploader = new OSSClient({
+            autoupload:true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnSelectImportFile",
+            success: function (files) {
+                debugger
+                //调用导入方法
+                files.forEach(function (file) {
+                    $.commonPost("Master/AreaImport", {
+                        brandId: $("#brand-sel").val(),
+                        UserId: loginUser.Id,
+                        ossPath: file.ossPath
+                    }, function () {
+                        loadArea();
+                    })
+                })
+            }
+        });
 
         bindBrandSelect();
         bindAreaTypeSelect();
@@ -89,21 +116,10 @@
         })
      
         $("#btnAreaImport").click(function () {
+            
             var brandTxt = $("#brand-sel option:selected").text();
-            confirm("确定导入" + brandTxt + "的区域吗？", function () {
-                osspath = "Survey/BaseInfo/";
-                ossFileUploader = new OSSClient({
-                    osspath: osspath + "Import/",
-                    selectfiles: "btnSelectImportFile", 
-                    success: function (files) {
-                        //调用导入方法
-                        importFiles(files, "01", true);
-                    },
-                    FilesAddComplete: function (files) {
-                        readyUploader = ossFileUploader;
-                        filesAddComplete(files, "01", true);
-                    }
-                });
+            confirm("确定导入" + brandTxt + "的区域吗？", function () {               
+                $("#btnSelectImportFile").click()
             }, function () {
                 return false;
             })
