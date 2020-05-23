@@ -79,10 +79,12 @@
                 ModifyUserId: loginUser.Id
             }, params);
         }
+        $("#save_button").button("loading");
         $.commonPost("Master/SaveShop", params, function () {
+            $("#save_button").button("reset");
             loadShop();
             closeModel();
-        });
+        }, function () { $("#save_button").button("reset"); });
     }
 
     function loadShop() {

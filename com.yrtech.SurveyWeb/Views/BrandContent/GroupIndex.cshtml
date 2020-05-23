@@ -82,10 +82,12 @@
                 ModifyUserId: loginUser.Id
             }, params);
         }
+        $("#save_button").button("loading");
         $.commonPost("Master/SaveGroup", params, function () {
+            $("#save_button").button("reset");
             loadGroup();
             closeModel();
-        });
+        }, function () { $("#save_button").button("reset"); });
     }
 
     function loadGroup() {

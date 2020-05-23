@@ -105,6 +105,10 @@
             bindBussinessSelect();
         });        
 
+        $("#project-sel,#bussiness-type-sel").change(function () {
+            search();
+        })
+
         //报告上传查询
         $("#btnSearch,#btnSearchByKey").click(function () {
             search();
@@ -133,11 +137,7 @@
         osspath = "Survey/ReportFile/" + selProject + "/";
         ossFileUploader = new OSSClient({
             osspath: osspath + "files/",
-            selectfiles: "btnUploadFile",
-            fileAddCheck: function () {
-                return true;
-            },
-            fileAddCheckMsg: "",
+            selectfiles: "btnUploadFile",  
             success: function (files) {
                 //调用导入方法
                 importFiles(files, "01", true);
@@ -151,11 +151,7 @@
         ossVideoUploader = new OSSClient({
             osspath: osspath + "videos/",
             selectfiles: "btnUploadVideo",
-            osspath: osspath,
-            fileAddCheck: function () {
-                return true;
-            },
-            fileAddCheckMsg: "",
+            osspath: osspath, 
             success: function (file) {
                 //调用导入方法
                 importFiles(file, "02", true);               
@@ -244,11 +240,7 @@
             $.each(data, function (i, item) {
                 var fileUploader = new OSSClient({
                     osspath: osspath + "files/",
-                    selectfiles: "shopFileUploaderA_" + item.ShopId,
-                    fileAddCheck: function () {
-                        return true;
-                    },
-                    fileAddCheckMsg: "",
+                    selectfiles: "shopFileUploaderA_" + item.ShopId, 
                     success: function (files) {
                         //调用导入方法
                         importFiles(files, "01", true);
@@ -260,11 +252,7 @@
                 });
                 var videoUploader = new OSSClient({
                     osspath: osspath + "videos/",
-                    selectfiles: "shopVideoUploaderA_" + item.ShopId,
-                    fileAddCheck: function () {
-                        return true;
-                    },
-                    fileAddCheckMsg: "",
+                    selectfiles: "shopVideoUploaderA_" + item.ShopId, 
                     success: function (files) {
                         //调用导入方法
                         importFiles(files, "02", true);

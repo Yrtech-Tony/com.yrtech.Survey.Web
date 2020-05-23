@@ -92,10 +92,12 @@
                 ModifyUserId: loginUser.Id
             }, params);
         }
+        $("#save_button").button("loading");
         $.commonPost("Master/SaveProject", params, function () {
+            $("#save_button").button("reset");
             loadProject();
             closeModel();
-        });
+        }, function () { $("#save_button").button("reset"); });
     }
 
     function loadProject() {
