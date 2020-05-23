@@ -66,9 +66,16 @@
     }
 
     function startUpload() {
-        if (readyUploader)
-            readyUploader.start();
-        $("#btnStartUpload").button("loading");
+        var brandTxt = $("#brand-sel option:selected").text();
+        var projectTxt = $("#project-sel option:selected").text();
+        var bussinessTypeTxt = $("#bussiness-type-sel option:selected").text();
+        confirm("确定上传文件到品牌=" + brandTxt + ",期号=" + projectTxt + ",业务类型=" + bussinessTypeTxt + "下么？", function () {
+            if (readyUploader)
+                readyUploader.start();
+            $("#btnStartUpload").button("loading");
+        }, function () {
+            return false;
+        })
     }
 
     function delFile(fileName) {

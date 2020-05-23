@@ -6,15 +6,19 @@
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:200px"></select>
+            <select id="brand-sel" class="form-control" style="width:140px"></select>
         </div>
         <div class="form-group">
             <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width:200px"></select>
+            <select id="year-sel" class="form-control" style="width: 140px"></select>
         </div>
         <div class="form-group">
             <label class="control-label">期号:</label>
-            <select id="project-sel" class="form-control" style="width:200px"></select>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">业务类型:</label>
+            <select id="bussiness-type-sel" class="form-control" style="width: 140px"></select>
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
@@ -75,7 +79,7 @@
     </div>
 </div>
 
-<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/common.js?20200523"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
@@ -91,10 +95,15 @@
     $(function () {
         $('title').html('@ViewBag.Title')
 
-        //加载期号
-        $("#brand-sel,#year-sel").change(function () {
+        //加载年份
+        $("#year-sel").change(function () {
             bindProjectSelect();
         });
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+            bindBussinessSelect();
+        });        
 
         //报告上传查询
         $("#btnSearch,#btnSearchByKey").click(function () {
@@ -102,12 +111,11 @@
         });
 
         $("#btnUploadFile,#btnUploadVideo").click(function () {
-            selShopId = undefined;
+            curRow = undefined;
         });
 
-        initReportTable();
-
         bindBrandSelect();
+        $("#brand-sel").change();
         for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
         }
@@ -115,7 +123,8 @@
 
         initOss();
 
-        setTimeout(function () { search();}, 500);
+        initReportTable();
+        search();
     });
 
     var readyFiles = [];
@@ -169,28 +178,31 @@
     }
 
     function getUploadFiles(fileObjs, fileType, isCheck) {
-        selShopId = curRow.ShopId;
+        
         getParams();
         var ufiles = [];
         fileObjs.forEach(function (fileObj) {
-            if (isCheck) {
-                ufiles.push({
-                    TenantId: loginUser.TenantId,
-                    BrandId: $("#brand-sel").val(),
-                    ProjectId: selProject,
-                    ShopCode: fileObj.shopCode,
-                    ReportFileType: fileType,
-                    ReportFileName: fileObj.name,
-                    Url_OSS: fileObj.osspath,
-                    InUserId: loginUser.Id
-                });
-            } else {
+            if (curRow) {
+                selShopId = curRow.ShopId;
                 ufiles.push({
                     TenantId: loginUser.TenantId,
                     BrandId: $("#brand-sel").val(),
                     ProjectId: selProject,
                     ShopId: selShopId,
                     ShopCode: curRow.ShopCode,
+                    BussinessTypeId: $('#bussiness-type-sel').val(),
+                    ReportFileType: fileType,
+                    ReportFileName: fileObj.name,
+                    Url_OSS: fileObj.osspath,
+                    InUserId: loginUser.Id
+                });                
+            } else {
+                ufiles.push({
+                    TenantId: loginUser.TenantId,
+                    BrandId: $("#brand-sel").val(),
+                    ProjectId: selProject,
+                    ShopCode: fileObj.shopCode,
+                    BussinessTypeId: $('#bussiness-type-sel').val(),
                     ReportFileType: fileType,
                     ReportFileName: fileObj.name,
                     Url_OSS: fileObj.osspath,
@@ -230,8 +242,7 @@
             }
             oneShopUploaders = [];
             $.each(data, function (i, item) {
-                oneShopUploaders.push(new OSSClient({
-                    autoupload:true,
+                var fileUploader = new OSSClient({
                     osspath: osspath + "files/",
                     selectfiles: "shopFileUploaderA_" + item.ShopId,
                     fileAddCheck: function () {
@@ -240,12 +251,14 @@
                     fileAddCheckMsg: "",
                     success: function (files) {
                         //调用导入方法
-                        importFiles(files, "01", false);
+                        importFiles(files, "01", true);
+                    },
+                    FilesAddComplete: function (files) {
+                        readyUploader = fileUploader;
+                        filesAddComplete(files, "01", true);
                     }
-                }));
-
-                oneShopUploaders.push(new OSSClient({
-                    autoupload: true,
+                });
+                var videoUploader = new OSSClient({
                     osspath: osspath + "videos/",
                     selectfiles: "shopVideoUploaderA_" + item.ShopId,
                     fileAddCheck: function () {
@@ -254,11 +267,17 @@
                     fileAddCheckMsg: "",
                     success: function (files) {
                         //调用导入方法
-                        importFiles(files, "02", false);
+                        importFiles(files, "02", true);
+                    },
+                    FilesAddComplete: function (files) {
+                        readyUploader = videoUploader;
+                        filesAddComplete(files, "02", true);
                     }
-                }));
-            })
+                })
 
+                oneShopUploaders.push(fileUploader);
+                oneShopUploaders.push(videoUploader);
+            })
         })
     }
     var curRow;
@@ -447,8 +466,9 @@
         selProject = project;
         $("#brand-sel").val(), $("#year").val()
         return {
-            brandId:$('#brand-sel').val(),
-            projectId: project || '',
+            brandId: $('#brand-sel').val(),
+            bussinessTypeId: $('#bussiness-type-sel').val(),
+            projectId: project || '',            
             keyword: $('#keyword').val(),
             pageNum: 1,
             pageCount: 10000

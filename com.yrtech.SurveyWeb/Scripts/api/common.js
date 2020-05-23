@@ -138,6 +138,26 @@ function bindProjectSelect() {
     })
     $.ajaxSettings.async = true;
 }
+
+// 绑定业务类型
+function bindBussinessSelect() {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetArea", {
+        brandId: $("#brand-sel").val(),
+        areaId: '',
+        areaCode: '',
+        areaType: 'Bussiness',
+        areaName: '',
+        parentId: ''
+    }, function (data) {
+        $("#bussiness-type-sel").empty();
+        data.forEach(function (item) {
+            $("#bussiness-type-sel").append($("<option>").val(item.AreaId).text(item.AreaName));
+        })
+    });
+    $.ajaxSettings.async = true;
+}
+
 // 绑定集团
 function bindGroupSel() {
     $.ajaxSettings.async = false;
