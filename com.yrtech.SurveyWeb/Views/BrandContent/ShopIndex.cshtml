@@ -16,9 +16,12 @@
             <input type="text" class="form-control" id="ShopName" placeholder="经销商名称">
         </div>
     </div>
-    <div style="float:right;width:200px;text-align:right">
+    <br />
+    <div style="float:right;">
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnShopAdd" class="btn btn-primary">添加经销商</button>
+        <button id="btnShopImport" class="btn btn-primary">导入经销商</button>
+        <button id="btnDownloadTemplate" class="btn btn-primary">下载模板</button>
     </div>
 </div>
 <div class="result">
@@ -42,11 +45,46 @@
     </div>
 </div>
 
+<button id="btnSelectImportFile" style="display:none">选择导入文件</button>
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 <script>
+    var ossUploader;
+    var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
+
+        osspath = "Survey/BaseInfo/";
+        ossUploader = new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnSelectImportFile",
+            success: function (files) {
+                debugger
+                //调用导入方法
+                files.forEach(function (file) {
+                    $.commonGet("Master/ShopImport", {
+                        tenantId: loginUser.TenantId,
+                        brandId: $("#brand-sel").val(),
+                        userId: loginUser.Id,
+                        ossPath: file.osspath
+                    }, function () {
+                        loadShop();
+                    })
+                })
+            }
+        });
 
         bindBrandSelect();
         initShopTable();
@@ -57,6 +95,20 @@
             })
             return false;
         })
+
+        $("#btnShopImport").click(function () {
+            var brandTxt = $("#brand-sel option:selected").text();
+            confirm("确定导入" + brandTxt + "的经销商吗？", function () {
+                $("#btnSelectImportFile").click()
+            }, function () {
+                return false;
+            })
+        });
+
+        $("#btnDownloadTemplate").click(function () {
+            var url = ossUrlRoot + "Survey/ImportTemplate/Shop.xlsx";
+            window.location.href = url;
+        });
 
         $("#btnQuery").click(function () {
             loadShop();
@@ -197,8 +249,7 @@
         })
     }
 
-   
-</script>
 
+</script>
 
 

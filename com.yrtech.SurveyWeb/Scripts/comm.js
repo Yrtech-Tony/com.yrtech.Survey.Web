@@ -267,6 +267,10 @@ window.alert = function (msg,call) {
     if ($('#alterModal').length == 0) {
         $('body').append('<div id="alterModal" class="modal fade"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title">提示</h4></div><div class="modal-body"></div><div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal">确定</button></div></div></div></div>');
         $('#alterModal').modal({ backdrop: 'static', keyboard: false });
+
+        $('#alterModal').on('hidden.bs.modal', function (e) {
+            if (call) call();
+        })
     }
     if (msg == "正在导出...") {
         $("#alterModal .modal-footer").hide();
@@ -275,10 +279,7 @@ window.alert = function (msg,call) {
     }
     //
     $('#alterModal .modal-body').html('<p id="alert_msg">'+msg+'</p>');
-    $('#alterModal').modal('show');
-    $('#alterModal').on('hidden.bs.modal', function (e) {
-        if (call) call();
-    })
+    $('#alterModal').modal('show');   
 }
 
 //结束函数 submitForm
@@ -292,21 +293,24 @@ window.confirm = function (msg, confirmCall, cancelCall) {
             '<button type="button" class="btn btn-primary cancel-btn" data-dismiss="modal">取消</button></div></div></div></div>');
 
         $('#confirmModal').modal({ backdrop: 'static', keyboard: false });
+
+        $('#confirmModal .ok-btn').click(function (e) {
+            console.log("#confirmModal .ok-btn")
+            if (confirmCall) {
+                confirmCall();
+            }
+        })
+
+        $('#confirmModal .cancel-btn').click(function (e) {
+            console.log("#confirmModal .cancel-btn")
+            if (cancelCall) {
+                cancelCall();
+            }
+        })
     }    
     //
     $('#confirmModal .modal-body').html('<p id="confirm_msg">' + msg + '</p>');
-    $('#confirmModal').modal('show');
-    $('#confirmModal .ok-btn').click(function (e) {
-        if (confirmCall) {
-            confirmCall();
-        }
-    })
-
-    $('#confirmModal .cancel-btn').click(function (e) {
-        if (cancelCall) {
-            cancelCall();
-        }
-    })
+    $('#confirmModal').modal('show'); 
 }
 
 window.closealert = function () {

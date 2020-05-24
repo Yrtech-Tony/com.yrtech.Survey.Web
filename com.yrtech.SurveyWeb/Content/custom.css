@@ -5091,6 +5091,7 @@ ul.notifications {
 
 .condition {
     display: flex;
+    flex-flow:row wrap;
     -ms-flex-pack: justify;
     justify-content: space-between;
     margin-bottom: 10px;
@@ -5099,6 +5100,9 @@ ul.notifications {
     background: #fff;
     box-shadow: 0 1px 4px 0 #e5e7ea;
     border-radius: 3px;
+}
+.condition > div+div{
+    margin-top:10px;
 }
 
 .result {

@@ -3,6 +3,7 @@
 var easyPhotoUrl = 'http://123.57.229.128:8020/'
 
 var baseApi = baseUrl + "survey/api/";
+var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
 
 var dta = {};
 var pageSize = 15;
