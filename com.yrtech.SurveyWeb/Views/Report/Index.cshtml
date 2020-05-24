@@ -122,6 +122,11 @@
             curRow = undefined;
         });
 
+        $('#Modal').on('hide.bs.modal', function () {
+            if (readyUploader) {
+                readyUploader.splice();
+            }
+        });
 
         bindBrandSelect();
         $("#brand-sel").change();
@@ -436,6 +441,7 @@
 
         loadFileList(reportFileType);
     }
+
 
     function loadFileList(reportFileType) {
         $.commonGet("ReportFile/ReportFileSearch", {
