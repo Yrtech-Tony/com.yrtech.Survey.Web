@@ -24,10 +24,10 @@
     <div style="float:right;width:200px;text-align:right">
         <button id="btnSearch" class="btn btn-primary">查询</button>
     </div>
-  
+
 </div>
- 
-<div class="result table-responsive"  >
+
+<div class="result table-responsive">
     <div class="form-inline">
         <div class="form-group">
             <input type="text" class="form-control" name="keyword" id="keyword" placeholder="经销商代码/名称" value="">
@@ -40,7 +40,7 @@
             <button id="btnUploadVideoShop" class="btn btn-default" style="display: none; ">上传视频</button>
             <button id="btnDeleteFile" class="btn btn-default" onclick="deleteFileByProject()">按期号删除文件</button>
             <button id="btnUploadFile" class="btn btn-default">批量上传文件</button>
-            <button id="btnUploadVideo" class="btn btn-default">批量上传视频</button>           
+            <button id="btnUploadVideo" class="btn btn-default">批量上传视频</button>
         </div>
     </div>
     <br />
@@ -107,7 +107,7 @@
         $("#brand-sel").change(function () {
             bindProjectSelect();
             bindBussinessSelect();
-        });        
+        });
 
         $("#project-sel,#bussiness-type-sel").change(function () {
             search();
@@ -142,7 +142,7 @@
         osspath = "Survey/ReportFile/" + selProject + "/";
         ossFileUploader = new OSSClient({
             osspath: osspath + "files/",
-            selectfiles: "btnUploadFile",  
+            selectfiles: "btnUploadFile",
             success: function (files) {
                 debugger
                 //调用导入方法
@@ -157,7 +157,7 @@
         ossVideoUploader = new OSSClient({
             osspath: osspath + "videos/",
             selectfiles: "btnUploadVideo",
-            osspath: osspath, 
+            osspath: osspath,
             success: function (files) {
                 debugger
                 //调用导入方法
@@ -197,11 +197,11 @@
                 filesAddComplete(files, "02", true);
             }
         });
-        
+
     }
 
     function filesAddComplete(files, fileType, isCheck) {
-        readyFiles = getUploadFiles(files, fileType, isCheck);        
+        readyFiles = getUploadFiles(files, fileType, isCheck);
         $("#Modal").modal("show");
         $("#Modal .modal-body").empty();
         $("#Modal .modal-title").html(fileType == '01' ? '上传文件' : '上传视频');
@@ -210,7 +210,7 @@
         })
     }
 
-    function getUploadFiles(fileObjs, fileType, isCheck) {        
+    function getUploadFiles(fileObjs, fileType, isCheck) {
         getParams();
         var ufiles = [];
         fileObjs.forEach(function (fileObj) {
@@ -227,7 +227,7 @@
                     ReportFileName: fileObj.name,
                     Url_OSS: fileObj.osspath,
                     InUserId: loginUser.Id
-                });                
+                });
             } else {
                 ufiles.push({
                     TenantId: loginUser.TenantId,
@@ -258,7 +258,7 @@
             }
         });
     }
-    
+
     var oneShopUploaders = [];
     function search() {
         var params = getParams();
@@ -277,7 +277,7 @@
             //$.each(data, function (i, item) {
             //    var fileUploader = new OSSClient({
             //        osspath: osspath + "files/",
-            //        selectfiles: "shopFileUploaderA_" + item.ShopId, 
+            //        selectfiles: "shopFileUploaderA_" + item.ShopId,
             //        success: function (files) {
             //            //调用导入方法
             //            importFiles(files, "01", true);
@@ -289,7 +289,7 @@
             //    });
             //    var videoUploader = new OSSClient({
             //        osspath: osspath + "videos/",
-            //        selectfiles: "shopVideoUploaderA_" + item.ShopId, 
+            //        selectfiles: "shopVideoUploaderA_" + item.ShopId,
             //        success: function (files) {
             //            //调用导入方法
             //            importFiles(files, "02", true);
@@ -318,7 +318,7 @@
             pageSize: 15,
             pageList: [10, 15, 20, 50],
             width: "100%",
-            height: getClientHeight()-300,
+            height: getClientHeight() - 300,
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
@@ -375,14 +375,14 @@
             onClickRow: function (row, $element) {
                 curRow = row;
             }
-        }).bootstrapTable("showLoading"); 
+        }).bootstrapTable("showLoading");
 
     }
-    
+
     function openSelectFile(fileType) {
         if (fileType == "01") {
             $("#btnUploadFileShop").trigger("click");
-        }else{
+        } else {
             $("#btnUploadVideoShop").trigger("click");
         }
     }
@@ -405,12 +405,6 @@
             sortable: true,
             scroll: false,
             columns: [{
-                title: "序号",
-                field: 'SeqNO',
-                width: 100,
-                valign: "middle",
-                align: "center"
-            }, {
                 title: "文件名称",
                 field: "ReportFileName",
                 width: 600,
@@ -501,7 +495,7 @@
         return {
             brandId: $('#brand-sel').val(),
             bussinessTypeId: $('#bussiness-type-sel').val(),
-            projectId: project || '',            
+            projectId: project || '',
             keyword: $('#keyword').val(),
             pageNum: 1,
             pageCount: 10000
