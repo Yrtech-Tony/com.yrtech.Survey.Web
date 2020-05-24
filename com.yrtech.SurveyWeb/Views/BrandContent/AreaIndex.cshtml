@@ -16,8 +16,9 @@
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnAreaAdd" class="btn btn-primary">添加业务类型</button>
         <button id="btnAreaImport" class="btn btn-primary">导入区域</button>
-        <button id="btnDownloadTemplate" class="btn btn-primary">下载区域模板</button>
-        <button id="btnDownloadTemplate2" class="btn btn-primary">下载设置经销商模板</button>
+        <button id="btnAreaShopImport" class="btn btn-primary">导入设置经销商</button>
+        <button id="btnDownloadTemplate" class="btn btn-primary">区域模板</button>
+        <button id="btnDownloadTemplate2" class="btn btn-primary">设置经销商模板</button>
     </div>
     <div class="form-inline">
         <div class="form-group">
@@ -44,6 +45,7 @@
 </div>
 
 <button id="btnSelectImportFile" style="display:none">选择导入文件</button>
+
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
@@ -77,6 +79,7 @@
 <script>
     var ossUploader;
     var osspath;
+    var importArea;
     $(function () {
         $('title').html('@ViewBag.Title')
 
@@ -86,16 +89,28 @@
             osspath: osspath + "Import/",
             selectfiles: "btnSelectImportFile",
             success: function (files) {
-                debugger
                 //调用导入方法
                 files.forEach(function (file) {
-                    $.commonGet("Master/AreaImport", {
-                        brandId: $("#brand-sel").val(),
-                        userId: loginUser.Id,
-                        ossPath:file.osspath
-                    }, function () {
-                        loadArea();
-                    })
+                    if (importArea) {
+                        $.commonGet("Master/AreaImport", {
+                            brandId: $("#brand-sel").val(),
+                            userId: loginUser.Id,
+                            ossPath: file.osspath
+                        }, function () {
+                            alert("导入成功！")
+                            loadArea();
+                        })
+                    } else {
+                        $.commonGet("Master/AreaShopImport", {
+                            tenantId: loginUser.TenantId,
+                            brandId: $("#brand-sel").val(),
+                            userId: loginUser.Id,
+                            ossPath: file.osspath
+                        }, function () {
+                            alert("导入成功！")
+                        })
+                    }
+                   
                 })
             }
         });
@@ -118,14 +133,26 @@
             return false;
         })
      
-        $("#btnAreaImport").click(function () {            
+        $("#btnAreaImport").click(function () {
+            importArea = true;
             var brandTxt = $("#brand-sel option:selected").text();
-            confirm("确定导入" + brandTxt + "的区域吗？", function () {               
+            confirm("确定导入" + brandTxt + "品牌的区域吗？", function () {
                 $("#btnSelectImportFile").trigger("click")
             }, function () {
                 return false;
             })
         });
+
+        $("#btnAreaShopImport").click(function () {
+            importArea = false;
+            var brandTxt = $("#brand-sel option:selected").text();
+            confirm("确定导入" + brandTxt + "品牌的小区经销商吗？", function () {
+                $("#btnSelectImportFile").trigger("click")
+            }, function () {
+                return false;
+            })
+        });
+        
 
         $("#btnDownloadTemplate").click(function () {
             var url = ossUrlRoot + "Survey/ImportTemplate/Area.xlsx";
