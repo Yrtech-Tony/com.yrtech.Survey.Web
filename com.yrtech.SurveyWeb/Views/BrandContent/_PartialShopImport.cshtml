@@ -1,0 +1,116 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-inline" style="float:right;">
+        <div class="form-group">
+            <label class="control-label">将要导入的品牌:</label>
+            <input id="ImportBrand" type="text" class="form-control" disabled>
+        </div>
+        <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importShop()" data-loading-text="导入中...">导入</button>
+    </div>
+
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="import-shop-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        initImportShopTable();
+    })
+
+    function initImportShopTable() {
+        $('#import-shop-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 100,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "经销商名称",
+                field: "ShopName",               
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "经销商简称",
+                field: "ShopShortName",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "省份",
+                field: "Province",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "城市",
+                field: "City",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "集团",
+                field: "GroupName",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "是否可用",
+                field: "UseChk",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '是' : '否';
+                }
+            }, {
+                title: "数据状态",
+                field: "ImportChk",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '正确' : '错误';
+                }
+            }, {
+                title: "状态说明",
+                field: "ImportRemark",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false 
+            }]
+        });
+    }
+
+    function loadImportShop(file) {
+        $.commonGet("Master/ShopExcelAnalysis", {
+            brandId:$("#brand-sel").val(),
+            ossPath: file.osspath
+        }, function (data) {
+            $('#import-shop-table').bootstrapTable("load", data);
+        });
+    }
+    function importShop() {
+        var rows = $('#import-shop-table').bootstrapTable("getData");
+        $("#btnImport").button("loading");
+        $.commonPost("Master/ShopImport", {
+            ListJson: JSON.stringify(rows)
+        }, function () {
+            $("#ModalImport").modal("hide");
+        });
+    }
+
+</script>

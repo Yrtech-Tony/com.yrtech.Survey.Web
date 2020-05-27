@@ -61,5 +61,17 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialGroupEdit");
         }
 
+        public ActionResult OpenAreaImport()
+        {
+            return View("_PartialAreaImport");
+        }
+        public ActionResult OpenAreaShopImport()
+        {
+            return View("_PartialAreaShopImport");
+        }
+        public ActionResult OpenShopImport()
+        {
+            return View("_PartialShopImport");
+        }
     }
 }

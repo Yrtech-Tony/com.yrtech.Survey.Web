@@ -63,6 +63,6 @@ namespace com.yrtech.SurveyWeb.Controllers
             AccountDto accountDto = Session["LoginUser"] as AccountDto;
             var shopList = accountDto.ShopList.Where(x => x.AreaId == SmallArea);
             return Json(shopList, JsonRequestBehavior.AllowGet);
-        }
+        }        
     }
 }

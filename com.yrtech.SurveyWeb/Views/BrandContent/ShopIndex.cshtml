@@ -44,8 +44,18 @@
         </div>
     </div>
 </div>
-
-<button id="btnSelectImportFile" style="display:none">选择导入文件</button>
+<div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">经销商导入</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
@@ -66,26 +76,24 @@
         $('title').html('@ViewBag.Title')
 
         osspath = "Survey/BaseInfo/";
-        ossUploader = new OSSClient({
+        new OSSClient({
             autoupload: true,
             osspath: osspath + "Import/",
-            selectfiles: "btnSelectImportFile",
+            selectfiles: "btnShopImport",
+            multi_selection: false,
             success: function (files) {
-                debugger
                 //调用导入方法
                 files.forEach(function (file) {
-                    $.commonGet("Master/ShopImport", {
-                        tenantId: loginUser.TenantId,
-                        brandId: $("#brand-sel").val(),
-                        userId: loginUser.Id,
-                        ossPath: file.osspath
-                    }, function () {
-                        loadShop();
+                    var brandTxt = $("#brand-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-body").load("/BrandContent/OpenShopImport", {}, function () {
+                        $("#ImportBrand").val(brandTxt);
+                        loadImportShop(file);
                     })
                 })
             }
         });
-
         bindBrandSelect();
         initShopTable();
         $("#btnShopAdd").click(function () {
@@ -94,16 +102,7 @@
                 bindGroupSel();
             })
             return false;
-        })
-
-        $("#btnShopImport").click(function () {
-            var brandTxt = $("#brand-sel option:selected").text();
-            confirm("确定导入" + brandTxt + "的经销商吗？", function () {
-                $("#btnSelectImportFile").click()
-            }, function () {
-                return false;
-            })
-        });
+        })     
 
         $("#btnDownloadTemplate").click(function () {
             var url = ossUrlRoot + "Survey/ImportTemplate/Shop.xlsx";

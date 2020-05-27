@@ -44,8 +44,6 @@
     <table id="area-table" class="table table-bordered table-set"></table>
 </div>
 
-<button id="btnSelectImportFile" style="display:none">选择导入文件</button>
-
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
@@ -67,6 +65,19 @@
     </div>
 </div>
 
+<div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">区域导入</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 
@@ -77,40 +88,49 @@
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 <script>
-    var ossUploader;
     var osspath;
     var importArea;
     $(function () {
         $('title').html('@ViewBag.Title')
 
         osspath = "Survey/BaseInfo/";
-        ossUploader = new OSSClient({
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnAreaImport",
+            multi_selection: false,
+            success: function (files) {
+                debugger
+                //调用导入方法
+                files.forEach(function (file) {
+                    var brandTxt = $("#brand-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-title").html("区域导入");
+                    $("#ModalImport .modal-body").load("/BrandContent/OpenAreaImport", {}, function () {
+                        $("#ImportBrand").val(brandTxt);
+                        loadImportArea(file);
+                    }) 
+                })
+            }
+        });
+
+        new OSSClient({
             autoupload:true,
             osspath: osspath + "Import/",
-            selectfiles: "btnSelectImportFile",
+            selectfiles: "btnAreaShopImport",
+            multi_selection:false,
             success: function (files) {
                 //调用导入方法
                 files.forEach(function (file) {
-                    if (importArea) {
-                        $.commonGet("Master/AreaImport", {
-                            brandId: $("#brand-sel").val(),
-                            userId: loginUser.Id,
-                            ossPath: file.osspath
-                        }, function () {
-                            alert("导入成功！")
-                            loadArea();
-                        })
-                    } else {
-                        $.commonGet("Master/AreaShopImport", {
-                            tenantId: loginUser.TenantId,
-                            brandId: $("#brand-sel").val(),
-                            userId: loginUser.Id,
-                            ossPath: file.osspath
-                        }, function () {
-                            alert("导入成功！")
-                        })
-                    }
-                   
+                    var brandTxt = $("#brand-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-title").html("设置经销商导入");
+                    $("#ModalImport .modal-body").load("/BrandContent/OpenAreaShopImport", {}, function () {
+                        $("#ImportBrand").val(brandTxt);
+                        loadImportAreaShop(file);
+                    }) 
                 })
             }
         });
@@ -132,27 +152,7 @@
             })
             return false;
         })
-     
-        $("#btnAreaImport").click(function () {
-            importArea = true;
-            var brandTxt = $("#brand-sel option:selected").text();
-            confirm("确定导入" + brandTxt + "品牌的区域吗？", function () {
-                $("#btnSelectImportFile").trigger("click")
-            }, function () {
-                return false;
-            })
-        });
-
-        $("#btnAreaShopImport").click(function () {
-            importArea = false;
-            var brandTxt = $("#brand-sel option:selected").text();
-            confirm("确定导入" + brandTxt + "品牌的小区经销商吗？", function () {
-                $("#btnSelectImportFile").trigger("click")
-            }, function () {
-                return false;
-            })
-        });        
-
+      
         $("#btnDownloadTemplate").click(function () {
             var url = ossUrlRoot + "Survey/ImportTemplate/Area.xlsx";
             window.location.href = url;

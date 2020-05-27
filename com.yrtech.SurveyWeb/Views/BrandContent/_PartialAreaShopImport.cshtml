@@ -1,0 +1,78 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-inline" style="float:right;">
+        <div class="form-group">
+            <label class="control-label">将要导入的品牌:</label>
+            <input id="ImportBrand" type="text" class="form-control" disabled>
+        </div>
+        <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importAreaShop()" data-loading-text="导入中...">导入</button>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="import-area-shop-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        initImportAreaShopTable();
+    })
+
+    function initImportAreaShopTable() {
+        $('#import-area-shop-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色
+            columns: [{
+                title: "区域代码",
+                field: 'AreaCode',
+                width: 150,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" >' + value + '</a>';
+                }
+            }, {
+                title: "经销商代码",
+                width: 150,
+                field: "ShopCode",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "数据状态",
+                field: "ImportChk",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '正确' : '错误';
+                }
+            }, {
+                title: "状态说明",
+                field: "ImportRemark",
+                valign: "middle",
+                align: "center",
+                sortable: false 
+            }]
+        });
+    }
+
+    function loadImportAreaShop(file) {
+        $.commonGet("Master/AreaShopExcelAnalysis", {
+            tenantId:loginUser.TenantId,
+            brandId:$("#brand-sel").val(),
+            ossPath: file.osspath
+        }, function (data) {
+            $('#import-area-shop-table').bootstrapTable("load", data);
+        });
+    }
+    function importAreaShop() {
+        var rows = $('#import-area-shop-table').bootstrapTable("getData");
+        $("#btnImport").button("loading");
+        $.commonPost("Master/AreaShopImport", {
+            ListJson: JSON.stringify(rows)
+        }, function () {
+            $("#ModalImport").modal("hide");
+        });
+    }
+
+</script>
