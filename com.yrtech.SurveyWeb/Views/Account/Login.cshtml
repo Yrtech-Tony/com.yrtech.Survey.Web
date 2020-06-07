@@ -2,7 +2,7 @@
     Layout = null;
 }
 <style>
-    
+
 </style>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -118,14 +118,14 @@
                     <label class="sr-only" for="txtUsername">用户名</label>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="icon-user"></i></span>
-                        <input type="text" class="form-control" id="txtUsername" placeholder="用户名" name="username" value=""/>
+                        <input type="text" class="form-control" id="txtUsername" placeholder="用户名" name="username" value="" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="sr-only" for="txtPassword">密码</label>
                     <div class="input-group">
                         <span class="input-group-addon"><i class="icon-lock"></i></span>
-                        <input type="password" class="form-control" id="txtPassword" placeholder="密码" name="password" value=""/>
+                        <input type="password" class="form-control" id="txtPassword" placeholder="密码" name="password" value="" />
                     </div>
                 </div>
                 <p class="text-right"><a id="btnForget" href="javascript:;">忘记密码</a></p>
@@ -151,7 +151,6 @@
     <script src="~/Scripts/comm.js"></script>
     <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/api/common.js"></script>
-    <script src="~/Scripts/api/login.js"></script>
 
     <script type="text/javascript" language="javascript">
         $(function () {
@@ -187,11 +186,13 @@
                     accountId: $("#txtUsername").val(),
                     password: $("#txtPassword").val()
                 };
-
-                login(params, function (data) {
-                    if (data.Status) {
-                        window.localStorage.userJson = data.Body;
-                        $.post("../Account/AfterLogin", { loginUser: data.Body }, function () {
+                $.commonApi({
+                    apiType: 'survey',
+                    url: 'Account/Login',
+                    params: params,
+                    success: function (data) {
+                        window.localStorage.userJson = JSON.stringify(data);
+                        $.post("../Account/AfterLogin", { loginUser: window.localStorage.userJson }, function () {
                             var returnUrl = $("#valueReturnUrl").val();
                             if (!returnUrl || returnUrl == '/') {
                                 returnUrl = "/Home/Index";
@@ -200,14 +201,13 @@
                         }).complete(function () {
                             $("#btnLogin").button('reset');
                         });
-                    }
-                    else {
+                    },
+                    complete: function () {
                         $("#btnLogin").button('reset');
-                        alert(data.Body);
+                    },
+                    error: function () {
+                        alert("未知错误，请通过以下方式联系管理员进行处理 ");
                     }
-                }, function (XMLHttpRequest, textStatus, errorThrown) {
-                    $("#btnLogin").button('reset');
-                    alert("未知错误，请通过以下方式联系管理员进行处理 ");
                 })
 
             });

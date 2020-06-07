@@ -1,27 +1,13 @@
-﻿var baseUrl = 'http://123.57.229.128:8003/';
-//var easyPhotoUrl = 'http://localhost:57328/';
-var easyPhotoUrl = 'http://123.57.229.128:8020/'
+﻿var baseSurveyUrl = 'http://123.57.229.128:8003/';
+var surveyApi = baseSurveyUrl + "survey/api/";
+var baseEasyPhotoUrl = 'http://123.57.229.128:8020/';
+var easyPhotoApi = baseEasyPhotoUrl + "easyPhoto/api/";
 
-var baseApi = baseUrl + "survey/api/";
 var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
 
-var dta = {};
-var pageSize = 15;
-var curPageNum = 1;
-
-//加载列表
-function exeQuery(data) {
-    $.ajax({
-        "dataType": 'json',
-        "type": "GET",
-        "url": data.sSource,
-        "data": data.aoData,
-        "success": data.fnCallback
-    });
-}
-
+ 
 $.commonGet = function (url, params, callback, err) {
-    $.get(baseApi + url, params, function (data) {
+    $.get(surveyApi + url, params, function (data) {
         if (data && data.Status) {
             if (data.Body) {
                 var lst = JSON.parse(data.Body);
@@ -49,7 +35,7 @@ $.commonGet = function (url, params, callback, err) {
 }
 
 $.commonPost = function (url, params, callback, err) {
-    $.post(baseApi + url, params, function (data) {
+    $.post(surveyApi + url, params, function (data) {
         if (data && data.Status) {
             if (data.Body) {
                 var lst = JSON.parse(data.Body);
@@ -72,6 +58,50 @@ $.commonPost = function (url, params, callback, err) {
         console.log(url + " execute error ");
         if (err) {
             err();
+        }
+    })
+}
+
+$.commonApi = function (option) {
+    var url;
+    if (option.apiType == 'easyPhoto') {
+        url = easyPhotoApi + option.url;
+    }else if(option.apiType == 'survey'){
+        url= surveyApi+ option.url;
+    }
+    $.ajax({
+        url: url,
+        data: option.params,
+        type: option.type == undefined ? 'get' : 'post',
+        async: option.async != undefined ? option.async : 'true',
+        success: function (data) {
+            if (data && data.Status) {
+                if (data.Body) {
+                    var lst = JSON.parse(data.Body);
+                    if (option.success) {
+                        option.success(lst);
+                    }
+                } else {
+                    if (option.success) {
+                        option.success();
+                    }
+                }
+            } else {
+                if (option.complete) {
+                    option.complete();
+                }
+                console.log(url + " execute error " + data.Body);
+                alert(data.Body);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (option.error) {
+                option.error();
+            }
+            if (option.complete) {
+                option.complete();
+            }
+            console.log(url + " execute error ");
         }
     })
 }
@@ -175,4 +205,47 @@ function bindGroupSel() {
     })
     $.ajaxSettings.async = true;
 
+}
+
+/** easyphoto 模块*/
+function bindEasyPhotoProjectSelect() {
+    $.commonApi({
+        apiType: 'easyPhoto',
+        url: 'Master/GetProject',
+        async: false,
+        params: {
+            tenantId: loginUser.TenantId,
+            brandId: '',
+            projectId: '',
+            year: '',
+            expireDateTimeCheck: 'N'
+        },
+        success: function (data) {
+            $("#project-sel").empty();
+            data.forEach(function (item) {
+                $("#project-sel").append($("<option>").val(item.ProjectId).text(item.ProjectName));
+            })
+            projects = data;
+        }
+    })
+}
+
+function bindEasyPhotoCheckTypeSelect() {
+    $.commonApi({
+        apiType: 'easyPhoto',
+        url: 'Master/GetCheckTypeList',
+        async: false,
+        params: {
+            projectId: $("#project-sel").val(),
+            checkTypeId: '',
+            checkTypeName: '',
+            useChk:''
+        },
+        success: function (data) {
+            $("#checktype-sel").empty();
+            data.forEach(function (item) {
+                $("#checktype-sel").append($("<option>").val(item.CheckTypeId).text(item.CheckTypeName));
+            })
+        }
+    })
 }

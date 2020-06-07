@@ -3,45 +3,69 @@
         <fieldset>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AccountId">
-                    账号<span class="required">*</span>
+                    经销商账号 
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="AccountId" name="AccountId" required="required" type="text"  class="form-control col-md-7 col-xs-12">
+                    <input id="ShopCode" name="ShopCode" required="required" type="text" class="form-control" disabled>
                 </div>
             </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AccountName">
-                    名称<span class="required">*</span>
+                    经销商名称
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="AccountName" name="AccountName" required="required" type="text"  class="form-control col-md-7 col-xs-12">
+                    <input id="ShopName" name="ShopName" required="required" type="text" class="form-control" disabled>
                 </div>
             </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Password">
-                    密码
+                    密码<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="Password" name="Password" type="text"  class="form-control col-md-7 col-xs-12">
+                    <input id="Password" name="Password" type="text" class="form-control" />
                 </div>
             </div>
             <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Email">
-                    邮箱
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ExpireDateTime">
+                    过期时间<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="Email" name="Email" type="text"  class="form-control col-md-7 col-xs-12">
+                    <input id="ExpireDateTime" name="ExpireDateTime" class="form-control">
                 </div>
-            </div>
-            <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="TelNO">
-                    电话
-                </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="TelNO" name="TelNO" type="text"  class="form-control col-md-7 col-xs-12">
-                </div>
-            </div>
+            </div> 
         </fieldset>
     </form>
 </div>
 
+<script>
+    $("#ExpireDateTime").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language: 'zh-CN'
+    });
+
+    $('#userInfo-form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            Password: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '密码不能为空',
+                    }
+                }
+            },
+            ExpireDateTime: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '过期时间不能为空',
+                    }
+                }
+            }
+        }
+    });
+</script>

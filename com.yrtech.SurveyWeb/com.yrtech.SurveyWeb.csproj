@@ -286,7 +286,6 @@
     <Content Include="Scripts\api\brand.js" />
     <Content Include="Scripts\api\common.js" />
     <Content Include="Scripts\api\easyphoto.js" />
-    <Content Include="Scripts\api\login.js" />
     <Content Include="Scripts\api\project.js" />
     <Content Include="Scripts\api\report.js" />
     <Content Include="Scripts\api\recheck.js" />
@@ -516,8 +515,6 @@
     <Content Include="Views\EasyPhoto\_PartialSearchCondition2.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoCheckTypeIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoCheckTypeEdit.cshtml" />
-    <Content Include="Views\EasyPhoto\EasyPhotoUserInfoShopIndex.cshtml" />
-    <Content Include="Views\EasyPhoto\_PartialEasyPhotoUserInfoShopEdit.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoAnswerIndex.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />

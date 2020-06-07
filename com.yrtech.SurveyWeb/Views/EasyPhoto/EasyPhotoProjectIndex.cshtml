@@ -2,142 +2,224 @@
     ViewBag.Title = "轻松拍-期号管理";
 }
 <style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
 </style>
-<div class="page-title">
-    <div class="title_left">
-        <h3>期号管理 <small></small></h3>
-    </div>
-</div>
-<div class="operation col-md-offset-2 form-group">
-    <div class="row">
-        <div class="col-md-10"> </div>
-        <div class="col-md-1">
-            <button id="btnSearch" class="btn btn-primary form-control">查&nbsp;&nbsp;询</button>
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
         </div>
-        <div class="col-md-1">
-            <button id="btnAdd" class="btn btn-primary form-control">新&nbsp;&nbsp;增</button>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
         </div>
     </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnProjectAdd" class="btn btn-primary">添加期号</button>
+    </div>
 </div>
-<table id="project-table" class="table table-striped table-bordered dt-responsive">
-    <thead>
-        <tr>
-            @*<th><input type="checkbox" id="check-all" class="flat"></th>*@
-            <th width="100">期号编号</th>
-            <th>期号名称</th>
-            <th width="80">年份</th>
-            <th width="80">季度</th>
-            <th width="80">序号</th>
-            <th width="100">评分与否</th>
-            <th width="100">其他属性与否</th>
-            <th width="180">到期时间</th>
-            <th width="180">登记时间</th>
-            <th width="180">最新修改时间</th>
-            <th width="100">操作</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-<div id="pagination" class="pull-right">
-    <ul id="pageUl"></ul>
+<div class="result">
+    <table id="project-table" class="table table-bordered table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title"></h4>
+                <h4 class="modal-title">期号编辑</h4>
             </div>
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveEasyPhotoProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
-</div>
+</div> 
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/api/easyphoto.js"></script>
-<script src="~/Scripts/form-serialize.js"></script>
+<script src="~/Scripts/custom/form-serialize.js"></script>
 <script src="~/Scripts/page.js"></script>
 <script>
     $(function () {
-        $("input[type=checkbox]").iCheckParser();
+        $('title').html('@ViewBag.Title')
 
-        $("#btnSearch").click(function () {
-            loadEasyPhotoProject($("#year").val());
-        });
-        $("#btnAdd").click(function () {
+        bindBrandSelect();
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+
+        $("#brand-sel").change(function () {
+            loadProject();
+        })
+        $("#btnProjectAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
             })
             return false;
-        });
-        //保存轻松拍的期号
-        function saveEasyPhotoProject() {
-            saveEasyPhotoCommonObject("SaveProject", $("#project-form"), {
-                //新增
+        })
+
+        initProjectTable();
+        $("#btnQuery").click(function () {
+            loadProject();
+        }).trigger("click");
+    })
+
+    var curRow;
+    function saveProject() {
+        var data = $('#project-form').data('bootstrapValidator');
+        if (data) {
+            // 修复记忆的组件不验证
+            data.validate();
+
+            if (!data.isValid()) {
+                return false;
+            }
+        }
+        var params = $("#project-form").serializeJson();
+        var json = $("#project-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+        } else {
+            //新增
+            params = $.extend({
                 TenantId: loginUser.TenantId,
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
-            }, function () {
-                $("#btnSearch").click();
-            });
-
+            }, params);
         }
-        // 查询轻松拍的期号
-        function loadEasyPhotoProject(year) {
-            loadEasyPhotoMasterCommonGet("GetProject",{
-                tenantId: loginUser.TenantId,
-                projectId: "",
-                brandId:"",
-                year: year || "",
-                expireDateTimeCheck: ""
-            }, function (data) {
-                var pageClick = function (curPage) {
-                    bindTable(data, $("#project-table"), curPage);
+        $("#save_button").button("loading");
+        $.commonApi({
+            apiType: 'easyPhoto',
+            url: 'Master/SaveProject',
+            params: params,
+            type:'post',
+            success: function (data) {
+                $("#save_button").button("reset");
+                loadProject();
+                closeModel();
+            },
+            complete: function () { $("#save_button").button("reset"); }
+        })
+    }
+
+    function loadProject() {
+        $('#project-table').bootstrapTable("showLoading");
+        $.commonApi({
+            apiType: 'easyPhoto',
+            url: 'Master/GetProject',
+            params: {
+                tenantId:loginUser.TenantId,
+                brandId: $("#brand-sel").val(),
+                projectId: '',
+                year: $("#year-sel").val(),
+                expireDateTimeCheck:''
+            },
+            success: function (data) {
+                $('#project-table').bootstrapTable("hideLoading");
+                $('#project-table').bootstrapTable("load", data);
+            }
+        })
+    }
+
+    //初始化经销商表格
+    function initProjectTable() {
+        $('#project-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [5, 10, 20, 50],
+            columns: [{
+                title: "期号代码",
+                field: 'ProjectCode',
+                width: 120,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
                 }
-                pageClick(curPageNum);
-                createPage(data.length, curPageNum, pageSize, pageClick);
-            })
-            return false;
-        };
-        function bindTable(data, table, curPage) {
-            $("tbody", table).empty();
+            }, {
+                title: "期号名称",
+                field: "ProjectName",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "年份",
+                field: "Year",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "季度",
+                field: "Quarter",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "序号",
+                field: "OrderNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "到期时间",
+                field: "ExpireDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "添加时间",
+                field: "InDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "修改时间",
+                field: "ModifyDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
 
-            var pageLst = data.filter(function (item, i, self) {
-                var start = curPage > 0 ? (curPage - 1) * pageSize : 0;
-                return (i >= start && i < (start + pageSize));
-            })
-            $.each(pageLst, function (i, item) {
-                //page
-                var tr = $("<tr>");
-
-                tr.append($("<td></td>").html(item.ProjectCode));
-                tr.append($("<td></td>").html(item.ProjectName));
-                tr.append($("<td></td>").html(item.Year));
-                tr.append($("<td></td>").html(item.Quarter));
-                tr.append($("<td></td>").html(item.OrderNO));
-                tr.append($("<td></td>").html(item.ScoreShow));
-                tr.append($("<td></td>").html(item.OtherPropertyShow));
-                tr.append($("<td></td>").html(item.ExpireDateTime.replace('T', ' ')));
-                tr.append($("<td></td>").html(item.InDateTime.replace('T', ' ')));
-                tr.append($("<td></td>").html(item.ModifyDateTime.replace('T', ' ')));
-                var edit = $("<a href='#'>编辑</a>");
-                edit.click(function () {
-                    $("#Modal").modal("show");
-                    $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
-                        $("#project-form").setForm(item);
-                        $("#project-form").data("json", JSON.stringify(item));
-                    })
-                    return false;
-                })
-                tr.append($("<td></td>").append(edit));
-
-                $("tbody", table).append(tr);
-            })
-        }
-    })
+    function goEdit() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoProjectEdit", {}, function () {
+            $("#project-form").setForm(curRow);
+            $("#project-form").data("json", JSON.stringify(curRow));
+        })
+    }
 </script>
 

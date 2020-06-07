@@ -58,7 +58,8 @@
         for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
         }
-        $("#year-sel").val("2020");
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
 
         $("#brand-sel").change(function () {
             loadProject();
