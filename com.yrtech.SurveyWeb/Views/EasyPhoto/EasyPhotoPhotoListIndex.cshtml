@@ -28,7 +28,7 @@
     </div>
 </div>
 <div class="result">
-    <table id="note-table" class="table table-bordered table-set"></table>
+    <table id="photo-list-table" class="table table-bordered table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -56,14 +56,14 @@
 
         bindEasyPhotoProjectSelect();
 
-        initEasyPhotoNoteTable();
+        initEasyPhotoPhotoListTable();
         $("#project-sel").change(function () {
             bindEasyPhotoCheckTypeSelect();
-            loadEasyPhotoNote();
+            loadEasyPhotoPhotoList();
         }).change();
 
         $("#btnSearch").click(function () {
-            loadEasyPhotoNote();
+            loadEasyPhotoPhotoList();
         });
 
         $("#btnAdd").click(function () {
@@ -71,6 +71,7 @@
             $("#Modal").modal("show");
             $("#Modal .title").text("拍照点新增");
             $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoPhotoListEdit", {}, function () {
+                $("input[type=checkbox]").iCheckParser();
             })
             return false;
         });
@@ -78,27 +79,27 @@
      
 
     // 查询轻松拍的拍照点
-    function loadEasyPhotoNote() {
-        $('#note-table').bootstrapTable("showLoading");
+    function loadEasyPhotoPhotoList() {
+        $('#photo-list-table').bootstrapTable("showLoading");
         $.commonApi({
             apiType: 'easyPhoto',
-            url: 'Master/GetRemark',
+            url: 'Master/GetPhotoList',
             params: {
                 checkTypeId: $("#checktype-sel").val(),
-                remarkId: '',
+                photoId: '',
                 addCheck: '',
                 useChk: ''
             },
             success: function (data) {
-                $('#note-table').bootstrapTable("hideLoading");
-                $('#note-table').bootstrapTable("load", data);
+                $('#photo-list-table').bootstrapTable("hideLoading");
+                $('#photo-list-table').bootstrapTable("load", data);
             }
         })
     }
 
     //初始化拍照点表格
-    function initEasyPhotoNoteTable() {
-        $('#note-table').bootstrapTable({
+    function initEasyPhotoPhotoListTable() {
+        $('#photo-list-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
             width: "100%",
@@ -109,8 +110,8 @@
             pageSize: 15,
             pageList: [5, 10, 20, 50],
             columns: [{
-                title: "备注名称",
-                field: 'RemarkName',
+                title: "拍照点",
+                field: 'PhotoName',
                 width: 120,
                 valign: "middle",
                 align: "center",
@@ -162,16 +163,17 @@
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .title").text("拍照点编辑");
-        $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoNoteEdit", {}, function () {
-            $("#note-form").setForm(curRow);
-            $("#note-form").data("json", JSON.stringify(curRow));
+        $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoPhotoListEdit", {}, function () {
+            $("#photo-list-form").setForm(curRow);
+            $("#photo-list-form").data("json", JSON.stringify(curRow));
+            $("input[type=checkbox]").iCheckParser();
         })
     }
 
     //保存轻松拍的拍照点
     var curRow;
-    function saveEasyPhotoNote() {
-        var data = $('#note-form').data('bootstrapValidator');
+    function saveEasyPhotoPhotoList() {
+        var data = $('#photo-list-form').data('bootstrapValidator');
         if (data) {
             // 修复记忆的组件不验证
             data.validate();
@@ -180,8 +182,8 @@
                 return false;
             }
         }
-        var params = $("#note-form").serializeJson();
-        var json = $("#note-form").data("json");
+        var params = $("#photo-list-form").serializeJson();
+        var json = $("#photo-list-form").data("json");
         params.AddCheck = $("#AddCheck").is(":checked");
         params.UseChk = $("#UseChk").is(":checked");
         if (json && json.length > 0) {
@@ -191,7 +193,7 @@
         } else {
             //新增
             params = $.extend({
-                ProjectId: $("#project-sel").val(),
+                CheckTypeId: $("#checktype-sel").val(),
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
             }, params);
@@ -199,12 +201,12 @@
         $("#save_button").button("loading");
         $.commonApi({
             apiType: 'easyPhoto',
-            url: 'Master/SaveRemark',
+            url: 'Master/SavePhotoList',
             params: params,
             type: 'post',
             success: function (data) {
                 $("#save_button").button("reset");
-                loadEasyPhotoCheckType();
+                loadEasyPhotoPhotoList();
                 closeModel();
             },
             complete: function () { $("#save_button").button("reset"); }
