@@ -1,0 +1,127 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-inline" style="float:right;">
+        <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importArea()" data-loading-text="导入中...">导入</button>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="import-answer-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        initEasyPhotoImportAnswerTable();
+    })
+
+    //初始化清单表格
+    function initEasyPhotoImportAnswerTable() {
+        var cols = [{
+            title: "经销商代码",
+            field: 'RemarkName',
+            width: 120,
+            valign: "middle",
+            align: "center"
+        }, {
+            title: "经销商名称",
+            field: 'RemarkName',
+            valign: "middle",
+            align: "center"
+        }, {
+            title: "检查代码",
+            field: 'RemarkName',
+            width: 120,
+            valign: "middle",
+            align: "center"
+        }, {
+            title: "检查类型",
+            field: 'RemarkName',
+            width: 120,
+            valign: "middle",
+            align: "center"
+        }, {
+            title: "备注",
+            field: 'RemarkName',
+            width: 120,
+            valign: "middle",
+            align: "center"
+        }];
+
+        ImportChk
+        $.commonApi({
+            apiType: 'easyPhoto',
+            url: 'Master/GetExtendColumnProject',
+            params: {
+                projectId: $("#project-sel").val(),
+                columnCode: '',
+                addShowChk: ''
+            },
+            success: function (data) {
+                data.forEach(function (item) {
+                    if (item.UseChk) {
+                        cols.push({
+                            title: item.ColumnName,
+                            field: item.ColumnCode,
+                            width: 120,
+                            valign: "middle",
+                            align: "center"
+                        })
+                    }
+                })
+                cols.push({
+                    title: "数据状态",
+                    field: "ImportChk",
+                    width: 100,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false,
+                    formatter: function (value, row, index) {
+                        return value ? '正确' : '错误';
+                    }
+                });
+                cols.push({
+                    title: "状态说明",
+                    field: "ImportRemark",
+                    width: 150,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false
+                });
+
+                $('#import-answer-table').bootstrapTable({
+                    pagination: true,
+                    striped: true, //是否显示行间隔色
+                    width: "100%",
+                    height: getClientHeight() - 260,
+                    showColumns: false, // 开启自定义列显示功能
+                    sortable: true,
+                    pageNumber: 1,
+                    pageSize: 15,
+                    pageList: [5, 10, 20, 50],
+                    columns: cols,
+                    onClickRow: function (row, $element) {
+                        curRow = row;
+                    }
+                });
+            }
+        })
+
+    }
+
+    function loadImportAnswer(file) {
+        $.commonGet("Master/AreaExcelAnalysis", {
+            projectId: $("#project-sel").val(),
+            ossPath: file.osspath
+        }, function (data) {
+            $('#import-area-table').bootstrapTable("load", data);
+        });
+    }
+    function importAnswer() {
+        var rows = $('#import-answer-table').bootstrapTable("getData");
+        $("#btnImport").button("loading");
+        $.commonPost("Master/AreaImport", {
+            ListJson: JSON.stringify(rows)
+        }, function () {
+            $("#ModalImport").modal("hide");
+        });
+    }
+
+</script>
