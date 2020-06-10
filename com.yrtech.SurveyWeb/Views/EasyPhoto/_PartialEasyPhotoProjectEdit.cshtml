@@ -3,10 +3,10 @@
         <fieldset>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectCode">
-                    期号编号<span class="required">*</span>
+                    期号代号<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="ProjectCode" name="ProjectCode" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="ProjectCode" name="ProjectCode" required="required" type="text" maxlength="15" class="form-control">
                 </div>
             </div>
             <div class="item form-group">
@@ -14,34 +14,118 @@
                     期号名称<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="ProjectName" name="ProjectName" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="ProjectName" name="ProjectName" required="required" type="text" maxlength="15" class="form-control">
                 </div>
             </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Year">
-                    年份
+                    年份<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="Year" name="Year" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <select id="Year" name="Year" class="form-control"></select>
                 </div>
             </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Quarter">
-                    季度
+                    季度<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="Quarter" name="Quarter" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="Quarter" name="Quarter" type="text" maxlength="15" class="form-control ">
                 </div>
             </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
-                    序号
+                    序号<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <input id="OrderNO" name="OrderNO" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="BrandId">
+                    品牌<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="BrandId" name="BrandId" class="form-control"></select>
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ExpireDateTime">
+                    过期时间<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ExpireDateTime" name="ExpireDateTime" class="form-control" />
+                </div>
+            </div>
         </fieldset>
     </form>
 </div>
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    $("#Year").html($("#year-sel").html());
+    $("#BrandId").html($("#brand-sel").html());
+    $("#ExpireDateTime").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language: 'zh-CN'
+    });
 
+    $('#project-form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            ProjectCode: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '期号代码不能为空',
+                    }
+                }
+            },
+            ProjectName: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '期号名称不能为空',
+                    }
+                }
+            },
+            Quarter: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '季度不能为空',
+                    }
+                }
+            },
+            OrderNO: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '序号不能为空',
+                    }
+                }
+            },
+            BrandId: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '品牌不能为空',
+                    }
+                }
+            },
+            ExpireDateTime: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '过期时间不能为空',
+                    }
+                }
+            }
+        }
+    });
+</script>

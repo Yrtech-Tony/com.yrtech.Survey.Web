@@ -286,7 +286,6 @@
     <Content Include="Scripts\api\brand.js" />
     <Content Include="Scripts\api\common.js" />
     <Content Include="Scripts\api\easyphoto.js" />
-    <Content Include="Scripts\api\login.js" />
     <Content Include="Scripts\api\project.js" />
     <Content Include="Scripts\api\report.js" />
     <Content Include="Scripts\api\recheck.js" />
@@ -510,14 +509,12 @@
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoPhotoListEdit.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoNoteEdit.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoPhotoListIndex.cshtml" />
-    <Content Include="Views\EasyPhoto\EasyPhotoOtherPropertyIndex.cshtml" />
+    <Content Include="Views\EasyPhoto\EasyPhotoExtendColumnIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoOtherPropertyEdit.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialSearchCondition.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialSearchCondition2.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoCheckTypeIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoCheckTypeEdit.cshtml" />
-    <Content Include="Views\EasyPhoto\EasyPhotoUserInfoShopIndex.cshtml" />
-    <Content Include="Views\EasyPhoto\_PartialEasyPhotoUserInfoShopEdit.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoAnswerIndex.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
@@ -535,6 +532,7 @@
     <Content Include="Views\BrandContent\_PartialAreaImport.cshtml" />
     <Content Include="Views\BrandContent\_PartialAreaShopImport.cshtml" />
     <Content Include="Views\BrandContent\_PartialShopImport.cshtml" />
+    <Content Include="Views\EasyPhoto\_PartialEasyPhotoAnswerImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

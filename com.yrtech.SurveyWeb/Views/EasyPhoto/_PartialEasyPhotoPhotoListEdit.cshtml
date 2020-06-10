@@ -2,11 +2,27 @@
     <form class="form-horizontal form-label-left" id="photo-list-form">
         <fieldset>
             <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectName">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AreaCode">
                     照片名称<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="PhotoName" name="PhotoName" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="PhotoName" name="PhotoName" class="form-control">
+                </div>
+            </div> 
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="UseChk">
+                    新增与否
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                    <input type="checkbox" id="AddCheck" name="AddCheck">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="UseChk">
+                    使用与否
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                    <input type="checkbox" id="UseChk" name="UseChk">
                 </div>
             </div>
         </fieldset>

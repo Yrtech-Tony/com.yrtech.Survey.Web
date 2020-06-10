@@ -1,5 +1,5 @@
 ﻿<div>
-    <form class="form-horizontal form-label-left" id="check-type-form">
+    <form class="form-horizontal form-label-left" id="checktype-form">
         <fieldset>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="CheckTypeName">
@@ -9,7 +9,33 @@
                     <input id="CheckTypeName" name="CheckTypeName" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="UseChk">
+                    使用与否
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                    <input type="checkbox" id="UseChk" name="UseChk">
+                </div>
+            </div>
         </fieldset>
     </form>
 </div>
-
+<script>
+    $('#checktype-form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            CheckTypeName: {
+                trigger: "change",
+                validators: {
+                    notEmpty: {
+                        message: '检查类型不能为空',
+                    }
+                }
+            }
+        }
+    });
+</script>

@@ -46,13 +46,13 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialEasyPhotoPhotoListEdit");
         }
         
-        public ActionResult EasyPhotoOtherPropertyIndex()
+        public ActionResult EasyPhotoExtendColumnIndex()
         {
             return View();
         }
-        public ActionResult EasyPhotoOtherPropertyEdit()
+        public ActionResult EasyPhotoExtendColumnEdit()
         {
-            return PartialView("_PartialEasyPhotoOtherPropertyEdit");
+            return PartialView("_PartialEasyPhotoExtendColumnEdit");
         }
 
         public ActionResult EasyPhotoCheckTypeIndex()
@@ -81,6 +81,12 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialEasyAnswerEdit");
         }
+        public ActionResult EasyPhotoAnswerImport()
+        {
+            return PartialView("_PartialEasyPhotoAnswerImport");
+        }
+
+        
         
     }
 }
