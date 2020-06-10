@@ -108,7 +108,7 @@
                     $("#ModalImport").modal("show");
                     $("#ModalImport .modal-title").html("区域导入");
                     $("#ModalImport .modal-body").load("/BrandContent/OpenAreaImport", {}, function () {
-                        $("#ImportBrand").val(brandTxt);
+                        $("#ImportBrand").html(brandTxt);
                         loadImportArea(file);
                     }) 
                 })
@@ -128,7 +128,7 @@
                     $("#ModalImport").modal("show");
                     $("#ModalImport .modal-title").html("设置经销商导入");
                     $("#ModalImport .modal-body").load("/BrandContent/OpenAreaShopImport", {}, function () {
-                        $("#ImportBrand").val(brandTxt);
+                        $("#ImportBrand").html(brandTxt);
                         loadImportAreaShop(file);
                     }) 
                 })

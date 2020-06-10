@@ -1,11 +1,11 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
-    <div class="item form-inline" style="float:right;">
-        <div class="form-group">
-            <label class="control-label">将要导入的品牌:</label>
-            <input id="ImportBrand" type="text" class="form-control" disabled>
+    <div class="form-inline" style="text-align:center">
+        <label class="control-label" style="font-size:16px;">将要导入的品牌-》<span id="ImportBrand"></span></label>
+        <div class="item form-inline" style="float:right;">
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importArea()" data-loading-text="导入中...">导入</button>
         </div>
-        <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importArea()" data-loading-text="导入中...">导入</button>
     </div>
+    
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
@@ -65,7 +65,7 @@
             }, {
                 title: "数据状态",
                 field: "ImportChk",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -78,20 +78,34 @@
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: preferenceFormatter
             }]
         });
     }
 
+    function preferenceFormatter(value, row, index) {
+        return [
+            '<a href="#" data-toggle="tooltip" title=' + value + '>' + value + '</a>',
+        ].join('');
+    }
     function loadImportArea(file) {
+        $('#import-area-table').bootstrapTable("showLoading");
         $.commonGet("Master/AreaExcelAnalysis", {
             ossPath: file.osspath
         }, function (data) {
+            var chk = true;
+            if (data && data.length > 0) {
+                chk = data[0].ImportChk;
+            }
+            if (!chk) {
+                $("#btnImport").attr("disabled", true);
+            }
             $('#import-area-table').bootstrapTable("load", data);
+            $('#import-area-table').bootstrapTable("hideLoading");
         });
     }
     function importArea() {
-       
         $("#btnImport").button("loading");
         var rows = $('#import-area-table').bootstrapTable("getData");
         rows.forEach(function (row) {
@@ -103,6 +117,7 @@
             ListJson: JSON.stringify(rows)
         }, function () {
             $("#ModalImport").modal("hide");
+            loadArea();
         });
     }
 
