@@ -91,6 +91,16 @@
                 align: "center",
                 sortable: false
             }, {
+                title: "使用与否",
+                field: "UseChk",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '是' : '否';
+                }
+            }, {
                 title: "新增显示",
                 field: "AddShowChk",
                 width: 150,
@@ -123,6 +133,7 @@
         $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoExtendColumnEdit", {}, function () {
             $("#extend-column-form").setForm(curRow);
             $("#extend-column-form").data("json", JSON.stringify(curRow));
+            $("input[type=checkbox]").iCheckParser();
         })
     }
 
@@ -157,6 +168,7 @@
         }
         var params = $("#extend-column-form").serializeJson();
         var json = $("#extend-column-form").data("json");
+        params.UseChk = $("#UseChk").is(":checked");
         params.AddShowChk = $("#AddShowChk").is(":checked");
         if (json && json.length > 0) {
             //编辑
@@ -175,7 +187,7 @@
         $("#save_button").button("loading");
         $.commonApi({
             apiType: 'easyPhoto',
-            url: 'Master/SaveExtendColumnProjectData',
+            url: 'Master/SaveExtendColumnProject',
             params: params,
             type: 'post',
             success: function (data) {
@@ -185,7 +197,6 @@
             },
             complete: function () { $("#save_button").button("reset"); }
         })
-
     }
      
 </script>

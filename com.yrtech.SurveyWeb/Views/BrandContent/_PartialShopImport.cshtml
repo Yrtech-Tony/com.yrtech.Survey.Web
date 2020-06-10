@@ -19,8 +19,11 @@
 
     function initImportShopTable() {
         $('#import-shop-table').bootstrapTable({
-            pagination: false,
+            pagination: true,
             striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [10, 15, 20, 50],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
@@ -104,8 +107,14 @@
         });
     }
     function importShop() {
-        var rows = $('#import-shop-table').bootstrapTable("getData");
         $("#btnImport").button("loading");
+        var rows = $('#import-shop-table').bootstrapTable("getData");
+        rows.forEach(function (row) {
+            row.BrandId = $("#brand-sel").val();
+            row.TenantId = loginUser.TenantId;
+            row.InUserId = loginUser.Id;
+            row.ModifyUserId = loginUser.Id;
+        })
         $.commonPost("Master/ShopImport", {
             ListJson: JSON.stringify(rows)
         }, function () {

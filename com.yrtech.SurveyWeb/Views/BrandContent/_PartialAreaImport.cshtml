@@ -18,8 +18,11 @@
 
     function initImportAreaTable() {
         $('#import-area-table').bootstrapTable({
-            pagination: false,
+            pagination: true,
             striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [10, 15, 20, 50],
             columns: [{
                 title: "区域代码",
                 field: 'AreaCode',
@@ -88,8 +91,14 @@
         });
     }
     function importArea() {
-        var rows = $('#import-area-table').bootstrapTable("getData");
+       
         $("#btnImport").button("loading");
+        var rows = $('#import-area-table').bootstrapTable("getData");
+        rows.forEach(function (row) {
+            row.BrandId = $("#brand-sel").val();
+            row.InUserId = loginUser.Id;
+            row.ModifyUserId = loginUser.Id;
+        })
         $.commonPost("Master/AreaImport", {
             ListJson: JSON.stringify(rows)
         }, function () {
