@@ -88,7 +88,7 @@
                     $("#ModalImport .modal-body").empty();
                     $("#ModalImport").modal("show");
                     $("#ModalImport .modal-body").load("/BrandContent/OpenShopImport", {}, function () {
-                        $("#ImportBrand").val(brandTxt);
+                        $("#ImportBrand").html(brandTxt);
                         loadImportShop(file);
                     })
                 })

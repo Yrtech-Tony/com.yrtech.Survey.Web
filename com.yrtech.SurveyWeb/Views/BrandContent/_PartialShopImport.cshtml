@@ -1,15 +1,14 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
-    <div class="item form-inline" style="float:right;">
-        <div class="form-group">
-            <label class="control-label">将要导入的品牌:</label>
-            <input id="ImportBrand" type="text" class="form-control" disabled>
+    <div class="form-inline" style="text-align:center">
+        <label class="control-label" style="font-size:16px;">将要导入的品牌-》<span id="ImportBrand"></span></label>
+        <div class="item form-inline" style="float:right;">
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importShop()" data-loading-text="导入中...">导入</button>
         </div>
-        <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importShop()" data-loading-text="导入中...">导入</button>
     </div>
-
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
+    
     <table id="import-shop-table" class="table table-bordered table-set"></table>
 </div>
 <script>
@@ -35,42 +34,42 @@
                 }
             }, {
                 title: "经销商名称",
-                field: "ShopName",               
+                field: "ShopName",
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "经销商简称",
                 field: "ShopShortName",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "省份",
                 field: "Province",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "城市",
                 field: "City",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "集团",
                 field: "GroupName",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "是否可用",
                 field: "UseChk",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -80,7 +79,7 @@
             }, {
                 title: "数据状态",
                 field: "ImportChk",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -90,20 +89,35 @@
             }, {
                 title: "状态说明",
                 field: "ImportRemark",
-                width: 100,
+                width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false 
+                sortable: false,
+                formatter: preferenceFormatter
             }]
         });
     }
 
+    function preferenceFormatter(value, row, index) {
+        return [
+            '<a href="#" data-toggle="tooltip" title=' + value + '>' + value + '</a>',
+        ].join('');
+    }
     function loadImportShop(file) {
+        $('#import-shop-table').bootstrapTable("showLoading");
         $.commonGet("Master/ShopExcelAnalysis", {
-            brandId:$("#brand-sel").val(),
+            brandId: $("#brand-sel").val(),
             ossPath: file.osspath
         }, function (data) {
+            var chk = true;
+            if (data && data.length > 0) {
+                chk = data[0].ImportChk;
+            }
+            if (!chk) {
+                $("#btnImport").attr("disabled", true);
+            }
             $('#import-shop-table').bootstrapTable("load", data);
+            $('#import-shop-table').bootstrapTable("hideLoading");
         });
     }
     function importShop() {
@@ -119,6 +133,7 @@
             ListJson: JSON.stringify(rows)
         }, function () {
             $("#ModalImport").modal("hide");
+            loadShop();
         });
     }
 
