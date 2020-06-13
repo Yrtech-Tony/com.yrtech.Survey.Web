@@ -4,7 +4,7 @@ var baseEasyPhotoUrl = 'http://123.57.229.128:8020/';
 var easyPhotoApi = baseEasyPhotoUrl + "easyPhoto/api/";
 
 var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
-
+var ossUrlRootTest = 'https://yrsurveytest.oss-cn-beijing.aliyuncs.com/';
  
 $.commonGet = function (url, params, callback, err) {
     $.get(surveyApi + url, params, function (data) {

@@ -1,6 +1,6 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
     <div class="item form-inline" style="float:right;">
-        <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importArea()" data-loading-text="导入中...">导入</button>
+        <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importAnswer()" data-loading-text="导入中...">导入</button>
     </div>
     <div class="clearfix"></div>
 </div>
@@ -16,24 +16,24 @@
     function initEasyPhotoImportAnswerTable() {
         var cols = [{
             title: "经销商代码",
-            field: 'RemarkName',
+            field: 'ShopCode',
             width: 120,
             valign: "middle",
             align: "center"
         }, {
             title: "经销商名称",
-            field: 'RemarkName',
+            field: 'ShopName',
             valign: "middle",
             align: "center"
         }, {
             title: "检查代码",
-            field: 'RemarkName',
+            field: 'CheckCode',
             width: 120,
             valign: "middle",
             align: "center"
         }, {
             title: "检查类型",
-            field: 'RemarkName',
+            field: 'CheckTypeName',
             width: 120,
             valign: "middle",
             align: "center"
@@ -45,7 +45,6 @@
             align: "center"
         }];
 
-        ImportChk
         $.commonApi({
             apiType: 'easyPhoto',
             url: 'Master/GetExtendColumnProject',
@@ -90,16 +89,12 @@
                     pagination: true,
                     striped: true, //是否显示行间隔色
                     width: "100%",
-                    height: getClientHeight() - 260,
                     showColumns: false, // 开启自定义列显示功能
                     sortable: true,
                     pageNumber: 1,
                     pageSize: 15,
                     pageList: [5, 10, 20, 50],
-                    columns: cols,
-                    onClickRow: function (row, $element) {
-                        curRow = row;
-                    }
+                    columns: cols
                 });
             }
         })
@@ -107,20 +102,37 @@
     }
 
     function loadImportAnswer(file) {
-        $.commonGet("Master/AreaExcelAnalysis", {
-            projectId: $("#project-sel").val(),
-            ossPath: file.osspath
-        }, function (data) {
-            $('#import-area-table').bootstrapTable("load", data);
+        $.commonApi({
+            apiType: 'easyPhoto',
+            url: "Master/AnswerExcelAnalysis",
+            params:{
+                projectId: $("#project-sel").val(),
+                ossPath: file.osspath
+            },
+            success:function (data) {
+                $('#import-answer-table').bootstrapTable("load", data);
+            }
         });
     }
     function importAnswer() {
-        var rows = $('#import-answer-table').bootstrapTable("getData");
         $("#btnImport").button("loading");
-        $.commonPost("Master/AreaImport", {
-            ListJson: JSON.stringify(rows)
-        }, function () {
-            $("#ModalImport").modal("hide");
+        var rows = $('#import-answer-table').bootstrapTable("getData");
+        rows.forEach(function (row) {
+            row.ProjectId = $("#project-sel").val();
+            row.InUserId = loginUser.Id;
+            row.ModifyUserId = loginUser.Id;
+        })
+        $.commonApi({
+            apiType: 'easyPhoto',
+            type:'post',
+            url: "Master/AnswerImport",
+            params: {
+                ListJson: JSON.stringify(rows)
+            },
+            success: function (data) {
+                $("#ModalImport").modal("hide");
+                loadEasyPhotoAnswer();
+            }
         });
     }
 

@@ -33,8 +33,12 @@
     <table id="answer-table" class="table table-bordered table-set"></table>
 </div>
 
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
+
 <div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width:70%">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -76,6 +80,7 @@
 <script src="~/Scripts/oss-upload-direct/upload.js?20200608"></script>
 <script>
     var osspath;
+    var ossFileUploader;
     $(function () {
         $('title').html('@ViewBag.Title')
 
@@ -86,17 +91,22 @@
             selectfiles: "btnImportAnswer",
             multi_selection: false,
             success: function (files) {
+                console.log(files)
+                debugger
                 //调用导入方法
                 files.forEach(function (file) {
-                    $("#ModalImport .modal-body").empty();
-                    $("#ModalImport").modal("show");
-                    $("#ModalImport .modal-title").html("清单导入");
-                    $("#ModalImport .modal-body").load("/EasyPhoto/EasyPhotoAnswerImport", {}, function () {
-                        loadImportAnswer(file);
+                    //调用导入方法
+                    files.forEach(function (file) {
+                        $("#ModalImport .modal-body").empty();
+                        $("#ModalImport").modal("show");
+                        $("#ModalImport .modal-title").html("清单导入");
+                        $("#ModalImport .modal-body").load("/EasyPhoto/EasyPhotoAnswerImport", {}, function () {
+                            loadImportAnswer(file);
+                        })
                     })
                 })
             }
-        });
+        }); 
 
         //加载期号
         bindEasyPhotoProjectSelect();
@@ -124,8 +134,9 @@
         $('#answer-table').bootstrapTable("showLoading");
         $.commonApi({
             apiType: 'easyPhoto',
-            url: 'Master/GetShopAnswerList',
+            url: 'Answer/GetShopAnswerList',
             params: {
+                answerId:'',
                 projectId: $("#project-sel").val(),
                 shopCode: "",
                 checkCode: '',
@@ -145,24 +156,24 @@
     function initEasyPhotoAnswerTable() {
         var cols = [{
             title: "经销商代码",
-            field: 'RemarkName',
+            field: 'ShopCode',
             width: 120,
             valign: "middle",
             align: "center"
         }, {
             title: "经销商名称",
-            field: 'RemarkName',
+            field: 'ShopName',
             valign: "middle",
             align: "center"
         }, {
             title: "检查代码",
-            field: 'RemarkName',
+            field: 'CheckCode',
             width: 120,
             valign: "middle",
             align: "center"
         }, {
             title: "检查类型",
-            field: 'RemarkName',
+            field: 'CheckTypeName',
             width: 120,
             valign: "middle",
             align: "center"
@@ -174,7 +185,7 @@
             align: "center"
         }, {
             title: "照片",
-            field: 'RemarkName',
+            field: '',
             width: 120,
             valign: "middle",
             align: "center",
@@ -229,19 +240,29 @@
                     }
                 });
             }
-        })
-
+        });
     }
 
     function createImageList() {
+        var items = curRow.AnswerPhotoList;
+        //if (!items) {
+            items = [{
+                PhotoUrl: 'EasyPhoto/Answer/WNI-%E7%81%AB%E5%B1%B1%E7%81%B0.png',
+                PhotoName: '对对对'
+            }, {
+                PhotoUrl: 'EasyPhoto/Answer/11.png',
+                PhotoName: '发票'
+            }]
+       // }
         var div = $('<div class="baguetteBox">');
-        $.each(imgNames, function (i, imgName) {
-            var imgUrl = ossUrl + tenantId + '/' + projectId + '/' + shopId + '/' + imgName;
+        $.each(items, function (i, item) {
+            var imgUrl = ossUrlRootTest + item.PhotoUrl;
             var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
             var imagA = $('<a></a>');
             var img = $('<img>').attr('src', imgUrl);
             $(imagA).append(img);
-            $(imagA).attr('href', imgUrl).data('caption', imgName);
+            $(imagA).attr('href', imgUrl);
+            $(imagA).attr('data-caption', item.PhotoName);
 
             div.append(imagA);
         })
