@@ -179,7 +179,8 @@ function bindBussinessSelect() {
         areaCode: '',
         areaType: 'Bussiness',
         areaName: '',
-        parentId: ''
+        parentId: '',
+        useChk: 'true'
     }, function (data) {
         $("#bussiness-type-sel").empty();
         data.forEach(function (item) {

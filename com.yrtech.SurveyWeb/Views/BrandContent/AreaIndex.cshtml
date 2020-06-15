@@ -215,7 +215,8 @@
             areaCode: $("#AreaCodeQuery").val(),
             areaType: $("#areaType-sel").val(),
             areaName: $("#AreaNameQuery").val(),
-            parentId: ''
+            parentId: '',
+            useChk:''
         }, function (data) {
             $("#btnQuery").button('reset');
             $('#area-table').bootstrapTable("hideLoading");
