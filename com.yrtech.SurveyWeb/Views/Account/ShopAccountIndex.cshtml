@@ -175,7 +175,7 @@
                 brandId: $("#brand-sel").val() 
             }, function (data) {
                 window.location.href = baseSurveyUrl + data;
-                console.log(window.location.href)
+                $("#btnExportAllUser").button('reset');
             });
         });
     })
