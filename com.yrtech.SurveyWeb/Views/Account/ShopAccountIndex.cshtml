@@ -12,6 +12,15 @@
         }
 </style>
 <div class="condition">
+    <div style="text-align:right;width:100%; ">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnAccountAdd" class="btn btn-primary">添加账号</button>
+        <button id="btnDownloadUserTemplate" class="btn btn-primary">下载账号模板</button>
+        <button id="btnDownloadUserObjectTemplate" class="btn btn-primary">下载设置所属模板</button>
+        <button id="btnImportUser" class="btn btn-primary">导入账号</button>
+        <button id="btnImportUserObject" class="btn btn-primary">导入设置所属</button>
+        <button id="btnExportAllUser" class="btn btn-primary">导出所有账号</button>        
+    </div>
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
@@ -30,13 +39,14 @@
             <input id="AccountNameQuery" type="text" class="form-control" placeholder="姓名" style="width:140px;">
         </div>
     </div>
-    <div style="float:right;width:200px;text-align:right">
-        <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnAccountAdd" class="btn btn-primary">添加账号</button>
-    </div>
+   
 </div>
 <div class="result">
     <table id="account-table" class="table table-bordered table-set"></table>
+</div>
+
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
 </div>
 
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
@@ -55,9 +65,31 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">用户导入</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 <script>
+    var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
 
@@ -83,6 +115,69 @@
         $("#btnQuery").click(function () {
             loadShopAccount();
         }).trigger("click")
+        
+        osspath = "Survey/BaseInfo/";
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnImportUser",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    var brandTxt = $("#brand-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-title").html("用户导入");
+                    $("#ModalImport .modal-body").load("/Account/OpenUserInfoImport", {}, function () {
+                        $("#ImportBrand").html(brandTxt);
+                        loadImportUser(file);
+                    })
+                })
+            }
+        });
+
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnImportUserObject",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    var brandTxt = $("#brand-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-title").html("设置所属导入");
+                    $("#ModalImport .modal-body").load("/Account/OpenUserInfoObjectImport", {}, function () {
+                        $("#ImportBrand").html(brandTxt);
+                        loadImportUserObject(file);
+                    })
+                })
+            }
+        });
+
+        $("#btnDownloadUserTemplate").click(function () {
+            var url = ossUrlRoot + "Survey/ImportTemplate/UserInfo.xlsx";
+            window.location.href = url;
+        });
+        
+        $("#btnDownloadUserObjectTemplate").click(function () {
+            var url = ossUrlRoot + "Survey/ImportTemplate/UserInfoObject.xlsx";
+            window.location.href = url;
+        });
+
+        $("#btnExportAllUser").click(function () {
+            $("#btnExportAllUser").button('loading');
+             
+            $.commonGet("Master/UserInfoExport", {
+                tenantId: loginUser.TenantId,
+                brandId: $("#brand-sel").val() 
+            }, function (data) {
+                window.location.href = baseSurveyUrl + data;
+                console.log(window.location.href)
+            });
+        });
     })
     var curRow;
     function saveAccount() {
@@ -217,6 +312,9 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
+                    if (row.RoleType == 'B_Brand') {
+                        return "";
+                    }
                     return '<a href="javascript:setArea();" style="min-width:100px">设置所属</a>';
                 }
             }],
@@ -247,13 +345,13 @@
         $("#Modal").modal("show");
         $("#Modal .modal-footer").hide();
         if (curRow.RoleType == "B_Shop") {
-            $("#Modal .modal-title").html("所属经销商列表");
+            $("#Modal .modal-title").html("所属列表");
             objectType = "经销商";
         } else if (curRow.RoleType == "B_Group") {
-            $("#Modal .modal-title").html("所属集团列表");
+            $("#Modal .modal-title").html("所属列表");
             objectType = "集团";
         } else {
-            $("#Modal .modal-title").html("所属区域列表");
+            $("#Modal .modal-title").html("所属列表");
             objectType = "区域";
         }
 

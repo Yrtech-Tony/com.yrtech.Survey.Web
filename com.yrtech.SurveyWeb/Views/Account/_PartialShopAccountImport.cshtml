@@ -1,0 +1,139 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="form-inline" style="text-align:center">
+        <label class="control-label" style="font-size:16px;">导入的品牌:<span id="ImportBrand"></span></label>
+        <div class="item form-inline" style="float:right;">
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importShopAccount()" data-loading-text="导入中...">导入</button>
+        </div>
+    </div>
+    
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="import-user-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        initImportUserTable();
+    })
+
+    function initImportUserTable() {
+        $('#import-user-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "账号",
+                field: 'AccountId',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "密码",
+                field: "Password",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },  {
+                title: "类型",
+                field: "RoleTypeName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },{
+                title: "姓名",
+                field: "AccountName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "邮箱",
+                field: "Email",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "电话",
+                field: "TelNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "使用与否",
+                field: "UseChk",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '是' : '否';
+                }
+            }, {
+                title: "数据状态",
+                field: "ImportChk",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '正确' : '错误';
+                }
+            }, {
+                title: "状态说明",
+                field: "ImportRemark",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: preferenceFormatter
+            }]
+        });
+    }
+
+    function preferenceFormatter(value, row, index) {
+        return [
+            '<a href="#" data-toggle="tooltip" title=' + value + '>' + value + '</a>',
+        ].join('');
+    }
+    function loadImportUser(file) {
+        $('#import-user-table').bootstrapTable("showLoading");
+        $.commonGet("Master/UserInfoExcelAnalysis", {
+            tenantId:loginUser.TenantId,
+            brandId:$("#brand-sel").val(),
+            ossPath: file.osspath
+        }, function (data) {
+            var chk = true;
+            if (data && data.length > 0) {
+                chk = data[0].ImportChk;
+            }
+            if (!chk) {
+                $("#btnImport").attr("disabled", true);
+            }
+            $('#import-user-table').bootstrapTable("load", data);
+            $('#import-user-table').bootstrapTable("hideLoading");
+        });
+    }
+    function importShopAccount() {
+        $("#btnImport").button("loading");
+        var rows = $('#import-user-table').bootstrapTable("getData");
+        rows.forEach(function (row) {
+            row.TenantId = loginUser.TenantId;
+            row.BrandId = $("#brand-sel").val();
+            row.InUserId = loginUser.Id;
+            row.ModifyUserId = loginUser.Id;
+        })
+        $.commonPost("Master/UserInfoImport", {
+            ListJson: JSON.stringify(rows)
+        }, function () {
+            $("#ModalImport").modal("hide");
+            loadShopAccount();
+        });
+    }
+
+</script>

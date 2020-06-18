@@ -533,6 +533,8 @@
     <Content Include="Views\BrandContent\_PartialAreaShopImport.cshtml" />
     <Content Include="Views\BrandContent\_PartialShopImport.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoAnswerImport.cshtml" />
+    <Content Include="Views\Account\_PartialShopAccountImport.cshtml" />
+    <Content Include="Views\Account\_PartialUserInfoObjectImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

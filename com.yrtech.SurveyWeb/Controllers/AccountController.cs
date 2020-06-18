@@ -58,7 +58,16 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialUserInfoBrand");
         }
-        
+
+        public ActionResult OpenUserInfoImport()
+        {
+            return PartialView("_PartialShopAccountImport");
+        }
+
+        public ActionResult OpenUserInfoObjectImport()
+        {
+            return PartialView("_PartialUserInfoObjectImport");
+        }
         #endregion
     }
 }
