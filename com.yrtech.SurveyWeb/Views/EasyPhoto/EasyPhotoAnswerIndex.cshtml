@@ -125,6 +125,25 @@
             console.log(url)
             window.location.href = url;
         });
+
+        $("#btnExportAnswer").click(function () {
+            $("#btnExportAnswer").button('loading');
+
+            $.commonApi({
+                apiType: 'easyPhoto',
+                url: 'Answer/AnserExport',
+                params: {
+                    projectId: $("#project-sel").val(),
+                    shopCode: ''
+                },
+                success: function (data) {
+                    window.location.href = baseEasyPhotoUrl + data;
+                },
+                complete: function () {
+                    $("#btnExportAnswer").button('reset');
+                }
+            })
+        });
     })
 
     // 查询轻松拍清单
