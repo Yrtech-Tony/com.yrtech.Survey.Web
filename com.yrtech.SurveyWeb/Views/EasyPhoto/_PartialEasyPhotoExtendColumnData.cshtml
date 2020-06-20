@@ -1,0 +1,115 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:right;">
+        <div class="col-md-8">
+            <input id="DataCode" type="text" maxlength="15" class="form-control" placeholder="">
+        </div>
+        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveEasyPhotoExtendColumnData()" data-loading-text="提交中..."></a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="extend-column-data-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        objectType = '数据';
+        $("#btnAdd").text("添加" + objectType);
+        $("#DataCode").attr("placeholder", objectType + "代码");
+
+        initEasyPhotoExtendColumnDataTable();
+        loadEasyPhotoExtendColumnData();
+    })
+
+    function initEasyPhotoExtendColumnDataTable() {
+        $('#extend-column-data-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "扩展列",
+                field: 'ColumnCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "扩展列名称",
+                field: "ColumnName",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "数据",
+                field: "ColumnValue",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "删除",
+                field: "",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delEasyPhotoExtendColumnData(' + row.Id + ');" style="min-width:100px">删除</a>';
+                }
+            }]
+        });
+    }
+
+    function loadEasyPhotoExtendColumnData() {
+        $('#extend-column-data-table').bootstrapTable("showLoading");
+        $.commonApi({
+            apiType: 'easyPhoto',
+            url: 'Master/GetExtendColumnProjectData',
+            params: {
+                projectId: curRow.ProjectId,
+                columnCode: curRow.ColumnCode
+            },
+            success: function (data) {
+                $('#extend-column-data-table').bootstrapTable("load", data);
+                $('#extend-column-data-table').bootstrapTable("hideLoading");
+            }
+        });
+    }
+    function saveEasyPhotoExtendColumnData() {
+        var dataCode = $("#DataCode").val();
+        if (!dataCode) {
+            alert("请输入数据！");
+            return false;
+        }
+
+        $("#btnAdd").button("loading");
+        $.commonApi({
+            apiType: 'easyPhoto',
+            type: 'post',
+            url: 'Master/SaveExtendColumnProjectData',
+            params: {
+                ProjectId: curRow.ProjectId,
+                ColumnCode: curRow.ColumnCode,
+                ColumnValue: dataCode,
+                InUserId: loginUser.Id
+            },
+            success: function (data) {
+                $("#btnAdd").button("reset");
+                loadEasyPhotoExtendColumnData();
+            }
+        }); 
+    }
+
+    function delEasyPhotoExtendColumnData(id) {
+        $.commonApi({
+            apiType: 'easyPhoto',
+            type:'post',
+            url: 'Master/DeleteExtendColumnProjectData',
+            params: { Id: id },
+            success: function (data) {
+                loadEasyPhotoExtendColumnData();
+            }
+        }); 
+    }
+</script>
