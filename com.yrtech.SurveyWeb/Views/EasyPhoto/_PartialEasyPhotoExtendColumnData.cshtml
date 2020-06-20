@@ -19,7 +19,7 @@
         initEasyPhotoExtendColumnDataTable();
         loadEasyPhotoExtendColumnData();
     })
-
+    var dataRow;
     function initEasyPhotoExtendColumnDataTable() {
         $('#extend-column-data-table').bootstrapTable({
             pagination: true,
@@ -55,9 +55,12 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:delEasyPhotoExtendColumnData(' + row.Id + ');" style="min-width:100px">删除</a>';
+                    return '<a href="javascript:delEasyPhotoExtendColumnData();" style="min-width:100px">删除</a>';
                 }
-            }]
+            }],
+            onClickRow: function (row, $element) {
+                dataRow = row;
+            }
         });
     }
 
@@ -101,12 +104,12 @@
         }); 
     }
 
-    function delEasyPhotoExtendColumnData(id) {
+    function delEasyPhotoExtendColumnData() {
         $.commonApi({
             apiType: 'easyPhoto',
             type:'post',
             url: 'Master/DeleteExtendColumnProjectData',
-            params: { Id: id },
+            params: dataRow,
             success: function (data) {
                 loadEasyPhotoExtendColumnData();
             }
