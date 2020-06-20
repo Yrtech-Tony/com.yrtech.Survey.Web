@@ -126,7 +126,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return value ? '是' : '否';
+                    return value == 'Y' ? '是' : '否';
                 }
             }, {
                 title: "使用与否",
@@ -164,6 +164,7 @@
         $("#Modal").modal("show");
         $("#Modal .title").text("拍照点编辑");
         $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoPhotoListEdit", {}, function () {
+            curRow.AddCheck = curRow.AddCheck == 'Y' ? true : false;
             $("#photo-list-form").setForm(curRow);
             $("#photo-list-form").data("json", JSON.stringify(curRow));
             $("input[type=checkbox]").iCheckParser();
@@ -184,7 +185,7 @@
         }
         var params = $("#photo-list-form").serializeJson();
         var json = $("#photo-list-form").data("json");
-        params.AddCheck = $("#AddCheck").is(":checked");
+        params.AddCheck = $("#AddCheck").is(":checked") ? 'Y' : 'N';
         params.UseChk = $("#UseChk").is(":checked");
         if (json && json.length > 0) {
             //编辑

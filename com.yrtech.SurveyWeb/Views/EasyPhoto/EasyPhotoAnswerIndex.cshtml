@@ -45,10 +45,6 @@
                 <h4 class="modal-title"></h4>
             </div>
             <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
@@ -95,12 +91,14 @@
                 debugger
                 //调用导入方法
                 files.forEach(function (file) {
+                    var projectTxt = $("#project-sel option:selected").text();
                     //调用导入方法
                     files.forEach(function (file) {
                         $("#ModalImport .modal-body").empty();
                         $("#ModalImport").modal("show");
                         $("#ModalImport .modal-title").html("清单导入");
                         $("#ModalImport .modal-body").load("/EasyPhoto/EasyPhotoAnswerImport", {}, function () {
+                            $("#ImportProject").html(projectTxt);
                             loadImportAnswer(file);
                         })
                     })
@@ -200,7 +198,7 @@
             align: "center",
             sortable: false,
             formatter: function (value, row, index) {
-                return value ? '是' : '否';
+                return value == 'Y' ? '是' : '否';
             }
         }];
         $.commonApi({

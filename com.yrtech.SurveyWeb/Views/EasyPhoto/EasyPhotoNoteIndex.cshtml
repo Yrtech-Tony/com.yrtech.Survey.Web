@@ -125,7 +125,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return value ? '是' : '否';
+                    return value=='Y' ? '是' : '否';
                 }
             }, {
                 title: "使用与否",
@@ -163,6 +163,7 @@
         $("#Modal").modal("show");
         $("#Modal .title").text("备注编辑");
         $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoNoteEdit", {}, function () {
+            curRow.AddCheck = curRow.AddCheck == 'Y'?true:false;
             $("#note-form").setForm(curRow);
             $("#note-form").data("json", JSON.stringify(curRow));
             $("input[type=checkbox]").iCheckParser();
@@ -183,7 +184,7 @@
         }
         var params = $("#note-form").serializeJson();
         var json = $("#note-form").data("json");
-        params.AddCheck = $("#AddCheck").is(":checked");
+        params.AddCheck = $("#AddCheck").is(":checked")?'Y':'N';
         params.UseChk = $("#UseChk").is(":checked");
         if (json && json.length > 0) {
             //编辑

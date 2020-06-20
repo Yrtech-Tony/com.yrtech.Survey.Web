@@ -1,9 +1,13 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
-    <div class="item form-inline" style="float:right;">
-        <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importAnswer()" data-loading-text="导入中...">导入</button>
+    <div class="form-inline" style="text-align:center">
+        <label class="control-label" style="font-size:16px;">导入期号:<span id="ImportProject"></span> <span style="color:red; margin-left:30px">重新导入会删除已导入数据</span></label>
+        <div class="item form-inline" style="float:right;">
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importAnswer()" data-loading-text="导入中...">导入</button>
+        </div>
     </div>
     <div class="clearfix"></div>
 </div>
+
 <div class="item form-group">
     <table id="import-answer-table" class="table table-bordered table-set"></table>
 </div>
@@ -82,7 +86,8 @@
                     width: 150,
                     valign: "middle",
                     align: "center",
-                    sortable: false
+                    sortable: false,
+                    formatter: preferenceFormatter
                 });
 
                 $('#import-answer-table').bootstrapTable({
@@ -98,42 +103,53 @@
                 });
             }
         })
+    }
 
+    function preferenceFormatter(value, row, index) {
+        return [
+            '<a href="#" data-toggle="tooltip" title=' + value + '>' + value + '</a>',
+        ].join('');
     }
 
     function loadImportAnswer(file) {
         $.commonApi({
             apiType: 'easyPhoto',
             url: "Master/AnswerExcelAnalysis",
-            params:{
+            params: {
                 projectId: $("#project-sel").val(),
                 ossPath: file.osspath
             },
-            success:function (data) {
+            success: function (data) {
                 $('#import-answer-table').bootstrapTable("load", data);
             }
         });
     }
     function importAnswer() {
-        $("#btnImport").button("loading");
-        var rows = $('#import-answer-table').bootstrapTable("getData");
-        rows.forEach(function (row) {
-            row.ProjectId = $("#project-sel").val();
-            row.InUserId = loginUser.Id;
-            row.ModifyUserId = loginUser.Id;
-        })
-        $.commonApi({
-            apiType: 'easyPhoto',
-            type:'post',
-            url: "Master/AnswerImport",
-            params: {
-                ListJson: JSON.stringify(rows)
-            },
-            success: function (data) {
-                $("#ModalImport").modal("hide");
-                loadEasyPhotoAnswer();
-            }
+        confirm("重新导入会删除已导入数据，确定导入吗？", function () {
+            $("#btnImport").button("loading");
+            var rows = $('#import-answer-table').bootstrapTable("getData");
+            rows.forEach(function (row) {
+                row.ProjectId = $("#project-sel").val();
+                row.InUserId = loginUser.Id;
+                row.ModifyUserId = loginUser.Id;
+            })
+            $.commonApi({
+                apiType: 'easyPhoto',
+                type: 'post',
+                url: "Master/AnswerImport",
+                params: {
+                    ListJson: JSON.stringify(rows)
+                },
+                success: function (data) {
+                    $("#ModalImport").modal("hide");
+                    loadEasyPhotoAnswer();
+                },
+                complete: function () {
+                    $("#btnImport").button("loading");
+                }
+            });
         });
+
     }
 
 </script>

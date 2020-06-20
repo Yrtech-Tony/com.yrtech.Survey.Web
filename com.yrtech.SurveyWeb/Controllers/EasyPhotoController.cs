@@ -85,8 +85,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialEasyPhotoAnswerImport");
         }
-
-        
+        public ActionResult EasyPhotoExtendColumnData()
+        {
+            return PartialView("_PartialEasyPhotoExtendColumnData");
+        }       
         
     }
 }

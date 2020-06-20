@@ -71,15 +71,18 @@
             ossPath: file.osspath
         }, function (data) {
             var chk = true;
-            if (data && data.length>0) {
-                chk = data[0].ImportChk;
+            if (data && data.length > 0) {
+                data.forEach(function (item) {
+                    if (!item.ImportChk) {
+                        chk = item.ImportChk;
+                        return false;
+                    }
+                })
             }
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            data.forEach(function (item) {
-                
-            })
+           
             $('#import-area-shop-table').bootstrapTable("load", data);
             $('#import-area-shop-table').bootstrapTable("hideLoading");
         });

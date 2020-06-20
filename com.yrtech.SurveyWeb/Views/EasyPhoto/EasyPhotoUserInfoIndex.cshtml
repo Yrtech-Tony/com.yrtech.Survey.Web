@@ -107,46 +107,48 @@
                 alert("请设置过期时间！");
                 return;
             }
+            confirm("生成账号，密码也会重新生成，确定生成吗？", function () {
+                var items = projects.filter(function (item) {
+                    return item.ProjectId == $("#project-sel").val()
+                })
 
-            var items = projects.filter(function (item) {
-                return item.ProjectId == $("#project-sel").val()
-            })
-
-            $.commonApi({
-                apiType: 'survey',
-                url: 'Master/GetShop',
-                params: {
-                    brandId: items[0].BrandId,
-                    shopId: '',
-                    shopCode: '',
-                    key: ''
-                },
-                success: function (data) {
-                    var count = 0;
-                    var users = [];
-                    data.forEach(function (shop) {
-                        users.push({
-                            ProjectId: $("#project-sel").val(),
-                            ShopCode: shop.ShopCode,
-                            ShopName: shop.ShopName,
-                            ExpireDateTime: $("#ExpireDateTime").val(),
-                            InUserId: loginUser.Id,
-                            ModifyUserId: loginUser.Id
-                        });
-                    })
-                    $.commonApi({
-                        apiType: 'easyPhoto',
-                        type: 'post',
-                        url: 'Master/CreateUserInfo',
-                        params: {
-                            ListJson: JSON.stringify(users)
-                        },
-                        success: function (data) {
-                            loadUserInfo();
-                        }
-                    })
-                }
-            })
+                $.commonApi({
+                    apiType: 'survey',
+                    url: 'Master/GetShop',
+                    params: {
+                        brandId: items[0].BrandId,
+                        shopId: '',
+                        shopCode: '',
+                        key: ''
+                    },
+                    success: function (data) {
+                        var count = 0;
+                        var users = [];
+                        data.forEach(function (shop) {
+                            users.push({
+                                ProjectId: $("#project-sel").val(),
+                                ShopCode: shop.ShopCode,
+                                ShopName: shop.ShopName,
+                                ExpireDateTime: $("#ExpireDateTime").val(),
+                                InUserId: loginUser.Id,
+                                ModifyUserId: loginUser.Id
+                            });
+                        })
+                        $.commonApi({
+                            apiType: 'easyPhoto',
+                            type: 'post',
+                            url: 'Master/CreateUserInfo',
+                            params: {
+                                ListJson: JSON.stringify(users)
+                            },
+                            success: function (data) {
+                                loadUserInfo();
+                            }
+                        })
+                    }
+                })
+            }, function () { });
+           
         });
         //设置过期时间
         $("#btnSetExpireDateTime").click(function () {
@@ -155,17 +157,20 @@
                 alert("请设置过期时间！");
                 return;
             }
-            $.commonApi({
-                apiType: 'easyPhoto',
-                url: 'Master/ResetExpireDateTime',
-                params: {
-                    projectId: $("#project-sel").val(),
-                    expireDateTime: $("#SetExpireDateTime").val()
-                },
-                success: function (data) {
-                    loadUserInfo();
-                }
-            })
+            confirm("确定要全部设置为" + expireTime, function () {
+                $.commonApi({
+                    apiType: 'easyPhoto',
+                    url: 'Master/ResetExpireDateTime',
+                    params: {
+                        projectId: $("#project-sel").val(),
+                        expireDateTime: $("#SetExpireDateTime").val()
+                    },
+                    success: function (data) {
+                        loadUserInfo();
+                    }
+                })
+            }, function () { });
+            
         });
         //导出
         $("#btnExport").click(function () { 

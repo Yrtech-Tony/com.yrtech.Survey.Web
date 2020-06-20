@@ -21,8 +21,11 @@
 
     function initObjectTable() {
         $('#userinfo-object-table').bootstrapTable({
-            pagination: false,
+            pagination: true,
             striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
             columns: [{
                 title: objectType + "代码",
                 field: 'ObjectCode',
@@ -110,7 +113,7 @@
                 $.commonPost("Master/SaveUserInfoObject", {
                     UserId: curRow.Id,
                     ObjectId: objId,
-                    InUserId: curRow.Id
+                    InUserId: loginUser.Id
                 }, function () {
                     $("#btnAdd").button("reset");
                     loadUserInfoObject();

@@ -18,8 +18,11 @@
 
     function initBrandTable() {
         $('#userinfo-brand-table').bootstrapTable({
-            pagination: false,
+            pagination: true,
             striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
             columns: [{
                 title: "品牌代码",
                 field: 'BrandCode',
@@ -77,7 +80,7 @@
                 $.commonPost("Master/SaveUserInfoBrand", {
                     UserId: curRow.Id,
                     BrandId: data[0].BrandId,
-                    InUserId: curRow.Id
+                    InUserId: loginUser.Id
                 }, function () {
                     $("#btnAdd").button("reset");
                     alert("添加品牌成功！");

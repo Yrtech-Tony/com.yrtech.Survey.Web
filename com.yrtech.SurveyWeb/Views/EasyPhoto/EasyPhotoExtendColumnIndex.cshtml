@@ -30,7 +30,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title"></h4>
+                <h4 class="modal-title">扩展列编辑</h4>
             </div>
             <div class="modal-body">
             </div>
@@ -41,7 +41,18 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="DataModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">扩展列数据</h4>
+            </div>
+            <div class="modal-body">
+            </div> 
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/api/common.js"></script> 
 <script src="~/Scripts/custom/form-serialize.js"></script> 
 <script>
@@ -118,7 +129,11 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:setExtendColumnData();" style="min-width:100px">数据</a>';
+                    if (row.AddShowChk) {
+                        return '<a href="javascript:setExtendColumnData();" style="min-width:100px">数据</a>';
+                    } else {
+                        return "";
+                    }                    
                 }
             }],
             onClickRow: function (row, $element) {
@@ -199,4 +214,10 @@
         })
     }
      
+    function setExtendColumnData() {
+        $("#DataModal .modal-body").empty();
+        $("#DataModal").modal("show");
+        $("#DataModal .modal-body").load("/EasyPhoto/EasyPhotoExtendColumnData", {}, function () { 
+        })
+    }
 </script>

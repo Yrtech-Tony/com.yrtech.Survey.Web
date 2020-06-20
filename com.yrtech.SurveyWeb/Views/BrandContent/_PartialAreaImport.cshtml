@@ -96,7 +96,12 @@
         }, function (data) {
             var chk = true;
             if (data && data.length > 0) {
-                chk = data[0].ImportChk;
+                data.forEach(function (item) {
+                    if (!item.ImportChk) {
+                        chk = item.ImportChk;
+                        return false;
+                    }
+                })
             }
             if (!chk) {
                 $("#btnImport").attr("disabled", true);

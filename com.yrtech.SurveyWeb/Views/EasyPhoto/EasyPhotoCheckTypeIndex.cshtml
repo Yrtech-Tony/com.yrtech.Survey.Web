@@ -64,8 +64,6 @@
             $("#Modal").modal("show");
             $("#Modal .title").text("检查类型新增");
             $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoCheckTypeEdit", {}, function () {
-                $("#checktype-form").setForm(curRow);
-                $("#checktype-form").data("json", JSON.stringify(curRow));
                 $("input[type=checkbox]").iCheckParser();
             })
         }) 
