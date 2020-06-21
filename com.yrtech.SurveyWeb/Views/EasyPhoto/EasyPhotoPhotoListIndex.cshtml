@@ -62,7 +62,7 @@
             loadEasyPhotoPhotoList();
         }).change();
 
-        $("#btnSearch").click(function () {
+        $("#btnQuery").click(function () {
             loadEasyPhotoPhotoList();
         });
 
@@ -139,6 +139,16 @@
                     return value ? '是' : '否';
                 }
             }, {
+                title: "必拍",
+                field: "MustChk",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '是' : '否';
+                }
+            }, {
                 title: "添加时间",
                 field: "InDateTime",
                 width: 150,
@@ -187,6 +197,7 @@
         var json = $("#photo-list-form").data("json");
         params.AddCheck = $("#AddCheck").is(":checked") ? 'Y' : 'N';
         params.UseChk = $("#UseChk").is(":checked");
+        params.MustChk = $("#MustChk").is(":checked");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
