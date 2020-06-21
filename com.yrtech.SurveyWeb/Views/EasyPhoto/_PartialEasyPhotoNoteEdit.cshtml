@@ -10,6 +10,14 @@
                 </div>
             </div>
             <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AreaCode">
+                    检查类型<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="CheckTypeId" class="form-control"></select>
+                </div>
+            </div>
+            <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="UseChk">
                     新增与否
                 </label>
@@ -28,3 +36,13 @@
         </fieldset>
     </form>
 </div>
+<script>
+    $("#CheckTypeId").html($("#checktype-sel").html());
+
+    $("#AddCheck").on("ifChecked", function () {
+        $("#CheckTypeId").attr("disabled", true);
+    })
+    $("#AddCheck").on("ifUnchecked", function () {
+        $("#CheckTypeId").attr("disabled", false);
+    })
+</script>

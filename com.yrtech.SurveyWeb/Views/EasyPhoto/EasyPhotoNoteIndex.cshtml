@@ -21,6 +21,10 @@
             <label class="control-label">检查类型:</label>
             <select id="checktype-sel" class="form-control" style="width:200px;"></select>
         </div>
+        <div class="form-group">
+            <label class="control-label">新增与否: </label>
+            <input type="checkbox" id="AddCheckQuery" name="AddCheck">
+        </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
@@ -75,18 +79,36 @@
             })
             return false;
         });
+
+
+        $("#AddCheckQuery").on("ifChecked", function () {
+            $("#checktype-sel").prop("disabled", true);
+        })
+        $("#AddCheckQuery").on("ifUnchecked", function () {
+            $("#checktype-sel").prop("disabled", false);
+        })
+
+        $("#AddCheckQuery").iCheckParser();
     })
      
     // 查询轻松拍的备注
     function loadEasyPhotoNote() {
+        var addChk = $("#AddCheckQuery").is(":checked");
+        var checkTypeId = $("#checktype-sel").val();
+        if (addChk) {
+            checkTypeId = '';
+            addChk = 'Y';
+        } else {
+            addChk = '';
+        }
         $('#note-table').bootstrapTable("showLoading");
         $.commonApi({
             apiType: 'easyPhoto',
             url: 'Master/GetRemark',
             params: {
-                checkTypeId : $("#checktype-sel").val(),
+                checkTypeId: checkTypeId,
                 remarkId: '',
-                addCheck: '',
+                addCheck: addChk,
                 useChk: ''
             },
             success: function (data) {
@@ -116,6 +138,16 @@
                 align: "center",
                 formatter: function (value, row, index) {
                     return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "检查类型",
+                field: "CheckTypeId",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return $("#checktype-sel").find("option[value=" + value + "]").text();
                 }
             }, {
                 title: "新增与否",
@@ -163,10 +195,13 @@
         $("#Modal").modal("show");
         $("#Modal .title").text("备注编辑");
         $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoNoteEdit", {}, function () {
-            curRow.AddCheck = curRow.AddCheck == 'Y'?true:false;
-            $("#note-form").setForm(curRow);
-            $("#note-form").data("json", JSON.stringify(curRow));
-            $("input[type=checkbox]").iCheckParser();
+            var json = JSON.stringify(curRow);
+            var rowClone = JSON.parse(json);
+            rowClone.AddCheck = rowClone.AddCheck == 'Y' ? true : false;
+            $("#note-form").setForm(rowClone);
+            $("#note-form").data("json", json);
+            $("#Modal .modal-body input[type=checkbox]").iCheckParser();
+            $("#CheckTypeId").prop("disabled", rowClone.AddCheck);
         })
     }
 
@@ -197,6 +232,9 @@
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
             }, params);
+        }
+        if (params.AddCheck == 'Y') {
+            params.CheckTypeId = '';
         }
         $("#save_button").button("loading");
         $.commonApi({
