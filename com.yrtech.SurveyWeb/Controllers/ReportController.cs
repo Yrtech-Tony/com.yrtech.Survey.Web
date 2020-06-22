@@ -19,5 +19,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialFileUploading");
         }
+
+        public ActionResult LogIndex()
+        {
+            return View();
+        }        
 	}
 }

@@ -534,6 +534,7 @@
     <Content Include="Views\Account\_PartialShopAccountImport.cshtml" />
     <Content Include="Views\Account\_PartialUserInfoObjectImport.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoExtendColumnData.cshtml" />
+    <Content Include="Views\Report\LogIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
