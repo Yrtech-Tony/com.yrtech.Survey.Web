@@ -81,7 +81,7 @@
 
     function getParams() {
         return {
-            userId: loginUser.Id,
+            userId: '',
             action: '',
             account: '',
             project: $('#project').val() || '',
@@ -145,7 +145,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a data-toggle="tooltip" title=' + value + '>' + value + '</a>';
+                    return '<a data-toggle="tooltip" title="' + value + '" href="javascript:showDetail(\'' + value + '\')">' + value + '</a>';
                 }
             }]
         }).bootstrapTable("showLoading");
