@@ -112,6 +112,7 @@
     }
 
     function loadImportAnswer(file) {
+        $('#import-answer-table').bootstrapTable("showLoading");
         $.commonApi({
             apiType: 'easyPhoto',
             url: "Master/AnswerExcelAnalysis",
@@ -120,7 +121,20 @@
                 ossPath: file.osspath
             },
             success: function (data) {
+                var chk = true;
+                if (data && data.length > 0) {
+                    data.forEach(function (item) {
+                        if (!item.ImportChk) {
+                            chk = item.ImportChk;
+                            return false;
+                        }
+                    })
+                }
+                if (!chk) {
+                    $("#btnImport").attr("disabled", true);
+                }
                 $('#import-answer-table').bootstrapTable("load", data);
+                $('#import-answer-table').bootstrapTable("hideLoading");
             }
         });
     }

@@ -240,7 +240,7 @@ function bindEasyPhotoCheckTypeSelect() {
             projectId: $("#project-sel").val(),
             checkTypeId: '',
             checkTypeName: '',
-            useChk:''
+            useChk:'true'
         },
         success: function (data) {
             $("#checktype-sel").empty();
