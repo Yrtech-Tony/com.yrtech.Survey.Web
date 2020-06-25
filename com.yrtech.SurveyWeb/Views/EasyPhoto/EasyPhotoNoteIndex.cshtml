@@ -106,6 +106,7 @@
             apiType: 'easyPhoto',
             url: 'Master/GetRemark',
             params: {
+                projectId: $("#project-sel").val(),
                 checkTypeId: checkTypeId,
                 remarkId: '',
                 addCheck: addChk,
@@ -229,6 +230,7 @@
             //新增
             params = $.extend({
                 CheckTypeId: $("#checktype-sel").val(),
+                ProjectId:$("#project-sel").val(),
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
             }, params);
