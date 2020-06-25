@@ -31,6 +31,10 @@
 </div>
 <div class="result">
     <table id="answer-table" class="table table-bordered table-set"></table>
+    
+</div>
+
+<div id="baguetteBox" class="baguetteBox">
 </div>
 
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
@@ -54,15 +58,6 @@
     .baguetteBox {
         display: none;
     }
-
-        .baguetteBox a {
-            width: 240px;
-            height: 180px;
-            display: inline-block;
-            overflow: hidden;
-            margin: 4px 6px;
-            box-shadow: 0 0 4px -1px #000;
-        }
 </style>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js"></script>
@@ -104,7 +99,7 @@
                     })
                 })
             }
-        }); 
+        });
 
         //加载期号
         bindEasyPhotoProjectSelect();
@@ -153,7 +148,7 @@
             apiType: 'easyPhoto',
             url: 'Answer/GetShopAnswerList',
             params: {
-                answerId:'',
+                answerId: '',
                 projectId: $("#project-sel").val(),
                 shopCode: "",
                 checkCode: '',
@@ -202,12 +197,17 @@
             align: "center"
         }, {
             title: "照片",
-            field: '',
+            field: 'AnswerPhotoList',
             width: 120,
             valign: "middle",
             align: "center",
             formatter: function (value, row, index) {
-                return '<a href="javascript:createImageList();" style="min-width:100px">照片</a>';
+                console.log(value)
+                if (value.length > 0) {
+                    return '<a href="javascript:createImageList();" style="min-width:100px">照片</a>';
+                } else {
+                    return "";
+                }
             }
         }, {
             title: "新增与否",
@@ -265,34 +265,24 @@
         if (!items || items.length == 0) {
             alert("没有照片！")
             return;
-            items = [{
-                PhotoUrl: 'EasyPhoto/Answer/WNI-%E7%81%AB%E5%B1%B1%E7%81%B0.png',
-                PhotoName: '对对对'
-            }, {
-                PhotoUrl: 'EasyPhoto/Answer/11.png',
-                PhotoName: '发票'
-            }]
         }
-        var div = $('<div class="baguetteBox" style="display:none">');
-        if ($(".baguetteBox").length > 0) {
-            div = $(".baguetteBox");
-            div.empty();
-        } else {
-            $(document.body).append(div);
-            
-        }
+        var div = $(".baguetteBox");
+        div.empty();
+        var count = items.length;
         $.each(items, function (i, item) {
             var imgUrl = ossUrlRootTest + item.PhotoUrl;
             var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
             var imagA = $('<a></a>');
-            var img = $('<img>').attr('src', imgUrl);
+            var img = $('<img>').attr('src', imgUrl).attr("alt", (i + 1) + "/" + count + "   " + item.PhotoName);
             $(imagA).append(img);
             $(imagA).attr('href', imgUrl);
-            $(imagA).attr('data-caption', item.PhotoName);
+            $(imagA).attr('data-caption', (i + 1) + "/" + count + "   " + item.PhotoName);
 
             div.append(imagA);
         })
-        baguetteBox.run('.baguetteBox');
+        baguetteBox.run('.baguetteBox', {
+            animation: 'fadeIn'
+        });
 
         setTimeout(function () {
             div.find("a:first img").click();
