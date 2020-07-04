@@ -1,10 +1,5 @@
-﻿@using com.yrtech.SurveyWeb.Models
-@{
-    ViewBag.Title = "申诉管理";
-    AccountDto accountDto = Session["LoginUser"] as AccountDto;
-    accountDto.BusinessAreaList = new List<AreaDto>();
-    accountDto.BusinessAreaList.Add(new AreaDto(){AreaId=1,AreaName="销售"});
-    var BusinessAreaList = new SelectList(accountDto.BusinessAreaList, "AreaId", "AreaName");
+﻿@{
+    ViewBag.Title = "申诉反馈列表";
 }
 <link href="~/Content/seachform.css" rel="stylesheet" />
 <style>
@@ -18,277 +13,238 @@
     }
 </style>
 
-<div id="container" class="col-md-12">
-    <form id="searchForm" style="display:none">
-        <table class="table table-bordered" style="border:solid 1px #666">
-            <tr>
-                <th width="85" align="center">
-                    业务类型
-                </th>
-                <td width="150px;">
-                    @Html.DropDownList("BusinessArea", BusinessAreaList, new { @class = "selectpicker" })
-                </td>
-                <th width="85" align="center">
-                    广域区域
-                </th>
-                <td width="150px;">
-                    <select id="WideArea" name="WideArea" class="selectpicker"></select>
-                </td>
-                <th width="85" align="center">
-                    大区
-                </th>
-                <td width="150px;">
-                    <select id="BigArea" name="BigArea" class="selectpicker"></select>
-                </td>
-            </tr>
-            <tr>
-                <th width="85" align="center">
-                    中区
-                </th>
-                <td>
-                    <select id="MiddleArea" name="MiddleArea" class="selectpicker"></select>
-                </td>
-                <th width="85" align="center">
-                    小区
-                </th>
-                <td>
-                    <select id="SmallArea" name="SmallArea" class="selectpicker"></select>
-                </td>
-                <th width="85" align="center">
-                </th>
-                <td></td>
-            </tr>
-            <tr>
-                <th>
-                    经销商
-                </th>
-                <td colspan="5">
-                    <div id="ShopListDiv">
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width: 140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
+        </div>
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnSearch" class="btn btn-primary">查询</button>
+    </div>
+</div>
 
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <th width="85" align="center">
-                    年份
-                </th>
-                <td>
-                    <select id="Year" class="selectpicker"></select>
-                </td>
-                <th width="85" align="center">
-                    期号
-                </th>
-                <td colspan="3">
-                    <div id="ProjectListDiv">
 
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="6" class="text-center" style="line-height:40px;">
-                    <button type="button" class="btn btn-default" style="width:100px; margin-right:20px" id="btnClear">清&nbsp;空</button>
-                    <button type="button" class="btn btn-primary" style="width:100px;" id="btnSearch">查&nbsp;询</button>
-                </td>
-            </tr>
-        </table>
-    </form>
-    <div class="opens">开启搜索</div>
-    <div class="sechform"><div class="collapse1 text-center"><div class="i"><font></font></div></div></div>
-    <form class="form-inline pull-left mb15">
+<div class="result table-responsive">
+    <div class="form-inline">
         <div class="form-group">
             <input type="text" class="form-control" name="keyword" id="keyword" placeholder="经销商代码/名称" value="">
-        </div>
-        <button type="button" id="btnShopCodeOrNameSearch" class="btn btn-default">搜 索</button>
-    </form>
-    <div class="pull-right">
-        <a href="javascript:void()" id="btnDownloadReport" class="btn btn-default">导出文件</a>
-    </div>
-    <p></p>
-    <div class="list" style="overflow:auto; width:100%">
-        <div class="table-responsive comm-table-div">
-            <table id="appeal-table" class="table table-bordered table-set">
-                <thead>
-                    <tr>
-                        <th style="width:90px">操作</th>
-                        <th style="width:70px">删除</th>
-                        <th style="width:110px">经销商代码</th>
-                        <th style="width:250px">经销商名称</th>
-                        <th style="width:80px">体系号</th>
-                        <th style="width:300px">检查点</th>
-                        <th style="width:50px">得分</th>
-                        <th style="width:70px">申诉人</th>
-                        <th style="width:140px">申诉时间</th>
-                        <th style="width:200px">申诉理由</th>
-                        <th style="width:90px">反馈状态</th>
-                        <th style="width:200px">反馈理由</th>
-                        <th style="width:70px">反馈人</th>
-                        <th style="width: 140px">反馈时间</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <button type="button" id="btnSearchByKey" class="btn btn-default ">搜 索</button>
         </div>
     </div>
-    <div id="pagination" class="pull-right">
-        <ul id="pageUl"></ul>
-    </div>
-    <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-body">
-                </div>
-                <div class="modal-footer">
-                    <button id="save_button" type="button" onclick="saveProject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
-                    <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
-                </div>
+    <br />
+    <table id="appeal-table" class="table table-bordered table-set"></table>
+</div>
+ 
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">反馈详细</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveArea()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
 </div>
 
+<script src="~/Scripts/api/common.js?20200523"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 
-<script src="~/Scripts/api/common.js"></script>
-<script src="~/Scripts/api/appeal.js"></script>
-<script src="~/Scripts/page.js"></script>
 <script>
-    var brandId = @accountDto.BrandId
     $(function () {
-        $('.i,.opens').click(function () {
-            $('.i').children("font").toggleClass("other");
-            $('#searchForm').slideToggle();
-            $('#searchForm').toggleClass('none');
-            $('.opens').slideToggle();
-            $('.opens').toggleClass('none');
+        $('title').html('@ViewBag.Title')
+
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+            bindBussinessSelect();
         });
 
-        $("input[type=checkbox]").iCheckParser();
-
-        $("#Year").change(function () {
-            loadProjectBindDropdownList(brandId, $(this).val(), function (data) {
-                $("#ProjectListDiv").empty();
-                if (data) {
-                    if (data.length == 0) {
-                        alert("当前年份无期号！");
-                        return;
-                    }
-                    for (i in data) {
-                        var item = data[i];
-                        var project = $('<label class="dealer-li"> </label>');
-                        project.append($('<input name="Project" type="radio">').val(item.ProjectId))
-                            .append($('<font>').text(item.ProjectName));
-                        $("#ProjectListDiv").append(project);
-                    }
-                }
-                $("#ProjectListDiv input[type=radio]").iCheckParser();
-                $("#ProjectListDiv input[type=radio]:last").iCheck("check");
-            })
-
-        });
-        for (var i = 2019; i < 2030; i++) {
-            $("#Year").append($("<option>").text(i + "").val(i + ""));
+        $("#project-sel,#bussiness-type-sel").change(function () {
+            search();
+        })
+        
+        bindBrandSelect();
+        $("#brand-sel").change();
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
         }
-        $("#Year").change();
-
-        var loadChildArea = function (pType, cType, callback) {
-            $.post("/Appeal/GetAreaListByParent", {
-                area: $("#" + pType).val(),
-                type: pType
-            }, function (data) {
-                $("#" + cType).empty();
-                if (data) {
-                    for (i in data) {
-                        var item = data[i];
-                        $("#" + cType).append($("<option>").text(item.AreaName).val(item.AreaId));
-                    }
+        $("#year-sel").change();
+        
+        initAppealTable();
+        loadAppeal();
+    });    
+   
+    var curRow;
+    function initAppealTable() {
+        //生成用户数据
+        $('#appeal-table').bootstrapTable({
+            pagination: true,
+            showLoading: true,
+            striped: true, //是否显示行间隔色
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [10, 15, 20, 50],
+            width: "100%",
+            height: getClientHeight() - 300,
+            columns: [{
+                title: "反馈详细",
+                field: '',
+                width: 80,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a  href="javascript:goEdit(' + row.AppealId + ');" style="min-width:100px">反馈详细</a>';
                 }
-                setRoleType(cType);
+            }, {
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 150,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "体系号",
+                field: "SubjectCode",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查点",
+                field: "CheckPoint",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "申诉理由",
+                field: "AppealReason",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "申诉人",
+                field: "AppealUserName",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "申诉时间",
+                field: "AppealDateTime",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "申诉人",
+                field: "AppealUserName",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "反馈状态",
+                field: "FeedBackStatusStr",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "反馈内容",
+                field: "FeedBackReason",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "反馈人",
+                field: "FeedBackUserName",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "反馈人",
+                field: "FeedBackDateTime",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            } ],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        }).bootstrapTable("showLoading");
+    }
 
-                $("#" + cType).selectpicker("refresh");
-                if (callback) callback();
-            })
-        }
+    function loadAppeal() {
+        var params = getParams();
+        if (!params) return;
 
-        $("#BusinessArea").change(function () {
-            loadChildArea("BusinessArea", "WideArea");
-        });
+        $('#appeal-table').bootstrapTable("showLoading");
+        $.commonGet("Appeal/GetFeedBackInfoByPage", params, function (data) {
+            $('#appeal-table').bootstrapTable("load", data);
+            $('#appeal-table').bootstrapTable("hideLoading");
+        })
+    }
 
-        $("#WideArea").change(function () {
-            loadChildArea("WideArea", "BigArea");
-        });
-
-        $("#BigArea").change(function () {
-            loadChildArea("BigArea", "MiddleArea");
-        });
-
-        $("#MiddleArea").change(function () {
-            loadChildArea("MiddleArea", "SmallArea");
-        });
-
-        $("#SmallArea").change(function () {
-            $.post("/Appeal/GetShopListByArea", {
-                SmallArea: $(this).val()
-            }, function (data) {
-                $("#ShopListDiv").empty();
-
-                if (data) {
-                    for (i in data) {
-                        var item = data[i];
-                        var shop = $('<label class="dealer-li"> </label>');
-                        shop.append($('<input type="checkbox">').val(item.ShopId))
-                            .append($('<font>').text(item.ShopName));
-                        $("#ShopListDiv").append(shop);
-                    }
-                }
-                $("#ShopListDiv input[type=checkbox]").iCheckParser();
-                if (roleType == "B_Shop") {
-                    $("#ShopListDiv input[type=checkbox]").iCheck("check");
-                }
-            })
-        });
-
-        //查询
-        $("#btnSearch").click(function () {
-            $("#btnSearch").button('loading');
-            var params = getParams();
-            if (!params) return;
-            loadAppeal(params);
-        });
-
-        $("#btnClear").click(function () {
-            SearchShopFileInfo();
-        });
-
-        $("#BusinessArea").change();
-
-        setTimeout(function () {
-            $("#btnSearch").click();
-            $(".selectpicker").selectpicker("refresh");
-        }, 1000);
-    });
 
     function getParams() {
-        var project = $("[name=Project]:checked").val();
+        var project = $("#project-sel").val();
         if (!project) {
             alert("请选择期号！");
             return;
         }
-
+        selProject = project;
+        $("#brand-sel").val(), $("#year").val()
         return {
+            brandId: $('#brand-sel').val(),
             projectId: project || '',
-            businessType: '',
-            wideArea: '',
-            bigArea: '',
-            middleArea: '',
-            smallArea: '',
-            shopIdStr: '',
-            keyword: $('#ShopInput').val(),
+            keyword: $('#keyword').val(),
             pageNum: 1,
-            pageCount: 15
+            pageCount: 10000
         };
     }
+    
+    function goEdit(appealId) {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-footer").show();
+        $("#Modal .modal-title").html("反馈详细");
+        $("#Modal .modal-body").load("/Appeal/Edit?appealId="+ appealId, {}, function () {
+            $("#appeal-form").setForm(curRow);
+            $("#appeal-form").data("json", JSON.stringify(curRow));
+            $("input[type=radio]").iCheckParser();
 
+        })
+    }
 </script>

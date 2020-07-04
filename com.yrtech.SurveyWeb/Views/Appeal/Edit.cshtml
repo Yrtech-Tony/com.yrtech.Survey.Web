@@ -1,6 +1,5 @@
 ﻿@{
     ViewBag.Title = "申诉编辑";
-    com.yrtech.SurveyWeb.Models.AccountDto accountDto = Session["LoginUser"] as com.yrtech.SurveyWeb.Models.AccountDto;
 }
 
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
@@ -9,64 +8,60 @@
 <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js?20170928"></script>
-<script src="~/Scripts/custom/form-serialize.js"></script>
-<script src="~/Scripts/api.js"></script>
 <script>
     var appealId = "@ViewBag.AppealId";
-    var userId = "@accountDto.Id";
-    var roleType = "@accountDto.RoleType";
-    var BrandId = "@accountDto.BrandId";
 
     var ossClient;
     var type = "FeedBack";
-    var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
-    var downloadUrlRoot;
+    var osspath = "survey/Appeal/" + type + "/";
+    var fileList = [];
+    var appeal;
     $(function () {
-        $("input[type=checkbox],input[type=radio]").iCheckParser();
-
-        getAppeal(appealId, function (data) {
-            $("#appeal-form").setForm(data);
-            $("input[name=FeedBackStatus]").each(function () {
-                if (data.FeedBackStatus == ($(this).val() == 'true')) {
-                    $(this).iCheck('check');;
-                }
-            });;
-            $("#ProjectCode").html(data.ProjectName);
-            $("#ShopName").html(data.ShopName);
-            $("#SubjectCode").html(data.SubjectCode);
-
-            var brand_project_appeal = BrandId + '/' + data.ProjectId + '/' + data.AppealId;
-            var osspath = "survey/Appeal/" + brand_project_appeal + "/" + type + "/";
-            downloadUrlRoot = ossUrlRoot + osspath;
-
-            //初始化LexusReport OSS 数据源
-            ossClient = new OSSClient({
-                fileAddCheck: function () {
-                    return true;
-                },
-                fileAddCheckMsg: "请填写题号，再选择上传附件",
-                osspath: osspath,
-                uploaded: function (args) {
-                    console.log("args", args);
-                    var file = '';
-                    if (args.fileName.indexOf('_') >= 0) {
-                        file = args.fileName.substr(args.fileName.indexOf('_') + 1);
+        $.commonGet("Appeal/GetShopSubjectAppeal", {
+            appealId: appealId
+        }, function (data) {
+            if (data && data.length > 0) {
+                appeal = data[0];
+                $("#appeal-form").setForm(appeal);
+                $("input[name=FeedBackStatus]").each(function () {
+                    if (appeal.FeedBackStatus == ($(this).val() == 'true')) {
+                        $(this).iCheck('check');;
                     }
+                });;
+                $("#ProjectCode").html(appeal.ProjectName);
+                $("#ShopName").html(appeal.ShopName);
+                $("#SubjectCode").html(appeal.SubjectCode);
 
-                    appealFileSave({
-                        AppealId: data.AppealId,
-                        InUserId: userId,
-                        FileName: file,
-                        ServerFileName: args.fileName,
-                        fileType: 'FeedBack',
-                    }, function (data) {
-                        loadAppealFiles();
-                    });
-                }
-            });
-        });
+                //初始化LexusReport OSS 数据源
+                new OSSClient({
+                    autoupload: true,
+                    fileAddCheck: function () {
+                        return true;
+                    },
+                    fileAddCheckMsg: "请填写题号，再选择上传附件",
+                    osspath: osspath,
+                    selectfiles: "selectfiles",
+                    success: function (files) {
+                        console.log("files", files)
+                        for (var i in files) {
+                            fileList.push({
+                                InUserId: loginUser.Id,
+                                InUserName: loginUser.AccountName,
+                                FileType: type,
+                                FileTypeName: '经销商',
+                                FileName: files[i].fileName,
+                                ServerFileName: files[i].osspath
+                            });
+                        }
 
-        loadAppealFiles();
+                        bindFileTable(fileList);
+                    }
+                });
+
+                loadAppealFiles();
+            }
+        })
+         
 
         $("#btnSave").click(function () {
             //复审人员
@@ -79,20 +74,30 @@
                 alert("反馈意见为不同意时反馈内容必填");
                 return false;
             }
+            var params = form.serializeJson();
+            if (appeal) {                
+                //编辑                    
+                params = $.extend(appeal, params, {
+                    feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
+                    feedbackReason: $("#FeedBackReason").val(),
+                    feedbackUserId: userId
+                });
+            } 
+            params.AppealFileList = fileList;
 
-            appealFeedBack({
-                appealId: appealId,
-                feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
-                feedbackReason: $("#FeedBackReason").val(),
-                feedbackUserId: userId
+            $("#loadAppeal").button('loading');
+            $.commonPost("Appeal/AppealFeedBack", params, function () {
+                $("#save_button").button("reset");
+                loadAppeal();
+                closeModel();
             }, function () {
-                alert("保存反馈信息成功！");
-            })
+                $("#save_button").button("reset");
+            }); 
         });
     })
 
     function loadAppealFiles() {
-        loadFileList({
+        $.commonGet("Appeal/AppealFileSearch", {
             appealId: appealId,
             fileType: ''
         }, function (data) {
@@ -122,12 +127,12 @@
                     $("#feedback_file_table tbody").append(tr);
                 });
             }
-        });
+        });         
     }
 
     function delFile(fileId) {
         confirm("确定要删除该文件吗？", function () {
-            appealFileDelete({ fileId: fileId }, function () {
+            $.commonPost("Appeal/AppealFileDelete", { fileId: fileId }, function () {
                 loadAppealFiles();
             });
         });
@@ -140,24 +145,20 @@
     }
 </script>
 
-<div class="requir col-md-12">
+<div>
     <form id="appeal-form">
-        <div style="width:100%;padding-bottom:5px;" class="text-right">
-            <a id="btnBack" class="btn btn-default" href="#" onclick="backToAppealIndex()">返&nbsp;&nbsp;&nbsp;&nbsp;回</a>
-            <a id="btnSave" class="btn btn-primary">保&nbsp;&nbsp;&nbsp;&nbsp;存</a>
-        </div>
         <table class="table table-bordered" style="margin-bottom:0px;">
             <tr>
-                <th style="width:180px;">期号</th>
-                <td style="width:300px; text-align:center">
+                <th style="width:100px;">期号</th>
+                <td style="width:200px; text-align:center">
                     <span id="ProjectCode"></span>
                 </td>
-                <th style="width: 180px;">经销商</th>
-                <td style="text-align: center">
+                <th style="width: 100px;">经销商</th>
+                <td style="width: 300px; text-align: center">
                     <span id="ShopName"></span>
                 </td>
-                <th style="width: 180px;">体系号</th>
-                <td style="width: 300px; text-align: center">
+                <th style="width: 100px;">体系号</th>
+                <td style="width: 120px; text-align: center">
                     <span id="SubjectCode"></span>
                 </td>
             </tr>
@@ -192,8 +193,7 @@
                     <div id="console"></div>
                 </div>
                 <div class="container-fluid pull-right">
-                    <button id="selectfiles" class='btn btn-default'>选择文件</button>
-                    <button id="postfiles" class='btn btn-primary'>开始上传</button>
+                    <button id="selectfiles" class='btn btn-default'>上传文件</button>
                 </div>
                 <table id="feedback_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
                     <thead>

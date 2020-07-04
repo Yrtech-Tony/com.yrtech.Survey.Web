@@ -281,14 +281,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\api\appeal.js" />
-    <Content Include="Scripts\api\baseinfo.js" />
-    <Content Include="Scripts\api\brand.js" />
     <Content Include="Scripts\api\common.js" />
-    <Content Include="Scripts\api\easyphoto.js" />
-    <Content Include="Scripts\api\project.js" />
-    <Content Include="Scripts\api\report.js" />
-    <Content Include="Scripts\api\recheck.js" />
     <Content Include="Scripts\bootstrap-progressbar.js" />
     <Content Include="Scripts\bootstrap-progressbar.min.js" />
     <Content Include="fonts\fontawesome-webfont.eot" />

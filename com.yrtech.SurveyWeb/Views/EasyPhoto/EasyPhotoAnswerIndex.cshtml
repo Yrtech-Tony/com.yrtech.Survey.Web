@@ -31,7 +31,7 @@
 </div>
 <div class="result">
     <table id="answer-table" class="table table-bordered table-set"></table>
-    
+
 </div>
 
 <div id="baguetteBox" class="baguetteBox">
@@ -107,7 +107,7 @@
         initEasyPhotoAnswerTable();
         $("#project-sel").change(function () {
             loadEasyPhotoAnswer();
-        }).change();
+        });
 
 
         //查询事件
@@ -143,25 +143,7 @@
 
     // 查询轻松拍清单
     function loadEasyPhotoAnswer() {
-        $('#answer-table').bootstrapTable("showLoading");
-        $.commonApi({
-            apiType: 'easyPhoto',
-            url: 'Answer/GetShopAnswerList',
-            params: {
-                answerId: '',
-                projectId: $("#project-sel").val(),
-                shopCode: "",
-                checkCode: '',
-                checkTypeId: '',
-                photoCheck: '',
-                addCheck: '',
-                key: $("#key").val()
-            },
-            success: function (data) {
-                $('#answer-table').bootstrapTable("hideLoading");
-                $('#answer-table').bootstrapTable("load", data);
-            }
-        })
+        $('#answer-table').bootstrapTable({ pageNumber: 1, pageSize: 10 });
     }
 
     //初始化清单表格
@@ -242,6 +224,8 @@
                 })
 
                 $('#answer-table').bootstrapTable({
+                    url: easyPhotoApi + 'Answer/GetShopAnswerList',
+                    sidePagination: 'server',
                     pagination: true,
                     striped: true, //是否显示行间隔色
                     width: "100%",
@@ -251,7 +235,24 @@
                     pageNumber: 1,
                     pageSize: 15,
                     pageList: [5, 10, 20, 50],
+                    queryParams: function (params) {//上传服务器的参数
+                        console.log(params)
+                        var temp = {
+                            answerId: '',
+                            projectId: $("#project-sel").val(),
+                            shopCode: "",
+                            checkCode: '',
+                            checkTypeId: '',
+                            photoCheck: '',
+                            addCheck: '',
+                            key: $("#key").val(),
+                            offset: params.offset,// SQL语句起始索引
+                            limit: params.limit  // 每页显示数量
+                        };
+                        return temp;
+                    },
                     columns: cols,
+                    responseHandler: responseHandler,//请求数据成功后，渲染表格前的方法
                     onClickRow: function (row, $element) {
                         curRow = row;
                     }
@@ -259,7 +260,18 @@
             }
         });
     }
-
+    //请求成功方法
+    function responseHandler(result) {
+        if (!result.Status) {
+            alert("错误信息：" + result.Body);
+            return;
+        }
+        //如果没有错误则返回数据，渲染表格
+        return {
+            rows: JSON.parse(result.Body),
+            total:result.Total
+        };
+    };
     function createImageList() {
         var items = curRow.AnswerPhotoList;
         if (!items || items.length == 0) {
