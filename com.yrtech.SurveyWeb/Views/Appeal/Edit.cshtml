@@ -28,8 +28,9 @@
             fileAddCheckMsg: "请填写题号，再选择上传附件",
             success: function (files) {
                 console.log("files", files)
+                var newFiles = [];
                 for (var i in files) {
-                    fileList.push({
+                    newFiles.push({
                         InUserId: loginUser.Id,
                         InUserName: loginUser.AccountName,
                         FileType: type,
@@ -39,11 +40,12 @@
                     });
                 }
                 if (appealId) {
-                    for (var i in fileList) {
-                        AppealFileSave(fileList[i]);
+                    for (var i in newFiles) {
+                        newFiles[i].AppealId = appealId;
+                        AppealFileSave(newFiles[i]);
                     }
-                    loadAppealFiles();
                 } else {
+                    fileList = fileList.concat(newFiles);
                     bindFileTable(fileList);
                 }
             },
@@ -113,6 +115,7 @@
             appealId: appealId,
             fileType: ''
         }, function (data) {
+            $("#selectfiles").button("reset");
             fileList = data;
             $("#feedback_file_table tbody").empty();
             if (data) {
@@ -179,13 +182,13 @@
     }
 
     function AppealFileSave(file) {
+        $("#selectfiles").button("loading");
         $.commonPost("Appeal/AppealFileSave", file, function () {
             loadAppealFiles();
         });
     }
     
     function delFile(fileId) {
-        debugger
         if (appealId) {
             confirm("确定要删除该文件吗？", function () {
                 appealFileDelete({ fileId: fileId }, function () {
