@@ -24,6 +24,11 @@ namespace com.yrtech.SurveyWeb.Controllers
             return View();
         }
 
+        public ActionResult AppealStat()
+        {
+            return View();
+        }
+        
         public ActionResult Edit(string appealId)
         {
             ViewBag.AppealId = appealId;

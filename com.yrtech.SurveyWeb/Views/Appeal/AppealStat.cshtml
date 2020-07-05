@@ -1,0 +1,144 @@
+﻿@{
+    ViewBag.Title = "申诉统计";
+}
+<link href="~/Content/seachform.css" rel="stylesheet" />
+<style>
+    .link-btn-cell {
+        margin: 3px 5px 0px;
+        cursor: pointer;
+    }
+
+    #searchForm th {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width: 140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
+        </div>
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnSearch" class="btn btn-primary">查询</button>
+    </div>
+</div>
+
+
+<div class="result table-responsive">
+    <table id="appeal-stat-table" class="table table-bordered table-set"></table>
+</div>
+
+<script src="~/Scripts/api/common.js?20200523"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script>
+    $(function () {
+        $('title').html('@ViewBag.Title')
+
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+            bindBussinessSelect();
+        });
+
+        $("#project-sel,#bussiness-type-sel").change(function () {
+            search();
+        })
+        
+        bindBrandSelect();
+        $("#brand-sel").change();
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        $("#year-sel").change();
+        
+        initAppealStatTable();
+        loadAppealStat();
+    });    
+   
+    var curRow;
+    function initAppealStatTable() {
+        //生成用户数据
+        $('#appeal-stat-table').bootstrapTable({
+            pagination: true,
+            showLoading: true,
+            striped: true, //是否显示行间隔色
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [10, 15, 20, 50],
+            width: "100%",
+            height: getClientHeight() - 300,
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 150,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "申诉数量",
+                field: "ApplyCount",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "反馈数量",
+                field: "FeedBackCount",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        }).bootstrapTable("showLoading");
+    }
+
+    function loadAppealStat() {
+        var params = getParams();
+        if (!params) return;
+
+        $('#appeal-stat-table').bootstrapTable("showLoading");
+        $.commonGet("Appeal/AppealCountSearch", params, function (data) {
+            $('#appeal-stat-table').bootstrapTable("load", data);
+            $('#appeal-stat-table').bootstrapTable("hideLoading");
+        })
+    }
+
+    function getParams() {
+        var project = $("#project-sel").val();
+        if (!project) {
+            alert("请选择期号！");
+            return;
+        }
+        selProject = project;
+
+        return {
+            projectId: project || ''
+        };
+    }
+    
+</script>
