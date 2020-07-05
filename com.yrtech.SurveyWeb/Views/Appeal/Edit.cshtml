@@ -7,7 +7,7 @@
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
-<script src="~/Scripts/oss-upload-direct/upload.js?20170928"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js"></script>
 <script>
     var appealId = "@ViewBag.AppealId";
 
@@ -17,6 +17,41 @@
     var fileList = [];
     var appeal;
     $(function () {
+        //初始化LexusReport OSS 数据源
+        ossClient = new OSSClient({
+            autoupload: true,
+            osspath: osspath,
+            selectfiles: "selectfiles",
+            fileAddCheck: function () {
+                return true;
+            },
+            fileAddCheckMsg: "请填写题号，再选择上传附件",
+            success: function (files) {
+                console.log("files", files)
+                for (var i in files) {
+                    fileList.push({
+                        InUserId: loginUser.Id,
+                        InUserName: loginUser.AccountName,
+                        FileType: type,
+                        FileTypeName: '申诉反馈',
+                        FileName: files[i].fileName,
+                        ServerFileName: files[i].osspath
+                    });
+                }
+                if (appealId) {
+                    for (var i in fileList) {
+                        AppealFileSave(fileList[i]);
+                    }
+                    loadAppealFiles();
+                } else {
+                    bindFileTable(fileList);
+                }
+            },
+            FilesAddComplete: function (files) {
+
+            }
+        });
+
         $.commonGet("Appeal/GetShopSubjectAppeal", {
             appealId: appealId
         }, function (data) {
@@ -25,82 +60,60 @@
                 $("#appeal-form").setForm(appeal);
                 $("input[name=FeedBackStatus]").each(function () {
                     if (appeal.FeedBackStatus == ($(this).val() == 'true')) {
-                        $(this).iCheck('check');;
+                        $(this).iCheck('check');
                     }
                 });;
-                $("#ProjectCode").html(appeal.ProjectName);
+                $("#ProjectName").html(appeal.ProjectName);
                 $("#ShopName").html(appeal.ShopName);
                 $("#SubjectCode").html(appeal.SubjectCode);
-
-                //初始化LexusReport OSS 数据源
-                new OSSClient({
-                    autoupload: true,
-                    fileAddCheck: function () {
-                        return true;
-                    },
-                    fileAddCheckMsg: "请填写题号，再选择上传附件",
-                    osspath: osspath,
-                    selectfiles: "selectfiles",
-                    success: function (files) {
-                        console.log("files", files)
-                        for (var i in files) {
-                            fileList.push({
-                                InUserId: loginUser.Id,
-                                InUserName: loginUser.AccountName,
-                                FileType: type,
-                                FileTypeName: '经销商',
-                                FileName: files[i].fileName,
-                                ServerFileName: files[i].osspath
-                            });
-                        }
-
-                        bindFileTable(fileList);
-                    }
-                });
+                $("#appeal-form").setForm(appeal);
 
                 loadAppealFiles();
             }
         })
-         
-
-        $("#btnSave").click(function () {
-            //复审人员
-            //check propertys
-            if ($("input[name=FeedBackStatus]:checked").length == 0) {
-                alert("反馈意见必须选择");
-                return false;
-            }
-            if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
-                alert("反馈意见为不同意时反馈内容必填");
-                return false;
-            }
-            var params = form.serializeJson();
-            if (appeal) {                
-                //编辑                    
-                params = $.extend(appeal, params, {
-                    feedbackStatus: $("input[name=FeedBackStatus]:checked").val(),
-                    feedbackReason: $("#FeedBackReason").val(),
-                    feedbackUserId: userId
-                });
-            } 
-            params.AppealFileList = fileList;
-
-            $("#loadAppeal").button('loading');
-            $.commonPost("Appeal/AppealFeedBack", params, function () {
-                $("#save_button").button("reset");
-                loadAppeal();
-                closeModel();
-            }, function () {
-                $("#save_button").button("reset");
-            }); 
-        });
     })
+
+    function saveAppeal() {
+        //经销商
+        var form = $("#appeal-form");
+        //复审人员
+        //check propertys
+        if ($("input[name=FeedBackStatus]:checked").length == 0) {
+            alert("反馈意见必须选择");
+            return false;
+        }
+        if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
+            alert("反馈意见为不同意时反馈内容必填");
+            return false;
+        }
+        var params = form.serializeJson();
+        if (appeal) {
+            //编辑
+            params = $.extend(appeal, params, {
+                FeedBackStatus: $("input[name=FeedBackStatus]:checked").val(),
+                FeedBackReason: $("#FeedBackReason").val(),
+                FeedbackUserId: loginUser.Id
+            });
+        }
+        params.AppealFileList = fileList;
+               
+        $.commonPost("Appeal/AppealFeedBack", {
+            ListJson: JSON.stringify([params])
+        }, function () {
+            $("#save_button").button("reset");
+            loadAppeal();
+            closeModel();
+        }, function () {
+            $("#save_button").button("reset");
+        });
+    }
 
     function loadAppealFiles() {
         $.commonGet("Appeal/AppealFileSearch", {
             appealId: appealId,
             fileType: ''
         }, function (data) {
+            fileList = data;
             $("#feedback_file_table tbody").empty();
             if (data) {
                 $.each(data, function (i, item) {
@@ -112,7 +125,7 @@
                     tr.append($("<td>").html(item.InUserName));
                     //下载
                     var download = $("<a>下载</a>");
-                    var downloadUrl = downloadUrlRoot + item.ServerFileName;
+                    var downloadUrl = osshost + item.ServerFileName;
                     download.attr("href", downloadUrl);
                     tr.append($("<td></td>").append(download));
                     //删除
@@ -127,22 +140,75 @@
                     $("#feedback_file_table tbody").append(tr);
                 });
             }
-        });         
-    }
-
-    function delFile(fileId) {
-        confirm("确定要删除该文件吗？", function () {
-            $.commonPost("Appeal/AppealFileDelete", { fileId: fileId }, function () {
-                loadAppealFiles();
-            });
         });
     }
 
-    function backToAppealIndex(){
-        $(".right_col").load('/Appeal/AppealIndex', {}, function () {
 
-        })
+    function bindFileTable(data) {
+        $("#feedback_file_table tbody").empty();
+        if (data) {
+            $.each(data, function (i, item) {
+                var tr = $("<tr>");
+
+                var fileDownName = item.FileName;
+                tr.append($("<td>").html(fileDownName));
+                tr.append($("<td>").html(item.FileTypeName));
+                tr.append($("<td>").html(item.InUserName));
+                //下载
+                var download = $("<a>下载</a>");
+                var downloadUrl = osshost + "/" + item.ServerFileName;
+                download.attr("href", downloadUrl);
+                tr.append($("<td></td>").append(download));
+                //删除
+                if (FeedBackStatus) {
+                    tr.append($("<td></td>"));
+                } else {
+                    var delBtn = $("<a href='#'>删除</a>");
+                    delBtn.click(function () {
+                        debugger
+                        console.log(item)
+                        delFile(item.FileId);
+                        return false;
+                    });
+                    tr.append($("<td></td>").append(delBtn));
+                }
+
+                $("#feedback_file_table tbody").append(tr);
+            });
+        }
     }
+
+    function AppealFileSave(file) {
+        $.commonPost("Appeal/AppealFileSave", file, function () {
+            loadAppealFiles();
+        });
+    }
+    
+    function delFile(fileId) {
+        debugger
+        if (appealId) {
+            confirm("确定要删除该文件吗？", function () {
+                appealFileDelete({ fileId: fileId }, function () {
+                    loadAppealFiles();
+                });
+            });
+        } else {
+            var fisrt = $(this).parent().parent().find("td:nth-child(1)");
+            if (fisrt) {
+                for (var i in fileList) {
+                    if (fileList[i].FileName == fisrt.text().trim()) {
+                        fileList.splice(i, 1);
+                    }
+                }
+                bindFileTable(fileList);
+            }
+        }
+    }
+    //删除申诉反馈附件
+    function appealFileDelete(params, callback) {
+        $.commonPost("Appeal/AppealFileDelete", params, callback);
+    }
+
 </script>
 
 <div>
@@ -151,7 +217,7 @@
             <tr>
                 <th style="width:100px;">期号</th>
                 <td style="width:200px; text-align:center">
-                    <span id="ProjectCode"></span>
+                    <span id="ProjectName"></span>
                 </td>
                 <th style="width: 100px;">经销商</th>
                 <td style="width: 300px; text-align: center">
@@ -188,7 +254,7 @@
         <tr>
             <th style="width: 180px;">附件</th>
             <td colspan="5">
-                <div id="upload-container" class="container-fluid" style="margin:0;padding:0">
+                <div id="upload-container" class="container-fluid" style="display:none">
                     <div id="ossfile"></div>
                     <div id="console"></div>
                 </div>

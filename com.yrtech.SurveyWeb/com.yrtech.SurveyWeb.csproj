@@ -507,7 +507,6 @@
     <Content Include="Views\EasyPhoto\EasyPhotoCheckTypeIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoCheckTypeEdit.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoAnswerIndex.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Report\Index.cshtml" />
     <Content Include="Views\Account\SurveyAccountIndex.cshtml" />
     <Content Include="Views\Account\_PartialUserInfoObject.cshtml" />
@@ -528,6 +527,7 @@
     <Content Include="Views\Account\_PartialUserInfoObjectImport.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoExtendColumnData.cshtml" />
     <Content Include="Views\Report\LogIndex.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

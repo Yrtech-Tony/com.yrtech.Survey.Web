@@ -55,7 +55,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveArea()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveAppeal()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -193,7 +193,7 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "反馈人",
+                title: "反馈时间",
                 field: "FeedBackDateTime",
                 width: 120,
                 valign: "middle",
@@ -225,9 +225,8 @@
             return;
         }
         selProject = project;
-        $("#brand-sel").val(), $("#year").val()
+
         return {
-            brandId: $('#brand-sel').val(),
             projectId: project || '',
             keyword: $('#keyword').val(),
             pageNum: 1,
@@ -241,10 +240,7 @@
         $("#Modal .modal-footer").show();
         $("#Modal .modal-title").html("反馈详细");
         $("#Modal .modal-body").load("/Appeal/Edit?appealId="+ appealId, {}, function () {
-            $("#appeal-form").setForm(curRow);
-            $("#appeal-form").data("json", JSON.stringify(curRow));
             $("input[type=radio]").iCheckParser();
-
         })
     }
 </script>
