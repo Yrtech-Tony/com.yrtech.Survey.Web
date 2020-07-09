@@ -39,6 +39,7 @@
                         ServerFileName: files[i].osspath
                     });
                 }
+                
                 if (appealId) {
                     for (var i in newFiles) {
                         newFiles[i].AppealId = appealId;
@@ -68,6 +69,9 @@
                 $("#ProjectName").html(appeal.ProjectName);
                 $("#ShopName").html(appeal.ShopName);
                 $("#SubjectCode").html(appeal.SubjectCode);
+                $("#CheckPoint").html(appeal.CheckPoint);
+                $("#AppealReason").html(appeal.AppealReason);
+
                 $("#appeal-form").setForm(appeal);
 
                 loadAppealFiles();
@@ -117,32 +121,7 @@
         }, function (data) {
             $("#selectfiles").button("reset");
             fileList = data;
-            $("#feedback_file_table tbody").empty();
-            if (data) {
-                $.each(data, function (i, item) {
-                    var tr = $("<tr>");
-
-                    var fileDownName = item.FileName;
-                    tr.append($("<td>").html(fileDownName));
-                    tr.append($("<td>").html(item.FileTypeName));
-                    tr.append($("<td>").html(item.InUserName));
-                    //下载
-                    var download = $("<a>下载</a>");
-                    var downloadUrl = osshost + item.ServerFileName;
-                    download.attr("href", downloadUrl);
-                    tr.append($("<td></td>").append(download));
-                    //删除
-                    var delBtn = $("<a href='#'>删除</a>");
-                    delBtn.click(function () {
-                        console.log(item)
-                        delFile(item.FileId);
-                        return false;
-                    });
-                    tr.append($("<td></td>").append(delBtn));
-
-                    $("#feedback_file_table tbody").append(tr);
-                });
-            }
+            bindFileTable(data);
         });
     }
 
@@ -163,7 +142,7 @@
                 download.attr("href", downloadUrl);
                 tr.append($("<td></td>").append(download));
                 //删除
-                if (FeedBackStatus) {
+                if (item.FileType == 'Shop') {
                     tr.append($("<td></td>"));
                 } else {
                     var delBtn = $("<a href='#'>删除</a>");
@@ -233,11 +212,11 @@
             </tr>
             <tr>
                 <th>指标</th>
-                <td colspan="5"><textarea class="form-control" rows="2" id="CheckPoint" name="CheckPoint" disabled></textarea></td>
+                <td colspan="5"><span id="CheckPoint"></span></td>
             </tr>
             <tr>
                 <th>申诉理由</th>
-                <td colspan="5"><textarea class="form-control" rows="2" id="AppealReason" name="AppealReason" disabled></textarea></td>
+                <td colspan="5"><span id="AppealReason"></span></td>
             </tr>
 
             <tr class="feedback">
@@ -251,32 +230,29 @@
                 <th width="180">反馈内容</th>
                 <td colspan="5"><textarea class="form-control" rows="2" id="FeedBackReason" name="FeedBackReason"></textarea></td>
             </tr>
+            <tr>
+                <th style="width: 180px;">附件</th>
+                <td colspan="5">
+                    <div id="upload-container" class="container-fluid" style="display:none">
+                        <div id="ossfile"></div>
+                        <div id="console"></div>
+                    </div>
+                    <div class="container-fluid pull-right">
+                        <button id="selectfiles" class='btn btn-default'>上传文件</button>
+                    </div>
+                    <table id="feedback_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
+                        <thead>
+                            <tr>
+                                <th class="col-md-7">文件名</th>
+                                <th class="col-md-1">文件类型</th>
+                                <th class="col-md-1">上传账号</th>
+                                <th>下载</th>
+                                <th>删除</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </td>
+            </tr>
         </table>
     </form>
-    <table class="table table-bordered">
-        <tr>
-            <th style="width: 180px;">附件</th>
-            <td colspan="5">
-                <div id="upload-container" class="container-fluid" style="display:none">
-                    <div id="ossfile"></div>
-                    <div id="console"></div>
-                </div>
-                <div class="container-fluid pull-right">
-                    <button id="selectfiles" class='btn btn-default'>上传文件</button>
-                </div>
-                <table id="feedback_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
-                    <thead>
-                        <tr>
-                            <th class="col-md-7">文件名</th>
-                            <th class="col-md-1">文件类型</th>
-                            <th class="col-md-1">上传账号</th>
-                            <th>下载</th>
-                            <th>删除</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </td>
-        </tr>
-    </table>
-</div>
