@@ -104,7 +104,7 @@ function init_sidebar() {
         var url = $(this).prop("href");
         if (url) {
             $(".right_col div").remove();
-            $(".right_col").append($("<div>".load(url)));
+            $(".right_col").append($("<div>").load(url));
         }
         return false;
     });
