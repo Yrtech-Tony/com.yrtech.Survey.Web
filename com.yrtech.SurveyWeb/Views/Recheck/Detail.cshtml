@@ -24,7 +24,7 @@
 
         var ossClient;
         var type = "FeedBack";
-        var ossUrlRoot = 'https://yrsurvey.oss-cn-beijing.aliyuncs.com/';
+
         var downloadUrlRoot;
         $(function () {
             $("input[type=checkbox],input[type=radio]").iCheckParser();
@@ -42,7 +42,7 @@
 
                 var brand_project_appeal = BrandId + '/' + data.ProjectId + '/' + data.AppealId;
                 var osspath = "survey/Appeal/" + brand_project_appeal + "/" + type + "/";
-                downloadUrlRoot = ossUrlRoot + osspath;
+                downloadUrlRoot = loginUser.ossInfo.osshost + osspath;
 
                 //初始化LexusReport OSS 数据源
                 ossClient = new OSSClient({

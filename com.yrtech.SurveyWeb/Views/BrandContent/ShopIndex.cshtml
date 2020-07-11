@@ -105,7 +105,7 @@
         })     
 
         $("#btnDownloadTemplate").click(function () {
-            var url = ossUrlRoot + "Survey/ImportTemplate/Shop.xlsx";
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/Shop.xlsx";
             window.location.href = url;
         });
 

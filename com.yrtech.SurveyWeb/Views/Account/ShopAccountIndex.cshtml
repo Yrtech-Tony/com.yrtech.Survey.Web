@@ -158,12 +158,12 @@
         });
 
         $("#btnDownloadUserTemplate").click(function () {
-            var url = ossUrlRoot + "Survey/ImportTemplate/UserInfo.xlsx";
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/UserInfo.xlsx";
             window.location.href = url;
         });
         
         $("#btnDownloadUserObjectTemplate").click(function () {
-            var url = ossUrlRoot + "Survey/ImportTemplate/UserInfoObject.xlsx";
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/UserInfoObject.xlsx";
             window.location.href = url;
         });
 

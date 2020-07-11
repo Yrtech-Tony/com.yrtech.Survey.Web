@@ -185,12 +185,20 @@
                     tenantCode: $("#tenantCode").val(),
                     accountId: $("#txtUsername").val(),
                     password: $("#txtPassword").val()
-                };
+                };                
                 $.commonApi({
                     apiType: 'survey',
                     url: 'Account/Login',
                     params: params,
                     success: function (data) {
+                        if (data.OSSInfo) {
+                            data.ossInfo = {};
+                            data.OSSInfo.forEach(function (item) {
+                                data.ossInfo[item.HiddenCode] = item.HiddenName;
+                            })
+                            data.ossInfo.osshost = data.ossInfo.EndPoint.substr(0, 7) + data.ossInfo.Bucket + "." + data.ossInfo.EndPoint.substr(7)+"/";
+                        }
+                        delete data.OSSInfo;
                         window.localStorage.userJson = JSON.stringify(data);
                         $.post("../Account/AfterLogin", { loginUser: window.localStorage.userJson }, function () {
                             var returnUrl = $("#valueReturnUrl").val();
