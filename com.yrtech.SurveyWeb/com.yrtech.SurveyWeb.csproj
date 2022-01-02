@@ -456,7 +456,7 @@
     <Content Include="Content\select\css\bootstrap-select.css.map" />
     <Content Include="Content\select\js\bootstrap-select.js.map" />
     <None Include="Project_Readme.html" />
-    <Content Include="Views\BrandContent\ProjectIndex.cshtml" />
+    <Content Include="Views\ProjectContent\ProjectIndex.cshtml" />
     <Content Include="Views\ProjectContent\SubjectLinkIndex.cshtml" />
     <Content Include="Views\ProjectContent\SubjectIndex.cshtml" />
     <Content Include="Views\BrandContent\ShopIndex.cshtml" />
@@ -466,7 +466,7 @@
     <Content Include="Views\ProjectContent\SubjectTypeScoreRegionIndex.cshtml" />
     <Content Include="Views\ProjectContent\ShopByProjectIndex.cshtml" />
     <Content Include="Views\System\_PartialUserInfoForBrand.cshtml" />
-    <Content Include="Views\BrandContent\_PartialProjectEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialProjectEdit.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectEdit.cshtml" />
     <Content Include="Views\ProjectContent\SubjectDetail.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />

@@ -10,6 +10,15 @@ namespace com.yrtech.SurveyWeb.Controllers
     [AuthenAdmin]
     public class ProjectContentController : Controller
     {
+        public ActionResult ProjectIndex()
+        {
+            return View();
+        }
+
+        public ActionResult ProjectEdit()
+        {
+            return PartialView("_PartialProjectEdit");
+        }
         // GET: SubjectContent
         public ActionResult SubjectIndex(string Page)
         {

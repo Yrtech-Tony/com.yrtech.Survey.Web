@@ -20,17 +20,6 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialShopEdit");
 
         }
-
-        public ActionResult ProjectIndex()
-        {
-            return View();
-        }
-
-        public ActionResult ProjectEdit()
-        {
-            return PartialView("_PartialProjectEdit");
-        }
-
         public ActionResult AreaIndex()
         {
             return View();
