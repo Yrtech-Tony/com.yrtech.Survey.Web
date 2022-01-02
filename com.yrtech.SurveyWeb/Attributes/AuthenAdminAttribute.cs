@@ -35,8 +35,8 @@ namespace com.yrtech.SurveyWeb.Attributes
                 else
                 {
                     var Url = new UrlHelper(filterContext.RequestContext);
-                    //var url = Url.Action("Login", "Account", new { ReturnUrl = filterContext.HttpContext.Request.Url.PathAndQuery });
-                    var url = Url.Action("Index", "WechatOAuth");
+                    var url = Url.Action("Login", "Account", new { ReturnUrl = filterContext.HttpContext.Request.Url.PathAndQuery });
+                    //var url = Url.Action("Index", "WechatOAuth");
                     filterContext.Result = new RedirectResult(url);
                 }
             }
