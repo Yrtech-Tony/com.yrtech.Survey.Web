@@ -57,6 +57,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -147,6 +148,7 @@
     <Compile Include="Controllers\RecheckController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
+    <Compile Include="Controllers\WechatOAuthController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -159,6 +161,7 @@
     <Compile Include="Models\ShopDto.cs" />
     <Compile Include="Models\Tenant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WechatUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\autocomplete\autocomplete.min.css" />
@@ -529,6 +532,8 @@
     <Content Include="Views\Report\LogIndex.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Appeal\AppealStat.cshtml" />
+    <Content Include="Views\WechatOAuth\AutoLogin.cshtml" />
+    <Content Include="Views\WechatOAuth\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

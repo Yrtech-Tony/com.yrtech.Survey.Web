@@ -9,7 +9,39 @@ namespace com.yrtech.SurveyWeb.Attributes
 {
     public class AuthenAdminAttribute : FilterAttribute, IAuthenticationFilter
     {
-        public void OnAuthentication(AuthenticationContext filterContext)
+        public async void OnAuthentication(AuthenticationContext filterContext)
+        {
+            //这个方法是在Action执行之前调用
+            var user = filterContext.HttpContext.Session["LoginUser"];            
+            if (user == null && !filterContext.HttpContext.Request.Url.AbsolutePath.Contains("Login"))
+            {
+                if (filterContext.HttpContext.Request.IsAjaxRequest())
+                {
+                    var acceptTypes = filterContext.HttpContext.Request.AcceptTypes;
+                    if (acceptTypes.Contains("*/*") || acceptTypes.Contains("application/json"))
+                    {
+                        filterContext.Result = new JsonResult
+                        {
+                            Data = new
+                            {
+                                Status = 401,
+                                Message = "用户登陆过期，请重新登陆！",
+                                ReturnUrl = filterContext.HttpContext.Request.Url.PathAndQuery
+                            },
+                            JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                        };
+                    }
+                }
+                else
+                {
+                    var Url = new UrlHelper(filterContext.RequestContext);
+                    //var url = Url.Action("Login", "Account", new { ReturnUrl = filterContext.HttpContext.Request.Url.PathAndQuery });
+                    var url = Url.Action("Index", "WechatOAuth");
+                    filterContext.Result = new RedirectResult(url);
+                }
+            }
+        }
+        public void OnAuthentication2(AuthenticationContext filterContext)
         {
             //这个方法是在Action执行之前调用
             var user = filterContext.HttpContext.Session["LoginUser"];
@@ -39,7 +71,7 @@ namespace com.yrtech.SurveyWeb.Attributes
                     filterContext.Result = new RedirectResult(url);
                 }
             }
-            
+
 
         }
         public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)

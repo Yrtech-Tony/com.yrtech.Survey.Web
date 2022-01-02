@@ -153,12 +153,12 @@
         })
       
         $("#btnDownloadTemplate").click(function () {
-            var url = ossUrlRoot + "Survey/ImportTemplate/Area.xlsx";
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/Area.xlsx";
             window.location.href = url;
         });
 
         $("#btnDownloadTemplate2").click(function () {
-            var url = ossUrlRoot + "Survey/ImportTemplate/AreaShop.xlsx";
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/AreaShop.xlsx";
             window.location.href = url;
         });
         

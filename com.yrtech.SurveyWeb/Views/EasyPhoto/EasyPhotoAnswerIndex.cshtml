@@ -116,7 +116,7 @@
         });
 
         $("#btnDownloadTemplate").click(function () {
-            var url = ossUrlRoot + "EasyPhoto/ImportTemplate/Answer.xlsx";
+            var url = loginUser.ossInfo.osshost + "EasyPhoto/ImportTemplate/Answer.xlsx";
             console.log(url)
             window.location.href = url;
         });
@@ -281,7 +281,7 @@
         div.empty();
         var count = items.length;
         $.each(items, function (i, item) {
-            var imgUrl = ossUrlRootTest + item.PhotoUrl;
+            var imgUrl = loginUser.ossInfo.osshost + item.PhotoUrl;
             var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
             var imagA = $('<a></a>');
             var img = $('<img>').attr('src', imgUrl).attr("alt", (i + 1) + "/" + count + "   " + item.PhotoName);
