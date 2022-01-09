@@ -205,7 +205,23 @@ function bindGroupSel() {
     $.ajaxSettings.async = true;
 
 }
+//  绑定标签
+function bindLabel(labelType) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetLabel", {
+        brandId: $("#brand-sel").val(),
+        labelId: '',
+        labelType: labelType,
+        useChk: true
+    }, function (data) {
+        $("#LabelId").append($("<option>").val('').text('请选择'));
+        data.forEach(function (label) {
+            $("#LabelId").append($("<option>").val(label.LabelId).text(label.LabelName));
+        })
+    })
+    $.ajaxSettings.async = true;
 
+}
 /** easyphoto 模块*/
 function bindEasyPhotoProjectSelect() {
     $.commonApi({

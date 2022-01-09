@@ -1,20 +1,17 @@
 ﻿<div>
     <form class="form-horizontal form-label-left" id="subject-form">
         <fieldset>
+            <div class="item form-group" hidden="hidden" >
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ProjectId" name="ProjectId" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="SubjectCode">
                     体系编号<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <input id="SubjectCode" name="SubjectCode" required="required" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
-                </div>
-            </div>
-            <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="SubjectTypeExamName">
-                    试卷类型<span class="required">*</span>
-                </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <select id="SubjectTypeExamId" name="SubjectTypeExamId" class="form-control col-md-7 col-xs-12"></select>
                 </div>
             </div>
             <div class="item form-group">
@@ -26,11 +23,27 @@
                 </div>
             </div>
             <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Implementation">
-                    执行方式
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="FullScore">
+                    最高分
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="Implementation" name="Implementation" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                    <input id="FullScore" name="FullScore" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LowScore">
+                    最低分
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="LowScore" name="LowScore" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelId">
+                    试卷类型<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="LabelId" name="LabelId" class="form-control col-md-7 col-xs-12"></select>
                 </div>
             </div>
             <div class="item form-group">
@@ -42,23 +55,36 @@
                 </div>
             </div>
             <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="CheckPoint">
-                    评分标准
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Implementation">
+                    执行方式
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="Implementation" name="Implementation" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="InspectionDesc">
+                    检查标准说明
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <input id="InspectionDesc" name="InspectionDesc" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
                 </div>
             </div>
             <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Desc">
-                    说明
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="Remark">
+                    备注
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <textarea id="Desc" name="Desc" rows="5" class="form-control col-md-7 col-xs-12"></textarea>
+                    <textarea id="Remark" name="Remark" rows="5" class="form-control col-md-7 col-xs-12"></textarea>
                 </div>
             </div>
         </fieldset>
     </form>
 </div>
+<script src="~/Scripts/api/common.js"></script>
+<script>
+    debugger
+    bindLabel("ExamType");
+</script>
 
 
