@@ -1,5 +1,5 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%" >
-    <div class="item form-group" style="float:right; width:80%">
+    <div class="item form-group" style="float:left; width:80%">
         <div class="col-md-4">
             <input id="AreaCode" type="text" class="form-control" placeholder="区域代码" required="required">
         </div>
@@ -49,7 +49,6 @@
             }]
         });
     }
-
     function loadChildArea() {
         $.commonGet("Master/GetArea", {
             brandId: '',

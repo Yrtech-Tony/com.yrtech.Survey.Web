@@ -76,7 +76,7 @@
         $("#project-sel").change(function () {
             loadSubject();
         });
-       
+
         $("#btnSubjectAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
@@ -91,7 +91,7 @@
     })
     var curRow;
     function saveSubject() {
-        var params = $("#subject-form").serializeJson(); 
+        var params = $("#subject-form").serializeJson();
         debugger
         params.ProjectId = $("#project-sel").val();
         var json = $("#subject-form").data("json");
@@ -120,7 +120,7 @@
             projectId: $("#project-sel").val(),
             subjectId: '',
             subjectCode: '',
-            orderNO:''
+            orderNO: ''
         }, function (data) {
             $('#subject-table').bootstrapTable("hideLoading");
             $('#subject-table').bootstrapTable("load", data);
@@ -144,7 +144,7 @@
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit(' + row.SubjectId + ');" style="min-width:100px">' + value + '</a>';
+                    return '<a href="javascript:goEdit( );" style="min-width:100px">' + value + '</a>';
                 }
             }, {
                 title: "检查点",
@@ -153,7 +153,7 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            },{
+            }, {
                 title: "序号",
                 field: "OrderNO",
                 width: 100,
@@ -195,7 +195,7 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            },  {
+            }, {
                 title: "备注",
                 field: "Remark",
                 width: 100,
@@ -210,22 +210,28 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-            return '<a href="javascript:goEdit(' + row.SubjectId + ');" style="min-width:100px">' + "标准照片" + '</a>';
-        }
+                    return '<a href="javascript:goFileEdit();" style="min-width:100px">' + "标准照片" + '</a>';
+                }
             }, {
                 title: "检查标准",
                 field: "",
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goInspectionStandardEdit();" style="min-width:100px">' + "检查标准" + '</a>';
+                }
             }, {
                 title: "失分说明",
                 field: "",
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goLossResultEdit();" style="min-width:100px">' + "失分说明" + '</a>';
+                }
             }, {
                 title: "添加时间",
                 field: "InDateTime",
@@ -249,12 +255,38 @@
     function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-title").html("题目编辑");
         $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
             $("#subject-form").setForm(curRow);
             $("#subject-form").data("json", JSON.stringify(curRow));
         })
     }
+    function goInspectionStandardEdit() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-title").html("检查标准");
+        $("#Modal .modal-body").load("/ProjectContent/SubjectInspectionStandardIndex", {}, function () {
+
+        })
+    }
+    function goFileEdit() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-title").html("拍照点");
+        $("#Modal .modal-body").load("/ProjectContent/SubjectFileIndex", {}, function () {
+
+        })
+    }
+    function goLossResultEdit() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-title").html("失分说明");
+        $("#Modal .modal-body").load("/ProjectContent/SubjectLossResultIndex", {}, function () {
+
+        })
+    }
 </script>
-
-
-

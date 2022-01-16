@@ -1,38 +1,107 @@
-﻿@{
-    ViewBag.Title = "期号内容管理-检查标准管理";
-}
-
-<div class="page-title">
-    <div class="title_left">
-        <h3>检查标准管理 <small></small></h3>
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:left; width:80%">
+        <div class="col-md-5">
+            <input id="InspectionStandardName" type="text" class="form-control" placeholder="检查标准">
+        </div>
+        <button id="btnAdd" class="btn btn-primary col-md-3" style="margin-right:0px" onclick="saveSubjectInspectionStandard()" data-loading-text="提交中...">保存</button>
     </div>
+    <div class="clearfix"></div>
 </div>
-<table id="standard-table" class="table table-striped table-bordered dt-responsive">
-    <thead>
-        <tr>
-            @*<th><input type="checkbox" id="check-all" class="flat"></th>*@
-            <th>序号</th>
-            <th>标准描述</th>
-            @*<th>添加人</th>*@
-            <th>添加时间</th>
-            @*<th>修改人</th>*@
-            <th>最新修改时间</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
-<div id="pagination" class="pull-right">
-    <ul id="pageUl"></ul>
+<div class="result">
+    <table id="subject-standard-table" class="table table-bordered table-set"></table>
 </div>
-
 
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/api/project.js"></script>
 <script src="~/Scripts/page.js"></script>
 <script>
     $(function () {
+        initSubjectInspectionStandard();
         loadSubjectInspectionStandard();
     })
+    function initSubjectInspectionStandard() {
+        $('#subject-standard-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [5, 10, 20, 50],
+            columns: [{
+                title: "序号",
+                field: 'SeqNO',
+                width: 120,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "检查标准",
+                field: "InspectionStandardName",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },{
+                title: "删除",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delSubjectInspectionStandard();" style="min-width:100px">删除</a>';
+                }
+            },{
+                title: "添加时间",
+                field: "InDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+    function loadSubjectInspectionStandard() {
+        debugger
+        $('#subject-standard-table').bootstrapTable("showLoading");
+        $.commonGet("Master/GetSubjectInspectionStandard", {
+            projectId: $("#project-sel").val(),
+            subjectId: curRow.SubjectId
+        }, function (data) {
+            $('#subject-standard-table').bootstrapTable("hideLoading");
+            $('#subject-standard-table').bootstrapTable("load", data);
+        });
+    }
+    function saveSubjectInspectionStandard() {
+        var inspectionStandardName = $("#InspectionStandardName").val();
+        if (!inspectionStandardName) {
+            alert("请输入检查标准！");
+            return false;
+        }
+
+        $("#btnAdd").button("loading");
+        $.commonPost("Master/SaveSubjectInspectionStandard", {
+            SubjectId: curRow.SubjectId,
+            InspectionStandardName: inspectionStandardName,
+            InUserId: loginUser.Id,
+            ModifyUserId: loginUser.Id
+        }, function () {
+            $("#btnAdd").button("reset");
+            alert("保存成功！");
+            $("#InspectionStandardName").val("");
+            loadSubjectInspectionStandard();
+        });
+    }
+    function delSubjectInspectionStandard() {
+        $.commonPost("Master/DeleteSubjectInspectionStandard", { SubjectId: curRow.SubjectId, SeqNO: curRow.SeqNO }, function () {
+            loadSubjectInspectionStandard();
+        });
+    }
 </script>
 
 
