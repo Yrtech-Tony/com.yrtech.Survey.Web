@@ -1,0 +1,38 @@
+﻿<div>
+    <form class="form-horizontal form-label-left" id="projectshop-form">
+        <fieldset>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ShopCode">
+                    经销商代码<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ShopCode" name="ShopCode" required="required" type="text" disabled="disabled" maxlength="15" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ShopName">
+                    经销商名称
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ShopName" name="ShopName" type="text" disabled="disabled" maxlength="15" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelId">
+                    试卷类型<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="LabelId" name="LabelId" class="form-control col-md-7 col-xs-12"></select>
+                </div>
+            </div>
+            
+        </fieldset>
+    </form>
+</div>
+<script src="~/Scripts/api/common.js"></script>
+<script>
+    bindLabel("ExamType");
+</script>
+
+

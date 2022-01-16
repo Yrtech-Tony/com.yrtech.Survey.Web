@@ -57,14 +57,21 @@ namespace com.yrtech.SurveyWeb.Controllers
         }
 
         // GET: SubjectContent
-        public ActionResult ShopByProjectIndex()
+        public ActionResult ProjectShopIndex()
         {
             return View();
         }
-        
+        public ActionResult OpenProjectShopImport()
+        {
+            return View("_PartialProjectShopImport");
+        }
         public ActionResult SubjectEdit()
         {
             return PartialView("_PartialSubjectEdit");
+        }
+        public ActionResult ProjectShopEdit()
+        {
+            return PartialView("_PartialProjectShopEdit");
         }
         public ActionResult SubjectInspectionStandardEdit()
         {

@@ -432,6 +432,16 @@
     <Content Include="Scripts\skycons.js" />
     <Content Include="Scripts\xlsx.core.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Views\ProjectContent\_PartialProjectEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialRecheckErrorTypeEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialRecheckTypeEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectFileEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectInspectionStandardEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectLinkEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectLossResultEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectTypeExamEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectTypeScoreRegionEdit.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -464,18 +474,11 @@
     <Content Include="Views\ProjectContent\SubjectFileIndex.cshtml" />
     <Content Include="Views\ProjectContent\SubjectLossResultIndex.cshtml" />
     <Content Include="Views\ProjectContent\SubjectTypeScoreRegionIndex.cshtml" />
-    <Content Include="Views\ProjectContent\ShopByProjectIndex.cshtml" />
+    <Content Include="Views\ProjectContent\ProjectShopIndex.cshtml" />
     <Content Include="Views\System\_PartialUserInfoForBrand.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialProjectEdit.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSubjectEdit.cshtml" />
     <Content Include="Views\ProjectContent\SubjectDetail.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSubjectLossResultEdit.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSubjectLinkEdit.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSubjectInspectionStandardEdit.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSubjectFileEdit.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSubjectTypeScoreRegionEdit.cshtml" />
     <Content Include="Views\Appeal\AppealImport.cshtml" />
     <Content Include="Views\Appeal\Edit.cshtml" />
     <Content Include="Views\Appeal\AppealIndex.cshtml" />
@@ -488,10 +491,7 @@
     <Content Include="Views\Recheck\Detail.cshtml" />
     <None Include="Properties\PublishProfiles\Deploy.pubxml" />
     <Content Include="Views\ProjectContent\RecheckErrorTypeIndex.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialRecheckErrorTypeEdit.cshtml" />
     <Content Include="Views\ProjectContent\RecheckTypeIndex.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialRecheckTypeEdit.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSubjectTypeExamEdit.cshtml" />
     <Content Include="Views\ProjectContent\SubjectTypeExamIndex.cshtml" />
     <Content Include="Views\System\_PartialBrandEdit.cshtml" />
     <Content Include="Views\Account\ShopAccountIndex.cshtml" />
@@ -534,6 +534,8 @@
     <Content Include="Views\Appeal\AppealStat.cshtml" />
     <Content Include="Views\WechatOAuth\AutoLogin.cshtml" />
     <Content Include="Views\WechatOAuth\Index.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialProjectShopEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialProjectShopImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

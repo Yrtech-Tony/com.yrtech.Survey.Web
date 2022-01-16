@@ -63,13 +63,13 @@
 
         $("#brand-sel").change(function () {
             loadProject();
-        })
+        });
         $("#btnProjectAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/ProjectContent/ProjectEdit", {}, function () {
             })
             return false;
-        })
+        });
 
         initProjectTable();
         $("#btnQuery").click(function () {
