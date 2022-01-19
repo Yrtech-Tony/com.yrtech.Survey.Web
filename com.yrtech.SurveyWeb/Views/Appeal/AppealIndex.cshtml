@@ -88,6 +88,8 @@
         for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
         }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
         $("#year-sel").change();
         
         initAppealTable();
@@ -120,7 +122,7 @@
             }, {
                 title: "经销商代码",
                 field: 'ShopCode',
-                width: 150,
+                //width: 150,
                 valign: "middle",
                 align: "center"
             }, {
@@ -132,70 +134,70 @@
             }, {
                 title: "体系号",
                 field: "SubjectCode",
-                width: 120,
+                //width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "检查点",
                 field: "CheckPoint",
-                width: 120,
+                //width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "申诉理由",
                 field: "AppealReason",
-                width: 120,
+               // width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "申诉人",
                 field: "AppealUserName",
-                width: 120,
+                //width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "申诉时间",
                 field: "AppealDateTime",
-                width: 120,
+                //width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "申诉人",
                 field: "AppealUserName",
-                width: 120,
+                //width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "反馈状态",
                 field: "FeedBackStatusStr",
-                width: 120,
+                //width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "反馈内容",
                 field: "FeedBackReason",
-                width: 120,
+               // width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "反馈人",
                 field: "FeedBackUserName",
-                width: 120,
+               // width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "反馈时间",
                 field: "FeedBackDateTime",
-                width: 120,
+                //width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false

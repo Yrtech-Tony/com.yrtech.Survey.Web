@@ -133,6 +133,8 @@
         for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
         }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
         $("#year-sel").change();
 
         initOss();

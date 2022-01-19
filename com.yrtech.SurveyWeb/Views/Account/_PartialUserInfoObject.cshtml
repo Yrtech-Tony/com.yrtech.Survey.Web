@@ -72,7 +72,7 @@
         var areaType = curRow.RoleType.replace("B_", "");
         var url = "Master/GetArea";
         var params = {
-            brandId: curRow.TenantId,
+            brandId: curRow.brandId,
             areaId: '',
             areaCode: objectCode,
             areaName: '',
@@ -83,7 +83,7 @@
         if (curRow.RoleType == "B_Shop") {
             url = "Master/GetShop";
             params = {
-                brandId: curRow.TenantId,
+                brandId: curRow.brandId,
                 shopId: '',
                 shopCode: objectCode,
                 key: ''
@@ -91,7 +91,7 @@
         } else if (curRow.RoleType == "B_Group") {
             url = "Master/GetGroup";
             params = {
-                brandId: curRow.TenantId,
+                brandId: curRow.brandId,
                 groupCode: objectCode,
                 groupName: ''
             }
