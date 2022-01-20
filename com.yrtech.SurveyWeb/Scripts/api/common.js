@@ -205,6 +205,20 @@ function bindGroupSel() {
     $.ajaxSettings.async = true;
 
 }
+// 绑定隐藏字段
+function bindHiddenColumn(hiddenCodeGroup) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetHiddenCode", {
+        hiddenCodeGroup: hiddenCodeGroup,
+        hiddenCode: ''
+    }, function (data) {
+        data.forEach(function (hiddenCode) {
+            $("#hiddenColumn-sel").append($("<option>").val(hiddenCode.HiddenCode).text(hiddenCode.HiddenName));
+        })
+    })
+    $.ajaxSettings.async = true;
+
+}
 //  绑定标签
 function bindLabel(labelType) {
     $.ajaxSettings.async = false;

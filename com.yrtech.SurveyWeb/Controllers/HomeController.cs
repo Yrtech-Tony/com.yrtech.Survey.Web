@@ -16,7 +16,14 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
-
+        public ActionResult LabelIndex()
+        {
+            return View();
+        }
+        public ActionResult LabelEdit()
+        {
+            return PartialView("_PartialLabelEdit");
+        }
         public ActionResult Main()
         {
             return View();
