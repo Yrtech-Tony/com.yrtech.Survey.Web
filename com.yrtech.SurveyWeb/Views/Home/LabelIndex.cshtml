@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">标签类型:</label>
-            <select id="HiddenColumn" class="form-control" style="width:200px;"></select>
+            <select id="HiddenCode" class="form-control" style="width:200px;"></select>
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
@@ -99,7 +99,7 @@
         $.commonGet("Master/GetLabel", {
             brandId: $("#brand-sel").val(), 
             labelId: '',
-            labelType: $("#hiddenColumn-sel").val(),
+            labelType: $("#HiddenCode").val(),
             useChk: ''
         }, function (data) {
             $('#label-table').bootstrapTable("hideLoading");
