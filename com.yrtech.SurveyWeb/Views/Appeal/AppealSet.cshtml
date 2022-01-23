@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "经销商卷别管理";
+    ViewBag.Title = "申诉设置管理";
 }
 <div class="condition">
     <div class="form-inline">
@@ -18,24 +18,22 @@
     </div>
     <div style="float:right;width:300px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnProjectShopImport" class="btn btn-primary">导入卷别</button>
-        <button id="btnDownloadTemplate" class="btn btn-primary">下载模板</button>
     </div>
 </div>
 <div class="result">
-    <table id="project-shop-table" class="table table-bordered table-set"></table>
+    <table id="appealSet-table" class="table table-bordered table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">卷别编辑</h4>
+                <h4 class="modal-title">申诉设置编辑</h4>
             </div>
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveProjectShop()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveAppealSet()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -46,7 +44,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">经销商卷别导入</h4>
+                <h4 class="modal-title">申诉导入</h4>
             </div>
             <div class="modal-body">
             </div>
@@ -84,9 +82,9 @@
         });
 
         bindProjectSelect();
-        initProjectShopTable();
+        initAppealSetTable();
         $("#btnQuery").click(function () {
-            loadProjectShop();
+            loadAppealSet();
         }).trigger("click");
 
         //  oss
@@ -112,8 +110,8 @@
         });
     });
     var curRow;
-    function initProjectShopTable() {
-        $('#project-shop-table').bootstrapTable({
+    function initAppealSetTable() {
+        $('#appealSet-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
             width: "100%",
@@ -128,61 +126,46 @@
                 field: 'ProjectCode',
                 width: 120,
                 valign: "middle",
-                align: "center"
+                align: "center",
+                formatter: function (value, row, index) {
+            return '<a href="javascript:goEdit();" style="min-width:100px">' + value + '</a>';
+        }
             }, {
-                title: "经销商Id",
-                field: "ShopId",
+                title: "期号名称",
+                field: "ProjectName",
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "经销商代码",
-                field: "ShopCode",
+                title: "申诉开始时间",
+                field: "AppealStartDate",
                 valign: "middle",
                 align: "center",
                 sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit();" style="min-width:100px">' + value + '</a>';
-                }
+
             },{
-                title: "经销商名称",
-                field: "ShopName",
+                title: "申诉结束时间",
+                field: "AppealEndDate",
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "卷别Id",
-                field: "ExamTypeId",
+                title: "申诉模式",
+                field: "HiddenName",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false,
 
             }, {
-                title: "卷别代码",
-                field: "ExamTypeCode",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "卷别名称",
-                field: "ExamTypeName",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "添加时间",
+                title: "登记时间",
                 field: "InDateTime",
-                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
-                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -192,45 +175,42 @@
             }
         });
     }
-    function loadProjectShop() {
-        $('#project-shop-table').bootstrapTable("showLoading");
-        $.commonGet("Shop/GetProjectShopExamType", {
-            brandId: $("#brand-sel").val(),
-            projectId: $("#project-sel").val(),
-            shopId: ''
+    function loadAppealSet() {
+        $('#appealSet-table').bootstrapTable("showLoading");
+        $.commonGet("Appeal/GetAppealSet", {
+            projectId: $("#project-sel").val()
         }, function (data) {
-            $('#project-shop-table').bootstrapTable("hideLoading");
-            $('#project-shop-table').bootstrapTable("load", data);
+            $('#appealSet-table').bootstrapTable("hideLoading");
+            $('#appealSet-table').bootstrapTable("load", data);
         });
     }
     function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-title").html("卷别编辑");
-        $("#Modal .modal-body").load("/ProjectContent/ProjectShopEdit", {}, function () {
-            debugger
-            curRow.LabelId = curRow.ExamTypeId;
-            $("#projectshop-form").setForm(curRow);
-            $("#projectshop-form").data("json", JSON.stringify(curRow));
+        $("#Modal .modal-title").html("申诉设置编辑");
+        $("#Modal .modal-body").load("/Appeal/AppealSetEdit", {}, function () {
+            $("#appealset-form").setForm(curRow);
+            $("#appealset-form").data("json", JSON.stringify(curRow));
         })
     }
-    function saveProjectShop() {
-        var params = $("#projectshop-form").serializeJson();
-        var json = $("#projectshop-form").data("json");
+    function saveAppealSet() {
+        var params = $("#appealset-form").serializeJson();
+        var json = $("#appealset-form").data("json");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
             params = $.extend(json, params);
-            params.ShopId = curRow.ShopId;
             params.ProjectId = $("#project-sel").val();
-            params.ExamTypeId = $("#LabelId").val();
+            params.InUserId = loginUser.Id;
             params.ModifyUserId = loginUser.Id;
+            debugger
+            params.HiddenCode = $("#HiddenCode").val();
         } else {// 无新增操作
         }
         $("#save_button").button("loading");
-        $.commonPost("Shop/SaveProjectShopExamType", params, function () {
+        $.commonPost("Appeal/SaveAppealSet", params, function () {
             $("#save_button").button("reset");
-            loadProjectShop();
+            loadAppealSet();
             closeModel();
         }, function () { $("#save_button").button("reset"); });
     }

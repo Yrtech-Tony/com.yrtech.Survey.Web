@@ -213,7 +213,7 @@ function bindHiddenColumn(hiddenCodeGroup) {
         hiddenCode: ''
     }, function (data) {
         data.forEach(function (hiddenCode) {
-            $("#hiddenColumn-sel").append($("<option>").val(hiddenCode.HiddenCode).text(hiddenCode.HiddenName));
+            $("#HiddenCode").append($("<option>").val(hiddenCode.HiddenCode).text(hiddenCode.HiddenName));
         })
     })
     $.ajaxSettings.async = true;

@@ -13,6 +13,14 @@ namespace com.yrtech.SurveyWeb.Controllers
     public class AppealController : Controller
     {
 
+        public ActionResult AppealSet()
+        {
+            return View();
+        }
+        public ActionResult AppealSetEdit()
+        {
+            return PartialView("_PartialAppealSetEdit");
+        }
         // GET: Appeal
         public ActionResult AppealImport()
         {

@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">标签类型:</label>
-            <select id="hiddenColumn-sel" class="form-control" style="width:200px;"></select>
+            <select id="HiddenColumn" class="form-control" style="width:200px;"></select>
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
@@ -97,7 +97,7 @@
     function loadLabel() {
         $('#label-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetLabel", {
-            brandId: $("#brand-sel").val(),
+            brandId: $("#brand-sel").val(), 
             labelId: '',
             labelType: $("#hiddenColumn-sel").val(),
             useChk: ''
@@ -107,7 +107,7 @@
         });
     }
 
-    //初始化期号表格
+    //初始化标签表格
     function initLabelTable() {
         $('#label-table').bootstrapTable({
             pagination: true,
