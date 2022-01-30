@@ -143,7 +143,29 @@
 
     // 查询轻松拍清单
     function loadEasyPhotoAnswer() {
-        $('#answer-table').bootstrapTable({ pageNumber: 1, pageSize: 10 });
+        $('#answer-table').bootstrapTable("destroy");
+        initEasyPhotoAnswerTable()
+        //$.commonApi({
+        //    apiType: 'easyPhoto',
+        //    url: 'Answer/GetShopAnswerList',
+        //    params: {
+        //        answerId: '',
+        //        projectId: $("#project-sel").val(),
+        //        shopCode: "",
+        //        checkCode: '',
+        //        checkTypeId: '',
+        //        photoCheck: '',
+        //        addCheck: '',
+        //        key: $("#key").val(),
+        //        offset: 1,// SQL语句起始索引
+        //        limit: 10  // 每页显示数量
+        //    },
+        //    success: function (data) {
+        //        console.log(data)
+        //        $('#answer-table').bootstrapTable("hideLoading");
+        //        $('#answer-table').bootstrapTable("load", data);
+        //    }
+        //})
     }
 
     //初始化清单表格
@@ -184,7 +206,6 @@
             valign: "middle",
             align: "center",
             formatter: function (value, row, index) {
-                console.log(value)
                 if (value.length > 0) {
                     return '<a href="javascript:createImageList();" style="min-width:100px">照片</a>';
                 } else {
@@ -256,6 +277,8 @@
                         curRow = row;
                     }
                 });
+
+                //$("#btnQuery").trigger("click");
             }
         });
     }
