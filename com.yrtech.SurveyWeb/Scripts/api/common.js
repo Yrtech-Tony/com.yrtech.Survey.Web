@@ -92,7 +92,7 @@ $.commonApi = function (option) {
                 alert(data.Body);
             }
         },
-        complete: option.complete,
+        complete: option.complete || function () { },
         error: function (jqXHR, textStatus, errorThrown) {
             if (option.error) {
                 option.error();
