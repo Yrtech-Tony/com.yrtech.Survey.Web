@@ -129,7 +129,7 @@
                 url: 'Answer/AnswerExport',
                 params: {
                     projectId: $("#project-sel").val(),
-                    shopCode: ''
+                    shopCode: $("#key").val()
                 },
                 success: function (data) {
                     window.location.href = baseEasyPhotoUrl + data;
@@ -143,7 +143,9 @@
 
     // 查询轻松拍清单
     function loadEasyPhotoAnswer() {
-        $('#answer-table').bootstrapTable({ pageNumber: 1, pageSize: 10 });
+        // $('#answer-table').bootstrapTable({ pageNumber: 1, pageSize: 10 });
+        $('#answer-table').bootstrapTable("destroy");
+        initEasyPhotoAnswerTable();
     }
 
     //初始化清单表格
