@@ -39,33 +39,10 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:1000px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">申诉导入</h4>
-            </div>
-            <div class="modal-body">
-            </div>
-        </div>
-    </div>
-</div>
-<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
-    <div id="ossfile"></div>
-</div>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
-
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
-<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 <script>
-    var ossUploader;
-    var osspath;
+
     $(function () {
         $('title').html('@ViewBag.Title')
         bindBrandSelect();
@@ -87,27 +64,6 @@
             loadAppealSet();
         }).trigger("click");
 
-        //  oss
-        debugger
-        osspath = "Survey/BaseInfo/";
-        new OSSClient({
-            autoupload: true,
-            osspath: osspath + "Import/",
-            selectfiles: "btnProjectShopImport",
-            multi_selection: false,
-            success: function (files) {
-                //调用导入方法
-                files.forEach(function (file) {
-                    var projectTxt = $("#project-sel option:selected").text();
-                    $("#ModalImport .modal-body").empty();
-                    $("#ModalImport").modal("show");
-                    $("#ModalImport .modal-body").load("/ProjectContent/OpenProjectShopImport", {}, function () {
-                        $("#ImportProject").html(projectTxt);
-                        loadImportProjectShop(file);
-                    })
-                })
-            }
-        });
     });
     var curRow;
     function initAppealSetTable() {
@@ -122,14 +78,19 @@
             pageSize: 15,
             pageList: [5, 10, 20, 50],
             columns: [{
+                title: "期号Id",
+                field: 'ProjectId',
+                valign: "middle",
+                align: "center",
+            }, {
                 title: "期号代码",
                 field: 'ProjectCode',
                 width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-            return '<a href="javascript:goEdit();" style="min-width:100px">' + value + '</a>';
-        }
+                    return '<a href="javascript:goEdit();" style="min-width:100px">' + value + '</a>';
+                }
             }, {
                 title: "期号名称",
                 field: "ProjectName",
@@ -143,7 +104,7 @@
                 align: "center",
                 sortable: false,
 
-            },{
+            }, {
                 title: "申诉结束时间",
                 field: "AppealEndDate",
                 valign: "middle",
@@ -157,7 +118,7 @@
                 align: "center",
                 sortable: false,
 
-            }, {
+            },{
                 title: "登记时间",
                 field: "InDateTime",
                 valign: "middle",
@@ -214,12 +175,4 @@
             closeModel();
         }, function () { $("#save_button").button("reset"); });
     }
-    $("#btnDownloadTemplate").click(function () {
-        debugger
-        var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/ProjectShopExamType.xlsx";
-        window.location.href = url;
-    });
 </script>
-
-
-

@@ -247,7 +247,7 @@ function bindEasyPhotoProjectSelect() {
             brandId: '',
             projectId: '',
             year: '',
-            expireDateTimeCheck: 'N'
+            expireDateTimeCheck: ''
         },
         success: function (data) {
             $("#project-sel").empty();
