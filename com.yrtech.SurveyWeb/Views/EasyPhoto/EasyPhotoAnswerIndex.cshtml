@@ -135,6 +135,7 @@
                     window.location.href = baseEasyPhotoUrl + data;
                 },
                 complete: function () {
+                    debugger
                     $("#btnExportAnswer").button('reset');
                 }
             })
@@ -145,27 +146,6 @@
     function loadEasyPhotoAnswer() {
         $('#answer-table').bootstrapTable("destroy");
         initEasyPhotoAnswerTable()
-        //$.commonApi({
-        //    apiType: 'easyPhoto',
-        //    url: 'Answer/GetShopAnswerList',
-        //    params: {
-        //        answerId: '',
-        //        projectId: $("#project-sel").val(),
-        //        shopCode: "",
-        //        checkCode: '',
-        //        checkTypeId: '',
-        //        photoCheck: '',
-        //        addCheck: '',
-        //        key: $("#key").val(),
-        //        offset: 1,// SQL语句起始索引
-        //        limit: 10  // 每页显示数量
-        //    },
-        //    success: function (data) {
-        //        console.log(data)
-        //        $('#answer-table').bootstrapTable("hideLoading");
-        //        $('#answer-table').bootstrapTable("load", data);
-        //    }
-        //})
     }
 
     //初始化清单表格

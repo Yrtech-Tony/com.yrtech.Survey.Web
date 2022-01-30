@@ -92,12 +92,10 @@ $.commonApi = function (option) {
                 alert(data.Body);
             }
         },
+        complete: option.complete,
         error: function (jqXHR, textStatus, errorThrown) {
             if (option.error) {
                 option.error();
-            }
-            if (option.complete) {
-                option.complete();
             }
             console.log(url + " execute error ");
         }
