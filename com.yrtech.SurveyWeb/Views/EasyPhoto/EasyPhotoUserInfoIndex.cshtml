@@ -198,6 +198,7 @@
                 key: $("#AccountIdQuery").val()
             },
             success: function (data) {
+                console.log(data)
                 $('#userinfo-table').bootstrapTable("hideLoading");
                 $('#userinfo-table').bootstrapTable("load", data);
             }

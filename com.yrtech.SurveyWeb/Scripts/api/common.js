@@ -1,7 +1,8 @@
 ﻿var baseSurveyUrl = 'http://123.57.229.128:8003/';
+//var baseSurveyUrl = 'http://localhost:57328/';
 var surveyApi = baseSurveyUrl + "survey/api/";
-var baseEasyPhotoUrl = 'http://123.57.229.128:8020/';
-//var baseEasyPhotoUrl = 'http://localhost:57328/';
+//var baseEasyPhotoUrl = 'http://123.57.229.128:8020/';
+var baseEasyPhotoUrl = 'http://localhost:57328/';
 var easyPhotoApi = baseEasyPhotoUrl + "easyPhoto/api/";
  
 $.commonGet = function (url, params, callback, err) {
@@ -92,12 +93,10 @@ $.commonApi = function (option) {
                 alert(data.Body);
             }
         },
+        complete: option.complete,
         error: function (jqXHR, textStatus, errorThrown) {
             if (option.error) {
                 option.error();
-            }
-            if (option.complete) {
-                option.complete();
             }
             console.log(url + " execute error ");
         }

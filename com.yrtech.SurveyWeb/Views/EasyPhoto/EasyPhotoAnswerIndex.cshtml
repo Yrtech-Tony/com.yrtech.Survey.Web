@@ -19,7 +19,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <input id="key" class="form-control" style="width:200px;" />
+            <input id="key" class="form-control" style="width:500px;" placeholder="英文逗号隔开"/>
         </div>
     </div>
     <div style="float:right;width:400px;text-align:right">
@@ -27,6 +27,7 @@
         <button id="btnDownloadTemplate" class="btn btn-primary">模板</button>
         <button id="btnImportAnswer" class="btn btn-primary">导入</button>
         <button id="btnExportAnswer" class="btn btn-primary">导出</button>
+        <button id="btnDeleteByShop" class="btn btn-primary">按店删除</button>
     </div>
 </div>
 <div class="result">
@@ -72,6 +73,7 @@
 <script>
     var osspath;
     var ossFileUploader;
+    var curRow;
     $(function () {
         $('title').html('@ViewBag.Title')
 
@@ -135,58 +137,57 @@
                     window.location.href = baseEasyPhotoUrl + data;
                 },
                 complete: function () {
+                    debugger
                     $("#btnExportAnswer").button('reset');
                 }
             })
         });
+        $("#btnDeleteByShop").click(function () {
+            deleteAnswerByShop();
+        })
     })
 
     // 查询轻松拍清单
     function loadEasyPhotoAnswer() {
-        // $('#answer-table').bootstrapTable({ pageNumber: 1, pageSize: 10 });
         $('#answer-table').bootstrapTable("destroy");
-        initEasyPhotoAnswerTable();
+        initEasyPhotoAnswerTable()
     }
-
     //初始化清单表格
     function initEasyPhotoAnswerTable() {
         var cols = [{
             title: "经销商代码",
+            width:120,
             field: 'ShopCode',
-            width: 120,
             valign: "middle",
             align: "center"
         }, {
             title: "经销商名称",
+            width: 200,
             field: 'ShopName',
             valign: "middle",
             align: "center"
         }, {
             title: "检查代码",
+            width: 200,
             field: 'CheckCode',
-            width: 180,
             valign: "middle",
             align: "center"
         }, {
             title: "检查类型",
             field: 'CheckTypeName',
-            width: 120,
             valign: "middle",
             align: "center"
         }, {
             title: "备注",
             field: 'RemarkName',
-            width: 120,
             valign: "middle",
             align: "center"
         }, {
             title: "照片",
             field: 'AnswerPhotoList',
-            width: 120,
             valign: "middle",
             align: "center",
             formatter: function (value, row, index) {
-                console.log(value)
                 if (value.length > 0) {
                     return '<a href="javascript:createImageList();" style="min-width:100px">照片</a>';
                 } else {
@@ -196,12 +197,20 @@
         }, {
             title: "新增与否",
             field: "AddCheck",
-            width: 120,
             valign: "middle",
             align: "center",
             sortable: false,
             formatter: function (value, row, index) {
                 return value == 'Y' ? '是' : '否';
+            }
+        }, {
+            title: "删除",
+            field: "",
+            valign: "middle",
+            align: "center",
+            sortable: false,
+            formatter: function (value, row, index) {
+                return '<a href="javascript:deleteAnswer();" style="min-width:100px">' + "删除" + '</a>';
             }
         }];
         $.commonApi({
@@ -218,7 +227,6 @@
                         cols.push({
                             title: item.ColumnName,
                             field: item.ColumnCode,
-                            width: 120,
                             valign: "middle",
                             align: "center"
                         })
@@ -258,8 +266,50 @@
                         curRow = row;
                     }
                 });
+
+                //$("#btnQuery").trigger("click");
             }
         });
+    }
+    function deleteAnswerByShop() {
+        confirm("请确认期号和经销商，删除前请确认经销商是否已经执行，如已执行，执行数据会被删除", function () {
+            $("#btnDelete").button("loading");
+            debugger
+            $.commonApi({
+                apiType: 'easyPhoto',
+                url: "Answer/DeleteAnswerByShop",
+                params: {
+                    projectId: $('#project-sel').val(),
+                    shopCode: $('#key').val()
+                },
+                success: function (data) {
+                    loadEasyPhotoAnswer();
+                },
+                complete: function () {
+                    $("#btnDelete").button("reset");
+                }
+            });
+        });
+
+    }
+    function deleteAnswer() {
+        confirm("确定要删除吗？", function () {
+            debugger
+            $.commonApi({
+                apiType: 'easyPhoto',
+                url: "Answer/DeleteAnswerList",
+                params: {
+                    answerIdList: curRow.AnswerId
+                },
+                success: function (data) {
+                    loadEasyPhotoAnswer();
+                },
+                complete: function () {
+                    
+                }
+            });
+        });
+
     }
     //请求成功方法
     function responseHandler(result) {
@@ -301,5 +351,4 @@
             div.find("a:first img").click();
         }, 100)
     }
-
 </script>
