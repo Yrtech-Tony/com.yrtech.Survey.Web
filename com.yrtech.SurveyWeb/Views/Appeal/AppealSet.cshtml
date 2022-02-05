@@ -118,7 +118,29 @@
                 align: "center",
                 sortable: false,
 
-            },{
+            }, {
+                title: "生成申诉",
+                field: "",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (row.HiddenCode == "A") {
+                        return '<a href="javascript:CreateAppeal();" style="min-width:100px">' + "生成申诉" + '</a>';
+                    }
+                    else {
+                        return '<a href="" style="min-width:100px">' + "-" + '</a>';
+                    }
+                }
+            }, {
+                title: "申诉生成时间",
+                field: "AppealCreateDateTime",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },
+            {
                 title: "登记时间",
                 field: "InDateTime",
                 valign: "middle",
@@ -137,6 +159,7 @@
         });
     }
     function loadAppealSet() {
+        debugger
         $('#appealSet-table').bootstrapTable("showLoading");
         $.commonGet("Appeal/GetAppealSet", {
             projectId: $("#project-sel").val()
@@ -174,5 +197,17 @@
             loadAppealSet();
             closeModel();
         }, function () { $("#save_button").button("reset"); });
+    }
+    function CreateAppeal() {
+        confirm("若已生成，重新生成会覆盖已生成数据，确定生成吗？", function () {
+            debugger
+            $.commonGet("Appeal/CreateAppeal", {
+                projectId: curRow.ProjectId
+            }, function (data) {
+                debugger
+                loadAppealSet();
+            });
+        });
+
     }
 </script>

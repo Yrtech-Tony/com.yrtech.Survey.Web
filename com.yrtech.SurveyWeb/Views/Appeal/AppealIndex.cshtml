@@ -29,7 +29,7 @@
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
-        <button id="btnSearch" class="btn btn-primary">查询</button>
+        <button id="btnQuery" class="btn btn-primary">查询</button>
     </div>
 </div>
 
@@ -68,37 +68,30 @@
 <script>
     $(function () {
         $('title').html('@ViewBag.Title')
-
-        //加载年份
+        bindBrandSelect();
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+        });
         $("#year-sel").change(function () {
             bindProjectSelect();
         });
-        //加载期号
-        $("#brand-sel").change(function () {
-            bindProjectSelect();
-            bindBussinessSelect();
-        });
-
-        $("#project-sel,#bussiness-type-sel").change(function () {
-            search();
-        })
-        
-        bindBrandSelect();
-        $("#brand-sel").change();
         for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
         }
         var tYear = new Date().getFullYear();
         $("#year-sel").val(tYear);
-        $("#year-sel").change();
         
+        bindProjectSelect();
+
         initAppealTable();
-        loadAppeal();
-    });    
-   
+        $("#btnQuery").click(function () {
+            loadAppeal();
+        }).trigger("click");
+    });
+
     var curRow;
     function initAppealTable() {
-        //生成用户数据
+        
         $('#appeal-table').bootstrapTable({
             pagination: true,
             showLoading: true,
@@ -235,7 +228,7 @@
             pageCount: 10000
         };
     }
-    
+
     function goEdit(appealId) {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
