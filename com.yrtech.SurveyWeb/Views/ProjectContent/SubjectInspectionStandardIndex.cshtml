@@ -1,5 +1,5 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
-    <div class="item form-group" style="float:left; width:80%">
+    <div class="item form-group" style="float:left;">
         <div class="col-md-5">
             <input id="InspectionStandardName" type="text" class="form-control" placeholder="检查标准">
         </div>
@@ -7,13 +7,12 @@
     </div>
     <div class="clearfix"></div>
 </div>
-<div class="result">
+<div class="item form-group">
     <table id="subject-standard-table" class="table table-bordered table-set"></table>
 </div>
 
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/api/project.js"></script>
-<script src="~/Scripts/page.js"></script>
 <script>
     $(function () {
         initSubjectInspectionStandard();
@@ -23,17 +22,13 @@
         $('#subject-standard-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            width: "100%",
-            height: getClientHeight() - 260,
-            showColumns: false, // 开启自定义列显示功能
-            sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 10,
+            pageList: [10],
             columns: [{
                 title: "序号",
                 field: 'SeqNO',
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
             }, {
@@ -43,17 +38,17 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            },{
+            }, {
                 title: "删除",
                 field: "",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
                     return '<a href="javascript:delSubjectInspectionStandard();" style="min-width:100px">删除</a>';
                 }
-            },{
+            }, {
                 title: "添加时间",
                 field: "InDateTime",
                 width: 150,

@@ -7,9 +7,7 @@
     </div>
     <div class="clearfix"></div>
 </div>
-<div class="result">
-    <table id="subject-file-table" class="table table-bordered table-set"></table>
-</div>
+<table id="subject-file-table" class="table table-bordered table-set"></table>
    <script>
     $(function () {
         initSubjectFile();
@@ -19,13 +17,9 @@
         $('#subject-file-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
-            width: "100%",
-            height: getClientHeight() - 260,
-            showColumns: false, // 开启自定义列显示功能
-            sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 10,
+            pageList: [10],
             columns: [{
                 title: "序号",
                 field: 'SeqNO',
