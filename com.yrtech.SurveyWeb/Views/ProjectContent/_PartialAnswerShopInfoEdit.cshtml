@@ -1,0 +1,50 @@
+﻿<div>
+    <form class="form-horizontal form-label-left" id="answer-shop-info-form">
+        <fieldset>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ShopCode">
+                    经销商代码<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ShopCode" name="ShopCode" required="required" type="text" disabled class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ShopName">
+                    经销商名称
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="ShopName" name="ShopName" type="text" disabled class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="TeamLeader">
+                    执行组长
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="TeamLeader" name="TeamLeader" type="text" maxlength="15" class="form-control col-md-7 col-xs-12">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="StartDate">
+                    开始时间
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="StartDate" name="StartDate" class="form-control" />
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    $("#StartDate").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language: 'zh-CN'
+    });
+</script>
+
+

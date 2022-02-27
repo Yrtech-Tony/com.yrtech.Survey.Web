@@ -1,0 +1,308 @@
+﻿ @{
+    ViewBag.Title = "得分管理";
+}
+
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+</style>
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商:</label>
+            <input id="key" class="form-control" style="width:200px;" />
+        </div>
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnExportAnswer" class="btn btn-primary">导出</button>
+    </div>
+</div>
+<div class="result">
+    <table id="score-table" class="table table-bordered table-set"></table>
+</div>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">得分编辑</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveScore()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script>
+    $(function () {
+        $('title').html('@ViewBag.Title')
+        bindBrandSelect();
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
+
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+        });
+        $("#project-sel").change(function () {
+            loadScore();
+        });
+
+        $("#btnExportAnswer").click(function () {
+            $("#btnExportAnswer").click(function () {
+                $("#btnExportAnswer").button('loading');
+
+                $.commonApi({
+                    apiType: 'easyPhoto',
+                    url: 'Answer/AnswerExport',
+                    params: {
+                        projectId: $("#project-sel").val(),
+                        shopCode: ''
+                    },
+                    success: function (data) {
+                        window.location.href = baseEasyPhotoUrl + data;
+                    },
+                    complete: function () {
+                        $("#btnExportAnswer").button('reset');
+                    }
+                })
+            });
+        });
+
+        initScoreTable();
+        $("#btnQuery").click(function () {
+            loadScore();
+        }).trigger("click");
+    })
+
+    var curRow;
+    function saveScore() {
+        var params = $("#score-form").serializeJson();
+        var json = $("#score-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+        } else {
+            //新增
+            params = $.extend({
+                TenantId: loginUser.TenantId,
+                ProjectId:$("#project-sel").val(),
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, params);
+        }
+        $("#save_button").button("loading");
+        $.commonPost("Answer/SaveAnswerInfo", params, function () {
+            $("#save_button").button("reset");
+            loadScore();
+            closeModel();
+        }, function () { $("#save_button").button("reset"); });
+    }
+
+    function loadScore() {
+        $('#score-table').bootstrapTable("showLoading");
+        $.commonGet("Answer/GetShopAnswerScoreInfo", {
+            projectId:  $("#project-sel").val(),
+            shopId: '',
+            subjectId: '',
+            key: $("#key").val()
+        }, function (data) {
+            $('#score-table').bootstrapTable("hideLoading");
+            $('#score-table').bootstrapTable("load", data);
+        });
+    }
+
+    //初始化期号表格
+    function initScoreTable() {
+        $('#score-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [5, 10, 20, 50],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 120,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },
+            {
+                title: "题目代码",
+                field: "SubjectCode",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "题目序号",
+                field: "OrderNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查点",
+                field: "CheckPoint",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "得分",
+                field: "PhotoScore ",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "备注",
+                field: "Remark",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "编辑",
+                field: "",
+                width: 60,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "检查标准",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goInspectionStandardIndex(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "标准照片",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goSubjectFileIndex(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "失分描述",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEditSubjectLoss(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "添加时间",
+                field: "InDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "修改时间",
+                field: "ModifyDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+    function goEdit() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+            $("#score-form").setForm(curRow);
+            $("#score-form").data("json", JSON.stringify(curRow));
+        })
+    }
+
+    function goInspectionStandardIndex() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/ProjectContent/SubjectInspectionStandardIndex", {}, function () {
+            $("#score-form").setForm(curRow);
+            $("#score-form").data("json", JSON.stringify(curRow));
+        })
+    }
+
+    function goSubjectFileIndex() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+            $("#score-form").setForm(curRow);
+            $("#score-form").data("json", JSON.stringify(curRow));
+        })
+    }
+
+    function goSubjectLossIndex() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+            $("#score-form").setForm(curRow);
+            $("#score-form").data("json", JSON.stringify(curRow));
+        })
+    }
+</script>
+
+
