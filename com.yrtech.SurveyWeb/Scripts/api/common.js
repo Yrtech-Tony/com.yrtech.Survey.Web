@@ -166,6 +166,22 @@ function bindProjectSelect() {
     $.ajaxSettings.async = true;
 }
 
+// 绑定经销商
+function bindShopSelect() {
+    $.ajaxSettings.async = false;
+    $.commonGet("Shop/GetProjectShopExamType", {
+        brandId: $("#brand-sel").val(),
+        projectId: $("#project-sel").val(),
+        shopId: ''
+    }, function (data) {
+        $("#shop-sel").empty();
+        data.forEach(function (item) {
+            $("#shop-sel").append($("<option>").val(item.ShopId).text(item.ShopName));
+        })
+    })
+    $.ajaxSettings.async = true;
+}
+
 // 绑定业务类型
 function bindBussinessSelect() {
     $.ajaxSettings.async = false;

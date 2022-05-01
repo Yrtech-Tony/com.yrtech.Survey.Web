@@ -174,8 +174,12 @@
     <Content Include="Content\bootstrap-progressbar-3.3.4.min.css" />
     <Content Include="Content\bootstrap-table\bootstrap-table.css" />
     <Content Include="Content\bootstrap-table\bootstrap-table.js" />
+    <Content Include="Content\bootstrap-table\extensions\bootstrap-table-editable.min.js" />
+    <Content Include="Content\bootstrap-table\extensions\editable\bootstrap-table-editable.min.js" />
     <Content Include="Content\bootstrap-table\locale\bootstrap-table-zh-CN.js" />
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap3-editable\css\bootstrap-editable.css" />
+    <Content Include="Content\bootstrap3-editable\js\bootstrap-editable.min.js" />
     <Content Include="Content\bootstrapValidator\css\bootstrapValidator.min.css" />
     <Content Include="Content\bootstrapValidator\js\bootstrapValidator.min.js" />
     <Content Include="Content\bootstrapValidator\js\language\zh_CN.js" />
@@ -544,6 +548,9 @@
     <Content Include="Views\ProjectContent\_PartialScoreEdit.cshtml" />
     <Content Include="Views\ProjectContent\AnswerShopInfoIndex.cshtml" />
     <Content Include="Views\ProjectContent\_PartialAnswerShopInfoEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialScoreSubjectInspectionStandardIndex.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialScoreSubjectLossIndex.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialScoreSubjectFileIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

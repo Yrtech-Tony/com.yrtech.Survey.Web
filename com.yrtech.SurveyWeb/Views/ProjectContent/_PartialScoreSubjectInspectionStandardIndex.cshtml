@@ -1,0 +1,100 @@
+﻿<div style="float:right;">
+    <button id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveInspectionStandard()" data-loading-text="提交中...">保存</button>
+</div>
+<div class="item form-group">
+    <table id="subject-standard-table" class="table table-bordered table-set"></table>
+</div>
+<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/project.js"></script>
+<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
+<script>
+    $(function () {
+        initSubjectInspectionStandard();
+        loadSubjectInspectionStandard();
+    })
+    function initSubjectInspectionStandard() {
+        $('#subject-standard-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10],
+            columns: [{
+                title: "序号",
+                field: 'SeqNO',
+                width: 60,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "检查标准",
+                field: "InspectionStandardName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查结果",
+                field: "AnswerResult",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                editable: {
+                    type: 'select',
+                    source: [{ text: '是', value: '是' }, { text: '否', value: '否' }],
+                    title: '检查结果',
+                    validate: function (v) {
+                        if (!v) return '检查结果不能为空';
+
+                    }
+                }
+            }],
+            onClickRow: function (row, $element) {
+                curSubRow = row;
+            },
+            onEditableSave: function (field, row, oldValue, $el) {
+                let data = $('#subject-standard-table').bootstrapTable("getData", false);
+                $('#subject-standard-table').bootstrapTable("load", data);
+            }
+        });
+    }
+    function loadSubjectInspectionStandard(row) {
+        $('#subject-standard-table').bootstrapTable("showLoading");
+        $.commonGet("Answer/GetShopAnswerScoreInfo", {
+            projectId: $("#project-sel").val(),
+            shopId: $("#shop-sel").val(),
+            subjectId: curRow.SubjectId,
+            key: ''
+        }, function (data) {
+            if (data && data.length > 0) {
+                let item = data[0]
+                let inspectionStandardResult = item.InspectionStandardResult ? JSON.parse(item.InspectionStandardResult) : []
+                item.SubjectInspectionStandardList = item.SubjectInspectionStandardList.map(function (o) {
+                    let findOne = inspectionStandardResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+                    if (findOne) {
+                        o.AnswerResult = findOne.AnswerResult
+                    }
+                    return o
+                })
+                console.log('item.SubjectInspectionStandardList', item.SubjectInspectionStandardList)
+                $('#subject-standard-table').bootstrapTable("hideLoading");
+                $('#subject-standard-table').bootstrapTable("load", item.SubjectInspectionStandardList);
+            }
+        });
+    }
+    function saveInspectionStandard(row) {
+        let data = $('#subject-standard-table').bootstrapTable('getData', false)
+        curRow.InspectionStandardResult = JSON.stringify(data);
+        $.commonPost("Answer/SaveAnswerInfo", curRow, function () {
+            alert("保存成功！");
+            closeModel();
+        }, function () { });
+    }
+    function delSubjectInspectionStandard() {
+        $.commonPost("Master/DeleteSubjectInspectionStandard", { SubjectId: curRow.SubjectId, SeqNO: curRow.SeqNO }, function () {
+            loadSubjectInspectionStandard();
+        });
+    }
+</script>

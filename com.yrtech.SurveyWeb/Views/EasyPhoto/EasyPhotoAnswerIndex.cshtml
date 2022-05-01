@@ -31,10 +31,9 @@
 </div>
 <div class="result">
     <table id="answer-table" class="table table-bordered table-set"></table>
-
 </div>
 
-<div id="baguetteBox" class="baguetteBox">
+<div id="baguetteBox"  style="display:none">
 </div>
 
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
@@ -54,11 +53,7 @@
     </div>
 </div>
 <link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
-<style>
-    .baguetteBox {
-        display: none;
-    }
-</style>
+ 
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js"></script>
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
@@ -82,8 +77,6 @@
             selectfiles: "btnImportAnswer",
             multi_selection: false,
             success: function (files) {
-                console.log(files)
-                debugger
                 //调用导入方法
                 files.forEach(function (file) {
                     var projectTxt = $("#project-sel option:selected").text();
@@ -280,27 +273,27 @@
             alert("没有照片！")
             return;
         }
-        var div = $(".baguetteBox");
+        var div = $("#baguetteBox");
         div.empty();
         var count = items.length;
         $.each(items, function (i, item) {
             var imgUrl = loginUser.ossInfo.osshost + item.PhotoUrl;
             var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
             var imagA = $('<a></a>');
-            var img = $('<img>').attr('src', imgUrl).attr("alt", (i + 1) + "/" + count + "   " + item.PhotoName);
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + item.PhotoName);
             $(imagA).append(img);
             $(imagA).attr('href', imgUrl);
             $(imagA).attr('data-caption', (i + 1) + "/" + count + "   " + item.PhotoName);
 
             div.append(imagA);
         })
-        baguetteBox.run('.baguetteBox', {
+        baguetteBox.run('#baguetteBox', {
             animation: 'fadeIn'
         });
 
         setTimeout(function () {
             div.find("a:first img").click();
-        }, 100)
+        }, 300)
     }
 
 </script>

@@ -28,7 +28,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <input id="key" class="form-control" style="width:200px;" />
+            <select id="shop-sel" class="form-control" style="width: 140px"></select>
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
@@ -55,12 +55,85 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="sujectFileModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closeFileModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">标准照片列表</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <button id="btnAddPicture" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                </div>
+                <div id="subject-file-pics" style="max-height:500px;overflow:auto">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="lossModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closeLossModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">失分描述编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+                    <div class="item form-group" style="width:100%">
+                        <div class="col-md-3">
+                            <label>失分说明:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div id="LossResultCheckList">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item form-group" style="width:100%">
+                        <div class="col-md-3">
+                            <label>补充失分说明:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <textarea id="LossDesc2" name="LossDesc2" class="form-control" style=""></textarea>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurLossResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeLossModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script src="~/Scripts/icheck.js"></script>
+
+
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
+
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
+
+<div id="baguetteBox" class="baguetteBox" style="display:none">
+</div>
+<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
+<script src="~/Content/baguetteBox/baguetteBox.js"></script>
 
 <script>
+    var uploader;
     $(function () {
+        uploader = undefined
         $('title').html('@ViewBag.Title')
         bindBrandSelect();
         //加载年份
@@ -79,35 +152,49 @@
             bindProjectSelect();
         });
         $("#project-sel").change(function () {
-            loadScore();
+            bindShopSelect();           
         });
-
+        $("#shop-sel").change(function () {
+            //loadScore();
+        });
+       
         $("#btnExportAnswer").click(function () {
-            $("#btnExportAnswer").click(function () {
-                $("#btnExportAnswer").button('loading');
+            $("#btnExportAnswer").button('loading');
 
-                $.commonApi({
-                    apiType: 'easyPhoto',
-                    url: 'Answer/AnswerExport',
-                    params: {
-                        projectId: $("#project-sel").val(),
-                        shopCode: ''
-                    },
-                    success: function (data) {
-                        window.location.href = baseEasyPhotoUrl + data;
-                    },
-                    complete: function () {
-                        $("#btnExportAnswer").button('reset');
-                    }
-                })
-            });
+            $.commonApi({
+                apiType: 'easyPhoto',
+                url: 'Answer/AnswerExport',
+                params: {
+                    projectId: $("#project-sel").val(),
+                    shopCode: ''
+                },
+                success: function (data) {
+                    window.location.href = baseEasyPhotoUrl + data;
+                },
+                complete: function () {
+                    $("#btnExportAnswer").button('reset');
+                }
+            })
         });
 
         initScoreTable();
         $("#btnQuery").click(function () {
             loadScore();
-        }).trigger("click");
+
+        })//.trigger("click");
     })
+
+    function loadProjectShop() {
+        $('#project-shop-table').bootstrapTable("showLoading");
+        $.commonGet("Shop/GetProjectShopExamType", {
+            brandId: $("#brand-sel").val(),
+            projectId: $("#project-sel").val(),
+            shopId: ''
+        }, function (data) {
+            $('#project-shop-table').bootstrapTable("hideLoading");
+            $('#project-shop-table').bootstrapTable("load", data);
+        });
+    }
 
     var curRow;
     function saveScore() {
@@ -135,12 +222,22 @@
     }
 
     function loadScore() {
+        var projectId = $("#project-sel").val();
+        if (!projectId) {
+            alert("请选择一个期号！");
+            return
+        }
+        var shopId = $("#shop-sel").val();
+        if (!shopId) {
+            alert("请选择一个经销商！");
+            return
+        }
         $('#score-table').bootstrapTable("showLoading");
         $.commonGet("Answer/GetShopAnswerScoreInfo", {
             projectId:  $("#project-sel").val(),
-            shopId: '',
+            shopId: $("#shop-sel").val(),
             subjectId: '',
-            key: $("#key").val()
+            key: ''
         }, function (data) {
             $('#score-table').bootstrapTable("hideLoading");
             $('#score-table').bootstrapTable("load", data);
@@ -195,7 +292,7 @@
                 sortable: false
             }, {
                 title: "得分",
-                field: "PhotoScore ",
+                field: "PhotoScore",
                 width: 100,
                 valign: "middle",
                 align: "center",
@@ -215,7 +312,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">编辑</a>';
                 }
             }, {
                 title: "检查标准",
@@ -225,7 +322,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goInspectionStandardIndex(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                    return '<a href="javascript:goInspectionStandardIndex(' + row.Id + ');" style="min-width:100px">检查标准</a>';
                 }
             }, {
                 title: "标准照片",
@@ -235,7 +332,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goSubjectFileIndex(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                    return '<a href="javascript:goSubjectFileIndex(' + row.Id + ');" style="min-width:100px">标准照片</a>';
                 }
             }, {
                 title: "失分描述",
@@ -245,7 +342,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goEditSubjectLoss(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                    return '<a href="javascript:goSubjectLossIndex(' + row.Id + ');" style="min-width:100px">失分描述</a>';
                 }
             }, {
                 title: "添加时间",
@@ -268,37 +365,46 @@
         });
     }
 
-    function goEdit() {
+    function goEdit(id) {
+        $("#Modal .modal-title").html('得分编辑');
+        $("#Modal .modal-footer").show();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+            debugger
             $("#score-form").setForm(curRow);
             $("#score-form").data("json", JSON.stringify(curRow));
         })
     }
 
     function goInspectionStandardIndex() {
+        $("#Modal .modal-title").html('检查标准');
+        $("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/ProjectContent/SubjectInspectionStandardIndex", {}, function () {
+        $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
             $("#score-form").setForm(curRow);
             $("#score-form").data("json", JSON.stringify(curRow));
         })
     }
 
     function goSubjectFileIndex() {
+        $("#Modal .modal-title").html('标准照片');
+        $("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+        $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
             $("#score-form").setForm(curRow);
             $("#score-form").data("json", JSON.stringify(curRow));
         })
     }
 
     function goSubjectLossIndex() {
+        $("#Modal .modal-title").html('失分描述');
+        $("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+        $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
             $("#score-form").setForm(curRow);
             $("#score-form").data("json", JSON.stringify(curRow));
         })

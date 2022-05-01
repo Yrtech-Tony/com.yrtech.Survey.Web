@@ -130,17 +130,17 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialScoreEdit");
         }
-        public ActionResult InspectionStandardEdit()
+        public ActionResult _PartialScoreSubjectInspectionStandardIndex()
         {
-            return PartialView("_PartialInspectionStandardEditEdit");
+            return PartialView();
         }
-        public ActionResult SubjectFileEdit()
+        public ActionResult _PartialScoreSubjectFileIndex()
         {
-            return PartialView("_PartialSubjectFileEdit");
+            return PartialView();
         }
-        public ActionResult SubjectLossEdit()
+        public ActionResult _PartialScoreSubjectLossIndex()
         {
-            return PartialView("_PartialSubjectLossEdit");
+            return PartialView();
         }
         #endregion
 
