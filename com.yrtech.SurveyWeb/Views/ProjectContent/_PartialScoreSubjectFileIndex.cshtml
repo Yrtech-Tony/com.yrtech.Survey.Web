@@ -1,0 +1,199 @@
+﻿<div style="float:right;">
+    <button id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveFileResult()" data-loading-text="提交中...">保存</button>
+</div>
+<table id="subject-file-table" class="table table-bordered table-set"></table>
+ <style>
+     #subject-file-pics .img-div {
+         float: left;
+         position: sticky;
+     }
+     #subject-file-pics i{
+         position:absolute;
+         top:10px;
+         right:10px;
+         font-size:18px;
+     }
+ </style>
+<script>
+    $(function () {
+        initSubjectFile();
+        loadSubjectFile();
+
+        var selProject = $("#project-sel").val()
+        var selShop = $("#shop-sel").val()
+        var osspath = "Survey/" + selProject + "/" + selShop + "/";
+        if (!uploader) {
+            uploader = new OSSClient({
+                osspath: osspath,
+                selectfiles: "btnAddPicture",
+                autoupload: true,
+                success: function (files) {
+                    //调用导入方法
+                    let filePaths = []
+                    files.forEach(function (file) {
+                        filePaths.push(file.osspath)
+                    })
+                    if (curFileRow.Url) {
+                        curFileRow.Url += ',' + filePaths.join(',')
+                        bindFileResultList(curFileRow.Url.split(','))
+                    } else {
+                        curFileRow.Url = filePaths.join(',')
+                        bindFileResultList(filePaths)
+                    }
+                   
+                }
+            });
+        }
+    })
+
+    function closeFileModel() {
+        $("#sujectFileModal").modal("hide");
+    }
+    function showFileModel() {
+        $("#sujectFileModal").modal("show");
+    }
+    
+    function bindFileResultList(fileList) {
+        $("#subject-file-pics").empty()
+        debugger
+        fileList.forEach(function (file) {
+            var imgDiv = $('<div class="img-div">');
+            
+            var img = $('<img />')
+            img.css("width", 250).css("height", 250).css("margin", 5)
+            img.prop('src', osshost+file)
+            imgDiv.append(img);
+            let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
+            remove.click(function () {
+                fileList.splice(fileList.indexOf(file), 1);
+                curFileRow.Url = fileList.join(',')
+                console.log('curFileRow.Url', curFileRow.Url)
+                bindFileResultList(fileList)
+            })
+            imgDiv.append(remove);
+            $("#subject-file-pics").append(imgDiv)
+        })
+    }
+
+    function initSubjectFile() {
+        $('#subject-file-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10],
+            columns: [{
+                title: "序号",
+                field: 'SeqNO',
+                width: 120,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "拍照点",
+                field: "FileName",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "编辑",
+                field: "",
+                width: 60,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:editSubjectFile();" style="min-width:100px">编辑</a>';
+                }
+            }, {
+                title: "查看",
+                field: "",
+                width: 60,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:viewSubjectFile();" style="min-width:100px">查看</a>';
+                }
+            }],
+            onClickRow: function (row, $element) {
+                curFileRow = row;
+            }
+        });
+    }
+
+    function loadSubjectFile() {
+        console.log(curRow)
+        $('#subject-file-table').bootstrapTable("showLoading");
+        $.commonGet("Answer/GetShopAnswerScoreInfo", {
+            projectId: $("#project-sel").val(),
+            shopId: $("#shop-sel").val(),
+            subjectId: curRow.SubjectId,
+            key: ''
+        }, function (data) {
+            if (data && data.length > 0) {
+                let item = data[0]
+                let FileResult = item.FileResult?JSON.parse(item.FileResult):[]
+                item.SubjectFileList = item.SubjectFileList.map(function (o) {
+                    let findOne = FileResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+                    if (findOne) {
+                        o.Url = findOne.Url
+                    }
+                    return o;
+                })
+                console.log('item.SubjectFileList', item.SubjectFileList)
+                $('#subject-file-table').bootstrapTable("hideLoading");
+                $('#subject-file-table').bootstrapTable("load", item.SubjectFileList);
+            }
+        });
+    }
+
+    function saveFileResult() {
+        let data = $('#subject-file-table').bootstrapTable('getData', false)
+        curRow.FileResult = JSON.stringify(data);
+        $.commonPost("Answer/SaveAnswerInfo", curRow, function () {
+            alert("保存成功！");
+            closeModel();
+        }, function () { });
+    }
+
+    function editSubjectFile() {
+        debugger
+        showFileModel();
+        let fileList = curFileRow.Url?curFileRow.Url.split(','):[]
+        bindFileResultList(fileList)
+    }
+
+    function viewSubjectFile() {
+        let fileList = curFileRow.Url?curLossRow.Url.split(','):[]
+        if (!fileList || fileList.length == 0) {
+            alert("没有照片！")
+            return;
+        }
+        var imgBox = $('#baguetteBox');
+        imgBox.empty()
+        var count = fileList.length;
+        $.each(fileList, function (i, item) { 
+            var imgUrl = loginUser.ossInfo.osshost + item;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<a></a>');
+            let name = item.substr(item.lastIndexOf('/')+1);
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+            $(imagA).append(img);
+            $(imagA).attr('href', imgUrl);
+            $(imagA).attr('data-caption', (i + 1) + "/" + count + "   " + name);
+
+            imgBox.append(imagA);
+        })
+        baguetteBox.run('#baguetteBox', {
+            animation: 'fadeIn'
+        });
+
+        setTimeout(function () {
+            imgBox.find("a:first img").click();
+        }, 300)
+    } 
+</script>
+
+
+

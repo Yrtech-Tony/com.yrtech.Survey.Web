@@ -37,7 +37,7 @@ function init_uploader(options) {
         ["content-length-range", 0, 1048576000] // 设置上传文件的大小限制
         ]
     };
-
+    
     accessid = loginUser.ossInfo.AccessId;
     accesskey = loginUser.ossInfo.AccessKey; 
     osshost = loginUser.ossInfo.osshost;

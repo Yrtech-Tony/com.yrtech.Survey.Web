@@ -93,7 +93,7 @@ $.commonApi = function (option) {
                 alert(data.Body);
             }
         },
-        complete: option.complete,
+        complete: option.complete || function () { },
         error: function (jqXHR, textStatus, errorThrown) {
             if (option.error) {
                 option.error();
@@ -162,6 +162,22 @@ function bindProjectSelect() {
         $("#project-sel").empty();
         data.forEach(function (item) {
             $("#project-sel").append($("<option>").val(item.ProjectId).text(item.ProjectName));
+        })
+    })
+    $.ajaxSettings.async = true;
+}
+
+// 绑定经销商
+function bindShopSelect() {
+    $.ajaxSettings.async = false;
+    $.commonGet("Shop/GetProjectShopExamType", {
+        brandId: $("#brand-sel").val(),
+        projectId: $("#project-sel").val(),
+        shopId: ''
+    }, function (data) {
+        $("#shop-sel").empty();
+        data.forEach(function (item) {
+            $("#shop-sel").append($("<option>").val(item.ShopId).text(item.ShopName));
         })
     })
     $.ajaxSettings.async = true;

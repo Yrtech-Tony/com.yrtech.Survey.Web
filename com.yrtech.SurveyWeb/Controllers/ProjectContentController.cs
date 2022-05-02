@@ -120,6 +120,41 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialSubjectTypeExamEdit");
         }
         #endregion
+
+        #region 得分管理
+        public ActionResult ScoreIndex()
+        {
+            return View();
+        }
+        public ActionResult ScoreEdit()
+        {
+            return PartialView("_PartialScoreEdit");
+        }
+        public ActionResult _PartialScoreSubjectInspectionStandardIndex()
+        {
+            return PartialView();
+        }
+        public ActionResult _PartialScoreSubjectFileIndex()
+        {
+            return PartialView();
+        }
+        public ActionResult _PartialScoreSubjectLossIndex()
+        {
+            return PartialView();
+        }
+        #endregion
+
+        #region 进店信息管理
+        public ActionResult AnswerShopInfoIndex()
+        {
+            return View();
+        }
+        public ActionResult AnswerShopInfoEdit()
+        {
+            return PartialView("_PartialAnswerShopInfoEdit");
+        }
+        
+        #endregion
         public ActionResult LoadPartial(string view)
         {
             return PartialView(view);

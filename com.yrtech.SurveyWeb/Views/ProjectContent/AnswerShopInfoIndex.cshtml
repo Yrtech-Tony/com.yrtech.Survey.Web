@@ -1,0 +1,201 @@
+﻿ @{
+    ViewBag.Title = "进店信息管理";
+}
+
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+</style>
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
+        </div>
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+    </div>
+</div>
+<div class="result">
+    <table id="answer-shop-info-table" class="table table-bordered table-set"></table>
+</div>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">编辑</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveAnswerShopInfo()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script>
+    $(function () {
+        $('title').html('@ViewBag.Title')
+        bindBrandSelect();
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
+
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+        });
+        $("#project-sel").change(function () {
+            loadAnswerShopInfo();
+        });
+
+        $("#btnAnswerShopAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/ProjectContent/AnswerShopInfoEdit", {}, function () {
+            })
+            return false;
+        });
+
+        initAnswerShopInfoTable();
+        $("#btnQuery").click(function () {
+            loadAnswerShopInfo();
+        }).trigger("click");
+    })
+
+    var curRow;
+    function saveAnswerShopInfo() {
+        var params = $("#answer-shop-info-form").serializeJson();
+        var json = $("#answer-shop-info-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+        } else {
+            //新增
+            params = $.extend({
+                TenantId: loginUser.TenantId,
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, params);
+        }
+        $("#save_button").button("loading");
+        $.commonPost("Answer/SaveAnswerShopInfo", params, function () {
+            $("#save_button").button("reset");
+            loadAnswerShopInfo();
+            closeModel();
+        }, function () { $("#save_button").button("reset"); });
+    }
+
+    function loadAnswerShopInfo() {
+        $('#answer-shop-info-table').bootstrapTable("showLoading");
+        $.commonGet("Answer/GetAnswerShopInfo", {
+            projectId:  $("#project-sel").val(),
+            shopId: ''
+        }, function (data) {
+            $('#answer-shop-info-table').bootstrapTable("hideLoading");
+            $('#answer-shop-info-table').bootstrapTable("load", data);
+        });
+    }
+
+    //初始化期号表格
+    function initAnswerShopInfoTable() {
+        $('#answer-shop-info-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [5, 10, 20, 50],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 150,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },{
+                title: "执行组长",
+                field: "TeamLeader",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            } , {
+                title: "开始时间",
+                field: "StartDate",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "添加时间",
+                field: "InDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "修改时间",
+                field: "ModifyDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+    function goEdit() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/ProjectContent/AnswerShopInfoEdit", {}, function () {
+            $("#answer-shop-info-form").setForm(curRow);
+            $("#answer-shop-info-form").data("json", JSON.stringify(curRow));
+        })
+    }
+
+</script>
+
+
