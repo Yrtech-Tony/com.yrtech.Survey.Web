@@ -22,12 +22,14 @@
             <input id="key" class="form-control" style="width:500px;" placeholder="英文逗号隔开"/>
         </div>
     </div>
-    <div style="float:right;width:400px;text-align:right">
+    <div style="float:right;width:450px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnDownloadTemplate" class="btn btn-primary">模板</button>
         <button id="btnImportAnswer" class="btn btn-primary">导入</button>
         <button id="btnExportAnswer" class="btn btn-primary">导出</button>
+        <button id="btnDownLoadPhoto" class="btn btn-primary">导出照片</button>
         <button id="btnDeleteByShop" class="btn btn-primary">按店删除</button>
+       
     </div>
 </div>
 <div class="result">
@@ -139,6 +141,25 @@
                 complete: function () {
                     debugger
                     $("#btnExportAnswer").button('reset');
+                }
+            })
+        });
+        $("#btnDownLoadPhoto").click(function () {
+            $("#btnDownLoadPhoto").button('loading');
+
+            $.commonApi({
+                apiType: 'easyPhoto',
+                url: 'Answer/AnswerPhotoDownLoad',
+                params: {
+                    projectId: $("#project-sel").val(),
+                    shopCode: $("#key").val()
+                },
+                success: function (data) {
+                    window.location.href = baseEasyPhotoUrl + data;
+                },
+                complete: function () {
+                    debugger
+                    $("#btnDownLoadPhoto").button('reset');
                 }
             })
         });

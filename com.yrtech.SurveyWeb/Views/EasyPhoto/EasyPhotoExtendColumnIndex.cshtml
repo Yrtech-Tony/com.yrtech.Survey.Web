@@ -121,6 +121,29 @@
                 formatter: function (value, row, index) {
                     return value ? '是' : '否';
                 }
+
+            }, {
+                title: "App清单显示",
+                field: "ListShowChk",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '是' : '否';
+                }
+
+            }, {
+                title: "是否可编辑",
+                field: "EditChk",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '是' : '否';
+                }
+
             }, {
                 title: "数据",
                 field: "",
@@ -129,7 +152,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    if (row.AddShowChk) {
+                    if (row.AddShowChk||row.EditChk) {
                         return '<a href="javascript:setExtendColumnData();" style="min-width:100px">数据</a>';
                     } else {
                         return "";
@@ -185,10 +208,13 @@
         var json = $("#extend-column-form").data("json");
         params.UseChk = $("#UseChk").is(":checked");
         params.AddShowChk = $("#AddShowChk").is(":checked");
+        params.ListShowChk = $("#ListShowChk").is(":checked");
+        params.EditChk = $("#EditChk").is(":checked");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
             params = $.extend(json, params, {
+                InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
             });
         } else {

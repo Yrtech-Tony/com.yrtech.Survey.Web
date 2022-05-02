@@ -27,6 +27,10 @@
             <label class="control-label">期号:</label>
             <select id="project-sel" class="form-control" style="width: 140px"></select>
         </div>
+        <div class="form-group">
+            <label class="control-label">经销商:</label>
+            <input id="keyword" class="form-control" style="width:500px;" placeholder="经销商代码/名称" />
+        </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
@@ -35,13 +39,6 @@
 
 
 <div class="result table-responsive">
-    <div class="form-inline">
-        <div class="form-group">
-            <input type="text" class="form-control" name="keyword" id="keyword" placeholder="经销商代码/名称" value="">
-            <button type="button" id="btnSearchByKey" class="btn btn-default ">搜 索</button>
-        </div>
-    </div>
-    <br />
     <table id="appeal-table" class="table table-bordered table-set"></table>
 </div>
  
@@ -211,8 +208,6 @@
             $('#appeal-table').bootstrapTable("hideLoading");
         })
     }
-
-
     function getParams() {
         var project = $("#project-sel").val();
         if (!project) {
