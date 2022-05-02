@@ -234,7 +234,7 @@ function bindHiddenColumn(hiddenCodeGroup) {
     $.ajaxSettings.async = true;
 
 }
-//  绑定标签
+//  绑定标签-通用
 function bindLabel(labelType) {
     $.ajaxSettings.async = false;
     $.commonGet("Master/GetLabel", {
@@ -249,7 +249,22 @@ function bindLabel(labelType) {
         })
     })
     $.ajaxSettings.async = true;
-
+}
+//  绑定标签-复审类型
+function bindLabelRecheck(labelType) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetLabelRecheckType", {
+        brandId: $("#brand-sel").val(),
+        labelId: '',
+        labelType: labelType,
+        useChk: true
+    }, function (data) {
+        $("#LabelId_RecheckType").append($("<option>").val('').text('请选择'));
+        data.forEach(function (label) {
+            $("#LabelId_RecheckType").append($("<option>").val(label.LabelId_RecheckType).text(label.LabelName));
+        })
+    })
+    $.ajaxSettings.async = true;
 }
 /** easyphoto 模块*/
 function bindEasyPhotoProjectSelect() {

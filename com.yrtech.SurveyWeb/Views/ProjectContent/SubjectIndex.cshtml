@@ -41,7 +41,11 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">题目编辑</h4>
             </div>
-            <div class="modal-body" style="height:650px">
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveSubject()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
@@ -185,6 +189,13 @@
                 align: "center",
                 sortable: false
             }, {
+                title: "复审类型",
+                field: "RecheckTypeName",
+                width: 100,
+                valign: "center",
+                align: "center",
+                sortable: false
+            }, {
                 title: "检查标准说明",
                 field: "InspectionDesc",
                 width: 100,
@@ -250,15 +261,18 @@
     }
     function goEdit() {
         $("#Modal .modal-body").empty();
+        $("#Modal .modal-footer").show();
         $("#Modal").modal("show");
         $("#Modal .modal-title").html("题目编辑");
         $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
+            debugger
             $("#subject-form").setForm(curRow);
             $("#subject-form").data("json", JSON.stringify(curRow));
         })
     }
     function goInspectionStandardEdit() {
         $("#Modal .modal-body").empty();
+        $("#Modal .modal-footer").hide();
         $("#Modal").modal("show");
         $("#Modal .modal-title").html("检查标准");
         $("#Modal .modal-body").load("/ProjectContent/SubjectInspectionStandardIndex", {}, function () {
@@ -267,6 +281,7 @@
     }
     function goFileEdit() {
         $("#Modal .modal-body").empty();
+        $("#Modal .modal-footer").hide();
         $("#Modal").modal("show");
         $("#Modal .modal-title").html("拍照点");
         $("#Modal .modal-body").load("/ProjectContent/SubjectFileIndex", {}, function () {
@@ -275,6 +290,7 @@
     }
     function goLossResultEdit() {
         $("#Modal .modal-body").empty();
+        $("#Modal .modal-footer").hide();
         $("#Modal").modal("show");
         $("#Modal .modal-title").html("失分说明");
         $("#Modal .modal-body").load("/ProjectContent/SubjectLossResultIndex", {}, function () {
