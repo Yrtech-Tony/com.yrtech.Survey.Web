@@ -234,6 +234,21 @@ function bindHiddenColumn(hiddenCodeGroup) {
     $.ajaxSettings.async = true;
 
 }
+// 绑定隐藏字段-题目类型
+function bindHiddenColumnSubjectType(hiddenCodeGroup) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetHiddenCodeSubjectTye", {
+        hiddenCodeGroup: hiddenCodeGroup,
+        hiddenCode: ''
+    }, function (data) {
+        $("#HiddenCode_SubjectType").append($("<option>").val('').text('请选择'));
+        data.forEach(function (hiddenCode) {
+            $("#HiddenCode_SubjectType").append($("<option>").val(hiddenCode.HiddenCode_SubjectType).text(hiddenCode.HiddenName));
+        })
+    })
+    $.ajaxSettings.async = true;
+
+}
 //  绑定标签-通用
 function bindLabel(labelType) {
     $.ajaxSettings.async = false;
