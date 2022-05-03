@@ -1,6 +1,8 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
     <div class="item form-group" style="float:right;">
         <div class="col-md-8">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:140px;"></select>
             <input id="ObjectCode" type="text" maxlength="15" class="form-control" placeholder="">
         </div>
         <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveUserInfoObject()" data-loading-text="提交中..."></a>
@@ -12,12 +14,29 @@
 </div>
 <script>
     $(function () {
+        debugger
         $("#btnAdd").text("添加" + objectType);
         $("#ObjectCode").attr("placeholder", objectType + "代码");
+        bindBrandSelectForExcute();
         initObjectTable();
         loadUserInfoObject();
     })
-
+    // 绑定品牌
+    function bindBrandSelectForExcute() {
+        $.ajaxSettings.async = false;
+        debugger
+        $.commonGet("Master/GetUserInfoBrand", {
+            tenantId: loginUser.TenantId,
+            userId: curRow.Id,
+            brandId: "",
+        }, function (data) {
+            $("#brand-sel").empty();
+            data.forEach(function (brand) {
+                $("#brand-sel").append($("<option>").val(brand.BrandId).text(brand.BrandName));
+            })
+        })
+        $.ajaxSettings.async = true;
+    }
     function initObjectTable() {
         $('#userinfo-object-table').bootstrapTable({
             pagination: true,
@@ -69,40 +88,13 @@
             alert("请输入" + objectType + "代码！");
             return false;
         }
-        var areaType = curRow.RoleType.replace("B_", "");
-        var url = "Master/GetArea";
-        var params = {
-            brandId: curRow.BrandId,
-            areaId: '',
-            areaCode: objectCode,
-            areaName: '',
-            areaType: areaType,
-            parentId: '',
-            useChk: 'true'
-        };
-        if (curRow.RoleType == "B_Shop") {
-            url = "Master/GetShop";
-            params = {
-                brandId: curRow.BrandId,
-                shopId: '',
-                shopCode: objectCode,
-                key: ''
-            }
-        } if (curRow.RoleType == "S_Execute") {// 设置执行人员有权限的经销商
-            url = "Master/GetShop";
-            params = {
-                brandId: "",
-                shopId: '',
-                shopCode: objectCode,
-                key: ''
-            }
-        } else if (curRow.RoleType == "B_Group") {
-            url = "Master/GetGroup";
-            params = {
-                brandId: curRow.BrandId,
-                groupCode: objectCode,
-                groupName: ''
-            }
+        // 设置执行人员有权限的经销商
+        url = "Master/GetShop";
+        params = {
+            brandId: $("#brand-sel").val(),
+            shopId: '',
+            shopCode: objectCode,
+            key: ''
         }
         $("#btnAdd").button("loading");
         $.commonGet(url, params, function (data) {
@@ -110,14 +102,7 @@
                 alert("输入的" + objectType + "代码不正确，请重新输入");
                 $("#btnAdd").button("reset");
             } else {
-                var objId = "";
-                if (curRow.RoleType == "B_Shop" || curRow.RoleType == "S_Execute") {
-                    objId = data[0].ShopId;
-                } else if (curRow.RoleType == "B_Group") {
-                    objId = data[0].GroupId;
-                } else {
-                    objId = data[0].AreaId;
-                }
+                var objId = data[0].ShopId;
                 $.commonPost("Master/SaveUserInfoObject", {
                     UserId: curRow.Id,
                     ObjectId: objId,

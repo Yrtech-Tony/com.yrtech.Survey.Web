@@ -54,10 +54,15 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialUserInfoObject");
         }
+        public ActionResult RelateUserInfoObjectSurveyAccount()
+        {
+            return PartialView("_PartialUserInfoObjectSurveyAccount");
+        }
         public ActionResult RelateUserInfoBrand()
         {
             return PartialView("_PartialUserInfoBrand");
         }
+
 
         public ActionResult OpenUserInfoImport()
         {

@@ -551,6 +551,7 @@
     <Content Include="Views\ProjectContent\_PartialScoreSubjectInspectionStandardIndex.cshtml" />
     <Content Include="Views\ProjectContent\_PartialScoreSubjectLossIndex.cshtml" />
     <Content Include="Views\ProjectContent\_PartialScoreSubjectFileIndex.cshtml" />
+    <Content Include="Views\Account\_PartialUserInfoObjectSurveyAccount.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

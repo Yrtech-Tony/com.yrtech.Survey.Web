@@ -214,6 +214,19 @@
                 formatter: function (value, row, index) {
                     return '<a href="javascript:setUserBrand();" style="min-width:100px">关联品牌</a>';
                 }
+            }, {
+                title: "关联经销商",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (row.RoleType == 'S_Execute') {
+                        return '<a href="javascript:setUserShop();" style="min-width:100px">关联经销商</a>';
+                    }
+                    return '';
+                }
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
@@ -242,6 +255,15 @@
         $("#Modal .modal-title").html("品牌列表");
         $("#Modal .modal-body").load("/Account/RelateUserInfoBrand", {}, function () {
 
+        })
+    }
+    var objectType = "经销商";
+    function setUserShop() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-title").html("经销商列表");
+        $("#Modal .modal-body").load("/Account/RelateUserInfoObjectSurveyAccount", {}, function () {
         })
     }
 </script>
