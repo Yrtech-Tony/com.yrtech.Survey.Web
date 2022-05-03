@@ -1,11 +1,18 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
     <div class="item form-group" style="float:right;">
-        <div class="col-md-8">
-            <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:140px;"></select>
-            <input id="ObjectCode" type="text" maxlength="15" class="form-control" placeholder="">
+        <div class="form-inline">
+            <div class="form-group">
+                <label class="control-label">品牌:</label>
+                <select id="brand-sel" class="form-control" style="width:100px;"></select>
+            </div>
+            <div class="form-group">
+                <input id="ObjectCode" type="text" maxlength="15" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <a id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveUserInfoObject()" data-loading-text="提交中..."></a>
+            </div>
         </div>
-        <a id="btnAdd" class="btn btn-primary col-md-4" style="margin-right:0px" onclick="saveUserInfoObject()" data-loading-text="提交中..."></a>
+
     </div>
     <div class="clearfix"></div>
 </div>

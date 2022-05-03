@@ -554,6 +554,7 @@
     <Content Include="Views\Account\_PartialUserInfoObjectSurveyAccount.cshtml" />
     <Content Include="Views\Recheck\RecheckStatusIndex.cshtml" />
     <Content Include="Views\Recheck\_PartialRecheckStatusDtl.cshtml" />
+    <Content Include="Views\Recheck\RecheckIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
