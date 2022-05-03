@@ -64,6 +64,7 @@
         });
     }
     function saveUserInfoObject() {
+        debugger
         var objectCode = $("#ObjectCode").val();
         if (!objectCode) {
             alert("请输入" + objectType + "代码！");
@@ -72,7 +73,7 @@
         var areaType = curRow.RoleType.replace("B_", "");
         var url = "Master/GetArea";
         var params = {
-            brandId: curRow.brandId,
+            brandId: curRow.BrandId,
             areaId: '',
             areaCode: objectCode,
             areaName: '',
@@ -83,7 +84,7 @@
         if (curRow.RoleType == "B_Shop") {
             url = "Master/GetShop";
             params = {
-                brandId: curRow.brandId,
+                brandId: curRow.BrandId,
                 shopId: '',
                 shopCode: objectCode,
                 key: ''
@@ -91,7 +92,7 @@
         } else if (curRow.RoleType == "B_Group") {
             url = "Master/GetGroup";
             params = {
-                brandId: curRow.brandId,
+                brandId: curRow.BrandId,
                 groupCode: objectCode,
                 groupName: ''
             }
