@@ -173,7 +173,8 @@ function bindShopSelect() {
     $.commonGet("Shop/GetProjectShopExamType", {
         brandId: $("#brand-sel").val(),
         projectId: $("#project-sel").val(),
-        shopId: ''
+        shopId: '',
+        userId: loginUser.Id
     }, function (data) {
         $("#shop-sel").empty();
         data.forEach(function (item) {
