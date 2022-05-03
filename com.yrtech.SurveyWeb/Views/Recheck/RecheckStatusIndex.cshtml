@@ -1,0 +1,184 @@
+﻿@{
+    ViewBag.Title = "进度管理";
+}
+
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+</style>
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
+        </div>
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+    </div>
+</div>
+<div class="result">
+    <table id="recheckstatus-info-table" class="table table-bordered table-set"></table>
+</div>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">复审记录</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script>
+    $(function () {
+        $('title').html('@ViewBag.Title')
+        bindBrandSelect();
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
+
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+        });
+        $("#project-sel").change(function () {
+            loadRecheckStatus();
+        });
+
+        $("#btnAnswerShopAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/ProjectContent/AnswerShopInfoEdit", {}, function () {
+            })
+            return false;
+        });
+
+        initRecheckStatusTable();
+        $("#btnQuery").click(function () {
+            loadRecheckStatus();
+        }).trigger("click");
+    })
+
+    var curRow;
+
+    function loadRecheckStatus() {
+        $('#recheckstatus-info-table').bootstrapTable("showLoading");
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: $("#project-sel").val(),
+            shopId: ''
+        }, function (data) {
+            $('#recheckstatus-info-table').bootstrapTable("hideLoading");
+            $('#recheckstatus-info-table').bootstrapTable("load", data);
+        });
+    }
+
+    //初始化期号表格
+    function initRecheckStatusTable() {
+        $('#recheckstatus-info-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 15,
+            pageList: [5, 10, 20, 50],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 150,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "进店",
+                field: "Status_S0",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "提交复审",
+                field: "Status_S1",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "复审进行中",
+                field: "Status_S2",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "复审完毕",
+                field: "Status_S3",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "复审详细",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:getRecheckStatusDtl();" style="min-width:100px">复审详细</a>';
+                }
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+    function getRecheckStatusDtl() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/Recheck/RecheckStatusDtl", {}, function () {
+            $("#answer-shop-info-form").setForm(curRow);
+            $("#answer-shop-info-form").data("json", JSON.stringify(curRow));
+        })
+    }
+
+</script>
+
+

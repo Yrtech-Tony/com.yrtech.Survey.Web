@@ -12,11 +12,18 @@ namespace com.yrtech.SurveyWeb.Controllers
     {
         //
         // GET: /Recheck/
-        public ActionResult Index()
+        public ActionResult RecheckStatusIndex()
         {
             return View();
         }
-
+        public ActionResult RecheckIndex()
+        {
+            return View();
+        }
+        public ActionResult RecheckStatusDtl()
+        {
+            return PartialView("_PartialRecheckStatusDtl");
+        }
         public ActionResult Detail(string projectId,string shopId,string subjectRecheckTypeId,string statusName)
         {
             ViewBag.ProjectId = projectId;

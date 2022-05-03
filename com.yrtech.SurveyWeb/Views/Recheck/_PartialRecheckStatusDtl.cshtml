@@ -1,0 +1,50 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="recheckStatusDtl-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        initRecheckStatusDtlTable();
+        loadRecheckStatusDtl();
+    })
+    function initRecheckStatusDtlTable() {
+        $('#recheckStatusDtl-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "复审类型代码",
+                field: 'RecheckTypeCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "复审类型名称",
+                field: "RecheckTypeName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "提交时间",
+                field: "InDateTime",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }]
+        });
+    }
+    function loadRecheckStatusDtl() {
+        $.commonGet("Recheck/GetRecheckStatusDtl", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId,
+        }, function (data) {
+            $('#recheckStatusDtl-table').bootstrapTable("load", data);
+        });
+    }
+</script>
