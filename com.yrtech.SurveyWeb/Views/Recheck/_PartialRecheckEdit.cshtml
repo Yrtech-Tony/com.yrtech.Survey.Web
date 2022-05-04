@@ -15,41 +15,43 @@
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
-    <div class="form-inline">
-        <div class="form-group">
-            <label class="control-label">题目序号:</label>
-            <input id="OrderNO" type="text" class="form-control" placeholder="">
+    <form class="form-horizontal form-label-left" id="answer-form">
+        <div class="form-inline">
+            <div class="form-group">
+                <label class="control-label">题目序号:</label>
+                <input id="OrderNO" type="text" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <label class="control-label">题目代码:</label>
+                <input id="SubjectCode" type="text" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <label class="control-label">检查点:</label>
+                <input id="CheckPoint" type="text" class="form-control" placeholder="">
+            </div>
         </div>
-        <div class="form-group">
-            <label class="control-label">题目代码:</label>
-            <input id="SubjectCode" type="text"  class="form-control" placeholder="">
+        <div class="form-inline">
+            <div class="form-group">
+                <label class="control-label">说明:</label>
+                <input id="Desc" type="text" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <label class="control-label">检查标准说明:</label>
+                <input id="InspectionDesc" type="text" class="form-control" placeholder="">
+            </div>
+
         </div>
-        <div class="form-group">
-            <label class="control-label">检查点:</label>
-            <input id="CheckPoint" type="text"  class="form-control" placeholder="">
+        <div class="form-inline">
+            <div class="form-group">
+                <label class="control-label">得分:</label>
+                <input id="PhotoScore" type="text" class="form-control" placeholder="">
+            </div>
+            <div class="form-group">
+                <label class="control-label">备注:</label>
+                <input id="Remark" type="text" class="form-control" placeholder="">
+            </div>
         </div>
-    </div>
-    <div class="form-inline">
-        <div class="form-group">
-            <label class="control-label">说明:</label>
-            <input id="Desc" type="text"  class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-            <label class="control-label">检查标准说明:</label>
-            <input id="InspectionDesc" type="text"  class="form-control" placeholder="">
-        </div>
-       
-    </div>
-    <div class="form-inline">
-        <div class="form-group">
-            <label class="control-label">得分:</label>
-            <input id="PhotoScore" type="text" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-            <label class="control-label">备注:</label>
-            <input id="Remark" type="text" class="form-control" placeholder="">
-        </div>
-    </div>
+    </form>
 </div>
 <div class="item form-group">
     <table id="ins-table" class="table table-bordered table-set"></table>
@@ -183,9 +185,21 @@
             projectId: curRow.ProjectId,
             shopId: curRow.ShopId,
             subjectId: curRow.SubjectId,
-            key:""
+            key: ""
         }, function (data) {
-            $('#recheckStatusDtl-table').bootstrapTable("load", data);
+            if (data && data.length > 0) {
+                let item = data[0]
+                let FileResult = item.FileResult ? JSON.parse(item.FileResult) : []
+                let InsResult = item.InspectionStandardResult ? JSON.parse(item.InspectionStandardResult) : []
+                let LossResult = item.LossResult ? JSON.parse(item.LossResult) : []
+
+                $('#ins-table').bootstrapTable("hideLoading");
+                $('#ins-table').bootstrapTable("load", item.InsResult);
+                $('#photo-table').bootstrapTable("hideLoading");
+                $('#photo-table').bootstrapTable("load", item.FileResult);
+                $('#lossresult-table').bootstrapTable("hideLoading");
+                $('#lossresult-table').bootstrapTable("load", item.LossResult);
+            }
         });
     }
 

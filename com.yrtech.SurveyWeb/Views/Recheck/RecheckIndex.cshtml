@@ -272,8 +272,8 @@
         $("#Modal").modal("show");
         $("#Modal .modal-body").load("/Recheck/RecheckEdit", {}, function () {
             //debugger
-           // $("#score-form").setForm(curRow);
-            //$("#score-form").data("json", JSON.stringify(curRow));
+            $("#answer-form").setForm(curRow);
+            $("#answer-form").data("json", JSON.stringify(curRow));
         })
     }
 </script>
