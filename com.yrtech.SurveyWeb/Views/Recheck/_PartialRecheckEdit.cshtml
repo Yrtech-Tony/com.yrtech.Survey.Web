@@ -38,19 +38,16 @@
             <label class="control-label">检查标准说明:</label>
             <input id="InspectionDesc" type="text"  class="form-control" placeholder="">
         </div>
+       
+    </div>
+    <div class="form-inline">
         <div class="form-group">
             <label class="control-label">得分:</label>
             <input id="PhotoScore" type="text" class="form-control" placeholder="">
         </div>
-    </div>
-    <div class="form-inline">
         <div class="form-group">
             <label class="control-label">备注:</label>
             <input id="Remark" type="text" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-            <label class="control-label">失分补充说明:</label>
-            <input id="LossResultAdd" type="text" class="form-control" placeholder="">
         </div>
     </div>
 </div>
@@ -77,23 +74,19 @@
             <label class="control-label">复审意见:</label>
             <input id="CheckPoint" type="text" class="form-control" placeholder="">
         </div>
-    </div>
-   
-    <div class="form-inline">
         <div class="form-group">
-            <label class="control-label">备注:</label>
-            <input id="Remark" type="text" class="form-control" placeholder="">
-        </div>
-        <div class="form-group">
-            <label class="control-label">失分补充说明:</label>
-            <input id="LossResultAdd" type="text" class="form-control" placeholder="">
+            <label class="control-label">错误类型:</label>
+            <div id="LossResultCheckList">
+            </div>
         </div>
     </div>
 </div>
 <script>
     $(function () {
-        initRecheckStatusDtlTable();
-        loadRecheckStatusDtl();
+        initInspection();
+        initPhoto();
+        initLossResult();
+        loadAnswerInfo();
     })
     function initInspection() {
         $('#ins-table').bootstrapTable({
@@ -185,12 +178,15 @@
             }]
         });
     }
-    function loadRecheckStatusDtl() {
-        $.commonGet("Recheck/GetRecheckStatusDtl", {
+    function loadAnswerInfo() {
+        $.commonGet("Answer/GetShopAnswerScoreInfo", {
             projectId: curRow.ProjectId,
             shopId: curRow.ShopId,
+            subjectId: curRow.SubjectId,
+            key:""
         }, function (data) {
             $('#recheckStatusDtl-table').bootstrapTable("load", data);
         });
     }
+
 </script>
