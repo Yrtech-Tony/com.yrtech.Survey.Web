@@ -1,0 +1,196 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:right;">
+        <div class="form-inline">
+            <div class="form-group">
+                <a id="btnPre" class="btn btn-primary" style="margin-right:0px" onclick="saveUserInfoObject()"></a>
+            </div>
+            <div class="form-group">
+                <a id="btnNext" class="btn btn-primary" style="margin-right:0px" onclick="saveUserInfoObject()"></a>
+            </div>
+            <div class="form-group">
+                <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="saveUserInfoObject()"></a>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">题目序号:</label>
+            <input id="OrderNO" type="text" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label">题目代码:</label>
+            <input id="SubjectCode" type="text"  class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label">检查点:</label>
+            <input id="CheckPoint" type="text"  class="form-control" placeholder="">
+        </div>
+    </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">说明:</label>
+            <input id="Desc" type="text"  class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label">检查标准说明:</label>
+            <input id="InspectionDesc" type="text"  class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label">得分:</label>
+            <input id="PhotoScore" type="text" class="form-control" placeholder="">
+        </div>
+    </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">备注:</label>
+            <input id="Remark" type="text" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label">失分补充说明:</label>
+            <input id="LossResultAdd" type="text" class="form-control" placeholder="">
+        </div>
+    </div>
+</div>
+<div class="item form-group">
+    <table id="ins-table" class="table table-bordered table-set"></table>
+</div>
+<div class="item form-group">
+    <table id="photo-table" class="table table-bordered table-set"></table>
+</div>
+<div class="item form-group">
+    <table id="lossresult-table" class="table table-bordered table-set"></table>
+</div>
+<div class="item form-group">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">是否通过:</label>
+            <input id="OrderNO" type="text" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label">建议得分:</label>
+            <input id="SubjectCode" type="text" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label">复审意见:</label>
+            <input id="CheckPoint" type="text" class="form-control" placeholder="">
+        </div>
+    </div>
+   
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">备注:</label>
+            <input id="Remark" type="text" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label">失分补充说明:</label>
+            <input id="LossResultAdd" type="text" class="form-control" placeholder="">
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        initRecheckStatusDtlTable();
+        loadRecheckStatusDtl();
+    })
+    function initInspection() {
+        $('#ins-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "序号",
+                field: 'RecheckTypeCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "检查标准",
+                field: "RecheckTypeName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查结果",
+                field: "InDateTime",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }]
+        });
+    }
+    function initPhoto() {
+        $('#photo-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "序号",
+                field: 'RecheckTypeCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "拍照点",
+                field: "RecheckTypeName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "查看照片",
+                field: "InDateTime",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }]
+        });
+    }
+    function initLossResult() {
+        $('#lossresult-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "序号",
+                field: 'RecheckTypeCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "失分说明",
+                field: "RecheckTypeName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "查看照片",
+                field: "InDateTime",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }]
+        });
+    }
+    function loadRecheckStatusDtl() {
+        $.commonGet("Recheck/GetRecheckStatusDtl", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId,
+        }, function (data) {
+            $('#recheckStatusDtl-table').bootstrapTable("load", data);
+        });
+    }
+</script>

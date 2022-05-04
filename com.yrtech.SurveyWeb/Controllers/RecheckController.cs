@@ -24,6 +24,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialRecheckStatusDtl");
         }
+        public ActionResult RecheckEdit()
+        { 
+            return PartialView("_PartialRecheckEdit");
+        }
         public ActionResult Detail(string projectId,string shopId,string subjectRecheckTypeId,string statusName)
         {
             ViewBag.ProjectId = projectId;
