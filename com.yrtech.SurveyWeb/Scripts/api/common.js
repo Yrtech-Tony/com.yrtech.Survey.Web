@@ -266,7 +266,7 @@ function bindLabel(labelType) {
     })
     $.ajaxSettings.async = true;
 }
-//  绑定标签-复审类型
+//  绑定标签-审核类型
 function bindLabelRecheck(labelType) {
     $.ajaxSettings.async = false;
     $.commonGet("Master/GetLabelRecheckType", {

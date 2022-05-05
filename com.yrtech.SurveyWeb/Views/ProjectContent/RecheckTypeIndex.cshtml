@@ -1,10 +1,10 @@
 ﻿@{
-    ViewBag.Title = "期号内容管理-复审类型";
+    ViewBag.Title = "期号内容管理-审核类型";
 }
 
 <div class="page-title">
     <div class="title_left">
-        <h3>复审类型 <small></small></h3>
+        <h3>审核类型 <small></small></h3>
     </div>
 </div>
 <div class="operation col-md-offset-6 form-group">
@@ -29,8 +29,8 @@
         <tr>
             @*<th><input type="checkbox" id="check-all" class="flat"></th>*@
             <th>编辑</th>
-            <th>复审类型Id</th>
-            <th>复审类型名称</th>
+            <th>审核类型Id</th>
+            <th>审核类型名称</th>
             <th>使用与否</th>
             @*<th>登记人</th>*@
             <th>登记时间</th>
@@ -82,11 +82,11 @@
                     });
                 });
             });
-            //查询复审类型
+            //查询审核类型
             $("#btnRecheckType-Search").click(function () {
                 loadRecheckType($("#recheckType-Project").val(), "");
             });
-            // 新增复审类型
+            // 新增审核类型
             $("#btnRecheckType-Add").click(function () {
                 $("#Modal").modal("show");
                 $("#Modal .modal-body").load("/ProjectContent/RecheckTypeEdit", {}, function () {

@@ -1,5 +1,5 @@
 ﻿ @{
-    ViewBag.Title = "复审管理";
+    ViewBag.Title = "审核管理";
 }
 
 <style>
@@ -31,13 +31,13 @@
             <select id="shop-sel" class="form-control" style="width: 140px"></select>
         </div>
         <div class="form-group">
-            <label class="control-label">复审类型:</label>
+            <label class="control-label">审核类型:</label>
             <select id="LabelId" class="form-control" style="width: 140px"></select>
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnRecheckSubmit" class="btn btn-primary">复审完毕</button>
+        <button id="btnRecheckSubmit" class="btn btn-primary">审核完毕</button>
     </div>
 </div>
 <div class="result">
@@ -48,7 +48,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">复审编辑</h4>
+                <h4 class="modal-title">审核编辑</h4>
             </div>
             <div class="modal-body">
             </div>
@@ -88,7 +88,7 @@
             bindShopSelect();           
         });
         bindShopSelect();
-        // 加载复审类型
+        // 加载审核类型
         bindLabel("RecheckType");
         initRecheckTable();
         $("#btnQuery").click(function () {
@@ -128,7 +128,7 @@
         }
         var recheckTypeId = $("#LabelId").val();
         if (!recheckTypeId) {
-            alert("请选择复审类型！");
+            alert("请选择审核类型！");
             return
         }
         
@@ -221,38 +221,38 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "复审得分",
+                title: "审核得分",
                 field: "RecheckScore",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "通过复审",
+                title: "通过审核",
                 field: "PassRecheckName",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "复审意见",
+                title: "审核意见",
                 field: "RecheckContent",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "复审",
+                title: "审核",
                 field: "",
                 width: 60,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">复审</a>';
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">审核</a>';
                 }
             }, {
-                title: "复审时间",
+                title: "审核时间",
                 field: "RecheckDateTime",
                 width: 150,
                 valign: "middle",
@@ -266,7 +266,7 @@
     }
 
     function goEdit(id) {
-        $("#Modal .modal-title").html('复审编辑');
+        $("#Modal .modal-title").html('审核编辑');
         $("#Modal .modal-footer").show();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");

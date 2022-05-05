@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "复审管理";
+    ViewBag.Title = "审核管理";
 }
 <style>
     .link-btn-cell {
@@ -13,7 +13,7 @@
 </style>
 <div class="page-title">
     <div class="title_left">
-        <h3>复审列表 <small></small></h3>
+        <h3>审核列表 <small></small></h3>
     </div>
 </div>
 <div class="operation col-md-offset-6 form-horizontal">
@@ -43,7 +43,7 @@
                     <th style="width:250px">经销商名称</th>
                     <th style="width:70px">提交人</th>
                     <th style="width:130px">提交时间</th>
-                    <th style="width: 70px">复审状态</th>
+                    <th style="width: 70px">审核状态</th>
                     <th style="width: 70px">详细</th>
                 </tr>
             </thead>
@@ -57,11 +57,11 @@
         <table id="recheck-detail-table" class="table table-bordered table-set">
             <thead>
                 <tr>
-                    <th style="width: 100px">复审类型</th>
-                    <th style="width:80px">复审人</th>
-                    <th style="width: 130px">复审完毕时间</th>
-                    <th style="width: 80px">复审</th>
-                    <th style="width: 80px">复审完毕</th>
+                    <th style="width: 100px">审核类型</th>
+                    <th style="width:80px">审核人</th>
+                    <th style="width: 130px">审核完毕时间</th>
+                    <th style="width: 80px">审核</th>
+                    <th style="width: 80px">审核完毕</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -144,7 +144,7 @@
             tr.append($("<td></td>").html(item.RecheckTypeName));
             tr.append($("<td></td>").html(item.RecheckUserName));
             tr.append($("<td></td>").html(toNullString(item.FeedBRecheckDateTimeackDateTime).replace('T', ' ')));
-            var recheck = $("<a href='javascript:void(0)'>复审</a>");
+            var recheck = $("<a href='javascript:void(0)'>审核</a>");
             recheck.click(function () {
                 loadRecheckStatusDtl({
                     projectId: item.ProjectId,
@@ -154,7 +154,7 @@
                 });
             })
             tr.append($("<td></td>").append(recheck));
-            var recheckOver = $("<a href='javascript:void(0)'>复审完毕</a>");
+            var recheckOver = $("<a href='javascript:void(0)'>审核完毕</a>");
             recheckOver.click(function () {
                 loadRecheckStatusDtl({
                     projectId: item.ProjectId,

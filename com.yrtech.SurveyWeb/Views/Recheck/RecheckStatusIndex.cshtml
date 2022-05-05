@@ -39,7 +39,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">复审记录</h4>
+                <h4 class="modal-title">审核记录</h4>
             </div>
             <div class="modal-body">
             </div>
@@ -134,35 +134,35 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "提交复审",
+                title: "提交审核",
                 field: "Status_S1",
                 width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "复审进行中",
+                title: "审核进行中",
                 field: "Status_S2",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "复审完毕",
+                title: "审核完毕",
                 field: "Status_S3",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "复审详细",
+                title: "审核详细",
                 field: "",
                 width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:getRecheckStatusDtl();" style="min-width:100px">复审详细</a>';
+                    return '<a href="javascript:getRecheckStatusDtl();" style="min-width:100px">审核详细</a>';
                 }
             }],
             onClickRow: function (row, $element) {

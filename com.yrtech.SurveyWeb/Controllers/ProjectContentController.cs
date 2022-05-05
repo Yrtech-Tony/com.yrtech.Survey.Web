@@ -90,7 +90,7 @@ namespace com.yrtech.SurveyWeb.Controllers
 
             return View();
         }
-        #region 复审错误类型
+        #region 审核错误类型
         public ActionResult RecheckErrorTypeIndex()
         {
             return View();
@@ -100,7 +100,7 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialRecheckErrorTypeEdit");
         }
         #endregion
-        #region 复审类型
+        #region 审核类型
         public ActionResult RecheckTypeIndex()
         {
             return View();
