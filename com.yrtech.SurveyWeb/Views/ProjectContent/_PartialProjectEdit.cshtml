@@ -79,6 +79,7 @@
 
 <script>
     $("#Year").html($("#year-sel").html());
+    $("#Year").val(new Date().getFullYear());
     $("#BrandId").html($("#brand-sel").html());
     $("#ReportDeployDate").datetimepicker({
         format: 'yyyy-mm-dd hh:ii:ss',

@@ -77,12 +77,12 @@
             loadAnswerShopInfo();
         });
 
-        $("#btnAnswerShopAdd").click(function () {
-            $("#Modal").modal("show");
-            $("#Modal .modal-body").load("/ProjectContent/AnswerShopInfoEdit", {}, function () {
-            })
-            return false;
-        });
+        //$("#btnAnswerShopAdd").click(function () {
+        //    $("#Modal").modal("show");
+        //    $("#Modal .modal-body").load("/ProjectContent/AnswerShopInfoEdit", {}, function () {
+        //    })
+        //    return false;
+        //});
 
         initAnswerShopInfoTable();
         $("#btnQuery").click(function () {
@@ -190,10 +190,22 @@
     function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/ProjectContent/AnswerShopInfoEdit", {}, function () {
-            $("#answer-shop-info-form").setForm(curRow);
-            $("#answer-shop-info-form").data("json", JSON.stringify(curRow));
-        })
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/AnswerShopInfoEdit", {}, function () {
+                $("#answer-shop-info-form").setForm(curRow);
+                $("#answer-shop-info-form").data("json", JSON.stringify(curRow));
+            })
+        });
+       
     }
 
 </script>
