@@ -102,6 +102,11 @@
             pageSize: 10,
             pageList: [10],
             columns: [{
+                title: "ID",
+                field: "LossId",
+                width: 0,
+                visible: false
+            },{
                 title: "失分说明",
                 field: "LossDesc",
                 width: 120,
@@ -143,7 +148,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:delLossResutl();" style="min-width:100px">删除</a>';
+                    return '<a href="javascript:delLossResutl(' + row.LossId + ');" style="min-width:100px">删除</a>';
                 }
             }],
             onClickRow: function (row, $element) {
@@ -191,6 +196,7 @@
             //新增
             let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
             data.push({
+                LossId:fnGetMaxLossId()+1,
                 LossDesc: lossArr.join(','),
                 LossDesc2: $('#LossDesc2').val(),
                 LossFileNameUrl: LossFileNameUrl
@@ -266,8 +272,19 @@
         }, 300)
     }
 
-    function delLossResutl() {
+    function delLossResutl(lossId) {
+        $('#subject-lossResult-table').bootstrapTable('remove', {field: 'LossId',values: [lossId] });
+    }
 
+    var maxLossId = 0;
+    function fnGetMaxLossId() {
+        let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
+        for (var i = 0; i < data.length; i++) {
+            if (maxLossId < data[i].LossId) {
+                maxLossId = data[i].LossId;
+            }
+        }
+        return maxLossId;
     }
 </script>
 

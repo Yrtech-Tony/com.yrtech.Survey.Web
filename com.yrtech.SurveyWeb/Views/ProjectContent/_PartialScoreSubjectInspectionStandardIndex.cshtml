@@ -92,9 +92,4 @@
             closeModel();
         }, function () { });
     }
-    function delSubjectInspectionStandard() {
-        $.commonPost("Master/DeleteSubjectInspectionStandard", { SubjectId: curRow.SubjectId, SeqNO: curRow.SeqNO }, function () {
-            loadSubjectInspectionStandard();
-        });
-    }
 </script>
