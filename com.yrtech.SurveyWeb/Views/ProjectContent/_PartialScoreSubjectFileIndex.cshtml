@@ -103,6 +103,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
+                    curFileRow = row;
                     return '<a href="javascript:editSubjectFile();" style="min-width:100px">编辑</a>';
                 }
             }, {
@@ -113,6 +114,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
+                    curFileRow = row;
                     return '<a href="javascript:viewSubjectFile();" style="min-width:100px">查看</a>';
                 }
             }],
@@ -165,13 +167,20 @@
     }
 
     function viewSubjectFile() {
-        let fileList = curFileRow.Url?curLossRow.Url.split(','):[]
+        let fileList = curFileRow.Url ? curFileRow.Url.split(',') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
             return;
         }
-        var imgBox = $('#baguetteBox');
-        imgBox.empty()
+        if ($("#baguetteBox").length > 0) {
+            $("#baguetteBox").remove()
+        }
+        if ($("#baguetteBox-overlay").length > 0) {
+            $("#baguetteBox-overlay").remove()
+        }
+        
+        var imgBox = $('<div id="baguetteBox" class="baguetteBox" style="display:none">');
+        $(document.body).append(imgBox);
         var count = fileList.length;
         $.each(fileList, function (i, item) { 
             var imgUrl = loginUser.ossInfo.osshost + item;
@@ -185,11 +194,9 @@
 
             imgBox.append(imagA);
         })
-        baguetteBox.run('#baguetteBox', {
-            animation: 'fadeIn'
-        });
+        baguetteBox.run('#baguetteBox');
 
-        setTimeout(function () {
+        setTimeout(function () {            
             imgBox.find("a:first img").click();
         }, 300)
     } 
