@@ -212,7 +212,10 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:setUserBrand();" style="min-width:100px">关联品牌</a>';
+                    if (row.RoleType != 'S_Sysadmin') {
+                        return '<a href="javascript:setUserBrand();" style="min-width:100px">关联品牌</a>';
+                    }
+                    else { return '';}
                 }
             }, {
                 title: "关联经销商",

@@ -270,6 +270,7 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -375,11 +376,23 @@
         $("#Modal .modal-footer").show();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
-            debugger
-            $("#score-form").setForm(curRow);
-            $("#score-form").data("json", JSON.stringify(curRow));
-        })
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+                debugger
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+      
     }
 
     function goInspectionStandardIndex() {
@@ -387,10 +400,22 @@
         $("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
-            $("#score-form").setForm(curRow);
-            $("#score-form").data("json", JSON.stringify(curRow));
-        })
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+      
     }
 
     function goSubjectFileIndex() {
@@ -398,10 +423,22 @@
         $("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
-            $("#score-form").setForm(curRow);
-            $("#score-form").data("json", JSON.stringify(curRow));
-        })
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+      
     }
 
     function goSubjectLossIndex() {
@@ -409,10 +446,22 @@
         $("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
-            $("#score-form").setForm(curRow);
-            $("#score-form").data("json", JSON.stringify(curRow));
-        })
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+      
     }
 </script>
 
