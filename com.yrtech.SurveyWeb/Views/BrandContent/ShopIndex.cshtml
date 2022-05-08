@@ -118,6 +118,8 @@
         var params = $("#shop-form").serializeJson();
         var json = $("#shop-form").data("json");
         params.UseChk = $("#UseChk").is(":checked");
+        params.TenantId = loginUser.TenantId;
+        params.BrandId = $("#brand-sel").val();
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
@@ -125,7 +127,6 @@
         } else {
             //新增
             params = $.extend({
-                TenantId: loginUser.TenantId,
                 InUserId: loginUser.Id,
                 ModifyUserId: loginUser.Id
             }, params);
