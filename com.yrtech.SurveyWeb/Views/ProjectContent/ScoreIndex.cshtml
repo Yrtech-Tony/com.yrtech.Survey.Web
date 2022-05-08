@@ -99,6 +99,11 @@
                             <textarea id="LossDesc2" name="LossDesc2" class="form-control" style=""></textarea>
                         </div>
                     </div>
+                    <div>
+                        <button id="btnAddLossPic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                    </div>
+                    <div id="loss-file-pics" style="max-height:500px;overflow:auto">
+                    </div>
                     <div class="clearfix"></div>
                 </div>
             </div>
@@ -131,7 +136,7 @@
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
 
 <script>
-    var uploader;
+    var uploader, lossUploader;
     $(function () {
         uploader = undefined
         $('title').html('@ViewBag.Title')

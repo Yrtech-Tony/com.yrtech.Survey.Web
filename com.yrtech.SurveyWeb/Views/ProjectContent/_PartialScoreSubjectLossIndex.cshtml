@@ -1,16 +1,57 @@
-﻿
-<div style="float:right;">
+﻿<div style="float:right;">
     <button id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="addLossResult()" data-loading-text="提交中...">新增</button>
 
     <button id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveLossResult()" data-loading-text="提交中...">保存</button>
 </div>
 <table id="subject-lossResult-table" class="table table-bordered table-set"></table>
+<style>
+    #loss-file-pics .img-div {
+        float: left;
+        position: sticky;
+    }
+
+    #loss-file-pics i {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+    }
+</style>
+
 <script>
+    let LossFileNameUrl;
+    let curLossRow;
     $(function () {
         initSubjectLossResult();
         loadSubjectLossResult();
 
         $("#LossResultCheckList").find("input[type=checkbox]").iCheckParser();
+
+        var selProject = $("#project-sel").val()
+        var selShop = $("#shop-sel").val()
+        var osspath = "Survey/" + selProject + "/" + selShop + "/";
+        if (!lossUploader) {
+            lossUploader = new OSSClient({
+                osspath: osspath,
+                selectfiles: "btnAddLossPic",
+                autoupload: true,
+                success: function (files) {
+                    //调用导入方法
+                    let filePaths = []
+                    files.forEach(function (file) {
+                        filePaths.push(file.osspath)
+                    })
+                    if (LossFileNameUrl) {
+                        LossFileNameUrl += ',' + filePaths.join(',')
+                        bindLossUrlList(LossFileNameUrl.split(','))
+                    } else {
+                        LossFileNameUrl = filePaths.join(',')
+                        bindLossUrlList(filePaths)
+                    }
+
+                }
+            });
+        }
     })
 
     function closeLossModel() {
@@ -19,7 +60,29 @@
     function showLossModel() {
         $("#lossModal").modal("show");
     }
+    //绑定失分描述图片
+    function bindLossUrlList(fileList) {
+        $("#loss-file-pics").empty()
+        debugger
+        fileList.forEach(function (file) {
+            var imgDiv = $('<div class="img-div">');
 
+            var img = $('<img />')
+            img.css("width", 250).css("height", 250).css("margin", 5)
+            img.prop('src', osshost + file)
+            imgDiv.append(img);
+            let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
+            remove.click(function () {
+                fileList.splice(fileList.indexOf(file), 1);
+                LossFileNameUrl = fileList.join(',')
+                console.log('LossFileNameUrl', LossFileNameUrl)
+                bindLossUrlList(fileList)
+            })
+            imgDiv.append(remove);
+            $("#loss-file-pics").append(imgDiv)
+        })
+    }
+    //绑定失分描述checkbox
     function bindSubjectLossResultList(lossDic) {
         $("#LossResultCheckList").empty()
         lossDic.forEach(function (r) {
@@ -30,7 +93,7 @@
         })
         $("#LossResultCheckList").find("input[type=checkbox]").iCheckParser();
     }
-
+    //初始化失分描述表格
     function initSubjectLossResult() {
         $('#subject-lossResult-table').bootstrapTable({
             pagination: false,
@@ -88,9 +151,9 @@
             }
         });
     }
-
+    //查询失分描述
     function loadSubjectLossResult() {
-        curLossRow = undefined
+        debugger
         $('#subject-lossResult-table').bootstrapTable("showLoading");
         $.commonGet("Answer/GetShopAnswerScoreInfo", {
             projectId: $("#project-sel").val(),
@@ -104,24 +167,24 @@
                 let LossResult = item.LossResult?JSON.parse(item.LossResult):[]
                 $('#subject-lossResult-table').bootstrapTable("hideLoading");
                 $('#subject-lossResult-table').bootstrapTable("load", LossResult);
-
-                debugger
+                                
                 bindSubjectLossResultList(item.SubjectLossResultList)
             }
         });
     }
 
-    function saveCurLossResult() {        
+    function saveCurLossResult() {
+        debugger
         let lossArr = []
         $.each($("#LossResultCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
             let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
             lossArr.push( lossValue)
         });
-        debugger
         if (curLossRow) {
             //编辑
             curLossRow.LossDesc = lossArr.join(',');
             curLossRow.LossDesc2 = $('#LossDesc2').val()
+            curLossRow.LossFileNameUrl = LossFileNameUrl
             let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
             $('#subject-lossResult-table').bootstrapTable("load", data);
         } else {
@@ -129,7 +192,8 @@
             let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
             data.push({
                 LossDesc: lossArr.join(','),
-                LossDesc2:$('#LossDesc2').val()
+                LossDesc2: $('#LossDesc2').val(),
+                LossFileNameUrl: LossFileNameUrl
             })
             $('#subject-lossResult-table').bootstrapTable("load", data);
         }
@@ -146,15 +210,16 @@
     }
 
     function addLossResult() {
-        showLossModel();
+        $('#loss-file-pics').empty()        
         $('#LossDesc2').val('')
         $.each($("#LossResultCheckList").find("input[type=checkbox]"), function (i, checkbox) {
             $(checkbox).iCheck('uncheck');
         });
+        showLossModel();
     }
 
     function editLossResult() {
-        showLossModel();       
+        LossFileNameUrl = curLossRow.LossFileNameUrl
         curLossRow.LossDesc2 = curLossRow.LossDesc2||''
         curLossRow.LossDesc = curLossRow.LossDesc || ''
         $('#LossDesc2').val(curLossRow.LossDesc2)
@@ -166,10 +231,13 @@
                 $(checkbox).iCheck('check');
             }
         });
+        let fileList = LossFileNameUrl ? LossFileNameUrl.split(',') : []
+        bindLossUrlList(fileList)
+        showLossModel();
     }
 
     function viewLossFile() {
-        let fileList = curLossRow.LossFileNameUrl?curLossRow.LossFileNameUrl.split(','):[]
+        let fileList = LossFileNameUrl?LossFileNameUrl.split(','):[]
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
             return;
