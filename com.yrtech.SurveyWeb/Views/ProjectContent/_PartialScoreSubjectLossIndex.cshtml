@@ -218,6 +218,7 @@
     }
 
     function addLossResult() {
+        curLossRow = null
         $('#loss-file-pics').empty()        
         $('#LossDesc2').val('')
         $.each($("#LossResultCheckList").find("input[type=checkbox]"), function (i, checkbox) {
