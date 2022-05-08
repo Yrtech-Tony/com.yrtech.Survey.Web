@@ -85,13 +85,13 @@
             columns: [{
                 title: "序号",
                 field: 'SeqNO',
-                width: 120,
+                width: 60,
                 valign: "middle",
                 align: "center",
             }, {
                 title: "拍照点",
                 field: "FileName",
-                width: 120,
+                width: 180,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -107,15 +107,15 @@
                     return '<a href="javascript:editSubjectFile();" style="min-width:100px">编辑</a>';
                 }
             }, {
-                title: "查看",
+                title: "查看照片",
                 field: "",
-                width: 60,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
                     curFileRow = row;
-                    return '<a href="javascript:viewSubjectFile();" style="min-width:100px">查看</a>';
+                    return '<a href="javascript:viewSubjectFile();" style="min-width:100px">查看照片</a>';
                 }
             }],
             onClickRow: function (row, $element) {

@@ -138,9 +138,15 @@
             pageSize: 15,
             pageList: [5, 10, 20, 50],
             columns: [{
+                title: "序号",
+                field: "OrderNO",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
                 title: "题目代码",
                 field: 'SubjectCode',
-                width: 120,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -149,13 +155,6 @@
             }, {
                 title: "检查点",
                 field: "CheckPoint",
-                width: 120,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "序号",
-                field: "OrderNO",
                 width: 100,
                 valign: "middle",
                 align: "center",
@@ -163,21 +162,21 @@
             }, {
                 title: "最高分",
                 field: "FullScore",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "最低分",
                 field: "LowScore",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "执行方式",
                 field: "Implementation",
-                width: 100,
+                width: 80,
                 valign: "center",
                 align: "center",
                 sortable: false

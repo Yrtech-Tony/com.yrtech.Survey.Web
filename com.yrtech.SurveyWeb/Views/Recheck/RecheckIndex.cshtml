@@ -44,7 +44,7 @@
     <table id="recheck-table" class="table table-bordered table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -64,6 +64,8 @@
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
 
+<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
+<script src="~/Content/baguetteBox/baguetteBox.js"></script>
 
 <script>
     $(function () {
@@ -271,9 +273,8 @@
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .modal-body").load("/Recheck/RecheckEdit", {}, function () {
-            //debugger
-            $("#answer-form").setForm(curRow);
-            $("#answer-form").data("json", JSON.stringify(curRow));
+            $('#recheck-form').setForm(curRow)
+            $("#recheck-form").data("json", JSON.stringify(curRow));
         })
     }
 </script>

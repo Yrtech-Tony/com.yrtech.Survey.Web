@@ -116,7 +116,7 @@
             }, {
                 title: "补充失分说明",
                 field: "LossDesc2",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -132,15 +132,15 @@
                     return '<a href="javascript:editLossResult();" style="min-width:100px">编辑</a>';
                 }
             }, {
-                title: "查看",
+                title: "查看照片",
                 field: "",
-                width: 60,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
                     curLossRow = row;
-                    return '<a href="javascript:viewLossFile();" style="min-width:100px">查看</a>';
+                    return '<a href="javascript:viewLossFile();" style="min-width:100px">查看照片</a>';
                 }
             }, {
                 title: "删除",
