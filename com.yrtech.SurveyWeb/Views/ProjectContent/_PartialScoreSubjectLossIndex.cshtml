@@ -42,10 +42,10 @@
                         filePaths.push(file.osspath)
                     })
                     if (LossFileNameUrl) {
-                        LossFileNameUrl += ',' + filePaths.join(',')
-                        bindLossUrlList(LossFileNameUrl.split(','))
+                        LossFileNameUrl += ',' + filePaths.join(';')
+                        bindLossUrlList(LossFileNameUrl.split(';'))
                     } else {
-                        LossFileNameUrl = filePaths.join(',')
+                        LossFileNameUrl = filePaths.join(';')
                         bindLossUrlList(filePaths)
                     }
 
@@ -74,7 +74,7 @@
             let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
             remove.click(function () {
                 fileList.splice(fileList.indexOf(file), 1);
-                LossFileNameUrl = fileList.join(',')
+                LossFileNameUrl = fileList.join(';')
                 console.log('LossFileNameUrl', LossFileNameUrl)
                 bindLossUrlList(fileList)
             })
@@ -189,7 +189,7 @@
         });
         if (curLossRow) {
             //编辑
-            curLossRow.LossDesc = lossArr.join(',');
+            curLossRow.LossDesc = lossArr.join(';');
             curLossRow.LossDesc2 = $('#LossDesc2').val()
             curLossRow.LossFileNameUrl = LossFileNameUrl
             let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
@@ -199,7 +199,7 @@
             let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
             data.push({
                 LossId:fnGetMaxLossId()+1,
-                LossDesc: lossArr.join(','),
+                LossDesc: lossArr.join(';'),
                 LossDesc2: $('#LossDesc2').val(),
                 LossFileNameUrl: LossFileNameUrl
             })
@@ -232,7 +232,7 @@
         curLossRow.LossDesc2 = curLossRow.LossDesc2||''
         curLossRow.LossDesc = curLossRow.LossDesc || ''
         $('#LossDesc2').val(curLossRow.LossDesc2)
-        let lossDescArr = curLossRow.LossDesc.split(',')
+        let lossDescArr = curLossRow.LossDesc.split(';')
         $.each($("#LossResultCheckList").find("input[type=checkbox]"),function (i,checkbox) {
             let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
             console.log('checkbox value', lossValue)
