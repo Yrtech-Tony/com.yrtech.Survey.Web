@@ -1,4 +1,4 @@
-﻿ @{
+﻿@{
     ViewBag.Title = "审核管理";
 }
 
@@ -87,7 +87,7 @@
             bindProjectSelect();
         });
         $("#project-sel").change(function () {
-            bindShopSelect();           
+            bindShopSelect();
         });
         bindShopSelect();
         // 加载审核类型
@@ -133,7 +133,7 @@
             alert("请选择审核类型！");
             return
         }
-        
+
         $("#btnRecheckSubmit").button("loading");
         $.commonPost("Recheck/SaveRecheckStatusDtl", {
             ProjectId: $("#project-sel").val(),
@@ -159,7 +159,7 @@
         }
         $('#recheck-table').bootstrapTable("showLoading");
         $.commonGet("Recheck/GetShopRecheckScoreInfo", {
-            projectId:  $("#project-sel").val(),
+            projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
             subjectId: '',
             recheckTypeId: $("#LabelId").val()
@@ -182,6 +182,16 @@
             pageSize: 15,
             pageList: [5, 10, 20, 50],
             columns: [{
+                title: "审核",
+                field: "",
+                width: 60,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">审核</a>';
+                }
+            }, {
                 title: "经销商代码",
                 field: 'ShopCode',
                 width: 120,
@@ -244,16 +254,6 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            }, {
-                title: "审核",
-                field: "",
-                width: 60,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">审核</a>';
-                }
             }, {
                 title: "审核时间",
                 field: "RecheckDateTime",
