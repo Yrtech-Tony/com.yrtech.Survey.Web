@@ -158,11 +158,12 @@
             projectId: curRow.ProjectId,
             shopId: curRow.ShopId,
             recheckTypeId: curRow.RecheckTypeId,
-            orderNO: curRow.OrderNO
+            orderNO: curAnswer.OrderNO
         }, function (data) {
             if (data && data.length > 0) {
                 let item = data[0]
                 console.log('ge next answer', item)
+                curAnswer = item
                 bindAnswerInfo(item);
 
                 //第二步 获取上一个复审信息
@@ -170,10 +171,11 @@
                     projectId: item.ProjectId,
                     shopId: item.ShopId,
                     subjectId: item.SubjectId,
-                    recheckTypeId: item.RecheckTypeId
+                    recheckTypeId: curRow.RecheckTypeId
                 }, function (data) {
                     if (data && data.length > 0) {
                         let item = data[0]
+                       
                         console.log('ge next Recheck', item)
                         bindRecheckInfo(item);
                     }
@@ -200,11 +202,12 @@
                 projectId: curRow.ProjectId,
                 shopId: curRow.ShopId,
                 recheckTypeId: curRow.RecheckTypeId,
-                orderNO: curRow.OrderNO
+                orderNO: curAnswer.OrderNO
             }, function (data) {
                 if (data && data.length > 0) {
                     let item = data[0]
                     console.log('ge next answer', item)
+                    curAnswer = item
                     bindAnswerInfo(item);
 
                     //第三步 获取下一个复审信息
@@ -212,7 +215,7 @@
                         projectId: item.ProjectId,
                         shopId: item.ShopId,
                         subjectId: item.SubjectId,
-                        recheckTypeId: item.RecheckTypeId
+                        recheckTypeId: curRow.RecheckTypeId
                     }, function (data) {
                         if (data && data.length > 0) {
                             let item = data[0]
@@ -239,24 +242,30 @@
     }
 
     function bindRecheckErrorResult(item) {
-        let errorArr = item.ReCheckError.split(';')
-        $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
-            let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
-            console.log('checkbox value', errValue)
-            if (errorArr.indexOf(errValue) >= 0) {
-                $(checkbox).iCheck('check');
-            }
-        });
+        if (item.ReCheckError) {
+            let errorArr = item.ReCheckError.split(';')
+            $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
+                let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+                console.log('checkbox value', errValue)
+                if (errorArr.indexOf(errValue) >= 0) {
+                    $(checkbox).iCheck('check');
+                }
+            });
+        } else{
+            $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
+                $(checkbox).iCheck('uncheck');
+            });
+        }       
     }
 
     function bindRecheckInfo(item) {
-        $('#recheck-form').setForm(item)
-        $('#ReCheckScore').iCheck(item.PassRecheck ? 'check' : 'uncheck');
+        $('#ReCheckScore').val(item.ReCheckScore)
+        $('#RecheckContent').val(item.RecheckContent)
+        $('#PassRecheck').iCheck(item.PassRecheck ? 'check' : 'uncheck');
         bindRecheckErrorResult(item)
     }
 
     function bindRecheckErrors() {
-        debugger
         $.commonGet("Master/GetLabel", {
             brandId: $('#brand-sel').val(),
             labelType: 'RecheckErrorType',
@@ -272,14 +281,14 @@
 
     //绑定失分描述checkbox
     function bindRecheckErrorChecks(data) {
-        $("#RecheckError").empty()
+        $("#RecheckErrorCheckList").empty()
         data.forEach(function (r) {
             var checkbox = $('<label class="col-md-6"><input type="checkbox"> <span class="checkbox-label"></span></label>')
             checkbox.find('span').text(r.LabelName)
             checkbox.find('inout:checkbox').val(r.LabelId)
-            $("#RecheckError").append(checkbox)
+            $("#RecheckErrorCheckList").append(checkbox)
         })
-        $("#RecheckError").find("input[type=checkbox]").iCheckParser();
+        $("#RecheckErrorCheckList").find("input[type=checkbox]").iCheckParser();
     }
 
     function initInspection() {
@@ -363,6 +372,8 @@
             }]
         });
     }
+
+    var curAnswer
     function loadAnswerInfo() {
         $.commonGet("Answer/GetShopAnswerScoreInfo", {
             projectId: curRow.ProjectId,
@@ -372,6 +383,7 @@
         }, function (data) {
             if (data && data.length > 0) {
                 let item = data[0]
+                curAnswer = item
                 console.log('get answer',item)
                 bindAnswerInfo(item)
             }
@@ -390,7 +402,7 @@
     }
 
     function viewPicutes(url) {
-        let fileList = url ? url.split(',') : []
+        let fileList = url ? url.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
             return;

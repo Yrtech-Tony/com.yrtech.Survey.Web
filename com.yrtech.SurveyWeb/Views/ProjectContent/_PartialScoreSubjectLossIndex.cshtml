@@ -240,13 +240,13 @@
                 $(checkbox).iCheck('check');
             }
         });
-        let fileList = LossFileNameUrl ? LossFileNameUrl.split(',') : []
+        let fileList = LossFileNameUrl ? LossFileNameUrl.split(';') : []
         bindLossUrlList(fileList)
         showLossModel();
     }
 
     function viewLossFile() {
-        let fileList = curLossRow.LossFileNameUrl ? curLossRow.LossFileNameUrl.split(',') : []
+        let fileList = curLossRow.LossFileNameUrl ? curLossRow.LossFileNameUrl.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
             return;
