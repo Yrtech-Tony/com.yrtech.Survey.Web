@@ -287,9 +287,7 @@
         //$("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/Recheck/RecheckEdit", {}, function () {
-            bindRecheckInfo(curRow)
-            console.log('curRow',curRow)
+        $("#Modal .modal-body").load("/Recheck/RecheckEdit", {}, function () {           
         })
     }
 </script>

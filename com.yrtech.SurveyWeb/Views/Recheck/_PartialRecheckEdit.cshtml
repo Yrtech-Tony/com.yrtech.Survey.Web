@@ -19,10 +19,10 @@
                 <div class="form-group">
                     <a id="btnNext" class="btn btn-primary" style="margin-right:0px" onclick="nextSubject()">下一题</a>
                 </div>
-                <div class="form-group">
+                @*<div class="form-group">
                     <input id="toSeqNo" style="width:60px!important" class="form-control" />
                     <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="toSubjectSeqNo()">转到</a>
-                </div>
+                </div>*@
             </div>
         </div>
         <div class="clearfix"></div>
@@ -119,7 +119,7 @@
                         <div class="form-group">
                             <label class="control-label  col-md-3" for="ReCheckScore">建议得分:</label>
                             <div class="col-md-8">
-                                <input id="ReCheckScore" name="ReCheckScore" type="text" class="form-control">
+                                <input id="RecheckScore" name="RecheckScore" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="form-group">
@@ -144,6 +144,8 @@
 <script>
     $(function () {
         $("#PassRecheck").iCheckParser();
+        console.log('curRow', curRow)
+        bindRecheckInfo(curRow)       
 
         initInspection();
         initPhoto();
@@ -158,11 +160,12 @@
             projectId: curRow.ProjectId,
             shopId: curRow.ShopId,
             recheckTypeId: curRow.RecheckTypeId,
-            orderNO: curRow.OrderNO
+            orderNO: curAnswer.OrderNO
         }, function (data) {
             if (data && data.length > 0) {
                 let item = data[0]
-                console.log('ge next answer', item)
+                console.log('ge prev answer', item)
+                curAnswer = item
                 bindAnswerInfo(item);
 
                 //第二步 获取上一个复审信息
@@ -170,11 +173,12 @@
                     projectId: item.ProjectId,
                     shopId: item.ShopId,
                     subjectId: item.SubjectId,
-                    recheckTypeId: item.RecheckTypeId
+                    recheckTypeId: curRow.RecheckTypeId
                 }, function (data) {
                     if (data && data.length > 0) {
                         let item = data[0]
-                        console.log('ge next Recheck', item)
+                       
+                        console.log('ge prev Recheck', item)
                         bindRecheckInfo(item);
                     }
                 });
@@ -183,28 +187,30 @@
     }
        
     function nextSubject() {   
-        console.log('PassRecheck checked=',$("#PassRecheck").is(":checked"))
-        let ReCheckError = loadRecheckError()
+        console.log('c',$("#PassRecheck").is(":checked"))
+        let RecheckError = loadRecheckError()
         //第一步 保存复审信息
         $.commonPost("Recheck/SaveShopRecheckInfo", {
             ProjectId: curRow.ProjectId,
             ShopId: curRow.ShopId,
             SubjectId: curRow.SubjectId,
             PassReCheck: $("#PassRecheck").is(":checked"),
-            ReCheckError: ReCheckError,
-            ReCheckScore:$("#ReCheckScore").val(),
-            ReCheckUserId:loginUser.Id
+            ReCheckScore: $("#RecheckScore").val(),
+            ReCheckContent: $("#RecheckContent").val(),
+            ReCheckError: RecheckError,
+            ReCheckUserId: loginUser.Id
         }, function (data) {
             //第二步 获取下一个得分
             $.commonGet("Recheck/GetShopNextRecheckSubject", {
                 projectId: curRow.ProjectId,
                 shopId: curRow.ShopId,
                 recheckTypeId: curRow.RecheckTypeId,
-                orderNO: curRow.OrderNO
+                orderNO: curAnswer.OrderNO
             }, function (data) {
                 if (data && data.length > 0) {
                     let item = data[0]
                     console.log('ge next answer', item)
+                    curAnswer = item
                     bindAnswerInfo(item);
 
                     //第三步 获取下一个复审信息
@@ -212,7 +218,7 @@
                         projectId: item.ProjectId,
                         shopId: item.ShopId,
                         subjectId: item.SubjectId,
-                        recheckTypeId: item.RecheckTypeId
+                        recheckTypeId: curRow.RecheckTypeId
                     }, function (data) {
                         if (data && data.length > 0) {
                             let item = data[0]
@@ -226,7 +232,8 @@
     }
 
     function toSubjectSeqNo() {
-
+        //未实现
+        
     }
 
     function loadRecheckError() {
@@ -239,24 +246,30 @@
     }
 
     function bindRecheckErrorResult(item) {
-        let errorArr = item.ReCheckError.split(';')
-        $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
-            let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
-            console.log('checkbox value', errValue)
-            if (errorArr.indexOf(errValue) >= 0) {
-                $(checkbox).iCheck('check');
-            }
-        });
+        if (item.RecheckError) {
+            let errorArr = item.RecheckError.split(';')
+            $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
+                let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+                console.log('checkbox value', errValue)
+                if (errorArr.indexOf(errValue) >= 0) {
+                    $(checkbox).iCheck('check');
+                }
+            });
+        } else{
+            $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
+                $(checkbox).iCheck('uncheck');
+            });
+        }       
     }
 
     function bindRecheckInfo(item) {
-        $('#recheck-form').setForm(item)
-        $('#ReCheckScore').iCheck(item.PassRecheck ? 'check' : 'uncheck');
+        $('#RecheckScore').val(item.RecheckScore)
+        $('#RecheckContent').val(item.RecheckContent)
+        $('#PassRecheck').iCheck(item.PassRecheck ? 'check' : 'uncheck');
         bindRecheckErrorResult(item)
     }
 
     function bindRecheckErrors() {
-        debugger
         $.commonGet("Master/GetLabel", {
             brandId: $('#brand-sel').val(),
             labelType: 'RecheckErrorType',
@@ -270,16 +283,16 @@
         });
     }
 
-    //绑定失分描述checkbox
+    //绑定错误类型checkbox
     function bindRecheckErrorChecks(data) {
-        $("#RecheckError").empty()
+        $("#RecheckErrorCheckList").empty()
         data.forEach(function (r) {
             var checkbox = $('<label class="col-md-6"><input type="checkbox"> <span class="checkbox-label"></span></label>')
             checkbox.find('span').text(r.LabelName)
             checkbox.find('inout:checkbox').val(r.LabelId)
-            $("#RecheckError").append(checkbox)
+            $("#RecheckErrorCheckList").append(checkbox)
         })
-        $("#RecheckError").find("input[type=checkbox]").iCheckParser();
+        $("#RecheckErrorCheckList").find("input[type=checkbox]").iCheckParser();
     }
 
     function initInspection() {
@@ -363,6 +376,8 @@
             }]
         });
     }
+
+    var curAnswer
     function loadAnswerInfo() {
         $.commonGet("Answer/GetShopAnswerScoreInfo", {
             projectId: curRow.ProjectId,
@@ -372,6 +387,7 @@
         }, function (data) {
             if (data && data.length > 0) {
                 let item = data[0]
+                curAnswer = item
                 console.log('get answer',item)
                 bindAnswerInfo(item)
             }
@@ -390,7 +406,7 @@
     }
 
     function viewPicutes(url) {
-        let fileList = url ? url.split(',') : []
+        let fileList = url ? url.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
             return;
