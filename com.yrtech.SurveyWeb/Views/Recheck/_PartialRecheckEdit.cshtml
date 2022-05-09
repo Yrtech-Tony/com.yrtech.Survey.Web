@@ -119,7 +119,7 @@
                         <div class="form-group">
                             <label class="control-label  col-md-3" for="ReCheckScore">建议得分:</label>
                             <div class="col-md-8">
-                                <input id="ReCheckScore" name="ReCheckScore" type="text" class="form-control">
+                                <input id="RecheckScore" name="RecheckScore" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="form-group">
@@ -144,6 +144,8 @@
 <script>
     $(function () {
         $("#PassRecheck").iCheckParser();
+        console.log('curRow', curRow)
+        bindRecheckInfo(curRow)       
 
         initInspection();
         initPhoto();
@@ -162,7 +164,7 @@
         }, function (data) {
             if (data && data.length > 0) {
                 let item = data[0]
-                console.log('ge next answer', item)
+                console.log('ge prev answer', item)
                 curAnswer = item
                 bindAnswerInfo(item);
 
@@ -176,7 +178,7 @@
                     if (data && data.length > 0) {
                         let item = data[0]
                        
-                        console.log('ge next Recheck', item)
+                        console.log('ge prev Recheck', item)
                         bindRecheckInfo(item);
                     }
                 });
@@ -185,17 +187,18 @@
     }
        
     function nextSubject() {   
-        console.log('PassRecheck checked=',$("#PassRecheck").is(":checked"))
-        let ReCheckError = loadRecheckError()
+        console.log('c',$("#PassRecheck").is(":checked"))
+        let RecheckError = loadRecheckError()
         //第一步 保存复审信息
         $.commonPost("Recheck/SaveShopRecheckInfo", {
             ProjectId: curRow.ProjectId,
             ShopId: curRow.ShopId,
             SubjectId: curRow.SubjectId,
             PassReCheck: $("#PassRecheck").is(":checked"),
-            ReCheckError: ReCheckError,
-            ReCheckScore:$("#ReCheckScore").val(),
-            ReCheckUserId:loginUser.Id
+            ReCheckScore: $("#RecheckScore").val(),
+            ReCheckContent: $("#RecheckContent").val(),
+            ReCheckError: RecheckError,
+            ReCheckUserId: loginUser.Id
         }, function (data) {
             //第二步 获取下一个得分
             $.commonGet("Recheck/GetShopNextRecheckSubject", {
@@ -242,8 +245,8 @@
     }
 
     function bindRecheckErrorResult(item) {
-        if (item.ReCheckError) {
-            let errorArr = item.ReCheckError.split(';')
+        if (item.RecheckError) {
+            let errorArr = item.RecheckError.split(';')
             $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
                 let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
                 console.log('checkbox value', errValue)
@@ -259,7 +262,7 @@
     }
 
     function bindRecheckInfo(item) {
-        $('#ReCheckScore').val(item.ReCheckScore)
+        $('#RecheckScore').val(item.RecheckScore)
         $('#RecheckContent').val(item.RecheckContent)
         $('#PassRecheck').iCheck(item.PassRecheck ? 'check' : 'uncheck');
         bindRecheckErrorResult(item)
@@ -279,7 +282,7 @@
         });
     }
 
-    //绑定失分描述checkbox
+    //绑定错误类型checkbox
     function bindRecheckErrorChecks(data) {
         $("#RecheckErrorCheckList").empty()
         data.forEach(function (r) {
