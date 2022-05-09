@@ -2,115 +2,258 @@
     .form-horizontal label {
         padding-right: 0px;
     }
+    .panel {
+        margin-bottom: 5px;
+    }
+    .panel-heading {
+        padding: 6px 10px;
+    }
 </style>
-<div style="height:600px; overflow:auto">
-
-    <div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+<div style="height:700px; overflow:auto">
+    <div class="container col-md-12">
         <div class="item form-group" style="float:right;">
             <div class="form-inline">
                 <div class="form-group">
-                    <a id="btnPre" class="btn btn-primary" style="margin-right:0px" onclick="saveUserInfoObject()">上一题</a>
+                    <a id="btnPre" class="btn btn-primary" style="margin-right:0px" onclick="prevSubject()">上一题</a>
                 </div>
                 <div class="form-group">
-                    <a id="btnNext" class="btn btn-primary" style="margin-right:0px" onclick="saveUserInfoObject()">下一题</a>
+                    <a id="btnNext" class="btn btn-primary" style="margin-right:0px" onclick="nextSubject()">下一题</a>
                 </div>
                 <div class="form-group">
-                    <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="saveUserInfoObject()">转到</a>
+                    <input id="toSeqNo" style="width:60px!important" class="form-control" />
+                    <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="toSubjectSeqNo()">转到</a>
                 </div>
             </div>
         </div>
         <div class="clearfix"></div>
     </div>
-    <form class="form-horizontal" id="answer-form">
-        <div class="form-group col-md-4">
-            <label class="control-label  col-md-4" for="OrderNO">题目序号:</label>
-            <div class="col-md-8">
-                <input id="OrderNO" name="OrderNO" type="text" class="form-control" readonly>
-            </div>
-        </div>
-        <div class="form-group col-md-4">
-            <label class="control-label  col-md-4" for="SubjectCode">题目代码:</label>
-            <div class="col-md-8">
-                <input id="SubjectCode" name="SubjectCode" type="text" class="form-control" readonly>
-            </div>
-        </div>
-        <div class="form-group col-md-4">
-            <label class="control-label  col-md-4" for="CheckPoint">检查点:</label>
-            <div class="col-md-8">
-                <input id="CheckPoint" name="CheckPoint" type="text" class="form-control" readonly>
-            </div>
-        </div>
-        <div class="form-group col-md-4">
-            <label class="control-label  col-md-4" for="Desc">说明:</label>
-            <div class="col-md-8">
-                <input id="Desc" name="Desc" type="text" class="form-control" readonly>
-            </div>
-        </div>
-        <div class="form-group col-md-8">
-            <label class="control-label  col-md-2" for="InspectionDesc">检查标准说明:</label>
-            <div class="col-md-10">
-                <input id="InspectionDesc" name="CheckPoint" type="text" class="form-control" readonly>
-            </div>
-        </div>
-        <div class="form-group col-md-4">
-            <label class="control-label  col-md-4" for="PhotoScore">得分:</label>
-            <div class="col-md-8">
-                <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" readonly>
-            </div>
-        </div>
+    <div class="container col-md-12">
+        <div class="panel panel-default" >
+            <div class="panel-heading">得分信息</div>
+            <div class="panel-body" style="padding: 0; padding-top:8px; ">
+                <form class="form-horizontal" id="answer-form">
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-4" for="OrderNO">题目序号:</label>
+                        <div class="col-md-8">
+                            <input id="OrderNO" name="OrderNO" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-4" for="SubjectCode">题目代码:</label>
+                        <div class="col-md-8">
+                            <input id="SubjectCode" name="SubjectCode" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-4" for="CheckPoint">检查点:</label>
+                        <div class="col-md-8">
+                            <input id="CheckPoint" name="CheckPoint" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-4" for="Desc">说明:</label>
+                        <div class="col-md-8">
+                            <input id="Desc" name="Desc" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label class="control-label  col-md-2" for="InspectionDesc">检查标准说明:</label>
+                        <div class="col-md-10">
+                            <input id="InspectionDesc" name="CheckPoint" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-4" for="PhotoScore">得分:</label>
+                        <div class="col-md-8">
+                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
 
-        <div class="form-group col-md-8">
-            <label class="control-label  col-md-2" for="Remark">备注:</label>
-            <div class="col-md-10">
-                <input id="Remark" name="Remark" type="text" class="form-control" readonly>
-            </div>
-        </div>
-    </form>
-    <div class="form-group col-lg-6">
-        <table id="ins-table" class="table table-bordered table-set"></table>
-    </div>
-    <div class="form-group col-lg-6">
-        <table id="photo-table" class="table table-bordered table-set"></table>
-    </div>
-    <div class="form-group col-lg-6">
-        <table id="lossresult-table" class="table table-bordered table-set"></table>
-    </div>
-     
-   <form class="form-horizontal col-md-6" id="recheck-form">
-        <div class="form-group">
-            <label class="control-label  col-md-3" for="PassRecheck">是否通过:</label>
-            <div class="col-md-8">
-                <input id="PassRecheck" type="text" class="form-control">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label  col-md-3" for="ReCheckScore">建议得分:</label>
-            <div class="col-md-8">
-                <input id="ReCheckScore" type="text" class="form-control">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label  col-md-3" for="RecheckContent">审核意见:</label>
-            <div class="col-md-8">
-                <input id="RecheckContent" type="text" class="form-control">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label  col-md-3" for="PhotoScore">错误类型:</label>
-            <div id="RecheckError" class="col-md-8" style="margin-top: 5px;">
-            </div>
-        </div>
+                    <div class="form-group col-md-8">
+                        <label class="control-label  col-md-2" for="Remark">备注:</label>
+                        <div class="col-md-10">
+                            <input id="Remark" name="Remark" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                </form>
 
-    </form>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">检查标准</div>
+                <div class="panel-body" style="padding: 0; height: 180px; overflow: auto">
+                    <table id="ins-table" class="table table-bordered table-set"></table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">标准照片</div>
+                <div class="panel-body" style="padding: 0; height: 180px; overflow: auto; ">
+                    <table id="photo-table" class="table table-bordered "></table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">失分描述</div>
+                <div class="panel-body" style="padding: 0; height: 200px; overflow: auto; ">
+                    <table id="lossresult-table" class="table table-bordered"></table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">复审信息</div>
+                <div class="panel-body" style="padding: 0;padding-bottom:5px; height: 200px; overflow: auto">
+                    <form class="form-horizontal" id="recheck-form">
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="PassRecheck">是否通过:</label>
+                            <div class="col-md-8" >
+                                <div style="margin-top:5px;"><input id="PassRecheck" name="PassRecheck" type="checkbox"></div>                               
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="ReCheckScore">建议得分:</label>
+                            <div class="col-md-8">
+                                <input id="ReCheckScore" name="ReCheckScore" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="RecheckContent">审核意见:</label>
+                            <div class="col-md-8">
+                                <input id="RecheckContent" name="RecheckContent" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="PhotoScore">错误类型:</label>
+                            <div id="RecheckErrorCheckList" class="col-md-8" style="margin-top: 5px;">
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 <script>
     $(function () {
+        $("#PassRecheck").iCheckParser();
+
         initInspection();
         initPhoto();
         initLossResult();
         loadAnswerInfo();
         bindRecheckErrors()
     })
+
+    function prevSubject() {
+        //第一步 获取上一个得分
+        $.commonGet("Recheck/GetShopPreRecheckSubject", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId,
+            recheckTypeId: curRow.RecheckTypeId,
+            orderNO: curRow.OrderNO
+        }, function (data) {
+            if (data && data.length > 0) {
+                let item = data[0]
+                console.log('ge next answer', item)
+                bindAnswerInfo(item);
+
+                //第二步 获取上一个复审信息
+                $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+                    projectId: item.ProjectId,
+                    shopId: item.ShopId,
+                    subjectId: item.SubjectId,
+                    recheckTypeId: item.RecheckTypeId
+                }, function (data) {
+                    if (data && data.length > 0) {
+                        let item = data[0]
+                        console.log('ge next Recheck', item)
+                        bindRecheckInfo(item);
+                    }
+                });
+            }
+        });
+    }
+       
+    function nextSubject() {   
+        console.log('PassRecheck checked=',$("#PassRecheck").is(":checked"))
+        let ReCheckError = loadRecheckError()
+        //第一步 保存复审信息
+        $.commonPost("Recheck/SaveShopRecheckInfo", {
+            ProjectId: curRow.ProjectId,
+            ShopId: curRow.ShopId,
+            SubjectId: curRow.SubjectId,
+            PassReCheck: $("#PassRecheck").is(":checked"),
+            ReCheckError: ReCheckError,
+            ReCheckScore:$("#ReCheckScore").val(),
+            ReCheckUserId:loginUser.Id
+        }, function (data) {
+            //第二步 获取下一个得分
+            $.commonGet("Recheck/GetShopNextRecheckSubject", {
+                projectId: curRow.ProjectId,
+                shopId: curRow.ShopId,
+                recheckTypeId: curRow.RecheckTypeId,
+                orderNO: curRow.OrderNO
+            }, function (data) {
+                if (data && data.length > 0) {
+                    let item = data[0]
+                    console.log('ge next answer', item)
+                    bindAnswerInfo(item);
+
+                    //第三步 获取下一个复审信息
+                    $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+                        projectId: item.ProjectId,
+                        shopId: item.ShopId,
+                        subjectId: item.SubjectId,
+                        recheckTypeId: item.RecheckTypeId
+                    }, function (data) {
+                        if (data && data.length > 0) {
+                            let item = data[0]
+                            console.log('ge next Recheck', item)
+                            bindRecheckInfo(item);
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    function toSubjectSeqNo() {
+
+    }
+
+    function loadRecheckError() {
+        let errorArr = []
+        $.each($("#RecheckErrorCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
+            let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            errorArr.push(errValue)
+        });
+        return errorArr.join(";")
+    }
+
+    function bindRecheckErrorResult(item) {
+        let errorArr = item.ReCheckError.split(';')
+        $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
+            let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            console.log('checkbox value', errValue)
+            if (errorArr.indexOf(errValue) >= 0) {
+                $(checkbox).iCheck('check');
+            }
+        });
+    }
+
+    function bindRecheckInfo(item) {
+        $('#recheck-form').setForm(item)
+        $('#ReCheckScore').iCheck(item.PassRecheck ? 'check' : 'uncheck');
+        bindRecheckErrorResult(item)
+    }
 
     function bindRecheckErrors() {
         debugger
@@ -120,7 +263,7 @@
             useChk: true,
             labelId: ""
         }, function (data) {
-            console.log('get label',data)
+            console.log('get label', data)
             if (data && data.length > 0) {
                 bindRecheckErrorChecks(data)
             }
@@ -141,7 +284,6 @@
 
     function initInspection() {
         $('#ins-table').bootstrapTable({
-            height: 180,
             pagination: false,
             striped: true, //是否显示行间隔色
             columns: [{
@@ -168,7 +310,6 @@
     }
     function initPhoto() {
         $('#photo-table').bootstrapTable({
-            height: 180,
             pagination: false,
             striped: true, //是否显示行间隔色
             columns: [{
@@ -192,14 +333,13 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:viewPicutes(\'' + row.Url + '\');" style="min-width:100px">查看照片</a>';
+                    return '<a href="javascript:viewPicutes(\'' + row.Url + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
             }]
         });
     }
     function initLossResult() {
         $('#lossresult-table').bootstrapTable({
-            height: 200,
             pagination: false,
             striped: true, //是否显示行间隔色
             columns: [{
@@ -218,34 +358,36 @@
                 sortable: false,
                 formatter: function (value, row, index) {
                     curLossRow = row;
-                    return '<a href="javascript:viewPicutes(\'' + row.LossFileNameUrl + '\');" style="min-width:100px">查看照片</a>';
+                    return '<a href="javascript:viewPicutes(\'' + row.LossFileNameUrl + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
             }]
         });
     }
     function loadAnswerInfo() {
-
         $.commonGet("Answer/GetShopAnswerScoreInfo", {
             projectId: curRow.ProjectId,
             shopId: curRow.ShopId,
             subjectId: curRow.SubjectId,
             key: ""
         }, function (data) {
-            debugger
             if (data && data.length > 0) {
                 let item = data[0]
-                let FileResult = item.FileResult ? JSON.parse(item.FileResult) : []
-                let InsResult = item.InspectionStandardResult ? JSON.parse(item.InspectionStandardResult) : []
-                let LossResult = item.LossResult ? JSON.parse(item.LossResult) : []
-
-                $("#answer-form").setForm(item);
-                $('#ins-table').bootstrapTable("load", InsResult);
-                $('#photo-table').bootstrapTable("load", FileResult);
-                $('#lossresult-table').bootstrapTable("load", LossResult);
+                console.log('get answer',item)
+                bindAnswerInfo(item)
             }
         });
     }
 
+    function bindAnswerInfo(item) {
+        let FileResult = item.FileResult ? JSON.parse(item.FileResult) : []
+        let InsResult = item.InspectionStandardResult ? JSON.parse(item.InspectionStandardResult) : []
+        let LossResult = item.LossResult ? JSON.parse(item.LossResult) : []
+
+        $("#answer-form").setForm(item);
+        $('#ins-table').bootstrapTable("load", InsResult);
+        $('#photo-table').bootstrapTable("load", FileResult);
+        $('#lossresult-table').bootstrapTable("load", LossResult);
+    }
 
     function viewPicutes(url) {
         let fileList = url ? url.split(',') : []

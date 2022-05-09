@@ -34,10 +34,10 @@
                         filePaths.push(file.osspath)
                     })
                     if (curFileRow.Url) {
-                        curFileRow.Url += ',' + filePaths.join(',')
-                        bindFileResultList(curFileRow.Url.split(','))
+                        curFileRow.Url += ',' + filePaths.join(';')
+                        bindFileResultList(curFileRow.Url.split(';'))
                     } else {
-                        curFileRow.Url = filePaths.join(',')
+                        curFileRow.Url = filePaths.join(';')
                         bindFileResultList(filePaths)
                     }
                    
@@ -66,7 +66,7 @@
             let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
             remove.click(function () {
                 fileList.splice(fileList.indexOf(file), 1);
-                curFileRow.Url = fileList.join(',')
+                curFileRow.Url = fileList.join(';')
                 console.log('curFileRow.Url', curFileRow.Url)
                 bindFileResultList(fileList)
             })

@@ -44,7 +44,7 @@
     <table id="recheck-table" class="table table-bordered table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="width:75%">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -52,7 +52,7 @@
             </div>
             <div class="modal-body">
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="display: none">
                 <button id="save_button" type="button" onclick="saveScore()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
@@ -99,6 +99,13 @@
         $("#btnRecheckSubmit").click(function () {
             debugger
             recheckSubmit();
+        })
+
+        $('#Modal').on('hide.bs.modal', function (e) {
+            // do something...
+            $('#photo-table').bootstrapTable("destroy");
+            $('#ins-table').bootstrapTable('destroy')
+            $('#lossresult-table').bootstrapTable("destroy");
         })
     })
 
@@ -234,6 +241,13 @@
                 align: "center",
                 sortable: false
             }, {
+                title: "审核类型",
+                field: "RecheckTypeName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
                 title: "审核得分",
                 field: "RecheckScore",
                 width: 100,
@@ -270,12 +284,12 @@
 
     function goEdit(id) {
         $("#Modal .modal-title").html('审核编辑');
-        $("#Modal .modal-footer").show();
+        //$("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .modal-body").load("/Recheck/RecheckEdit", {}, function () {
-            $('#recheck-form').setForm(curRow)
-            $("#recheck-form").data("json", JSON.stringify(curRow));
+            bindRecheckInfo(curRow)
+            console.log('curRow',curRow)
         })
     }
 </script>
