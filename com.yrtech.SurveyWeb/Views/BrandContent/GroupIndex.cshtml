@@ -91,6 +91,11 @@
     }
 
     function loadGroup() {
+        var brandId = $("#brand-sel").val();
+        if (!brandId) {
+            alert("请选择品牌！");
+            return
+        }
         $('#group-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetGroup", {
             brandId: $("#brand-sel").val(),

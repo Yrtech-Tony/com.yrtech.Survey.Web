@@ -102,6 +102,11 @@
     }
 
     function loadProject() {
+        var brandId = $("#brand-sel").val();
+        if (!brandId) {
+            alert("请选择品牌！");
+            return
+        }
         $('#project-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetProject", {
             brandId: $("#brand-sel").val(),

@@ -153,6 +153,11 @@ function bindAreaTypeSelect(type) {
 
 // 绑定期号
 function bindProjectSelect() {
+    var brandId = $("#brand-sel").val();
+    if (!brandId) {
+        alert("请选择品牌！");
+        return
+    }
     $.ajaxSettings.async = false;
     $.commonGet("Master/GetProject", {
         brandId: $("#brand-sel").val(),
