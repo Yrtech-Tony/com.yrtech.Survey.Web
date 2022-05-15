@@ -33,7 +33,7 @@
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnExportAnswer" class="btn btn-primary">导出</button>
+        <button id="btnExportAnswer" class="btn btn-primary">导出全部得分</button>
     </div>
 </div>
 <div class="result">
@@ -165,22 +165,14 @@
         $("#btnExportAnswer").click(function () {
             $("#btnExportAnswer").button('loading');
 
-            $.commonApi({
-                apiType: 'easyPhoto',
-                url: 'Answer/AnswerExport',
-                params: {
-                    projectId: $("#project-sel").val(),
-                    shopCode: ''
-                },
-                success: function (data) {
-                    window.location.href = baseEasyPhotoUrl + data;
-                },
-                complete: function () {
-                    $("#btnExportAnswer").button('reset');
-                }
-            })
+            $.commonGet("Answer/ShopAnswerScoreInfoExport", {
+                projectId: $("#project-sel").val(),
+                shopId: ""
+            }, function (data) {
+                window.location.href = baseSurveyUrl + data;
+                $("#btnExportAnswer").button('reset');
+            });
         });
-
         initScoreTable();
         $("#btnQuery").click(function () {
             loadScore();
