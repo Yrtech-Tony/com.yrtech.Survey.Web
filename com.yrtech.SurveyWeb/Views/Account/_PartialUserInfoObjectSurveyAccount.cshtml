@@ -11,6 +11,10 @@
             <div class="form-group">
                 <a id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveUserInfoObject()" data-loading-text="提交中..."></a>
             </div>
+            <div class="form-group">
+                <button id="btnDownloadUserObjectTemplate" class="btn btn-primary">下载关联经销商模板</button>
+                <button id="btnImportUserObject" class="btn btn-primary">导入关联经销商</button>
+            </div>
         </div>
 
     </div>
@@ -19,7 +23,15 @@
 <div class="item form-group">
     <table id="userinfo-object-table" class="table table-bordered table-set"></table>
 </div>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
+
 <script>
+    var osspath;
     $(function () {
         debugger
         $("#btnAdd").text("添加" + objectType);
@@ -27,6 +39,34 @@
         bindBrandSelectForExcute();
         initObjectTable();
         loadUserInfoObject();
+        $("#btnDownloadUserObjectTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/UserInfoObject.xlsx";
+            window.location.href = url;
+        });
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnImportUserObject",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    debugger
+                    var brandTxt = $("#brand-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-title").html("导入关联经销商");
+                    $("#ModalImport .modal-body").load("/Account/OpenUserInfoObjectImport", {}, function () {
+                        $("#ImportBrand").html(brandTxt);
+                        loadImportUserObjectExcuteShop(file);
+                        $("#btnImport").click(function () {
+                            importUserObjectExcuteShop();
+                        });
+                    })
+                })
+            }
+        });
+        
     })
     // 绑定品牌
     function bindBrandSelectForExcute() {

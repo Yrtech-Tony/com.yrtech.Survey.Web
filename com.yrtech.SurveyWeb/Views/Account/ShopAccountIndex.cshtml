@@ -152,6 +152,9 @@
                     $("#ModalImport .modal-body").load("/Account/OpenUserInfoObjectImport", {}, function () {
                         $("#ImportBrand").html(brandTxt);
                         loadImportUserObject(file);
+                        $("#btnImport").click(function () {
+                            importUserObject();
+                        });
                     })
                 })
             }
@@ -178,6 +181,7 @@
                 $("#btnExportAllUser").button('reset');
             });
         });
+        
     })
     var curRow;
     function saveAccount() {

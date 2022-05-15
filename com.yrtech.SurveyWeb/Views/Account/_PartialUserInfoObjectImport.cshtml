@@ -2,7 +2,7 @@
     <div class="form-inline" style="text-align:center">
         <label class="control-label" style="font-size:16px;">导入的品牌:<span id="ImportBrand"></span></label>
         <div class="item form-inline" style="float:right;">
-            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importUserObject()" data-loading-text="导入中...">导入</button>
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px"  data-loading-text="导入中...">导入</button>
         </div>
     </div>
     
@@ -24,19 +24,19 @@
             pageSize: 10,
             pageList: [10, 15, 20, 50],
             columns: [{
-                title: objectType + "代码",
-                field: 'ObjectCode',
-                width: 100,
-                valign: "middle",
-                align: "center"
-            }, {
-                title: objectType + "名称",
-                field: "ObjectName",
+                title: "账号",
+                field: "AccountId",
                 width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
+                title:  "代码",
+                field: 'ObjectCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            },  {
                 title: "数据状态",
                 field: "ImportChk",
                 width: 80,
@@ -81,6 +81,24 @@
             $('#import-user-object-table').bootstrapTable("hideLoading");
         });
     }
+    function loadImportUserObjectExcuteShop(file) {
+        $('#import-user-object-table').bootstrapTable("showLoading");
+        $.commonGet("Master/UserInfoObjectExcuteShopExcelAnalysis", {
+            tenantId: loginUser.TenantId,
+            brandId: $("#brand-sel").val(),
+            ossPath: file.osspath
+        }, function (data) {
+            var chk = true;
+            if (data && data.length > 0) {
+                chk = data[0].ImportChk;
+            }
+            if (!chk) {
+                $("#btnImport").attr("disabled", true);
+            }
+            $('#import-user-object-table').bootstrapTable("load", data);
+            $('#import-user-object-table').bootstrapTable("hideLoading");
+        });
+    }
     function importUserObject() {
         $("#btnImport").button("loading");
         var rows = $('#import-user-object-table').bootstrapTable("getData");
@@ -92,6 +110,21 @@
             ListJson: JSON.stringify(rows)
         }, function () {
             $("#ModalImport").modal("hide");
+            loadShopAccount();
+        });
+    }
+    function importUserObjectExcuteShop() {
+        $("#btnImport").button("loading");
+        var rows = $('#import-user-object-table').bootstrapTable("getData");
+        rows.forEach(function (row) {
+            row.InUserId = loginUser.Id;
+            row.ModifyUserId = loginUser.Id;
+        })
+        $.commonPost("Master/UserInfoObjectExcuteShopImport", {
+            ListJson: JSON.stringify(rows)
+        }, function () {
+            $("#ModalImport").modal("hide");
+            loadUserInfoObject();
         });
     }
 
