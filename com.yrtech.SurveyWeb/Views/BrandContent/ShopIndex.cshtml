@@ -140,6 +140,11 @@
     }
 
     function loadShop() {
+        var brandId = $("#brand-sel").val();
+        if (!brandId) {
+            alert("请选择品牌！");
+            return
+        }
         $('#shop-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetShop", {
             brandId: $("#brand-sel").val(),

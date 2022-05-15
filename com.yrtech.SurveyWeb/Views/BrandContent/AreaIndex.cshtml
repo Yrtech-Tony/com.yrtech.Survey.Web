@@ -207,6 +207,11 @@
     }
 
     function loadArea() {
+        var brandId = $("#brand-sel").val();
+        if (!brandId) {
+            alert("请选择品牌！");
+            return
+        }
         $("#btnQuery").button('loading');
         $('#area-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetArea", {
