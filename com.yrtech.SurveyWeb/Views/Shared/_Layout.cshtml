@@ -39,7 +39,7 @@
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
-                            <ul class="nav side-menu">
+                            <ul id="mainMenu" class="nav side-menu">
                                 <li class="main-page">
                                     <a href="/Home/Main"> <i class="fa fa-home"></i> 首页 </a>
                                 </li>
@@ -51,31 +51,31 @@
                                         <li><a href="/ProjectContent/ProjectShopIndex">经销商卷别</a></li>
                                     </ul>
                                 </li>*@
-                                <li>
+                                <li id="executeMoudel" style="display:none">
                                     <a><i class="fa fa-area-chart"></i>执行中心<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/ProjectContent/ProjectIndex">期号设置</a></li>
-                                        <li><a href="/ProjectContent/SubjectIndex">题目设置</a></li>
-                                        <li><a href="/ProjectContent/ProjectShopIndex">经销商卷别</a></li>
-                                        <li><a href="/ProjectContent/AnswerShopInfoIndex">进店信息管理</a></li>
-                                        <li><a href="/ProjectContent/ScoreIndex">得分管理</a></li>
+                                        <li id="ProjectIndex"><a href="/ProjectContent/ProjectIndex">期号设置</a></li>
+                                        <li id="SubjectIndex"><a href="/ProjectContent/SubjectIndex">题目设置</a></li>
+                                        <li id="ProjectShopIndex"><a href="/ProjectContent/ProjectShopIndex">经销商卷别</a></li>
+                                        <li id="AnswerShopInfoIndex"><a href="/ProjectContent/AnswerShopInfoIndex">进店信息管理</a></li>
+                                        <li id="ScoreIndex"><a href="/ProjectContent/ScoreIndex">得分管理</a></li>
                                     </ul>
                                 </li>
-                                <li>
+                                <li id="recheckMoudel" style="display:none">
                                     <a><i class="fa fa-area-chart"></i>审核中心<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/Recheck/RecheckIndex">审核管理</a></li>
                                         <li><a href="/Recheck/RecheckStatusIndex">进度管理</a></li>
                                     </ul>
                                 </li>
-                                <li>
+                                <li id="reportMoudel" style="display:none">
                                     <a><i class="fa fa-area-chart"></i> 报告中心<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/Report/Index">报告发布</a></li>
                                         <li><a href="/Report/LogIndex">报告下载日志</a></li>
                                     </ul>
                                 </li>
-                                <li>
+                                <li id="appealMoudel" style="display:none">
                                     <a><i class="fa fa-home"></i>申诉中心<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/Appeal/AppealSet">申诉设置</a></li>
@@ -84,7 +84,7 @@
 
                                     </ul>
                                 </li>
-                                <li>
+                                <li id="orgMoudel" style="display:none">
                                     <a><i class="fa fa-info"></i> 组织中心<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/System/BrandIndex">品牌管理</a></li>
@@ -93,30 +93,30 @@
                                         <li><a href="/BrandContent/ShopIndex">经销商管理</a></li>
                                     </ul>
                                 </li>
-                                <li>
+                                <li id="userMoudel" style="display:none">
                                     <a><i class="fa fa-user"></i> 账号管理<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/Account/ShopAccountIndex">厂商账号管理</a></li>
                                         <li><a href="/Account/SurveyAccountIndex">调研账号管理</a></li>
                                     </ul>
                                 </li>
-                                <li>
+                                <li id="systemMoudel" style="display:none">
                                     <a><i class="fa fa-user"></i> 基础数据<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/Home/LabelIndex">标签管理</a></li>
+                                        <li id="LabelIndex"><a href="/Home/LabelIndex">标签管理</a></li>
                                     </ul>
                                 </li>
 
-                                <li>
+                                <li id="easyPhotoMoudel" style="display:none">
                                     <a><i class="fa fa-camera" aria-hidden="true"></i> 轻松拍<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/EasyPhoto/EasyPhotoProjectIndex">期号管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoUserInfoIndex">账号管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoCheckTypeIndex">检查类型管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoNoteIndex">备注管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoPhotoListIndex">拍照点管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoExtendColumnIndex">扩展列管理</a></li>
-                                        <li><a href="/EasyPhoto/EasyPhotoAnswerIndex">清单管理</a></li>
+                                        <li id="EasyPhotoProjectIndex"><a href="/EasyPhoto/EasyPhotoProjectIndex">期号管理</a></li>
+                                        <li id="EasyPhotoUserInfoIndex"><a href="/EasyPhoto/EasyPhotoUserInfoIndex">账号管理</a></li>
+                                        <li id="EasyPhotoCheckTypeIndex"><a href="/EasyPhoto/EasyPhotoCheckTypeIndex">检查类型管理</a></li>
+                                        <li id="EasyPhotoNoteIndex"><a href="/EasyPhoto/EasyPhotoNoteIndex">备注管理</a></li>
+                                        <li id="EasyPhotoPhotoListIndex"><a href="/EasyPhoto/EasyPhotoPhotoListIndex">拍照点管理</a></li>
+                                        <li id="EasyPhotoExtendColumnIndex"><a href="/EasyPhoto/EasyPhotoExtendColumnIndex">扩展列管理</a></li>
+                                        <li id="EasyPhotoAnswerIndex"><a href="/EasyPhoto/EasyPhotoAnswerIndex">清单管理</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -192,6 +192,14 @@
         var loginUser;
         if (window.localStorage.userJson) {
             loginUser = JSON.parse(window.localStorage.userJson);
+            //根据权限显示菜单
+            if(loginUser.RoleType == 'S_Sysadmin'|| loginUser.RoleType == 'S_BrandSysadmin'){
+                $('#mainMenu>li').show()
+            } else if (loginUser.RoleType == 'S_Recheck') {
+                $('#executeMoudel').show()
+                $('#recheckMoudel').show()
+            }
+             
         } else {
             alert("没有登录用户，跳转到登录界面！");
             window.location.href = "/Account/Login";
