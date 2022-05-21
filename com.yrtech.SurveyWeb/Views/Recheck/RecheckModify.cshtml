@@ -36,7 +36,7 @@
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnExportAnswer" class="btn btn-primary">导出全部得分</button>
+        <button id="btnSaveStatus" class="btn btn-primary">复审修改完毕</button>
     </div>
 </div>
 <div class="result">
@@ -165,22 +165,14 @@
             //loadRecheckNotPass();
         });
 
-        $("#btnExportAnswer").click(function () {
-            $("#btnExportAnswer").button('loading');
-
-            $.commonGet("Answer/ShopAnswerScoreInfoExport", {
-                projectId: $("#project-sel").val(),
-                shopId: ""
-            }, function (data) {
-                window.location.href = baseSurveyUrl + data;
-                $("#btnExportAnswer").button('reset');
-            });
+        $("#btnSaveStatus").click(function () {
+            saveRecheckStatus();
         });
-        initScoreTable();
+
+        initRecheckTable();
         $("#btnQuery").click(function () {
             loadRecheckNotPass();
-
-        })//.trigger("click");
+        })
     })
 
     function loadProjectShop() {
@@ -196,31 +188,19 @@
         });
     }
 
-    var curRow;
-    function saveScore() {
-        var params = $("#score-form").serializeJson();
-        var json = $("#score-form").data("json");
-        if (json && json.length > 0) {
-            //编辑
-            json = JSON.parse(json);
-            params = $.extend(json, params);
-        } else {
-            //新增
-            params = $.extend({
-                TenantId: loginUser.TenantId,
-                ProjectId:$("#project-sel").val(),
-                InUserId: loginUser.Id,
-                ModifyUserId: loginUser.Id
-            }, params);
-        }
-        $("#save_button").button("loading");
-        $.commonPost("Answer/SaveAnswerInfo", params, function () {
-            $("#save_button").button("reset");
-            loadRecheckNotPass();
-            closeModel();
-        }, function () { $("#save_button").button("reset"); });
+    function saveRecheckStatus() {
+        $("#btnSaveStatus").button('loading');
+        $.commonPost("Recheck/SaveRecheckStatus", {
+            ProjectId: $("#project-sel").val(),
+            ShopId: $("#shop-sel").val(),
+            StatusCode: 'S4',
+            InUserId: loginUser.Id
+        }, function () {
+            $("#btnSaveStatus").button('loading');
+        }, function () { $("#btnSaveStatus").button('reset'); });
     }
 
+    var curRow;
     function loadRecheckNotPass() {
         var projectId = $("#project-sel").val();
         if (!projectId) {
@@ -234,7 +214,7 @@
         }
         $('#recheck-table').bootstrapTable("showLoading");
         $.commonGet("Recheck/GetRecheckNotPass", {
-            projectId:  $("#project-sel").val(),
+            projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
             subjectId: ''
         }, function (data) {
@@ -244,7 +224,7 @@
     }
 
     //初始化期号表格
-    function initScoreTable() {
+    function initRecheckTable() {
         $('#recheck-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
@@ -334,7 +314,7 @@
                 sortable: false,
                 editable: {
                     type: 'select',
-                    source: [{ text: '是', value: '是' }, { text: '否', value: '否' }],
+                    source: [{ text: '是', value: true }, { text: '否', value: false }],
                     title: '同意复审',
                     validate: function (v) {
                         if (!v) return '同意复审不能为空';
@@ -349,7 +329,9 @@
                 sortable: false,
                 editable: {
                     type: 'text',
-                    title: '理由',
+                    noeditFormatter: function (value, row, index) {
+                        return '<a href="javascript:void(0)" data-name="AgreeReason" data-pk="undefined" data-value="" class="editable editable-click">' + (value || '') + '</a>';
+                    },
                     validate: function (v) {
                         if (!v) return '理由不能为空';
                     }
@@ -413,7 +395,15 @@
                 curRow = row;
             },
             onEditableSave: function (field, row, oldValue, $el) {
-               con
+                $.commonPost("Recheck/SaveRecheckModifyInfo", {
+                    RecheckId: row.RecheckId,
+                    ShopId: row.ShopId,
+                    AgreeCheck: row.AgreeCheck,
+                    AgreeReason: row.AgreeReason,
+                    AgreeUserId: loginUser.Id
+                }, function () {
+                    loadRecheckNotPass();
+                }, function () { });
             }
         });
     }

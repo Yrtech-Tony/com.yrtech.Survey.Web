@@ -12,6 +12,9 @@
             width: 100px;
         }
 </style>
+<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
@@ -30,45 +33,113 @@
             <label class="control-label">经销商:</label>
             <select id="shop-sel" class="form-control" style="width: 140px"></select>
         </div>
-        <div class="form-group">
-            <label class="control-label">审核类型:</label>
-            <select id="LabelId" class="form-control" style="width: 140px"></select>
-        </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnRecheckSubmit" class="btn btn-primary">审核完毕</button>
+        <button id="btnSaveStatus" class="btn btn-primary">仲裁完毕</button>
     </div>
 </div>
 <div class="result">
-    <table id="recheck-table" class="table table-bordered table-set"></table>
+    <table id="recheck-table"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" style="width:75%">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">审核编辑</h4>
+                <h4 class="modal-title">得分编辑</h4>
             </div>
             <div class="modal-body">
             </div>
-            <div class="modal-footer" style="display: none">
+            <div class="modal-footer">
                 <button id="save_button" type="button" onclick="saveScore()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="sujectFileModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closeFileModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">标准照片列表</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <button id="btnAddPicture" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                </div>
+                <div id="subject-file-pics" style="max-height:500px;overflow:auto">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="lossModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closeLossModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">失分描述编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+                    <div class="item form-group" style="width:100%">
+                        <div class="col-md-3">
+                            <label>失分说明:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div id="LossResultCheckList">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item form-group" style="width:100%">
+                        <div class="col-md-3">
+                            <label>补充失分说明:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <textarea id="LossDesc2" name="LossDesc2" class="form-control" style=""></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <button id="btnAddLossPic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                    </div>
+                    <div id="loss-file-pics" style="max-height:500px;overflow:auto">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurLossResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeLossModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
+
+
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
+
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
 
 <link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
 
 <script>
+    var uploader, lossUploader;
     $(function () {
+        uploader = undefined
         $('title').html('@ViewBag.Title')
         bindBrandSelect();
         //加载年份
@@ -90,22 +161,17 @@
             bindShopSelect();
         });
         bindShopSelect();
-        // 加载审核类型
-        bindLabel("RecheckType");
+        $("#shop-sel").change(function () {
+            //loadRecheckNotPass();
+        });
+
+        $("#btnSaveArbitration").click(function () {
+            saveArbitrationInfo();
+        });
+
         initRecheckTable();
         $("#btnQuery").click(function () {
-            loadRecheck();
-        });
-        $("#btnRecheckSubmit").click(function () {
-            debugger
-            recheckSubmit();
-        })
-
-        $('#Modal').on('hide.bs.modal', function (e) {
-            // do something...
-            $('#photo-table').bootstrapTable("destroy");
-            $('#ins-table').bootstrapTable('destroy')
-            $('#lossresult-table').bootstrapTable("destroy");
+            loadRecheckArbitrationInfo();
         })
     })
 
@@ -122,38 +188,20 @@
         });
     }
 
-    var curRow;
-    function recheckSubmit() {
-        debugger
-        var projectId = $("#project-sel").val();
-        if (!projectId) {
-            alert("请选择期号！");
-            return
-        }
-        var shopId = $("#shop-sel").val();
-        if (!shopId) {
-            alert("请选择经销商！");
-            return
-        }
-        var recheckTypeId = $("#LabelId").val();
-        if (!recheckTypeId) {
-            alert("请选择审核类型！");
-            return
-        }
-
-        $("#btnRecheckSubmit").button("loading");
-        $.commonPost("Recheck/SaveRecheckStatusDtl", {
+    function saveArbitrationInfo() {
+        $("#btnSaveStatus").button('loading'); 
+        $.commonPost("Recheck/SaveRecheckStatus", {
             ProjectId: $("#project-sel").val(),
             ShopId: $("#shop-sel").val(),
-            RecheckTypeId: $("#LabelId").val(),
+            StatusCode: 'S5',
             InUserId: loginUser.Id
         }, function () {
-            $("#btnRecheckSubmit").button("reset");
-            alert("提交成功！");
-        });
+            $("#btnSaveStatus").button('loading');
+        }, function () { $("#btnSaveStatus").button('reset'); });
     }
 
-    function loadRecheck() {
+    var curRow;
+    function loadRecheckArbitrationInfo() {
         var projectId = $("#project-sel").val();
         if (!projectId) {
             alert("请选择一个期号！");
@@ -165,11 +213,10 @@
             return
         }
         $('#recheck-table').bootstrapTable("showLoading");
-        $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+        $.commonGet("Recheck/GetRecheckNotPassArbitrationInfo", {
             projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
-            subjectId: '',
-            recheckTypeId: $("#LabelId").val()
+            subjectId: ''
         }, function (data) {
             $('#recheck-table').bootstrapTable("hideLoading");
             $('#recheck-table').bootstrapTable("load", data);
@@ -189,16 +236,6 @@
             pageSize: 15,
             pageList: [5, 10, 20, 50],
             columns: [{
-                title: "审核",
-                field: "",
-                width: 60,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">审核</a>';
-                }
-            }, {
                 title: "经销商代码",
                 field: 'ShopCode',
                 width: 120,
@@ -207,9 +244,9 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
+                width: 120,
                 valign: "middle",
                 align: "center",
-                width: 150,
                 sortable: false
             },
             {
@@ -241,36 +278,128 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "审核类型",
-                field: "RecheckTypeName",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "审核得分",
-                field: "RecheckScore",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "通过审核",
-                field: "PassRecheckName",
+                title: "备注",
+                field: "Remark",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "审核意见",
+                title: "复审得分",
+                field: "RecheckScore",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "复审意见",
                 field: "RecheckContent",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "审核时间",
+                title: "复审时间",
                 field: "RecheckDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "同意复审",
+                field: "AgreeCheck",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false 
+            }, {
+                title: "理由",
+                field: "AgreeReason",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false 
+            }, {
+                title: "仲裁结果",
+                field: "LastConfirmCheck",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                editable: {
+                    type: 'select',
+                    source: [{ text: '同意复审', value: "1" }, { text: '同意执行', value: '2' }, { text: '都不同意', value: '3' }],
+                    title: '同意复审',
+                    validate: function (v) {
+                        if (!v) return '仲裁结果不能为空';
+                    }
+                }
+            }, {
+                title: "仲裁原因",
+                field: "LastConfirmReason",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                editable: {
+                    type: 'text',
+                    noeditFormatter: function (value, row, index) {
+                        return '<a href="javascript:void(0)" data-name="LastConfirmReason" data-pk="undefined" data-value="" class="editable editable-click">' + (value || '') + '</a>';
+                    },
+                    validate: function (v) {
+                        if (!v) return '仲裁原因不能为空';
+                    }
+                }
+            }, {
+                title: "得分修改",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit();" style="min-width:100px">得分标准</a>';
+                }
+            }, {
+                title: "检查标准",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goInspectionStandardIndex();" style="min-width:100px">检查标准</a>';
+                }
+            }, {
+                title: "标准照片",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goSubjectFileIndex();" style="min-width:100px">标准照片</a>';
+                }
+            }, {
+                title: "失分描述",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goSubjectLossIndex();" style="min-width:100px">失分描述</a>';
+                }
+            }, {
+                title: "添加时间",
+                field: "InDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "修改时间",
+                field: "ModifyDateTime",
                 width: 150,
                 valign: "middle",
                 align: "center",
@@ -278,18 +407,110 @@
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
+            },
+            onEditableSave: function (field, row, oldValue, $el) {
+                $.commonPost("Recheck/SaveArbitrationInfo", {
+                    RecheckId: curRow.RecheckId,
+                    LastConfirmCheck: row.LastConfirmCheck,
+                    LastConfirmReason: row.LastConfirmReason,
+                    LastConfirmUserId: loginUser.Id
+                }, function () {
+                    loadRecheckArbitrationInfo();
+                }, function () { });
             }
         });
     }
 
-    function goEdit(id) {
-        $("#Modal .modal-title").html('审核编辑');
-        //$("#Modal .modal-footer").hide();
+    function goEdit() {
+        $("#Modal .modal-title").html('得分编辑');
+        $("#Modal .modal-footer").show();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/Recheck/RecheckEdit", {}, function () {           
-        })
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+                debugger
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+
+    }
+
+    function goInspectionStandardIndex() {
+        $("#Modal .modal-title").html('检查标准');
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+
+    }
+
+    function goSubjectFileIndex() {
+        $("#Modal .modal-title").html('标准照片');
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+
+    }
+
+    function goSubjectLossIndex() {
+        $("#Modal .modal-title").html('失分描述');
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+
     }
 </script>
-
-

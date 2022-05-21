@@ -2,11 +2,17 @@
     .form-horizontal label {
         padding-right: 0px;
     }
+
     .panel {
         margin-bottom: 5px;
     }
+
     .panel-heading {
         padding: 6px 10px;
+    }
+
+    .dealer-li{
+        width:60px
     }
 </style>
 <div style="height:700px; overflow:auto">
@@ -20,15 +26,15 @@
                     <a id="btnNext" class="btn btn-primary" style="margin-right:0px" onclick="nextSubject()">下一题</a>
                 </div>
                 @*<div class="form-group">
-                    <input id="toSeqNo" style="width:60px!important" class="form-control" />
-                    <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="toSubjectSeqNo()">转到</a>
-                </div>*@
+                        <input id="toSeqNo" style="width:60px!important" class="form-control" />
+                        <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="toSubjectSeqNo()">转到</a>
+                    </div>*@
             </div>
         </div>
         <div class="clearfix"></div>
     </div>
     <div class="container col-md-12">
-        <div class="panel panel-default" >
+        <div class="panel panel-default">
             <div class="panel-heading">得分信息</div>
             <div class="panel-body" style="padding: 0; padding-top:8px; ">
                 <form class="form-horizontal" id="answer-form">
@@ -112,8 +118,11 @@
                     <form class="form-horizontal" id="recheck-form">
                         <div class="form-group">
                             <label class="control-label  col-md-3" for="PassRecheck">是否通过:</label>
-                            <div class="col-md-8" >
-                                <div style="margin-top:5px;"><input id="PassRecheck" name="PassRecheck" type="checkbox"></div>                               
+                            <div class="col-md-8">
+                                <div>
+                                    <label class="dealer-li"><input id="PassRecheck" name="PassRecheck" type="radio" value="true" />  <font>是</font></label>
+                                    <label class="dealer-li"><input id="PassRecheck" name="PassRecheck" type="radio" value="false" /> <font>否</font></label>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -143,9 +152,9 @@
 </div>
 <script>
     $(function () {
-        $("#PassRecheck").iCheckParser();
-        console.log('curRow', curRow)
-        bindRecheckInfo(curRow)       
+        $("input[type=radio]").iCheckParser();
+        console.log('open recheck =', curRow)
+        bindRecheckInfo(curRow)
 
         initInspection();
         initPhoto();
@@ -177,7 +186,7 @@
                 }, function (data) {
                     if (data && data.length > 0) {
                         let item = data[0]
-                       
+
                         console.log('ge prev Recheck', item)
                         bindRecheckInfo(item);
                     }
@@ -185,16 +194,17 @@
             }
         });
     }
-       
-    function nextSubject() {   
-        console.log('c',$("#PassRecheck").is(":checked"))
+
+    function nextSubject() {
+        console.log('save recheck = ', curRow)
+        console.log('PassRecheck = ', $("input[name=PassRecheck]:checked").val())
         let RecheckError = loadRecheckError()
         //第一步 保存复审信息
         $.commonPost("Recheck/SaveShopRecheckInfo", {
             ProjectId: curRow.ProjectId,
             ShopId: curRow.ShopId,
             SubjectId: curRow.SubjectId,
-            PassReCheck: $("#PassRecheck").is(":checked"),
+            PassReCheck: $("input[name=PassRecheck]:checked").val(),
             ReCheckScore: $("#RecheckScore").val(),
             ReCheckContent: $("#RecheckContent").val(),
             ReCheckError: RecheckError,
@@ -233,7 +243,7 @@
 
     function toSubjectSeqNo() {
         //未实现
-        
+
     }
 
     function loadRecheckError() {
@@ -255,17 +265,21 @@
                     $(checkbox).iCheck('check');
                 }
             });
-        } else{
+        } else {
             $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
                 $(checkbox).iCheck('uncheck');
             });
-        }       
+        }
     }
 
     function bindRecheckInfo(item) {
         $('#RecheckScore').val(item.RecheckScore)
         $('#RecheckContent').val(item.RecheckContent)
-        $('#PassRecheck').iCheck(item.PassRecheck ? 'check' : 'uncheck');
+        $("input[name=PassRecheck]").each(function () {
+            if (item.PassRecheck == ($(this).val() == 'true')) {
+                $(this).iCheck('check');
+            }
+        });
         bindRecheckErrorResult(item)
     }
 
@@ -388,7 +402,7 @@
             if (data && data.length > 0) {
                 let item = data[0]
                 curAnswer = item
-                console.log('get answer',item)
+                console.log('get answer', item)
                 bindAnswerInfo(item)
             }
         });
