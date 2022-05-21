@@ -1,5 +1,5 @@
-﻿ @{
-    ViewBag.Title = "得分管理";
+﻿@{
+    ViewBag.Title = "审核修改";
 }
 
 <style>
@@ -12,6 +12,9 @@
             width: 100px;
         }
 </style>
+<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
@@ -37,7 +40,7 @@
     </div>
 </div>
 <div class="result">
-    <table id="score-table" ></table>
+    <table id="recheck-table"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -155,13 +158,13 @@
             bindProjectSelect();
         });
         $("#project-sel").change(function () {
-            bindShopSelect();           
+            bindShopSelect();
         });
         bindShopSelect();
         $("#shop-sel").change(function () {
-            //loadScore();
+            //loadRecheckNotPass();
         });
-       
+
         $("#btnExportAnswer").click(function () {
             $("#btnExportAnswer").button('loading');
 
@@ -175,7 +178,7 @@
         });
         initScoreTable();
         $("#btnQuery").click(function () {
-            loadScore();
+            loadRecheckNotPass();
 
         })//.trigger("click");
     })
@@ -213,12 +216,12 @@
         $("#save_button").button("loading");
         $.commonPost("Answer/SaveAnswerInfo", params, function () {
             $("#save_button").button("reset");
-            loadScore();
+            loadRecheckNotPass();
             closeModel();
         }, function () { $("#save_button").button("reset"); });
     }
 
-    function loadScore() {
+    function loadRecheckNotPass() {
         var projectId = $("#project-sel").val();
         if (!projectId) {
             alert("请选择一个期号！");
@@ -229,21 +232,20 @@
             alert("请选择一个经销商！");
             return
         }
-        $('#score-table').bootstrapTable("showLoading");
-        $.commonGet("Answer/GetShopAnswerScoreInfo", {
+        $('#recheck-table').bootstrapTable("showLoading");
+        $.commonGet("Recheck/GetRecheckNotPass", {
             projectId:  $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
-            subjectId: '',
-            key: ''
+            subjectId: ''
         }, function (data) {
-            $('#score-table').bootstrapTable("hideLoading");
-            $('#score-table').bootstrapTable("load", data);
+            $('#recheck-table').bootstrapTable("hideLoading");
+            $('#recheck-table').bootstrapTable("load", data);
         });
     }
 
     //初始化期号表格
     function initScoreTable() {
-        $('#score-table').bootstrapTable({
+        $('#recheck-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
             width: "100%",
@@ -303,14 +305,64 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "编辑",
+                title: "复审得分",
+                field: "RecheckScore",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "复审意见",
+                field: "RecheckContent",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "复审时间",
+                field: "RecheckDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "同意复审",
+                field: "AgreeCheck",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                editable: {
+                    type: 'select',
+                    source: [{ text: '是', value: '是' }, { text: '否', value: '否' }],
+                    title: '同意复审',
+                    validate: function (v) {
+                        if (!v) return '同意复审不能为空';
+                    }
+                }
+            }, {
+                title: "理由",
+                field: "AgreeReason",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                editable: {
+                    type: 'text',
+                    title: '理由',
+                    validate: function (v) {
+                        if (!v) return '理由不能为空';
+                    }
+                }
+            }, {
+                title: "得分修改",
                 field: "",
-                width: 60,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit();" style="min-width:100px">编辑</a>';
+                    return '<a href="javascript:goEdit();" style="min-width:100px">得分标准</a>';
                 }
             }, {
                 title: "检查标准",
@@ -359,11 +411,14 @@
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
+            },
+            onEditableSave: function (field, row, oldValue, $el) {
+               con
             }
         });
     }
 
-    function goEdit(id) {
+    function goEdit() {
         $("#Modal .modal-title").html('得分编辑');
         $("#Modal .modal-footer").show();
         $("#Modal .modal-body").empty();
@@ -384,7 +439,7 @@
                 $("#score-form").data("json", JSON.stringify(curRow));
             })
         });
-      
+
     }
 
     function goInspectionStandardIndex() {
@@ -407,7 +462,7 @@
                 $("#score-form").data("json", JSON.stringify(curRow));
             })
         });
-      
+
     }
 
     function goSubjectFileIndex() {
@@ -430,7 +485,7 @@
                 $("#score-form").data("json", JSON.stringify(curRow));
             })
         });
-      
+
     }
 
     function goSubjectLossIndex() {
@@ -453,8 +508,6 @@
                 $("#score-form").data("json", JSON.stringify(curRow));
             })
         });
-      
+
     }
 </script>
-
-

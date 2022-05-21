@@ -42,7 +42,7 @@
                         filePaths.push(file.osspath)
                     })
                     if (LossFileNameUrl) {
-                        LossFileNameUrl += ',' + filePaths.join(';')
+                        LossFileNameUrl += ';' + filePaths.join(';')
                         bindLossUrlList(LossFileNameUrl.split(';'))
                     } else {
                         LossFileNameUrl = filePaths.join(';')
