@@ -201,9 +201,9 @@
         let RecheckError = loadRecheckError()
         //第一步 保存复审信息
         $.commonPost("Recheck/SaveShopRecheckInfo", {
-            ProjectId: curRow.ProjectId,
-            ShopId: curRow.ShopId,
-            SubjectId: curRow.SubjectId,
+            ProjectId: curAnswer.ProjectId,
+            ShopId: curAnswer.ShopId,
+            SubjectId: curAnswer.SubjectId,
             PassReCheck: $("input[name=PassRecheck]:checked").val(),
             ReCheckScore: $("#RecheckScore").val(),
             ReCheckContent: $("#RecheckContent").val(),
@@ -276,6 +276,7 @@
         $('#RecheckScore').val(item.RecheckScore)
         $('#RecheckContent').val(item.RecheckContent)
         $("input[name=PassRecheck]").each(function () {
+            $(this).iCheck('uncheck');
             if (item.PassRecheck == ($(this).val() == 'true')) {
                 $(this).iCheck('check');
             }
