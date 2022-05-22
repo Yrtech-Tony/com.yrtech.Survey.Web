@@ -1,5 +1,5 @@
-﻿ @{
-    ViewBag.Title = "得分管理";
+﻿@{
+    ViewBag.Title = "一次抽查";
 }
 
 <style>
@@ -12,6 +12,9 @@
             width: 100px;
         }
 </style>
+<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
@@ -33,11 +36,11 @@
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnExportAnswer" class="btn btn-primary">导出全部得分</button>
+        <button id="btnSaveStatus" class="btn btn-primary">抽查完毕</button>
     </div>
 </div>
 <div class="result">
-    <table id="score-table" ></table>
+    <table id="recheck-table"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -155,29 +158,21 @@
             bindProjectSelect();
         });
         $("#project-sel").change(function () {
-            bindShopSelect();           
+            bindShopSelect();
         });
         bindShopSelect();
         $("#shop-sel").change(function () {
-            //loadScore();
+            //loadRecheckNotPass();
         });
-       
-        $("#btnExportAnswer").click(function () {
-            $("#btnExportAnswer").button('loading');
 
-            $.commonGet("Answer/ShopAnswerScoreInfoExport", {
-                projectId: $("#project-sel").val(),
-                shopId: ""
-            }, function (data) {
-                window.location.href = baseSurveyUrl + data;
-                $("#btnExportAnswer").button('reset');
-            });
+        $("#btnSaveStatus").click(function () {
+            saveRecheckStatus();
         });
-        initScoreTable();
+
+        initRecheckTable();
         $("#btnQuery").click(function () {
-            loadScore();
-
-        })//.trigger("click");
+            loadRecheckSpotCheck1();
+        })
     })
 
     function loadProjectShop() {
@@ -192,33 +187,19 @@
             $('#project-shop-table').bootstrapTable("load", data);
         });
     }
-
-    var curRow;
-    function saveScore() {
-        var params = $("#score-form").serializeJson();
-        var json = $("#score-form").data("json");
-        if (json && json.length > 0) {
-            //编辑
-            json = JSON.parse(json);
-            params = $.extend(json, params);
-        } else {
-            //新增
-            params = $.extend({
-                TenantId: loginUser.TenantId,
-                ProjectId:$("#project-sel").val(),
-                InUserId: loginUser.Id,
-                ModifyUserId: loginUser.Id
-            }, params);
-        }
-        $("#save_button").button("loading");
-        $.commonPost("Answer/SaveAnswerInfo", params, function () {
-            $("#save_button").button("reset");
-            loadScore();
-            closeModel();
-        }, function () { $("#save_button").button("reset"); });
+    function saveRecheckStatus() {
+        $("#btnSaveStatus").button('loading');
+        $.commonPost("Recheck/SaveRecheckStatus", {
+            ProjectId: $("#project-sel").val(),
+            ShopId: $("#shop-sel").val(),
+            StatusCode: 'S6',
+            InUserId: loginUser.Id
+        }, function () {
+            $("#btnSaveStatus").button('loading');
+        }, function () { $("#btnSaveStatus").button('reset'); });
     }
-
-    function loadScore() {
+    var curRow;
+    function loadRecheckSpotCheck1() {
         var projectId = $("#project-sel").val();
         if (!projectId) {
             alert("请选择一个期号！");
@@ -229,21 +210,20 @@
             alert("请选择一个经销商！");
             return
         }
-        $('#score-table').bootstrapTable("showLoading");
-        $.commonGet("Answer/GetShopAnswerScoreInfo", {
-            projectId:  $("#project-sel").val(),
+        $('#recheck-table').bootstrapTable("showLoading");
+        $.commonGet("Recheck/GetSupervisionSpotCheck", {
+            projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
-            subjectId: '',
-            key: ''
+            subjectId: ''
         }, function (data) {
-            $('#score-table').bootstrapTable("hideLoading");
-            $('#score-table').bootstrapTable("load", data);
+            $('#recheck-table').bootstrapTable("hideLoading");
+            $('#recheck-table').bootstrapTable("load", data);
         });
     }
 
     //初始化期号表格
-    function initScoreTable() {
-        $('#score-table').bootstrapTable({
+    function initRecheckTable() {
+        $('#recheck-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
             width: "100%",
@@ -303,158 +283,82 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "编辑",
-                field: "",
-                width: 60,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit();" style="min-width:100px">编辑</a>';
-                }
-            }, {
-                title: "检查标准",
-                field: "",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goInspectionStandardIndex();" style="min-width:100px">检查标准</a>';
-                }
-            }, {
-                title: "标准照片",
-                field: "",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goSubjectFileIndex();" style="min-width:100px">标准照片</a>';
-                }
-            }, {
-                title: "失分描述",
-                field: "",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goSubjectLossIndex();" style="min-width:100px">失分描述</a>';
-                }
-            }, {
-                title: "添加时间",
-                field: "InDateTime",
+                title: "复审得分",
+                field: "RecheckScore",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "修改时间",
-                field: "ModifyDateTime",
+                title: "复审意见",
+                field: "RecheckContent",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
-            }],
+            }, {
+                title: "复审时间",
+                field: "RecheckDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "同意复审",
+                field: "AgreeCheck",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false 
+            }, {
+                title: "理由",
+                field: "AgreeReason",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false 
+            }, {
+                title: "仲裁结果",
+                field: "LastConfirmCheck",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+            }, {
+                title: "仲裁原因",
+                field: "LastConfirmReason",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+            }, {
+                title: "抽查意见",
+                field: "SupervisionSpotCheckContent",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                editable: {
+                    type: 'text',
+                    noeditFormatter: function (value, row, index) {
+                        return '<a href="javascript:void(0)" data-name="LastConfirmReason" data-pk="undefined" data-value="" class="editable editable-click">' + (value || '') + '</a>';
+                    },
+                    validate: function (v) {
+                        if (!v) return '意见不能为空';
+                    }
+                }
+            } ],
             onClickRow: function (row, $element) {
                 curRow = row;
+            },
+            onEditableSave: function (field, row, oldValue, $el) {
+                $.commonPost("Recheck/SaveSupervisionSpotCheck", {
+                    SupervisionSpotCheckContent: row.SupervisionSpotCheckContent,
+                    LastConfirmUserId: loginUser.Id
+                }, function () {
+                    loadRecheckSpotCheck1();
+                }, function () { });
             }
         });
-    }
-
-    function goEdit(id) {
-        $("#Modal .modal-title").html('得分编辑');
-        $("#Modal .modal-footer").show();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
-                debugger
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
-            })
-        });
-      
-    }
-
-    function goInspectionStandardIndex() {
-        $("#Modal .modal-title").html('检查标准');
-        $("#Modal .modal-footer").hide();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
-            })
-        });
-      
-    }
-
-    function goSubjectFileIndex() {
-        $("#Modal .modal-title").html('标准照片');
-        $("#Modal .modal-footer").hide();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
-            })
-        });
-      
-    }
-
-    function goSubjectLossIndex() {
-        $("#Modal .modal-title").html('失分描述');
-        $("#Modal .modal-footer").hide();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
-            })
-        });
-      
     }
 </script>
-
-

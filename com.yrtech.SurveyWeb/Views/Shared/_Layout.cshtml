@@ -66,6 +66,10 @@
                                     <ul class="nav child_menu">
                                         <li><a href="/Recheck/RecheckIndex">审核管理</a></li>
                                         <li><a href="/Recheck/RecheckStatusIndex">进度管理</a></li>
+                                        <li><a href="/Recheck/RecheckModify">审核修改</a></li>
+                                        <li><a href="/Recheck/RecheckConfirm">仲裁</a></li>
+                                        <li><a href="/Recheck/SpotCheck1">复审抽查(督导)</a></li>
+                                        <li><a href="/Recheck/SpotCheck2">复审抽查(项目经理)</a></li>
                                     </ul>
                                 </li>
                                 <li id="reportMoudel" style="display:none">
@@ -198,8 +202,7 @@
             } else if (loginUser.RoleType == 'S_Recheck') {
                 $('#executeMoudel').show()
                 $('#recheckMoudel').show()
-            }
-             
+            }             
         } else {
             alert("没有登录用户，跳转到登录界面！");
             window.location.href = "/Account/Login";

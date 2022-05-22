@@ -20,6 +20,22 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult RecheckModify()
+        {
+            return View();
+        }
+        public ActionResult RecheckConfirm()
+        {
+            return View();
+        }
+        public ActionResult SpotCheck1()
+        {
+            return View();
+        }
+        public ActionResult SpotCheck2()
+        {
+            return View();
+        }
         public ActionResult RecheckStatusDtl()
         {
             return PartialView("_PartialRecheckStatusDtl");

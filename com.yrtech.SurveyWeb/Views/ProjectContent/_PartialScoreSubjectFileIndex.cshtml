@@ -28,13 +28,14 @@
                 selectfiles: "btnAddPicture",
                 autoupload: true,
                 success: function (files) {
+                    debugger
                     //调用导入方法
                     let filePaths = []
                     files.forEach(function (file) {
                         filePaths.push(file.osspath)
                     })
                     if (curFileRow.Url) {
-                        curFileRow.Url += ',' + filePaths.join(';')
+                        curFileRow.Url += ';' + filePaths.join(';')
                         bindFileResultList(curFileRow.Url.split(';'))
                     } else {
                         curFileRow.Url = filePaths.join(';')
@@ -65,10 +66,13 @@
             imgDiv.append(img);
             let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
             remove.click(function () {
-                fileList.splice(fileList.indexOf(file), 1);
-                curFileRow.Url = fileList.join(';')
-                console.log('curFileRow.Url', curFileRow.Url)
-                bindFileResultList(fileList)
+                var index = fileList.indexOf(file)
+                if (index >= 0) {
+                    fileList.splice(index, 1);
+                    curFileRow.Url = fileList.join(';')
+                    console.log('curFileRow.Url', curFileRow.Url)
+                    bindFileResultList(fileList)
+                }
             })
             imgDiv.append(remove);
             $("#subject-file-pics").append(imgDiv)

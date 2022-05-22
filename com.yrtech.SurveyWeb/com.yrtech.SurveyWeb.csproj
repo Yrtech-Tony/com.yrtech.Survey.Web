@@ -560,6 +560,9 @@
     <Content Include="Views\ProjectContent\_PartialSubjectFileImport.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectInspectionStandardImport.cshtml" />
     <Content Include="Views\ProjectContent\_PartialSubjectLossResultImport.cshtml" />
+    <Content Include="Views\Recheck\RecheckConfirm.cshtml" />
+    <Content Include="Views\Recheck\RecheckModify.cshtml" />
+    <Content Include="Views\Recheck\SpotCheck1.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

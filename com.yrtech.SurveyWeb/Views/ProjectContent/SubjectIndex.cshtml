@@ -110,6 +110,10 @@
             })
             return false;
         })
+        $("#btnDownloadTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/Subject.xlsx";
+            window.location.href = url;
+        });
         osspath = "Survey/BaseInfo/";
         new OSSClient({
             autoupload: true,
