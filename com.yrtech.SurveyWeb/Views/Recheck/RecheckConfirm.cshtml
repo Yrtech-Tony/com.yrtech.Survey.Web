@@ -219,7 +219,7 @@
         $("#save_button").button("loading");
         $.commonPost("Answer/SaveAnswerInfo", params, function () {
             $("#save_button").button("reset");
-            loadScore();
+            loadRecheckArbitrationInfo();
             closeModel();
         }, function () { $("#save_button").button("reset"); });
     }
