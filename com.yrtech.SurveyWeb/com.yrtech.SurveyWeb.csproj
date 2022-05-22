@@ -563,6 +563,7 @@
     <Content Include="Views\Recheck\RecheckConfirm.cshtml" />
     <Content Include="Views\Recheck\RecheckModify.cshtml" />
     <Content Include="Views\Recheck\SpotCheck1.cshtml" />
+    <Content Include="Views\Recheck\SpotCheck2.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

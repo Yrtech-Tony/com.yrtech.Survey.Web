@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "一次抽查";
+    ViewBag.Title = "二次抽查";
 }
 
 <style>
@@ -171,7 +171,7 @@
 
         initRecheckTable();
         $("#btnQuery").click(function () {
-            loadRecheckSpotCheck1();
+            loadRecheckSpotCheck2();
         })
     })
 
@@ -192,15 +192,14 @@
         $.commonPost("Recheck/SaveRecheckStatus", {
             ProjectId: $("#project-sel").val(),
             ShopId: $("#shop-sel").val(),
-            StatusCode: 'S6',
+            StatusCode: 'S7',
             InUserId: loginUser.Id
         }, function () {
             $("#btnSaveStatus").button('loading');
         }, function () { $("#btnSaveStatus").button('reset'); });
     }
-
     var curRow;
-    function loadRecheckSpotCheck1() {
+    function loadRecheckSpotCheck2() {
         var projectId = $("#project-sel").val();
         if (!projectId) {
             alert("请选择一个期号！");
@@ -336,8 +335,15 @@
                 align: "center",
                 sortable: false,
             }, {
-                title: "抽查意见",
+                title: "抽查意见(督导)",
                 field: "SupervisionSpotCheckContent",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+            }, {
+                title: "抽查意见(项目经理)",
+                field: "PMSpotCheckContent",
                 width: 150,
                 valign: "middle",
                 align: "center",
@@ -345,24 +351,156 @@
                 editable: {
                     type: 'text',
                     noeditFormatter: function (value, row, index) {
-                        return '<a href="javascript:void(0)" data-name="SupervisionSpotCheckContent" data-pk="undefined" data-value="" class="editable editable-click">' + (value || '') + '</a>';
+                        return '<a href="javascript:void(0)" data-name="PMSpotCheckContent" data-pk="undefined" data-value="" class="editable editable-click">' + (value || '') + '</a>';
                     },
                     validate: function (v) {
                         if (!v) return '意见不能为空';
                     }
+                }
+            }, {
+                title: "得分修改",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit();" style="min-width:100px">得分修改</a>';
+                }
+            }, {
+                title: "检查标准",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goInspectionStandardIndex();" style="min-width:100px">检查标准</a>';
+                }
+            }, {
+                title: "标准照片",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goSubjectFileIndex();" style="min-width:100px">标准照片</a>';
+                }
+            }, {
+                title: "失分描述",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goSubjectLossIndex();" style="min-width:100px">失分描述</a>';
                 }
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
             },
             onEditableSave: function (field, row, oldValue, $el) {
-                $.commonPost("Recheck/SaveSupervisionSpotCheck", {
-                    SupervisionSpotCheckContent: row.SupervisionSpotCheckContent,
-                    SupervisionSpotCheckUserId: loginUser.Id
+                $.commonPost("Recheck/SavePMSpotCheck", {
+                    PMSpotCheckContent: row.PMSpotCheckContent,
+                    PMSpotCheckUserId: loginUser.Id
                 }, function () {
-                    loadRecheckSpotCheck1();
+                    loadRecheckSpotCheck2();
                 }, function () { });
             }
         });
+    }
+    function goEdit() {
+        $("#Modal .modal-title").html('得分编辑');
+        $("#Modal .modal-footer").show();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+                debugger
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+
+    }
+
+    function goInspectionStandardIndex() {
+        $("#Modal .modal-title").html('检查标准');
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+
+    }
+
+    function goSubjectFileIndex() {
+        $("#Modal .modal-title").html('标准照片');
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+
+    }
+
+    function goSubjectLossIndex() {
+        $("#Modal .modal-title").html('失分描述');
+        $("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $.commonGet("Recheck/GetRecheckStatus", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId
+        }, function (data) {
+            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                $("#save_button").hide();
+            }
+            else {
+                $("#save_button").show();
+            }
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
+                $("#score-form").setForm(curRow);
+                $("#score-form").data("json", JSON.stringify(curRow));
+            })
+        });
+
     }
 </script>
