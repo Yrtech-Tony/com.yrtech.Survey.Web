@@ -68,6 +68,7 @@
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
 
 <script>
+    var allLabels = []
     $(function () {
         $('title').html('@ViewBag.Title')
         bindBrandSelect();
@@ -85,6 +86,7 @@
         //加载期号
         $("#brand-sel").change(function () {
             bindProjectSelect();
+            bindRecheckErrors()
         });
         $("#project-sel").change(function () {
             bindShopSelect();
@@ -97,7 +99,6 @@
             loadRecheck();
         });
         $("#btnRecheckSubmit").click(function () {
-            debugger
             recheckSubmit();
         })
 
@@ -107,8 +108,21 @@
             $('#ins-table').bootstrapTable('destroy')
             $('#lossresult-table').bootstrapTable("destroy");
         })
-    })
 
+       
+    })
+     
+    function bindRecheckErrors(callback) {
+        $.commonGet("Master/GetLabel", {
+            brandId: $('#brand-sel').val(),
+            labelType: 'RecheckErrorType',
+            useChk: true,
+            labelId: ""
+        }, function (data) {
+            console.log('get label', data)
+            allLabels = data
+        });
+    }
     function loadProjectShop() {
         $('#project-shop-table').bootstrapTable("showLoading");
         $.commonGet("Shop/GetProjectShopExamType", {

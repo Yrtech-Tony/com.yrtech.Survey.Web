@@ -154,13 +154,14 @@
     $(function () {
         $("input[type=radio]").iCheckParser();
         console.log('open recheck =', curRow)
-        bindRecheckInfo(curRow)
 
         initInspection();
         initPhoto();
         initLossResult();
         loadAnswerInfo();
-        bindRecheckErrors()
+
+        bindRecheckErrorChecks(allLabels)
+        bindRecheckInfo(curRow)
     })
 
     function prevSubject() {
@@ -256,6 +257,7 @@
     }
 
     function bindRecheckErrorResult(item) {
+        debugger
         if (item.RecheckError) {
             let errorArr = item.RecheckError.split(';')
             $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
@@ -284,19 +286,6 @@
         bindRecheckErrorResult(item)
     }
 
-    function bindRecheckErrors() {
-        $.commonGet("Master/GetLabel", {
-            brandId: $('#brand-sel').val(),
-            labelType: 'RecheckErrorType',
-            useChk: true,
-            labelId: ""
-        }, function (data) {
-            console.log('get label', data)
-            if (data && data.length > 0) {
-                bindRecheckErrorChecks(data)
-            }
-        });
-    }
 
     //绑定错误类型checkbox
     function bindRecheckErrorChecks(data) {
