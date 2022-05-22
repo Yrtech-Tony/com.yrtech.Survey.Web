@@ -556,6 +556,10 @@
     <Content Include="Views\Recheck\_PartialRecheckStatusDtl.cshtml" />
     <Content Include="Views\Recheck\RecheckIndex.cshtml" />
     <Content Include="Views\Recheck\_PartialRecheckEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectImport.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectFileImport.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectInspectionStandardImport.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSubjectLossResultImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

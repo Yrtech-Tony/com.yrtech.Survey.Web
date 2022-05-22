@@ -69,6 +69,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialSubjectEdit");
         }
+        public ActionResult OpenSubjectImport()
+        {
+            return View("_PartialSubjectImport");
+        }
         public ActionResult ProjectShopEdit()
         {
             return PartialView("_PartialProjectShopEdit");
@@ -77,11 +81,22 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialSubjectInspectionStandardEdit");
         }
+        public ActionResult OpenSubjectFileImport()
+        {
+            return View("_PartialSubjectFileImport");
+        }
+        public ActionResult OpenSubjectInspectionStandardImport()
+        {
+            return View("_PartialSubjectInspectionStandardImport");
+        }
+        public ActionResult OpenSubjectLossResultImport()
+        {
+            return View("_PartialSubjectLossResultImport");
+        }
         public ActionResult SubjectLinkEdit()
         {
             return PartialView("_PartialSubjectLinkEdit");
         }
-        
         public ActionResult SubjectDetail(string ProjectId, string SubjectId, string Page)
         {
             ViewBag.ProjectId = ProjectId;
@@ -120,7 +135,6 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialSubjectTypeExamEdit");
         }
         #endregion
-
         #region 得分管理
         public ActionResult ScoreIndex()
         {
@@ -143,7 +157,6 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView();
         }
         #endregion
-
         #region 进店信息管理
         public ActionResult AnswerShopInfoIndex()
         {
