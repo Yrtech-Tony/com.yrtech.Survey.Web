@@ -165,7 +165,7 @@
             //loadRecheckNotPass();
         });
 
-        $("#btnSaveArbitration").click(function () {
+        $("#btnSaveStatus").click(function () {
             saveArbitrationInfo();
         });
 
@@ -196,11 +196,34 @@
             StatusCode: 'S5',
             InUserId: loginUser.Id
         }, function () {
-            $("#btnSaveStatus").button('loading');
+            $("#btnSaveStatus").button('reset');
         }, function () { $("#btnSaveStatus").button('reset'); });
     }
-
     var curRow;
+    function saveScore() {
+        var params = $("#score-form").serializeJson();
+        var json = $("#score-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+        } else {
+            //新增
+            params = $.extend({
+                TenantId: loginUser.TenantId,
+                ProjectId: $("#project-sel").val(),
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, params);
+        }
+        $("#save_button").button("loading");
+        $.commonPost("Answer/SaveAnswerInfo", params, function () {
+            $("#save_button").button("reset");
+            loadScore();
+            closeModel();
+        }, function () { $("#save_button").button("reset"); });
+    }
+
     function loadRecheckArbitrationInfo() {
         var projectId = $("#project-sel").val();
         if (!projectId) {
@@ -311,7 +334,10 @@
                 width: 80,
                 valign: "middle",
                 align: "center",
-                sortable: false 
+                sortable: false,
+                formatter: function (value) {
+                    return value?'是':'否'
+                }
             }, {
                 title: "理由",
                 field: "AgreeReason",
@@ -358,7 +384,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit();" style="min-width:100px">得分标准</a>';
+                    return '<a href="javascript:goEdit();" style="min-width:100px">得分修改</a>';
                 }
             }, {
                 title: "检查标准",
@@ -390,21 +416,7 @@
                 formatter: function (value, row, index) {
                     return '<a href="javascript:goSubjectLossIndex();" style="min-width:100px">失分描述</a>';
                 }
-            }, {
-                title: "添加时间",
-                field: "InDateTime",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "修改时间",
-                field: "ModifyDateTime",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }],
+            } ],
             onClickRow: function (row, $element) {
                 curRow = row;
             },
