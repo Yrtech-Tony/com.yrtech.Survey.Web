@@ -26,9 +26,14 @@
             <select id="project-sel" class="form-control" style="width:200px;"></select>
         </div>
     </div>
-    <div style="float:right;width:200px;text-align:right">
+    <div style="float:right;width:700px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnSubjectAdd" class="btn btn-primary">添加题目</button>
+        <button id="btnSubjectImport" class="btn btn-primary">导入题目</button>
+        <button id="btnSubjectFileImport" class="btn btn-primary">导入标准照片</button>
+        <button id="btnSubjectInspectionImport" class="btn btn-primary">导入检查标准</button>
+        <button id="btnSubjectLossResultImport" class="btn btn-primary">导入失分说明</button>
+        <button id="btnDownloadTemplate" class="btn btn-primary">下载模板</button>
     </div>
 </div>
 <div class="result">
@@ -50,11 +55,33 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">题目导入</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 
 <script>
+    var ossUploader;
+    var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
         bindBrandSelect();
@@ -83,7 +110,90 @@
             })
             return false;
         })
-
+        $("#btnDownloadTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/Subject.xlsx";
+            window.location.href = url;
+        });
+        osspath = "Survey/BaseInfo/";
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnSubjectImport",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    debugger
+                    var projectCode = $("#project-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-body").load("/ProjectContent/OpenSubjectImport", {}, function () {
+                        $("#ImportProject").html(projectCode);
+                        loadImportSubject(file);
+                    })
+                })
+            }
+        });
+        osspath = "Survey/BaseInfo/";
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnSubjectFileImport",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    debugger
+                    var projectCode = $("#project-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-body").load("/ProjectContent/OpenSubjectFileImport", {}, function () {
+                        $("#ImportProject").html(projectCode);
+                        loadImportSubjectFile(file);
+                    })
+                })
+            }
+        });
+        osspath = "Survey/BaseInfo/";
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnSubjectInspectionImport",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    debugger
+                    var projectCode = $("#project-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-body").load("/ProjectContent/OpenSubjectInspectionStandardImport", {}, function () {
+                        $("#ImportProject").html(projectCode);
+                        loadImportSubjectInspectionStandard(file);
+                    })
+                })
+            }
+        });
+        osspath = "Survey/BaseInfo/";
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnSubjectLossResultImport",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    debugger
+                    var projectCode = $("#project-sel option:selected").text();
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-body").load("/ProjectContent/OpenSubjectLossResultImport", {}, function () {
+                        $("#ImportProject").html(projectCode);
+                        loadImportSubjectLossResult(file);
+                    })
+                })
+            }
+        });
         initSubjectTable();
         $("#btnQuery").click(function () {
             loadSubject();

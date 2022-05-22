@@ -121,20 +121,20 @@
                 title: "经销商名称",
                 field: "ShopName",
                 valign: "middle",
-                width: 150,
+                width: 300,
                 align: "center",
                 sortable: false
             }, {
                 title: "进店",
                 field: "Status_S0",
-                width: 200,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "提交审核",
                 field: "Status_S1",
-                width: 200,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -148,20 +148,49 @@
             }, {
                 title: "审核完毕",
                 field: "Status_S3",
-                width: 150,
+                width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                
             }, {
                 title: "审核详细",
                 field: "",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
                     return '<a href="javascript:getRecheckStatusDtl();" style="min-width:100px">审核详细</a>';
                 }
+            }, {
+                title: "审核修改",
+                field: "Status_S4",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "仲裁",
+                field: "Status_S5",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "督导抽查",
+                field: "Status_S6",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "项目经理抽查",
+                field: "Status_S7",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
