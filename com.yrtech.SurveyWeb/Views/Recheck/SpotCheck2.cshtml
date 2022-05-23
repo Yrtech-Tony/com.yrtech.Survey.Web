@@ -195,7 +195,7 @@
             StatusCode: 'S7',
             InUserId: loginUser.Id
         }, function () {
-            $("#btnSaveStatus").button('loading');
+            $("#btnSaveStatus").button('reset');
         }, function () { $("#btnSaveStatus").button('reset'); });
     }
     var curRow;
@@ -403,6 +403,7 @@
             },
             onEditableSave: function (field, row, oldValue, $el) {
                 $.commonPost("Recheck/SavePMSpotCheck", {
+                    RecheckId: row.RecheckId,
                     PMSpotCheckContent: row.PMSpotCheckContent,
                     PMSpotCheckUserId: loginUser.Id
                 }, function () {

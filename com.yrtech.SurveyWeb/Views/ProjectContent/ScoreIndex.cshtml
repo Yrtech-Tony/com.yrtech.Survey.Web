@@ -13,6 +13,12 @@
         }
 </style>
 <div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnExportAnswer" class="btn btn-primary">导出全部得分</button>
+        <button id="btnDownLoadFileResult" class="btn btn-primary">导出标准照片</button>
+        <button id="btnDownLoadLossResult" class="btn btn-primary">导出失分照片</button>
+    </div>
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
@@ -31,10 +37,7 @@
             <select id="shop-sel" class="form-control" style="width: 140px"></select>
         </div>
     </div>
-    <div style="float:right;width:200px;text-align:right">
-        <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnExportAnswer" class="btn btn-primary">导出全部得分</button>
-    </div>
+    
 </div>
 <div class="result">
     <table id="score-table" ></table>
@@ -171,6 +174,26 @@
             }, function (data) {
                 window.location.href = baseSurveyUrl + data;
                 $("#btnExportAnswer").button('reset');
+            });
+        });
+        $("#btnDownLoadFileResult").click(function () {
+            $("#btnDownLoadFileResult").button('loading');
+            $.commonGet("Answer/ShopAnswerFileResultDownLoad", {
+                projectId: $("#project-sel").val(),
+                shopId: $("#shop-sel").val()
+            }, function (data) {
+                window.location.href = baseSurveyUrl + data;
+                $("#btnDownLoadFileResult").button('reset');
+            });
+        });
+        $("#btnDownLoadLossResult").click(function () {
+            $("#btnDownLoadLossResult").button('loading');
+            $.commonGet("Answer/ShopAnswerLossResultDownLoad", {
+                projectId: $("#project-sel").val(),
+                shopId: $("#shop-sel").val()
+            }, function (data) {
+                window.location.href = baseSurveyUrl + data;
+                $("#btnDownLoadLossResult").button('reset');
             });
         });
         initScoreTable();

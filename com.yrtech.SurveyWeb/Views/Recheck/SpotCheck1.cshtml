@@ -195,7 +195,7 @@
             StatusCode: 'S6',
             InUserId: loginUser.Id
         }, function () {
-            $("#btnSaveStatus").button('loading');
+            $("#btnSaveStatus").button('reset');
         }, function () { $("#btnSaveStatus").button('reset'); });
     }
 
@@ -357,6 +357,7 @@
             },
             onEditableSave: function (field, row, oldValue, $el) {
                 $.commonPost("Recheck/SaveSupervisionSpotCheck", {
+                    RecheckId: row.RecheckId,
                     SupervisionSpotCheckContent: row.SupervisionSpotCheckContent,
                     SupervisionSpotCheckUserId: loginUser.Id
                 }, function () {
