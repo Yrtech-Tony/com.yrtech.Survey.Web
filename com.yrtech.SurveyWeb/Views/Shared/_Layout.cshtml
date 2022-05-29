@@ -64,12 +64,12 @@
                                 <li id="recheckMoudel" style="display:none">
                                     <a><i class="fa fa-area-chart"></i>审核中心<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="/Recheck/RecheckIndex">审核管理</a></li>
-                                        <li><a href="/Recheck/RecheckStatusIndex">进度管理</a></li>
-                                        <li><a href="/Recheck/RecheckModify">审核修改</a></li>
-                                        <li><a href="/Recheck/RecheckConfirm">仲裁</a></li>
-                                        <li><a href="/Recheck/SpotCheck1">复审抽查(督导)</a></li>
-                                        <li><a href="/Recheck/SpotCheck2">复审抽查(项目经理)</a></li>
+                                        <li id="recheckIndex" style="display:none"><a href="/Recheck/RecheckIndex">审核管理</a></li>
+                                        <li id="recheckStatusIndex" style="display:none"><a href="/Recheck/RecheckStatusIndex">进度管理</a></li>
+                                        <li id="recheckModify" style="display:none"><a href="/Recheck/RecheckModify">审核修改</a></li>
+                                        <li id="recheckConfirm" style="display:none"><a href="/Recheck/RecheckConfirm">仲裁</a></li>
+                                        <li id="spotCheck1" style="display:none"><a href="/Recheck/SpotCheck1">复审抽查(督导)</a></li>
+                                        <li id="spotCheck2" style="display:none"><a href="/Recheck/SpotCheck2">复审抽查(项目经理)</a></li>
                                     </ul>
                                 </li>
                                 <li id="reportMoudel" style="display:none">
@@ -110,7 +110,6 @@
                                         <li id="LabelIndex"><a href="/Home/LabelIndex">标签管理</a></li>
                                     </ul>
                                 </li>
-
                                 <li id="easyPhotoMoudel" style="display:none">
                                     <a><i class="fa fa-camera" aria-hidden="true"></i> 轻松拍<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -198,11 +197,38 @@
             loginUser = JSON.parse(window.localStorage.userJson);
             //根据权限显示菜单
             if(loginUser.RoleType == 'S_Sysadmin'|| loginUser.RoleType == 'S_BrandSysadmin'){
-                $('#mainMenu>li').show()
+                {
+                    $('#mainMenu>li').show();
+                    $('#recheckMoudel').show();
+                    $('#recheckStatusIndex').show();
+                    $('#recheckIndex').show();
+                    $('#recheckModify').show();
+                    $('#recheckConfirm').show();
+                    $('#spotCheck1').show();
+                    $('#spotCheck2').show();
+                }
             } else if (loginUser.RoleType == 'S_Recheck') {
-                $('#executeMoudel').show()
-                $('#recheckMoudel').show()
-            }             
+                //$('#executeMoudel').show()
+                $('#recheckMoudel').show();
+                $('#recheckStatusIndex').show();
+                $('#recheckIndex').show();
+
+            } else if (loginUser.RoleType == 'S_Execute')
+            {
+                $('#recheckMoudel').show();
+                $('#recheckModify').show();
+                $('#recheckStatusIndex').show();
+                
+            }
+            else if (loginUser.RoleType == 'S_SurperVision') {
+                $('#recheckMoudel').show();
+                $('#spotCheck1').show();
+            }
+            else if (loginUser.RoleType == 'S_Customer') {
+                $('#recheckMoudel').show();
+                $('#recheckStatusIndex').show();
+            }
+            
         } else {
             alert("没有登录用户，跳转到登录界面！");
             window.location.href = "/Account/Login";
