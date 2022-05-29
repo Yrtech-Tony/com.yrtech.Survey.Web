@@ -11,8 +11,13 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border{
+        border-left:none;
+        border-right:none;
+    }
 </style>
-<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />  
+<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <div class="condition">
@@ -40,7 +45,7 @@
     </div>
 </div>
 <div class="result">
-    <table id="recheck-table" class="table"></table>
+    <table id="recheck-table" class="table table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -169,11 +174,14 @@
             saveRecheckStatus();
         });
 
-        initRecheckTable();
+        //initRecheckTable();
         $("#btnQuery").click(function () {
             loadRecheckNotPass();
         })
-     
+
+        $(window).resize(function () {
+            $('#recheck-table').bootstrapTable('resetView');
+        });
     })
 
     function loadProjectShop() {
@@ -185,7 +193,7 @@
             userId: loginUser.Id
         }, function (data) {
             $('#project-shop-table').bootstrapTable("hideLoading");
-            $('#project-shop-table').bootstrapTable("load", data);
+            $('#project-shop-table').bootstrapTable("load", data);            
         });
     }
 
@@ -237,21 +245,25 @@
             alert("请选择一个经销商！");
             return
         }
-        $('#recheck-table').bootstrapTable("showLoading");
+        //$('#recheck-table').bootstrapTable("showLoading");
         $.commonGet("Recheck/GetRecheckNotPass", {
             projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
             subjectId: ''
         }, function (data) {
-            $('#recheck-table').bootstrapTable("hideLoading");
-            $('#recheck-table').bootstrapTable("load", data);
+           
+            //$('#recheck-table').bootstrapTable("load", data);
+            initRecheckTable(data)
+           
+            //$('#recheck-table').resize();
         });
     }
 
     //初始化期号表格
-    function initRecheckTable() {
-        $('#recheck-table').bootstrapTable({
+    function initRecheckTable(data) {
+        $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
