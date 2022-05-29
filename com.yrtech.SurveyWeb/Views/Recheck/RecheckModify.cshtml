@@ -280,7 +280,7 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
-                width: 180,
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -305,7 +305,10 @@
                 width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter:function(value, row, index) {
+                    return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "得分",
                 field: "PhotoScore",
