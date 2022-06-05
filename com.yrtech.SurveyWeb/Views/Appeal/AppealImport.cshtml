@@ -2,6 +2,21 @@
     ViewBag.Title = "申诉数据导入";
     com.yrtech.SurveyWeb.Models.AccountDto accountDto = Session["LoginUser"] as com.yrtech.SurveyWeb.Models.AccountDto;
 }
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
 <div class="page-title">
     <div class="title_left">
         <h3>申诉管理 <small></small></h3>

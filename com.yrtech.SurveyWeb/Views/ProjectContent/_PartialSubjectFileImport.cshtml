@@ -8,21 +8,23 @@
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
-    
+
     <table id="import-subjectfile-table" class="table table-bordered table-set"></table>
 </div>
 <script>
     $(function () {
-        initImportSubjectFileTable();
+        //initImportSubjectFileTable();
     })
 
-    function initImportSubjectFileTable() {
-        $('#import-subjectfile-table').bootstrapTable({
+    function initImportSubjectFileTable(data) {
+        $('#import-subjectfile-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data: data,
             striped: true, //是否显示行间隔色
+            height: getClientHeight() - 260,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "题目代码",
                 field: 'SubjectCode',
@@ -32,7 +34,7 @@
             }, {
                 title: "照片名称",
                 field: "FileName",
-                width: 50,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -46,10 +48,11 @@
             }, {
                 title: "状态说明",
                 field: "ImportRemark",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: preferenceFormatter
             }]
         });
     }
@@ -77,8 +80,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-subjectfile-table').bootstrapTable("load", data);
-            $('#import-subjectfile-table').bootstrapTable("hideLoading");
+            // $('#import-subjectfile-table').bootstrapTable("load", data);
+            // $('#import-subjectfile-table').bootstrapTable("hideLoading");
+            initImportSubjectFileTable(data);
         });
     }
     function importSubjectFile() {

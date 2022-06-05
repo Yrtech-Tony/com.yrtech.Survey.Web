@@ -13,16 +13,18 @@
 </div>
 <script>
     $(function () {
-        initImportSubjectTable();
+        //initImportSubjectTable();
     })
 
-    function initImportSubjectTable() {
-        $('#import-subject-table').bootstrapTable({
+    function initImportSubjectTable(data) {
+        $('#import-subject-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
+            height: getClientHeight() - 260,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "题目代码",
                 field: 'SubjectCode',
@@ -32,21 +34,21 @@
             }, {
                 title: "执行顺序",
                 field: "OrderNO",
-                width: 50,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "最高分",
                 field: "FullScore",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "最低分",
                 field: "LowScore",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -60,7 +62,7 @@
             }, {
                 title: "试卷类型",
                 field: "ExamTypeCode",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -81,24 +83,27 @@
             }, {
                 title: "检查点",
                 field: "CheckPoint",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: preferenceFormatter
             }, {
                 title: "检查标准说明",
                 field: "InspectionDesc",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: preferenceFormatter
             }, {
                 title: "备注",
                 field: "Remark",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: preferenceFormatter
             }, {
                 title: "数据状态",
                 field: "ImportChk",
@@ -109,10 +114,11 @@
             }, {
                 title: "状态说明",
                 field: "ImportRemark",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: preferenceFormatter
             }]
         });
     }
@@ -140,8 +146,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-subject-table').bootstrapTable("load", data);
-            $('#import-subject-table').bootstrapTable("hideLoading");
+           // $('#import-subject-table').bootstrapTable("load", data);
+            //$('#import-subject-table').bootstrapTable("hideLoading");
+            initImportSubjectTable(data);
         });
     }
     function importSubject() {

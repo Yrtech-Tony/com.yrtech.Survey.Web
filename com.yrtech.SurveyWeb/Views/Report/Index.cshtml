@@ -1,7 +1,21 @@
 ﻿@{
     ViewBag.Title = "报告上传";
 }
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
 
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
@@ -44,7 +58,7 @@
         </div>
     </div>
     <br />
-    <table id="report-table" class="table table-bordered table-set"></table>
+    <table id="report-table" class="table  table-set"></table>
 </div>
 
 
@@ -139,7 +153,7 @@
 
         initOss();
 
-        initReportTable();
+        //initReportTable();
         search();
     });
 
@@ -273,8 +287,9 @@
 
         $('#report-table').bootstrapTable("showLoading");
         $.commonGet("ReportFile/ReportFileListUploadSearch", params, function (data) {
-            $('#report-table').bootstrapTable("load", data);
-            $('#report-table').bootstrapTable("hideLoading");
+           // $('#report-table').bootstrapTable("load", data);
+            //$('#report-table').bootstrapTable("hideLoading");
+            initReportTable(data);
             //if (oneShopUploaders) {
             //    $.each(oneShopUploaders, function () {
             //        this.destroy();
@@ -313,17 +328,18 @@
         })
     }
     var curRow;
-    function initReportTable() {
+    function initReportTable(data) {
         //生成用户数据
-        $('#report-table').bootstrapTable({
+        $('#report-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             showLoading: true,
             striped: true, //是否显示行间隔色
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             width: "100%",
             height: getClientHeight() - 300,
             columns: [{
@@ -335,6 +351,7 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -382,7 +399,7 @@
             onClickRow: function (row, $element) {
                 curRow = row;
             }
-        }).bootstrapTable("showLoading");
+        });
 
     }
 

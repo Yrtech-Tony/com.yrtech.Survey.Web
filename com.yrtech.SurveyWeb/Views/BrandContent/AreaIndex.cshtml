@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "区域管理";
 }
-<style>    
+<style>
     .operation {
         padding: 10px 0px;
         text-align: right;
@@ -10,6 +10,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <div class="condition">
     <div style="text-align:right;width:100%">
@@ -38,7 +43,7 @@
             <input id="AreaNameQuery" type="text" class="form-control" placeholder="区域名称" style="width:120px;">
         </div>
     </div>
-    
+
 </div>
 <div class="result">
     <table id="area-table" class="table table-bordered table-set"></table>
@@ -109,16 +114,16 @@
                     $("#ModalImport .modal-body").load("/BrandContent/OpenAreaImport", {}, function () {
                         $("#ImportBrand").html(brandTxt);
                         loadImportArea(file);
-                    }) 
+                    })
                 })
             }
         });
 
         new OSSClient({
-            autoupload:true,
+            autoupload: true,
             osspath: osspath + "Import/",
             selectfiles: "btnAreaShopImport",
-            multi_selection:false,
+            multi_selection: false,
             success: function (files) {
                 //调用导入方法
                 files.forEach(function (file) {
@@ -129,7 +134,7 @@
                     $("#ModalImport .modal-body").load("/BrandContent/OpenAreaShopImport", {}, function () {
                         $("#ImportBrand").html(brandTxt);
                         loadImportAreaShop(file);
-                    }) 
+                    })
                 })
             }
         });
@@ -151,7 +156,7 @@
             })
             return false;
         })
-      
+
         $("#btnDownloadTemplate").click(function () {
             var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/Area.xlsx";
             window.location.href = url;
@@ -161,8 +166,9 @@
             var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/AreaShop.xlsx";
             window.location.href = url;
         });
-        
-        initAreaTable();
+
+        //initAreaTable();
+        loadArea();
         $("#btnQuery").click(function () {
             loadArea();
         }).trigger("click");
@@ -212,7 +218,7 @@
             alert("请选择品牌！");
             return
         }
-        $("#btnQuery").button('loading');
+       // $("#btnQuery").button('loading');
         $('#area-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetArea", {
             brandId: $("#brand-sel").val(),
@@ -221,30 +227,32 @@
             areaType: $("#areaType-sel").val(),
             areaName: $("#AreaNameQuery").val(),
             parentId: '',
-            useChk:''
+            useChk: ''
         }, function (data) {
-            $("#btnQuery").button('reset');
-            $('#area-table').bootstrapTable("hideLoading");
-            $('#area-table').bootstrapTable("load", data);
+            //$("#btnQuery").button('reset');
+           // $('#area-table').bootstrapTable("hideLoading");
+            //$('#area-table').bootstrapTable("load", data);
+            initAreaTable(data);
         });
     }
 
     //初始化经销商表格
-    function initAreaTable() {
-        $('#area-table').bootstrapTable({
+    function initAreaTable(data) {
+        $('#area-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             showLoading: true,
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
+            pageSize: 20,
             pageList: [10, 15, 20, 50],
             columns: [{
                 title: "区域代码",
                 field: 'AreaCode',
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -253,6 +261,7 @@
             }, {
                 title: "区域名称",
                 field: "AreaName",
+                width: 120,
                 valign: "middle",
                 align: "center",
                 sortable: false

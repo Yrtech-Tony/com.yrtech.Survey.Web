@@ -12,9 +12,9 @@
             width: 100px;
         }
 
-    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border{
-        border-left:none;
-        border-right:none;
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
     }
 </style>
 <link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
@@ -167,9 +167,9 @@
         });
         bindShopSelect();
         $("#shop-sel").change(function () {
-            //loadRecheckNotPass();
+            loadRecheckNotPass();
         });
-
+        loadRecheckNotPass();
         $("#btnSaveStatus").click(function () {
             saveRecheckStatus();
         });
@@ -183,19 +183,6 @@
             $('#recheck-table').bootstrapTable('resetView');
         });
     })
-
-    function loadProjectShop() {
-        $('#project-shop-table').bootstrapTable("showLoading");
-        $.commonGet("Shop/GetProjectShopExamType", {
-            brandId: $("#brand-sel").val(),
-            projectId: $("#project-sel").val(),
-            shopId: '',
-            userId: loginUser.Id
-        }, function (data) {
-            $('#project-shop-table').bootstrapTable("hideLoading");
-            $('#project-shop-table').bootstrapTable("load", data);            
-        });
-    }
 
     function saveScore() {
         var params = $("#score-form").serializeJson();
@@ -245,32 +232,32 @@
             alert("请选择一个经销商！");
             return
         }
-        //$('#recheck-table').bootstrapTable("showLoading");
+        $('#recheck-table').bootstrapTable("showLoading");
         $.commonGet("Recheck/GetRecheckNotPass", {
             projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
             subjectId: ''
         }, function (data) {
-           
+
             //$('#recheck-table').bootstrapTable("load", data);
             initRecheckTable(data)
-           
             //$('#recheck-table').resize();
         });
+        // $('#recheck-table').bootstrapTable("hideLoading");
     }
 
     //初始化期号表格
     function initRecheckTable(data) {
         $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
-            data:data,
+            data: data,
             striped: true, //是否显示行间隔色
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
@@ -306,8 +293,9 @@
                 valign: "middle",
                 align: "center",
                 sortable: false,
-                formatter:function(value, row, index) {
-                    return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
                 title: "得分",
@@ -322,7 +310,11 @@
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "复审得分",
                 field: "RecheckScore",
@@ -369,12 +361,12 @@
                 editable: {
                     type: 'text',
                     noeditFormatter: function (value, row, index) {
-                        return '<a href="javascript:void(0)" data-name="AgreeReason" data-pk="undefined" data-value="" class="editable editable-click">' + (value || '') + '</a>';
+                        return '<a href="javascript:void(0)" data-name="AgreeReason" data-pk="undefined" data-value="" class="editable editable-click">' + (value || '') + '</a> ';
                     },
                     validate: function (v) {
                         if (!v) return '理由不能为空';
                     }
-                }
+                },
             }, {
                 title: "得分修改",
                 field: "",

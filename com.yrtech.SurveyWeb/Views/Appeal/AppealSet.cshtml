@@ -1,6 +1,21 @@
 ﻿@{
     ViewBag.Title = "申诉设置管理";
 }
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
@@ -57,35 +72,41 @@
         $("#brand-sel").change(function () {
             bindProjectSelect();
         });
+        $("#project-sel").change(function () {
+            loadAppealSet();
+        });
 
         bindProjectSelect();
-        initAppealSetTable();
+        //initAppealSetTable();
+        loadAppealSet();
         $("#btnQuery").click(function () {
             loadAppealSet();
         }).trigger("click");
 
     });
     var curRow;
-    function initAppealSetTable() {
-        $('#appealSet-table').bootstrapTable({
+    function initAppealSetTable(data) {
+        $('#appealSet-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "期号Id",
                 field: 'ProjectId',
+                width: 100,
                 valign: "middle",
                 align: "center",
             }, {
                 title: "期号代码",
                 field: 'ProjectCode',
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -94,12 +115,14 @@
             }, {
                 title: "期号名称",
                 field: "ProjectName",
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "申诉开始时间",
                 field: "AppealStartDate",
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -107,6 +130,7 @@
             }, {
                 title: "申诉结束时间",
                 field: "AppealEndDate",
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -136,6 +160,7 @@
             }, {
                 title: "申诉生成时间",
                 field: "AppealCreateDateTime",
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -143,12 +168,14 @@
             {
                 title: "登记时间",
                 field: "InDateTime",
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -164,8 +191,9 @@
         $.commonGet("Appeal/GetAppealSet", {
             projectId: $("#project-sel").val()
         }, function (data) {
-            $('#appealSet-table').bootstrapTable("hideLoading");
-            $('#appealSet-table').bootstrapTable("load", data);
+           // $('#appealSet-table').bootstrapTable("hideLoading");
+            //$('#appealSet-table').bootstrapTable("load", data);
+            initAppealSetTable(data);
         });
     }
     function goEdit() {

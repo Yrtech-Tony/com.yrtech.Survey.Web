@@ -1,6 +1,21 @@
 ﻿@{
     ViewBag.Title = "经销商管理";
 }
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
@@ -95,7 +110,8 @@
             }
         });
         bindBrandSelect();
-        initShopTable();
+        //initShopTable();
+        loadShop();
         $("#btnShopAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/BrandContent/ShopEdit", {}, function () {
@@ -152,27 +168,29 @@
             shopCode: $("#ShopCode").val(),
             key: $("#ShopName").val()
         }, function (data) {
-            $('#shop-table').bootstrapTable("hideLoading");
-            $('#shop-table').bootstrapTable("load", data);
+          //  $('#shop-table').bootstrapTable("hideLoading");
+            // $('#shop-table').bootstrapTable("load", data);
+            initShopTable(data);
         });
     }
 
     //初始化经销商表格
-    function initShopTable() {
-        $('#shop-table').bootstrapTable({
+    function initShopTable(data) {
+        $('#shop-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -180,7 +198,7 @@
                 }
             }, {
                 title: "经销商名称",
-                width: 300,
+                width: 230,
                 field: "ShopName",
                 valign: "middle",
                 align: "center",
@@ -188,7 +206,7 @@
             }, {
                 title: "经销商简称",
                 field: "ShopShortName",
-                width: 150,
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -226,14 +244,14 @@
             }, {
                 title: "添加时间",
                 field: "InDateTime",
-                width: 140,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
-                width: 140,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false

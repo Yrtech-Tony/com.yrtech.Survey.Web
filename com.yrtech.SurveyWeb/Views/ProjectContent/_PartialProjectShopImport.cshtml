@@ -13,25 +13,28 @@
 </div>
 <script>
     $(function () {
-        initImportProjectShopTable();
+       // initImportProjectShopTable();
     })
 
-    function initImportProjectShopTable() {
-        $('#import-projectshop-table').bootstrapTable({
+    function initImportProjectShopTable(data) {
+        $('#import-projectshop-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
+            height: getClientHeight() - 260,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center"
             }, {
                 title: "经销商名称",
                 field: "ShopName",
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -89,8 +92,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-projectshop-table').bootstrapTable("load", data);
-            $('#import-projectshop-table').bootstrapTable("hideLoading");
+           // $('#import-projectshop-table').bootstrapTable("load", data);
+            //$('#import-projectshop-table').bootstrapTable("hideLoading");
+            initImportProjectShopTable(data);
         });
     }
     function ImportProjectShop() {
