@@ -40,9 +40,7 @@
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
                             <ul id="mainMenu" class="nav side-menu">
-                                <li class="main-page">
-                                    <a href="/Home/Main"> <i class="fa fa-home"></i> 首页 </a>
-                                </li>
+                                
                                 @*<li>
                                     <a><i class="fa fa-area-chart"></i>执行准备<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -51,7 +49,7 @@
                                         <li><a href="/ProjectContent/ProjectShopIndex">经销商卷别</a></li>
                                     </ul>
                                 </li>*@
-                                <li id="executeMoudel" style="display:none">
+                                @*<li id="executeMoudel" style="display:none">
                                     <a><i class="fa fa-area-chart"></i>执行中心<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li id="ProjectIndex"><a href="/ProjectContent/ProjectIndex">期号设置</a></li>
@@ -122,7 +120,7 @@
                                         <li id="EasyPhotoAnswerIndex"><a href="/EasyPhoto/EasyPhotoAnswerIndex">清单管理</a></li>
                                     </ul>
                                 </li>
-                            </ul>
+                            </ul>*@
                         </div>
 
                     </div>
@@ -195,39 +193,57 @@
         var loginUser;
         if (window.localStorage.userJson) {
             loginUser = JSON.parse(window.localStorage.userJson);
-            //根据权限显示菜单
-            if(loginUser.RoleType == 'S_Sysadmin'|| loginUser.RoleType == 'S_BrandSysadmin'){
-                {
-                    $('#mainMenu>li').show();
-                    $('#recheckMoudel').show();
-                    $('#recheckStatusIndex').show();
-                    $('#recheckIndex').show();
-                    $('#recheckModify').show();
-                    $('#recheckConfirm').show();
-                    $('#spotCheck1').show();
-                    $('#spotCheck2').show();
+            //动态加载菜单
+            var menuHtml = '<li class="main-page"><a href="/Home/Main"> <i class="fa fa-home"></i> 首页 </a> </li>'
+            loginUser.RoleProgramList.forEach(function (m, i) {
+                var mli =  '<li id="'+m.ProgramCode+'">'
+                var mLink = '<a><i class="fa fa-user"></i> '+m.MenuName+'<span class="fa fa-chevron-down"></span></a>'
+                menuHtml+=mli
+                menuHtml+=mLink 
+                if( m.ChildMenu &&  m.ChildMenu.length>0){
+                    menuHtml+='<ul class="nav child_menu">'
+                    m.ChildMenu.forEach(function (sm, i) {
+                        menuHtml+='<li><a href="'+sm.Url+'">'+sm.MenuName+'</a></li>'                       
+                    })
+                    menuHtml+='</ul>'
                 }
-            } else if (loginUser.RoleType == 'S_Recheck') {
-                //$('#executeMoudel').show()
-                $('#recheckMoudel').show();
-                $('#recheckStatusIndex').show();
-                $('#recheckIndex').show();
+               
+                menuHtml+='</li>' 
+            })
+            $('#mainMenu').html(menuHtml)
+            //根据权限显示菜单
+            //if(loginUser.RoleType == 'S_Sysadmin'|| loginUser.RoleType == 'S_BrandSysadmin'){
+            //    {
+            //        $('#mainMenu>li').show();
+            //        $('#recheckMoudel').show();
+            //        $('#recheckStatusIndex').show();
+            //        $('#recheckIndex').show();
+            //        $('#recheckModify').show();
+            //        $('#recheckConfirm').show();
+            //        $('#spotCheck1').show();
+            //        $('#spotCheck2').show();
+            //    }
+            //} else if (loginUser.RoleType == 'S_Recheck') {
+            //    //$('#executeMoudel').show()
+            //    $('#recheckMoudel').show();
+            //    $('#recheckStatusIndex').show();
+            //    $('#recheckIndex').show();
 
-            } else if (loginUser.RoleType == 'S_Execute')
-            {
-                $('#recheckMoudel').show();
-                $('#recheckModify').show();
-                $('#recheckStatusIndex').show();
+            //} else if (loginUser.RoleType == 'S_Execute')
+            //{
+            //    $('#recheckMoudel').show();
+            //    $('#recheckModify').show();
+            //    $('#recheckStatusIndex').show();
                 
-            }
-            else if (loginUser.RoleType == 'S_SurperVision') {
-                $('#recheckMoudel').show();
-                $('#spotCheck1').show();
-            }
-            else if (loginUser.RoleType == 'S_Customer') {
-                $('#recheckMoudel').show();
-                $('#recheckStatusIndex').show();
-            }
+            //}
+            //else if (loginUser.RoleType == 'S_SurperVision') {
+            //    $('#recheckMoudel').show();
+            //    $('#spotCheck1').show();
+            //}
+            //else if (loginUser.RoleType == 'S_Customer') {
+            //    $('#recheckMoudel').show();
+            //    $('#recheckStatusIndex').show();
+            //}
             
         } else {
             alert("没有登录用户，跳转到登录界面！");

@@ -250,12 +250,9 @@
             projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
             subjectId: ''
-        }, function (data) {
-           
+        }, function (data) {           
             //$('#recheck-table').bootstrapTable("load", data);
             initRecheckTable(data)
-           
-            //$('#recheck-table').resize();
         });
     }
 
