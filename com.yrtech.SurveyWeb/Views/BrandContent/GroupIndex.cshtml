@@ -10,6 +10,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <div class="condition">
     <div class="form-inline">
@@ -59,7 +64,8 @@
             return false;
         })
 
-        initGroupTable();
+        // initGroupTable();
+        loadGroup();
         $("#btnQuery").click(function () {
             loadGroup();
         }).trigger("click");
@@ -67,7 +73,7 @@
 
     var curRow;
     function saveGroup() {
-        var params = $("#group-form").serializeJson();        
+        var params = $("#group-form").serializeJson();
         var json = $("#group-form").data("json");
         params.UseChk = $("#UseChk").is(":checked");
         if (json && json.length > 0) {
@@ -100,25 +106,27 @@
         $.commonGet("Master/GetGroup", {
             brandId: $("#brand-sel").val(),
             groupId: '',
-            groupCode:  '',
-            groupName:  ''
+            groupCode: '',
+            groupName: ''
         }, function (data) {
-            $('#group-table').bootstrapTable("hideLoading");
-            $('#group-table').bootstrapTable("load", data);
+           // $('#group-table').bootstrapTable("hideLoading");
+            // $('#group-table').bootstrapTable("load", data);
+            initGroupTable(data);
         });
     }
 
     //初始化集团表格
-    function initGroupTable() {
-        $('#group-table').bootstrapTable({
+    function initGroupTable(data) {
+        $('#group-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
+            pageSize: 20,
             pageList: [10, 15, 20, 50],
             columns: [{
                 title: "集团代码",
@@ -132,6 +140,7 @@
             }, {
                 title: "集团名称",
                 field: "GroupName",
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -163,7 +172,7 @@
             onClickRow: function (row, $element) {
                 curRow = row;
             }
-        }).bootstrapTable("showLoading");
+        });
     }
 
     function goEdit() {

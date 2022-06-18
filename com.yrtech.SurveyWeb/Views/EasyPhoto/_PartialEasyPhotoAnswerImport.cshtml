@@ -27,24 +27,25 @@
         }, {
             title: "经销商名称",
             field: 'ShopName',
+            width: 230,
             valign: "middle",
             align: "center"
         }, {
             title: "检查代码",
             field: 'CheckCode',
-            width: 120,
+            width: 100,
             valign: "middle",
             align: "center"
         }, {
             title: "检查类型",
             field: 'CheckTypeName',
-            width: 120,
+            width: 100,
             valign: "middle",
             align: "center"
         }, {
             title: "备注",
             field: 'RemarkName',
-            width: 120,
+            width: 100,
             valign: "middle",
             align: "center"
         }];
@@ -63,7 +64,7 @@
                         cols.push({
                             title: item.ColumnName,
                             field: item.ColumnCode,
-                            width: 120,
+                            width: 100,
                             valign: "middle",
                             align: "center"
                         })
@@ -93,12 +94,13 @@
                 $('#import-answer-table').bootstrapTable({
                     pagination: true,
                     striped: true, //是否显示行间隔色
-                    width: "100%",
+                    height: getClientHeight() - 260,
+                  //  width: "100%",
                     showColumns: false, // 开启自定义列显示功能
                     sortable: true,
                     pageNumber: 1,
-                    pageSize: 15,
-                    pageList: [5, 10, 20, 50],
+                    pageSize: 20,
+                    pageList: [20, 50, 100, 500],
                     columns: cols
                 });
             }

@@ -13,16 +13,18 @@
 </div>
 <script>
     $(function () {
-        initImportSubjectLossResultTable();
+      //  initImportSubjectLossResultTable();
     })
 
-    function initImportSubjectLossResultTable() {
-        $('#import-subjectloss-table').bootstrapTable({
+    function initImportSubjectLossResultTable(data) {
+        $('#import-subjectloss-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
+            height: getClientHeight() - 260,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "题目代码",
                 field: 'SubjectCode',
@@ -32,10 +34,11 @@
             }, {
                 title: "失分说明",
                 field: "LossDesc",
-                width: 50,
+                width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: preferenceFormatter
             }, {
                 title: "数据状态",
                 field: "ImportChk",
@@ -46,10 +49,11 @@
             }, {
                 title: "状态说明",
                 field: "ImportRemark",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: preferenceFormatter
             }]
         });
     }
@@ -77,8 +81,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-subjectloss-table').bootstrapTable("load", data);
-            $('#import-subjectloss-table').bootstrapTable("hideLoading");
+          //  $('#import-subjectloss-table').bootstrapTable("load", data);
+            // $('#import-subjectloss-table').bootstrapTable("hideLoading");
+            initImportSubjectLossResultTable(data);
         });
     }
     function importSubjectLossResult() {

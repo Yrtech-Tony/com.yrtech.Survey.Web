@@ -10,6 +10,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <div class="condition">
     <div class="form-inline">
@@ -30,7 +35,7 @@
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnAccountAdd" class="btn btn-primary">添加账号</button>
     </div>
-    
+
 </div>
 <div class="result">
     <table id="account-table" class="table table-bordered table-set"></table>
@@ -70,14 +75,14 @@
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script>
-    
+
     $(function () {
         $('title').html('@ViewBag.Title')
 
         bindRoleTypeSelect("A");
 
-        initTable();
-
+       // initTable();
+        loadShopAccount();
         $("#btnAccountAdd").click(function () {
             $("#Modal .modal-title").html("编辑账号");
             $("#Modal .modal-body").empty();
@@ -142,23 +147,25 @@
             telNO: '',
             email: ''
         }, function (data) {
-            $('#account-table').bootstrapTable("hideLoading");
-            $('#account-table').bootstrapTable("load", data);
+            //$('#account-table').bootstrapTable("hideLoading");
+            //$('#account-table').bootstrapTable("load", data);
+            initTable(data);
         });
     }
 
-    function initTable() {
+    function initTable(data) {
         //生成用户数据
-        $('#account-table').bootstrapTable({
+        $('#account-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
-            width: "100%",
+            //width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "账号",
                 field: 'AccountId',
@@ -209,14 +216,14 @@
             }, {
                 title: "添加时间",
                 field: "InDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
-                width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -231,7 +238,7 @@
                     if (row.RoleType != 'S_Sysadmin') {
                         return '<a href="javascript:setUserBrand();" style="min-width:100px">关联品牌</a>';
                     }
-                    else { return '';}
+                    else { return ''; }
                 }
             }, {
                 title: "关联经销商",
@@ -285,6 +292,6 @@
         $("#Modal .modal-body").load("/Account/RelateUserInfoObjectSurveyAccount", {}, function () {
         })
     }
-    
+
 </script>
 

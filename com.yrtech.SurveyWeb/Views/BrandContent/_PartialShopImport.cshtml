@@ -8,25 +8,27 @@
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
-    
+
     <table id="import-shop-table" class="table table-bordered table-set"></table>
 </div>
 <script>
     $(function () {
-        initImportShopTable();
+        //   initImportShopTable();
     })
 
-    function initImportShopTable() {
-        $('#import-shop-table').bootstrapTable({
+    function initImportShopTable(data) {
+        $('#import-shop-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data: data,
             striped: true, //是否显示行间隔色
+            height: getClientHeight() - 260,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -35,27 +37,28 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "经销商简称",
                 field: "ShopShortName",
-                width: 100,
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "省份",
                 field: "Province",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "城市",
                 field: "City",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -89,7 +92,7 @@
             }, {
                 title: "状态说明",
                 field: "ImportRemark",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -121,8 +124,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-shop-table').bootstrapTable("load", data);
-            $('#import-shop-table').bootstrapTable("hideLoading");
+            // $('#import-shop-table').bootstrapTable("load", data);
+            //$('#import-shop-table').bootstrapTable("hideLoading");
+            initImportShopTable(data);
         });
     }
     function importShop() {

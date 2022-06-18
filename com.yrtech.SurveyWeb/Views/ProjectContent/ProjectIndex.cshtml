@@ -10,6 +10,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <div class="condition">
     <div class="form-inline">
@@ -28,7 +33,7 @@
     </div>
 </div>
 <div class="result">
-    <table id="project-table" class="table table-bordered table-set"></table>
+    <table id="project-table" class="table table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -64,6 +69,10 @@
         $("#brand-sel").change(function () {
             loadProject();
         });
+        $("#year-sel").change(function () {
+            loadProject();
+        });
+        loadProject();
         $("#btnProjectAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/ProjectContent/ProjectEdit", {}, function () {
@@ -71,7 +80,7 @@
             return false;
         });
 
-        initProjectTable();
+        //initProjectTable();
         $("#btnQuery").click(function () {
             loadProject();
         }).trigger("click");
@@ -113,23 +122,25 @@
             projectId: '',
             year: $("#year-sel").val()
         }, function (data) {
-            $('#project-table').bootstrapTable("hideLoading");
-            $('#project-table').bootstrapTable("load", data);
+           // $('#project-table').bootstrapTable("hideLoading");
+            //$('#project-table').bootstrapTable("load", data);
+            initProjectTable(data);
         });
     }
 
     //初始化期号表格
-    function initProjectTable() {
-        $('#project-table').bootstrapTable({
+    function initProjectTable(data) {
+        $('#project-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "期号代码",
                 field: 'ProjectCode',

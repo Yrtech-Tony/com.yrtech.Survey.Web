@@ -11,6 +11,20 @@
     #searchForm th {
         vertical-align: middle;
     }
+
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 
 <div class="condition">
@@ -39,9 +53,9 @@
 
 
 <div class="result table-responsive">
-    <table id="appeal-table" class="table table-bordered table-set"></table>
+    <table id="appeal-table" class="table table-set"></table>
 </div>
- 
+
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width:1000px;">
         <div class="modal-content">
@@ -77,33 +91,34 @@
         }
         var tYear = new Date().getFullYear();
         $("#year-sel").val(tYear);
-        
+
         bindProjectSelect();
 
-        initAppealTable();
+        //initAppealTable();
         $("#btnQuery").click(function () {
             loadAppeal();
         }).trigger("click");
     });
 
     var curRow;
-    function initAppealTable() {
-        
-        $('#appeal-table').bootstrapTable({
+    function initAppealTable(data) {
+
+        $('#appeal-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data: data,
             showLoading: true,
             striped: true, //是否显示行间隔色
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             width: "100%",
             height: getClientHeight() - 300,
             columns: [{
                 title: "反馈详细",
                 field: '',
-                width: 80,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -112,90 +127,96 @@
             }, {
                 title: "经销商代码",
                 field: 'ShopCode',
-                //width: 150,
+                width: 150,
                 valign: "middle",
                 align: "center"
             }, {
                 title: "经销商名称",
                 field: "ShopName",
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "体系号",
                 field: "SubjectCode",
-                //width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "检查点",
                 field: "CheckPoint",
-                //width: 120,
+                width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "申诉理由",
                 field: "AppealReason",
-               // width: 120,
+                width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "申诉人",
                 field: "AppealUserName",
-                //width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "申诉时间",
                 field: "AppealDateTime",
-                //width: 120,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "申诉人",
-                field: "AppealUserName",
-                //width: 120,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "反馈状态",
                 field: "FeedBackStatusStr",
-                //width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "反馈内容",
                 field: "FeedBackReason",
-               // width: 120,
+                width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "反馈人",
                 field: "FeedBackUserName",
-               // width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "反馈时间",
                 field: "FeedBackDateTime",
-                //width: 120,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
-            } ],
+            }],
             onClickRow: function (row, $element) {
                 curRow = row;
             }
-        }).bootstrapTable("showLoading");
+        });
     }
 
     function loadAppeal() {
@@ -204,8 +225,10 @@
 
         $('#appeal-table').bootstrapTable("showLoading");
         $.commonGet("Appeal/GetFeedBackInfoByPage", params, function (data) {
-            $('#appeal-table').bootstrapTable("load", data);
-            $('#appeal-table').bootstrapTable("hideLoading");
+            // $('#appeal-table').bootstrapTable("load", data);
+
+            initAppealTable(data);
+            // $('#appeal-table').bootstrapTable("hideLoading");
         })
     }
     function getParams() {
@@ -229,7 +252,7 @@
         $("#Modal").modal("show");
         $("#Modal .modal-footer").show();
         $("#Modal .modal-title").html("反馈详细");
-        $("#Modal .modal-body").load("/Appeal/Edit?appealId="+ appealId, {}, function () {
+        $("#Modal .modal-body").load("/Appeal/Edit?appealId=" + appealId, {}, function () {
             $("input[type=radio]").iCheckParser();
         })
     }

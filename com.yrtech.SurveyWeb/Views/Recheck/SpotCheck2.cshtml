@@ -11,6 +11,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
@@ -40,7 +45,7 @@
     </div>
 </div>
 <div class="result">
-    <table id="recheck-table"></table>
+    <table id="recheck-table" class="table table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -162,9 +167,9 @@
         });
         bindShopSelect();
         $("#shop-sel").change(function () {
-            //loadRecheckNotPass();
+             loadRecheckSpotCheck2();
         });
-
+        loadRecheckSpotCheck2();
         $("#btnSaveStatus").click(function () {
             saveRecheckStatus();
         });
@@ -175,18 +180,6 @@
         })
     })
 
-    function loadProjectShop() {
-        $('#project-shop-table').bootstrapTable("showLoading");
-        $.commonGet("Shop/GetProjectShopExamType", {
-            brandId: $("#brand-sel").val(),
-            projectId: $("#project-sel").val(),
-            shopId: '',
-            userId: loginUser.Id
-        }, function (data) {
-            $('#project-shop-table').bootstrapTable("hideLoading");
-            $('#project-shop-table').bootstrapTable("load", data);
-        });
-    }
     function saveRecheckStatus() {
         $("#btnSaveStatus").button('loading');
         $.commonPost("Recheck/SaveRecheckStatus", {
@@ -216,23 +209,25 @@
             shopId: $("#shop-sel").val(),
             subjectId: ''
         }, function (data) {
-            $('#recheck-table').bootstrapTable("hideLoading");
-            $('#recheck-table').bootstrapTable("load", data);
+           // $('#recheck-table').bootstrapTable("hideLoading");
+            //$('#recheck-table').bootstrapTable("load", data);
+            initRecheckTable(data);
         });
     }
 
     //初始化期号表格
-    function initRecheckTable() {
-        $('#recheck-table').bootstrapTable({
+    function initRecheckTable(data) {
+        $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
@@ -242,7 +237,7 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
-                width: 120,
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -264,10 +259,14 @@
             }, {
                 title: "检查点",
                 field: "CheckPoint",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "得分",
                 field: "PhotoScore",
@@ -278,24 +277,32 @@
             }, {
                 title: "备注",
                 field: "Remark",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "复审得分",
                 field: "RecheckScore",
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
             }, {
                 title: "复审意见",
                 field: "RecheckContent",
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "复审时间",
                 field: "RecheckDateTime",
@@ -319,7 +326,11 @@
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "仲裁结果",
                 field: "LastConfirmCheckName",
@@ -334,6 +345,10 @@
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "抽查意见(督导)",
                 field: "SupervisionSpotCheckContent",
@@ -341,6 +356,10 @@
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "抽查意见(项目经理)",
                 field: "PMSpotCheckContent",

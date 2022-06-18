@@ -1,6 +1,21 @@
 ﻿@{
     ViewBag.Title = "经销商卷别管理";
 }
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
@@ -23,7 +38,7 @@
     </div>
 </div>
 <div class="result">
-    <table id="project-shop-table" class="table table-bordered table-set"></table>
+    <table id="project-shop-table" class="table table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -82,9 +97,13 @@
         $("#brand-sel").change(function () {
             bindProjectSelect();
         });
+        $("#project-sel").change(function () {
+            loadProjectShop();
+        });
 
         bindProjectSelect();
-        initProjectShopTable();
+        loadProjectShop();
+        //initProjectShopTable();
         $("#btnQuery").click(function () {
             loadProjectShop();
         }).trigger("click");
@@ -112,17 +131,18 @@
         });
     });
     var curRow;
-    function initProjectShopTable() {
-        $('#project-shop-table').bootstrapTable({
+    function initProjectShopTable(data) {
+        $('#project-shop-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "期号代码",
                 field: 'ProjectCode',
@@ -132,12 +152,14 @@
             }, {
                 title: "经销商Id",
                 field: "ShopId",
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "经销商代码",
                 field: "ShopCode",
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -147,6 +169,7 @@
             },{
                 title: "经销商名称",
                 field: "ShopName",
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -199,8 +222,9 @@
             projectId: $("#project-sel").val(),
             shopId: ''
         }, function (data) {
-            $('#project-shop-table').bootstrapTable("hideLoading");
-            $('#project-shop-table').bootstrapTable("load", data);
+           // $('#project-shop-table').bootstrapTable("hideLoading");
+            //$('#project-shop-table').bootstrapTable("load", data);
+            initProjectShopTable(data);
         });
     }
     function goEdit() {

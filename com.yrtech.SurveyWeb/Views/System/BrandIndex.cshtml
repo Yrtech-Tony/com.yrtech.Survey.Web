@@ -10,6 +10,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <div class="condition">
     <div style="float:right;width:100%;text-align:right">
@@ -44,7 +49,7 @@
     $(function () {
         $('title').html('@ViewBag.Title')
 
-        initBrandTable();
+       // initBrandTable();
         loadBrand();
         $("#btnBrandAdd").click(function () {
             $("#Modal").modal("show");
@@ -95,9 +100,10 @@
             brandId: '',
             brandCode: ''
         }, function (data) {
-            $('#brand-table').bootstrapTable("hideLoading");
-            $('#brand-table').bootstrapTable("load", data);
-
+            //$('#brand-table').bootstrapTable("hideLoading");
+            //$('#brand-table').bootstrapTable("load", data);
+            initBrandTable(data);
+            // 新增品牌后，重新绑定登录者的品牌信息，避免退出重新登录
             $.commonGet("Account/LoginBrandInfo", {
                 tenantId: loginUser.TenantId,
                 userId: loginUser.Id,
@@ -110,17 +116,18 @@
     }
 
     //初始化品牌表格
-    function initBrandTable() {        
-        $('#brand-table').bootstrapTable({
+    function initBrandTable(data) {
+        $('#brand-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "品牌代码",
                 field: 'BrandCode',
@@ -133,14 +140,14 @@
             }, {
                 title: "品牌名称",
                 field: "BrandName",
-                width: 200,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "备注",
                 field: "Remark",
-                width: 300,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false

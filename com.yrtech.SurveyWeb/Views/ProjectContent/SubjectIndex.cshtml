@@ -10,6 +10,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <div class="condition">
     <div style="text-align:right;width:100%">
@@ -35,10 +40,10 @@
             <select id="project-sel" class="form-control" style="width:200px;"></select>
         </div>
     </div>
-    
+
 </div>
 <div class="result">
-    <table id="subject-table" class="table table-bordered table-set"></table>
+    <table id="subject-table" class="table table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -104,7 +109,7 @@
         $("#project-sel").change(function () {
             loadSubject();
         });
-
+        loadSubject();
         $("#btnSubjectAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
@@ -195,7 +200,7 @@
                 })
             }
         });
-        initSubjectTable();
+       // initSubjectTable();
         $("#btnQuery").click(function () {
             loadSubject();
         }).trigger("click");
@@ -233,24 +238,27 @@
             subjectCode: '',
             orderNO: ''
         }, function (data) {
-            $('#subject-table').bootstrapTable("hideLoading");
-            $('#subject-table').bootstrapTable("load", data);
+            //$('#subject-table').bootstrapTable("hideLoading");
+            //$('#subject-table').bootstrapTable("load", data);
+            initSubjectTable(data);
         });
     }
-    function initSubjectTable() {
-        $('#subject-table').bootstrapTable({
+    function initSubjectTable(data) {
+        $('#subject-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "序号",
                 field: "OrderNO",
+                width: 50,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -266,10 +274,14 @@
             }, {
                 title: "检查点",
                 field: "CheckPoint",
-                width: 100,
+                width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "最高分",
                 field: "FullScore",
@@ -315,17 +327,25 @@
             }, {
                 title: "检查标准说明",
                 field: "InspectionDesc",
-                width: 100,
+                width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "备注",
                 field: "Remark",
-                width: 100,
+                width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "标准照片",
                 field: "",

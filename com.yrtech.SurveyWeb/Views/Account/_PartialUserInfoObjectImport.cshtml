@@ -1,11 +1,12 @@
-﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+﻿
+<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
     <div class="form-inline" style="text-align:center">
         <label class="control-label" style="font-size:16px;">导入的品牌:<span id="ImportBrand"></span></label>
         <div class="item form-inline" style="float:right;">
-            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px"  data-loading-text="导入中...">导入</button>
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" data-loading-text="导入中...">导入</button>
         </div>
     </div>
-    
+
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
@@ -13,49 +14,51 @@
 </div>
 <script>
     $(function () {
-        initImportUserObjectTable();
+        // initImportUserObjectTable();
     })
 
-    function initImportUserObjectTable() {
-        $('#import-user-object-table').bootstrapTable({
+    function initImportUserObjectTable(data) {
+        $('#import-user-object-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
+            height: getClientHeight() - 260,
             pageNumber: 1,
-            pageSize: 10,
-            pageList: [10, 15, 20, 50],
-            columns: [{
-                title: "账号",
-                field: "AccountId",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title:  "代码",
-                field: 'ObjectCode',
-                width: 100,
-                valign: "middle",
-                align: "center"
-            },  {
-                title: "数据状态",
-                field: "ImportChk",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return value ? '正确' : '错误';
-                }
-            }, {
-                title: "状态说明",
-                field: "ImportRemark",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: preferenceFormatter
-            }]
-        });
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+                columns: [{
+                    title: "账号",
+                    field: "AccountId",
+                    width: 80,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false
+                }, {
+                    title:  "代码",
+                    field: 'ObjectCode',
+                    width: 50,
+                    valign: "middle",
+                    align: "center"
+                },  {
+                    title: "数据状态",
+                    field: "ImportChk",
+                    width: 80,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false,
+                    formatter: function (value, row, index) {
+                        return value ? '正确' : '错误';
+                    }
+                }, {
+                    title: "状态说明",
+                    field: "ImportRemark",
+                    width: 200,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false,
+                    formatter: preferenceFormatter
+                }]
+    });
     }
 
     function preferenceFormatter(value, row, index) {
@@ -77,8 +80,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-user-object-table').bootstrapTable("load", data);
-            $('#import-user-object-table').bootstrapTable("hideLoading");
+           // $('#import-user-object-table').bootstrapTable("load", data);
+            //$('#import-user-object-table').bootstrapTable("hideLoading");
+            initImportUserObjectTable(data);
         });
     }
     function loadImportUserObjectExcuteShop(file) {
@@ -95,8 +99,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-user-object-table').bootstrapTable("load", data);
-            $('#import-user-object-table').bootstrapTable("hideLoading");
+           // $('#import-user-object-table').bootstrapTable("load", data);
+            // $('#import-user-object-table').bootstrapTable("hideLoading");
+            initImportUserObjectTable(data);
         });
     }
     function importUserObject() {

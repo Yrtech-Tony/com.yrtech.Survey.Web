@@ -10,6 +10,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <div class="condition">
     <div class="form-inline">
@@ -19,7 +24,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <input id="key" class="form-control" style="width:500px;" placeholder="英文逗号隔开"/>
+            <input id="key" class="form-control" style="width:500px;" placeholder="英文逗号隔开" />
         </div>
     </div>
     <div style="float:right;width:450px;text-align:right">
@@ -29,14 +34,14 @@
         <button id="btnExportAnswer" class="btn btn-primary">导出</button>
         <button id="btnDownLoadPhoto" class="btn btn-primary">导出照片</button>
         <button id="btnDeleteByShop" class="btn btn-primary">按店删除</button>
-       
+
     </div>
 </div>
 <div class="result">
     <table id="answer-table" class="table table-bordered table-set"></table>
 </div>
 
-<div id="baguetteBox"  style="display:none">
+<div id="baguetteBox" style="display:none">
 </div>
 
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
@@ -56,7 +61,7 @@
     </div>
 </div>
 <link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
- 
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js"></script>
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
@@ -101,7 +106,8 @@
         //加载期号
         bindEasyPhotoProjectSelect();
 
-        initEasyPhotoAnswerTable();
+        // initEasyPhotoAnswerTable();
+        loadEasyPhotoAnswer();
         $("#project-sel").change(function () {
             loadEasyPhotoAnswer();
         });
@@ -170,13 +176,13 @@
     function initEasyPhotoAnswerTable() {
         var cols = [{
             title: "经销商代码",
-            width:120,
+            width: 120,
             field: 'ShopCode',
             valign: "middle",
             align: "center"
         }, {
             title: "经销商名称",
-            width: 200,
+            width: 230,
             field: 'ShopName',
             valign: "middle",
             align: "center"
@@ -189,16 +195,19 @@
         }, {
             title: "检查类型",
             field: 'CheckTypeName',
+            width: 100,
             valign: "middle",
             align: "center"
         }, {
             title: "备注",
             field: 'RemarkName',
+            width: 200,
             valign: "middle",
             align: "center"
         }, {
             title: "照片",
             field: 'AnswerPhotoList',
+            width: 80,
             valign: "middle",
             align: "center",
             formatter: function (value, row, index) {
@@ -211,6 +220,7 @@
         }, {
             title: "新增与否",
             field: "AddCheck",
+            width: 100,
             valign: "middle",
             align: "center",
             sortable: false,
@@ -220,6 +230,7 @@
         }, {
             title: "删除",
             field: "",
+            width: 80,
             valign: "middle",
             align: "center",
             sortable: false,
@@ -242,6 +253,7 @@
                             title: item.ColumnName,
                             field: item.ColumnCode,
                             valign: "middle",
+                            width:150,
                             align: "center"
                         })
                     }
@@ -252,13 +264,13 @@
                     sidePagination: 'server',
                     pagination: true,
                     striped: true, //是否显示行间隔色
-                    width: "100%",
+                   // width: "100%",
                     height: getClientHeight() - 260,
                     showColumns: false, // 开启自定义列显示功能
                     sortable: true,
                     pageNumber: 1,
-                    pageSize: 15,
-                    pageList: [5, 10, 20, 50],
+                    pageSize: 20,
+                    pageList: [20, 50, 100, 500],
                     queryParams: function (params) {//上传服务器的参数
                         var temp = {
                             answerId: '',
@@ -319,7 +331,7 @@
                     loadEasyPhotoAnswer();
                 },
                 complete: function () {
-                    
+
                 }
             });
         });
@@ -334,7 +346,7 @@
         //如果没有错误则返回数据，渲染表格
         return {
             rows: JSON.parse(result.Body),
-            total:result.Total
+            total: result.Total
         };
     };
     function createImageList() {

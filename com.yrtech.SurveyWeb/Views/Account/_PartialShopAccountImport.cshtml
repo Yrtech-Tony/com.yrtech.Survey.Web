@@ -13,16 +13,18 @@
 </div>
 <script>
     $(function () {
-        initImportUserTable();
+        //initImportUserTable();
     })
 
-    function initImportUserTable() {
-        $('#import-user-table').bootstrapTable({
+    function initImportUserTable(data) {
+        $('#import-user-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
+            height: getClientHeight() - 260,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "账号",
                 field: 'AccountId',
@@ -115,8 +117,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-user-table').bootstrapTable("load", data);
-            $('#import-user-table').bootstrapTable("hideLoading");
+           // $('#import-user-table').bootstrapTable("load", data);
+            // $('#import-user-table').bootstrapTable("hideLoading");
+            initImportUserTable(data);
         });
     }
     function importShopAccount() {

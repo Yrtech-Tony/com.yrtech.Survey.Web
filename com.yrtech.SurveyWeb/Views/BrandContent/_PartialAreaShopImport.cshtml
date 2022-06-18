@@ -12,20 +12,22 @@
 </div>
 <script>
     $(function () {
-        initImportAreaShopTable();
+       // initImportAreaShopTable();
     })
 
-    function initImportAreaShopTable() {
-        $('#import-area-shop-table').bootstrapTable({
+    function initImportAreaShopTable(data) {
+        $('#import-area-shop-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             pageNumber: 1,
-            pageSize: 10,
-            pageList: [10, 15, 20, 50],
+            height: getClientHeight() - 260,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "区域代码",
                 field: 'AreaCode',
-                width: 150,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
@@ -33,7 +35,7 @@
                 }
             }, {
                 title: "经销商代码",
-                width: 150,
+                width: 120,
                 field: "ShopCode",
                 valign: "middle",
                 align: "center",
@@ -41,7 +43,7 @@
             }, {
                 title: "数据状态",
                 field: "ImportChk",
-                width: 150,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -52,6 +54,7 @@
                 title: "状态说明",
                 field: "ImportRemark",
                 valign: "middle",
+                width: 200,
                 align: "center",
                 sortable: false,
                 formatter: preferenceFormatter
@@ -83,8 +86,9 @@
                 $("#btnImport").attr("disabled", true);
             }
            
-            $('#import-area-shop-table').bootstrapTable("load", data);
-            $('#import-area-shop-table').bootstrapTable("hideLoading");
+          //  $('#import-area-shop-table').bootstrapTable("load", data);
+            //$('#import-area-shop-table').bootstrapTable("hideLoading");
+            initImportAreaShopTable(data);
         });
     }
     function importAreaShop() {      

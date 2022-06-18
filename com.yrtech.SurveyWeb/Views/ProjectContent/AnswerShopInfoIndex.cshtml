@@ -1,4 +1,4 @@
-﻿ @{
+﻿@{
     ViewBag.Title = "进店信息管理";
 }
 
@@ -11,6 +11,11 @@
         .operation .btn {
             width: 100px;
         }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
 </style>
 <div class="condition">
     <div class="form-inline">
@@ -32,7 +37,7 @@
     </div>
 </div>
 <div class="result">
-    <table id="answer-shop-info-table" class="table table-bordered table-set"></table>
+    <table id="answer-shop-info-table" class="table  table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -76,15 +81,8 @@
         $("#project-sel").change(function () {
             loadAnswerShopInfo();
         });
-
-        //$("#btnAnswerShopAdd").click(function () {
-        //    $("#Modal").modal("show");
-        //    $("#Modal .modal-body").load("/ProjectContent/AnswerShopInfoEdit", {}, function () {
-        //    })
-        //    return false;
-        //});
-
-        initAnswerShopInfoTable();
+        loadAnswerShopInfo();
+       // initAnswerShopInfoTable();
         $("#btnQuery").click(function () {
             loadAnswerShopInfo();
         }).trigger("click");
@@ -117,26 +115,28 @@
     function loadAnswerShopInfo() {
         $('#answer-shop-info-table').bootstrapTable("showLoading");
         $.commonGet("Answer/GetAnswerShopInfo", {
-            projectId:  $("#project-sel").val(),
+            projectId: $("#project-sel").val(),
             shopId: ''
         }, function (data) {
-            $('#answer-shop-info-table').bootstrapTable("hideLoading");
-            $('#answer-shop-info-table').bootstrapTable("load", data);
+           // $('#answer-shop-info-table').bootstrapTable("hideLoading");
+            //$('#answer-shop-info-table').bootstrapTable("load", data);
+            initAnswerShopInfoTable(data);
         });
     }
 
     //初始化期号表格
-    function initAnswerShopInfoTable() {
-        $('#answer-shop-info-table').bootstrapTable({
+    function initAnswerShopInfoTable(data) {
+        $('#answer-shop-info-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [5, 10, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
@@ -149,17 +149,18 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
-            },{
+            }, {
                 title: "执行组长",
                 field: "TeamLeader",
-                width: 200,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
-            } , {
+            }, {
                 title: "开始时间",
                 field: "StartDate",
                 width: 200,
@@ -167,16 +168,30 @@
                 align: "center",
                 sortable: false
             }, {
+                title: "经度",
+                field: "Latitude",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "纬度",
+                field: "Longitude",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
                 title: "添加时间",
                 field: "InDateTime",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "修改时间",
                 field: "ModifyDateTime",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -205,7 +220,7 @@
                 $("#answer-shop-info-form").data("json", JSON.stringify(curRow));
             })
         });
-       
+
     }
 
 </script>

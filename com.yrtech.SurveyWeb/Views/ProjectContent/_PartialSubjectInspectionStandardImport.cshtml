@@ -13,16 +13,18 @@
 </div>
 <script>
     $(function () {
-        initImportSubjectInspectionStandardTable();
+       // initImportSubjectInspectionStandardTable();
     })
 
-    function initImportSubjectInspectionStandardTable() {
-        $('#import-subjectinspection-table').bootstrapTable({
+    function initImportSubjectInspectionStandardTable(data) {
+        $('#import-subjectinspection-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             striped: true, //是否显示行间隔色
+            height: getClientHeight() - 260,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             columns: [{
                 title: "题目代码",
                 field: 'SubjectCode',
@@ -32,10 +34,11 @@
             }, {
                 title: "检查标准",
                 field: "InspectionStandardName",
-                width: 50,
+                width: 300,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: preferenceFormatter
             }, {
                 title: "数据状态",
                 field: "ImportChk",
@@ -46,10 +49,11 @@
             }, {
                 title: "状态说明",
                 field: "ImportRemark",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                formatter: preferenceFormatter
             }]
         });
     }
@@ -77,8 +81,9 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            $('#import-subjectinspection-table').bootstrapTable("load", data);
-            $('#import-subjectinspection-table').bootstrapTable("hideLoading");
+            //$('#import-subjectinspection-table').bootstrapTable("load", data);
+            //$('#import-subjectinspection-table').bootstrapTable("hideLoading");
+            initImportSubjectInspectionStandardTable(data);
         });
     }
     function importSubjectInspectionStandard() {

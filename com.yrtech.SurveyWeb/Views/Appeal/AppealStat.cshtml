@@ -56,7 +56,7 @@
         });
 
         $("#project-sel,#bussiness-type-sel").change(function () {
-            search();
+            loadAppealStat();
         })
         
         bindBrandSelect();
@@ -68,22 +68,26 @@
         $("#year-sel").val(tYear);
         $("#year-sel").change();
         
-        initAppealStatTable();
+        $("#btnSearch").click(function () {
+            loadAppealStat();
+        })
+        //initAppealStatTable();
         loadAppealStat();
     });    
    
     var curRow;
-    function initAppealStatTable() {
+    function initAppealStatTable(data) {
         //生成用户数据
-        $('#appeal-stat-table').bootstrapTable({
+        $('#appeal-stat-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
+            data:data,
             showLoading: true,
             striped: true, //是否显示行间隔色
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 15,
-            pageList: [10, 15, 20, 50],
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
             width: "100%",
             height: getClientHeight() - 300,
             columns: [{
@@ -95,20 +99,21 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
+                width: 230,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "申诉数量",
                 field: "ApplyCount",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "反馈数量",
                 field: "FeedBackCount",
-                width: 120,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -116,7 +121,7 @@
             onClickRow: function (row, $element) {
                 curRow = row;
             }
-        }).bootstrapTable("showLoading");
+        });
     }
 
     function loadAppealStat() {
@@ -125,8 +130,9 @@
 
         $('#appeal-stat-table').bootstrapTable("showLoading");
         $.commonGet("Appeal/AppealCountSearch", params, function (data) {
-            $('#appeal-stat-table').bootstrapTable("load", data);
-            $('#appeal-stat-table').bootstrapTable("hideLoading");
+           // $('#appeal-stat-table').bootstrapTable("load", data);
+            //$('#appeal-stat-table').bootstrapTable("hideLoading");
+            initAppealStatTable(data);
         })
     }
 
