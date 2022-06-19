@@ -38,7 +38,7 @@
     </div>
 </div>
 <div class="result">
-    <table id="answer-table" class="table table-bordered table-set"></table>
+    <table id="answer-table" class="table table-set"></table>
 </div>
 
 <div id="baguetteBox" style="display:none">
@@ -111,8 +111,6 @@
         $("#project-sel").change(function () {
             loadEasyPhotoAnswer();
         });
-
-
         //查询事件
         $("#btnQuery").click(function () {
             loadEasyPhotoAnswer();
@@ -259,7 +257,7 @@
                     }
                 })
 
-                $('#answer-table').bootstrapTable({
+                $('#answer-table').bootstrapTable('destroy').bootstrapTable({
                     url: easyPhotoApi + 'Answer/GetShopAnswerList',
                     sidePagination: 'server',
                     pagination: true,

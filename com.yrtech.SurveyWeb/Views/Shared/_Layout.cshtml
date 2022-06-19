@@ -53,12 +53,12 @@
                                 </li>*@
                                 <li id="executeMoudel" style="display:none">
                                     <a><i class="fa fa-area-chart"></i>执行中心<span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li id="ProjectIndex"><a href="/ProjectContent/ProjectIndex">期号设置</a></li>
-                                        <li id="SubjectIndex"><a href="/ProjectContent/SubjectIndex">题目设置</a></li>
-                                        <li id="ProjectShopIndex"><a href="/ProjectContent/ProjectShopIndex">经销商卷别</a></li>
-                                        <li id="AnswerShopInfoIndex"><a href="/ProjectContent/AnswerShopInfoIndex">进店信息管理</a></li>
-                                        <li id="ScoreIndex"><a href="/ProjectContent/ScoreIndex">得分管理</a></li>
+                                    <ul class="nav child_menu" >
+                                        <li id="ProjectIndex" style="display:none"><a href="/ProjectContent/ProjectIndex">期号设置</a></li>
+                                        <li id="SubjectIndex" style="display:none"><a href="/ProjectContent/SubjectIndex">题目设置</a></li>
+                                        <li id="ProjectShopIndex" style="display:none"><a href="/ProjectContent/ProjectShopIndex">经销商卷别</a></li>
+                                        <li id="AnswerShopInfoIndex" style="display:none"><a href="/ProjectContent/AnswerShopInfoIndex">进店信息管理</a></li>
+                                        <li id="ScoreIndex" style="display:none"><a href="/ProjectContent/ScoreIndex">得分管理</a></li>
                                     </ul>
                                 </li>
                                 <li id="recheckMoudel" style="display:none">
@@ -196,10 +196,18 @@
         if (window.localStorage.userJson) {
             loginUser = JSON.parse(window.localStorage.userJson);
             //根据权限显示菜单
+            $('#executeMoudel').show();
+            $('#ScoreIndex').show();
             if(loginUser.RoleType == 'S_Sysadmin'|| loginUser.RoleType == 'S_BrandSysadmin'){
                 {
                     $('#mainMenu>li').show();
                     $('#recheckMoudel').show();
+                   
+                    $('#ProjectIndex').show();
+                    $('#SubjectIndex').show();
+                    $('#ProjectShopIndex').show();
+                    $('#AnswerShopInfoIndex').show();
+                    
                     $('#recheckStatusIndex').show();
                     $('#recheckIndex').show();
                     $('#recheckModify').show();
@@ -208,7 +216,6 @@
                     $('#spotCheck2').show();
                 }
             } else if (loginUser.RoleType == 'S_Recheck') {
-                //$('#executeMoudel').show()
                 $('#recheckMoudel').show();
                 $('#recheckStatusIndex').show();
                 $('#recheckIndex').show();
