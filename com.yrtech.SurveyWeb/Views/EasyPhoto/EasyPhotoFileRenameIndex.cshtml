@@ -1,0 +1,121 @@
+﻿@{
+    ViewBag.Title = "轻松拍-检查类型管理";
+}
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+</style>
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width:200px;"></select>
+        </div>
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+    </div>
+</div>
+<div class="result">
+    <table id="rename-table" class="table table-bordered table-set"></table>
+</div>
+<div class="modal fade" id="DataModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">照片下载命名</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js"></script>
+<script>
+    $(function () {
+        $('title').html('@ViewBag.Title')
+        bindEasyPhotoProjectSelect();
+        $("#project-sel").change(function () {
+            loadEasyPhotoFileRename();
+        })
+
+        initEasyPhotoFileRenameTable();
+        $("#btnQuery").click(function () {
+            loadEasyPhotoFileRename();
+        }).trigger("click");
+    })
+    var curRow;
+    function loadEasyPhotoFileRename() {
+        $('#rename-table').bootstrapTable("showLoading");
+        $.commonApi({
+            apiType: 'easyPhoto',
+            url: 'Master/GetFileType',
+            params: {
+            },
+            success: function (data) {
+                $('#rename-table').bootstrapTable("hideLoading");
+                $('#rename-table').bootstrapTable("load", data);
+            }
+        })
+    }
+
+    //初始化经销
+    function initEasyPhotoFileRenameTable() {
+        $('#rename-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "文件类型代码",
+                field: 'FileTypeCode',
+                width: 150,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "文件类型名称",
+                field: "FileTypeName",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "命名规则",
+                field: "",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:setFileRename();" style="min-width:100px">命名规则</a>';
+                }
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+    function setFileRename() {
+        $("#DataModal .modal-body").empty();
+        $("#DataModal").modal("show");
+        $("#DataModal .modal-body").load("/EasyPhoto/EasyPhotoFileRenameEdit", {}, function () {
+        })
+    }
+</script>
+
+
+

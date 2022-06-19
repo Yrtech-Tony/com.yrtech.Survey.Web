@@ -59,6 +59,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult EasyPhotoFileRenameIndex()
+        {
+            return View();
+        }
         public ActionResult EasyPhotoCheckTypeEdit()
         {
             return PartialView("_PartialEasyPhotoCheckTypeEdit");
@@ -88,7 +92,11 @@ namespace com.yrtech.SurveyWeb.Controllers
         public ActionResult EasyPhotoExtendColumnData()
         {
             return PartialView("_PartialEasyPhotoExtendColumnData");
-        }       
-        
+        }
+        public ActionResult EasyPhotoFileRenameEdit()
+        {
+            return PartialView("_PartialEasyPhotoFileRenameEdit");
+        }
+
     }
 }

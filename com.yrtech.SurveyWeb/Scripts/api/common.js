@@ -309,7 +309,21 @@ function bindEasyPhotoProjectSelect() {
         }
     })
 }
-
+function bindEasyPhotoFileOptionSelect() {
+    $.commonApi({
+        apiType: 'easyPhoto',
+        url: 'Master/GetFileNameOption',
+        async: false,
+        params: {
+        },
+        success: function (data) {
+            $("#fileNameOption-sel").empty();
+            data.forEach(function (item) {
+                $("#fileNameOption-sel").append($("<option>").val(item.OptionCode).text(item.OptionName));
+            })
+        }
+    })
+}
 function bindEasyPhotoCheckTypeSelect() {
     $.commonApi({
         apiType: 'easyPhoto',
