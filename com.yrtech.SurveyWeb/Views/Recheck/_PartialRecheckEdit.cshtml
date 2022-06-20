@@ -350,7 +350,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:viewPicutes(\'' + row.Url + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
+                    return '<a href="javascript:viewPicutes(\'' + (row.Url||'') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
             }]
         });
@@ -375,7 +375,7 @@
                 sortable: false,
                 formatter: function (value, row, index) {
                     curLossRow = row;
-                    return '<a href="javascript:viewPicutes(\'' + row.LossFileNameUrl + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
+                    return '<a href="javascript:viewPicutes(\'' + (row.LossFileNameUrl||'') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
             }]
         });
@@ -410,6 +410,7 @@
     }
 
     function viewPicutes(url) {
+        debugger
         let fileList = url ? url.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
