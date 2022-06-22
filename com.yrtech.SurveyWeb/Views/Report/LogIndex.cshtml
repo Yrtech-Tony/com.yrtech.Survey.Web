@@ -35,8 +35,9 @@
             <input id="endDate" class="form-control" style="width: 160px" />
         </div>
     </div>
-    <div style="float:right;width:100px;text-align:right">
+    <div style="float:right;width:200px;text-align:right">
         <button id="btnSearch" class="btn btn-primary">查询</button>
+        <button id="btnExportReportLog" class="btn btn-primary">导出</button>
     </div>
 </div>
 <div class="result table-responsive">    
@@ -82,7 +83,21 @@
         loadReportLog();
         $("#btnSearch").click(function () {
             loadReportLog();
-        }).trigger("click");       
+        }).trigger("click");
+
+        $("#btnExportReportLog").click(function () {
+            $("#btnExportReportLog").button('loading');
+
+            $.commonGet("ReportFile/ReportLogExport", {
+                project: $('#project').val() || '',
+                reportFileName: $('#reportFileName').val() || '',
+                startDate: $('#startDate').val() || '',
+                endDate: $('#endDate').val() || ''
+            }, function (data) {
+                window.location.href = baseSurveyUrl + data;
+                $("#btnExportReportLog").button('reset');
+            });
+        });
     });
 
     function loadReportLog() {
