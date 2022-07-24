@@ -113,6 +113,7 @@
         $("#btnSubjectAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
+                $("input[type=checkbox]").iCheckParser();
             })
             return false;
         })
@@ -210,6 +211,7 @@
         var params = $("#subject-form").serializeJson();
         debugger
         params.ProjectId = $("#project-sel").val();
+        params.MustScore = $("#MustScore").is(":checked");
         var json = $("#subject-form").data("json");
         if (json && json.length > 0) {
             //编辑
@@ -405,6 +407,7 @@
             debugger
             $("#subject-form").setForm(curRow);
             $("#subject-form").data("json", JSON.stringify(curRow));
+            $("input[type=checkbox]").iCheckParser();
         })
     }
     function goInspectionStandardEdit() {

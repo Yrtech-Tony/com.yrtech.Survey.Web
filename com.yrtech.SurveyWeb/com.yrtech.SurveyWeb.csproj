@@ -565,6 +565,10 @@
     <Content Include="Views\Recheck\SpotCheck2.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoFileRenameIndex.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoFileRenameEdit.cshtml" />
+    <Content Include="Views\ProjectContent\FileRenameIndex.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialFileRenameEdit.cshtml" />
+    <Content Include="Views\Recheck\RecheckIndex2.cshtml" />
+    <Content Include="Views\Recheck\_PartialRecheckEdit2.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

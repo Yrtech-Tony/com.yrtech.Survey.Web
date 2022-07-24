@@ -1,0 +1,313 @@
+﻿@{
+    ViewBag.Title = "审核管理";
+}
+
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
+<div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnRecheckSubmit" class="btn btn-primary">审核完毕</button>
+    </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商:</label>
+            <select id="shop-sel" class="form-control" style="width: 140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">审核类型:</label>
+            <select id="LabelId" class="form-control" style="width: 140px"></select>
+        </div>
+    </div>
+
+</div>
+<div class="result">
+    <table id="recheck-table" class="table  table-set"></table>
+</div>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" style="width:75%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">审核编辑</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer" style="display: none">
+                <button id="save_button" type="button" onclick="saveScore()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script src="~/Scripts/icheck.js"></script>
+
+<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
+<script src="~/Content/baguetteBox/baguetteBox.js"></script>
+
+<script>
+    var allLabels = []
+    $(function () {
+        $('title').html('@ViewBag.Title')
+        bindBrandSelect();
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
+
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+            bindRecheckErrors()
+        });
+        $("#project-sel").change(function () {
+            bindShopSelect();
+        });
+        bindShopSelect();
+        // 加载审核类型
+        bindLabel("RecheckType");
+        //initRecheckTable();
+        loadRecheck();
+        $("#btnQuery").click(function () {
+            loadRecheck();
+        });
+        $("#btnRecheckSubmit").click(function () {
+            recheckSubmit();
+        })
+        $('#Modal').on('hide.bs.modal', function (e) {
+            // do something...
+            $('#photo-table').bootstrapTable("destroy");
+            $('#ins-table').bootstrapTable('destroy')
+            $('#lossresult-table').bootstrapTable("destroy");
+        })
+
+
+    })
+
+    function bindRecheckErrors(callback) {
+        $.commonGet("Master/GetLabel", {
+            brandId: $('#brand-sel').val(),
+            labelType: 'RecheckErrorType',
+            useChk: true,
+            labelId: ""
+        }, function (data) {
+            console.log('get label', data)
+            allLabels = data
+        });
+    }
+
+    var curRow;
+    function recheckSubmit() {
+        debugger
+        var projectId = $("#project-sel").val();
+        if (!projectId) {
+            alert("请选择期号！");
+            return
+        }
+        var shopId = $("#shop-sel").val();
+        if (!shopId) {
+            alert("请选择经销商！");
+            return
+        }
+        var recheckTypeId = $("#LabelId").val();
+        if (!recheckTypeId) {
+            alert("请选择审核类型！");
+            return
+        }
+
+        $("#btnRecheckSubmit").button("loading");
+        $.commonPost("Recheck/SaveRecheckStatusDtl", {
+            ProjectId: $("#project-sel").val(),
+            ShopId: $("#shop-sel").val(),
+            RecheckTypeId: $("#LabelId").val(),
+            InUserId: loginUser.Id
+        }, function () {
+            $("#btnRecheckSubmit").button("reset");
+            alert("提交成功！");
+        });
+    }
+
+    function loadRecheck() {
+        var projectId = $("#project-sel").val();
+        if (!projectId) {
+            alert("请选择一个期号！");
+            return
+        }
+        var shopId = $("#shop-sel").val();
+        if (!shopId) {
+            alert("请选择一个经销商！");
+            return
+        }
+        $('#recheck-table').bootstrapTable("showLoading");
+        $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+            projectId: $("#project-sel").val(),
+            shopId: $("#shop-sel").val(),
+            subjectId: '',
+            recheckTypeId: $("#LabelId").val()
+        }, function (data) {
+           // $('#recheck-table').bootstrapTable("hideLoading");
+            //$('#recheck-table').bootstrapTable("load", data);
+            initRecheckTable(data);
+        });
+    }
+
+    //初始化期号表格
+    function initRecheckTable(data) {
+        $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data:data,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "审核",
+                field: "",
+                width: 60,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">审核</a>';
+                }
+            }, {
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 120,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                width: 230,
+                sortable: false
+            },
+            {
+                title: "题目代码",
+                field: "SubjectCode",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "题目序号",
+                field: "OrderNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查点",
+                field: "CheckPoint",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "得分",
+                field: "PhotoScore",
+                width: 50,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "审核类型",
+                field: "RecheckTypeName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "审核得分",
+                field: "RecheckScore",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "通过审核",
+                field: "PassRecheckName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "审核意见",
+                field: "RecheckContent",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "审核时间",
+                field: "RecheckDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+    function goEdit(id) {
+        $("#Modal .modal-title").html('审核编辑');
+        //$("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/Recheck/RecheckEdit2", {}, function () {
+        })
+    }
+</script>
+
+
