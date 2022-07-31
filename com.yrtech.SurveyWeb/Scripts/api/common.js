@@ -185,6 +185,9 @@ function bindShopSelect() {
         data.forEach(function (item) {
             $("#shop-sel").append($("<option>").val(item.ShopId).text(item.ShopName));
         })
+
+        $("#shop-sel").addClass("selectpicker").prop("title", "").data("live-search", true).selectpicker("refresh");
+        $("#shop-sel").css('width','140px') 
     })
     $.ajaxSettings.async = true;
 }

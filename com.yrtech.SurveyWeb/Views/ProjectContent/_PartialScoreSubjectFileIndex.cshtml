@@ -1,5 +1,5 @@
 ﻿<div style="float:right;">
-    <button id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveFileResult()" data-loading-text="提交中...">保存</button>
+    <button id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveFileResult()" data-loading-text="提交中...">保存</button> 
 </div>
 <table id="subject-file-table" class="table table-bordered table-set"></table>
  <style>
@@ -168,7 +168,7 @@
         let fileList = curFileRow.Url?curFileRow.Url.split(';'):[]
         bindFileResultList(fileList)
     }
-
+    let zooms=[], drags=[]
     function viewSubjectFile() {
         debugger
         let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
@@ -178,31 +178,60 @@
         }
         if ($("#baguetteBox").length > 0) {
             $("#baguetteBox").remove()
+            $.each(zooms, function (i, item) { 
+                item.destroy()
+            })
+            zooms = []
+            $.each(drags, function (i, item) {
+                item.destroy()
+            }) 
+            drags = []
         }
+       
         if ($("#baguetteBox-overlay").length > 0) {
             $("#baguetteBox-overlay").remove()
         }
         
-        var imgBox = $('<div id="baguetteBox" class="baguetteBox" style="display:none">');
+        var imgBox = $('<div id="baguetteBox" class="baguetteBox">');
         $(document.body).append(imgBox);
+        
         var count = fileList.length;
         $.each(fileList, function (i, item) { 
             var imgUrl = loginUser.ossInfo.osshost + item;
             var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
             var imagA = $('<a></a>');
             let name = item.substr(item.lastIndexOf('/')+1);
-            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+            let txt = (i+1) + "/" + count + "   " + name
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", txt);
             $(imagA).append(img);
             $(imagA).attr('href', imgUrl);
-            $(imagA).attr('data-caption', (i + 1) + "/" + count + "   " + name);
+            $(imagA).attr('data-caption', txt);
 
             imgBox.append(imagA);
         })
         baguetteBox.run('#baguetteBox');
-
-        setTimeout(function () {            
-            imgBox.find("a:first img").click();
+        
+        setTimeout(function () {
+            $('#baguetteBox').find("a:first img").trigger('click');
         }, 300)
+        //// 缩放插件初始化
+        //setTimeout(function () {
+        //    $.each(fileList, function (i, item) {
+        //        var id = "baguette-img-" + i
+        //        zoom = $solway.zoom({
+        //            ele: document.getElementById(id),
+        //            scale: 1,
+        //            minScale: 0.1,
+        //            translate: [0, 0]
+        //        });
+        //        zooms.push(zoom)
+        //        //drag = $solway.drag({
+        //        //    ele: document.getElementById(id),
+        //        //});
+        //        //drags.push(drag)
+        //    })
+        //}, 1000)
+      
     } 
 </script>
 

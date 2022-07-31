@@ -312,6 +312,7 @@
     <Content Include="Scripts\dataTables.bootstrap.min.js" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\daterangepicker.js" />
+    <Content Include="Scripts\drag.js" />
     <Content Include="Scripts\fastclick.js" />
     <Content Include="Scripts\gauge.js" />
     <Content Include="Scripts\gauge.min.js" />
@@ -435,6 +436,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\skycons.js" />
     <Content Include="Scripts\xlsx.core.min.js" />
+    <Content Include="Scripts\zoom.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\ProjectContent\_PartialProjectEdit.cshtml" />
     <Content Include="Views\ProjectContent\_PartialRecheckErrorTypeEdit.cshtml" />
