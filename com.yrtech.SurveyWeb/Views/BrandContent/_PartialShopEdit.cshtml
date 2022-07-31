@@ -6,7 +6,7 @@
                     经销商代码<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="ShopCode" name="ShopCode" required="required" type="text" maxlength="15" class="form-control">
+                    <input id="ShopCode" name="ShopCode" required="required" type="text" maxlength="15" class="form-control" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')">
                 </div>
             </div>
             <div class="item form-group">
