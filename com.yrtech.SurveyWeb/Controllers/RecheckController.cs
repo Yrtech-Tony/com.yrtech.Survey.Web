@@ -20,6 +20,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult RecheckIndex2()
+        {
+            return View();
+        }
         public ActionResult RecheckModify()
         {
             return View();
@@ -43,6 +47,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         public ActionResult RecheckEdit()
         { 
             return PartialView("_PartialRecheckEdit");
+        }
+        public ActionResult RecheckEdit2()
+        {
+            return PartialView("_PartialRecheckEdit2");
         }
         public ActionResult Detail(string projectId,string shopId,string subjectRecheckTypeId,string statusName)
         {

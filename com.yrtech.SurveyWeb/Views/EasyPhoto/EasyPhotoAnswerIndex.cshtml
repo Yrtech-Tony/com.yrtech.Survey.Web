@@ -65,7 +65,9 @@
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js"></script>
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
-
+<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
@@ -173,6 +175,21 @@
     //初始化清单表格
     function initEasyPhotoAnswerTable() {
         var cols = [{
+            title: "审核通过与否",
+            field: "RecheckStatus",
+            width: 150,
+            valign: "middle",
+            align: "center",
+            sortable: true,
+            editable: {
+                type: 'select',
+                source: [{ text: '是', value: true }, { text: '否', value: false }],
+                title: '审核通过与否',
+                validate: function (v) {
+                    if (!v) return '审核通过与否不能为空';
+                }
+            }
+        }, {
             title: "经销商代码",
             width: 120,
             field: 'ShopCode',
@@ -251,7 +268,7 @@
                             title: item.ColumnName,
                             field: item.ColumnCode,
                             valign: "middle",
-                            width:150,
+                            width: 150,
                             align: "center"
                         })
                     }
@@ -262,7 +279,7 @@
                     sidePagination: 'server',
                     pagination: true,
                     striped: true, //是否显示行间隔色
-                   // width: "100%",
+                    // width: "100%",
                     height: getClientHeight() - 260,
                     showColumns: false, // 开启自定义列显示功能
                     sortable: true,
@@ -288,6 +305,22 @@
                     responseHandler: responseHandler,//请求数据成功后，渲染表格前的方法
                     onClickRow: function (row, $element) {
                         curRow = row;
+                    },
+                    onEditableSave: function (field, row, oldValue, $el) {
+                        $.commonApi({
+                            apiType: 'easyPhoto',
+                            url: 'Answer/SaveRecheck',
+                            type: 'post',
+                            params: {
+                                AnswerId: curRow.AnswerId,
+                                InUserId: loginUser.Id,
+                                ModifyUserId: loginUser.Id,
+                                RecheckStatus: curRow.RecheckStatus
+                            },
+                            success: function (data) {
+                                loadEasyPhotoAnswer();
+                            }
+                        });
                     }
                 });
 
