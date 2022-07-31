@@ -292,6 +292,22 @@ function bindLabelRecheck(labelType) {
     })
     $.ajaxSettings.async = true;
 }
+
+function bindFileOptionSelect() {
+    $.commonApi({
+        apiType: 'survey',
+        url: 'Master/GetFileNameOption',
+        async: false,
+        params: {
+        },
+        success: function (data) {
+            $("#fileNameOption-sel").empty();
+            data.forEach(function (item) {
+                $("#fileNameOption-sel").append($("<option>").val(item.OptionCode).text(item.OptionName));
+            })
+        }
+    })
+}
 /** easyphoto 模块*/
 function bindEasyPhotoProjectSelect() {
     $.commonApi({
