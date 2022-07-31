@@ -26,6 +26,10 @@
             <label class="control-label">经销商:</label>
             <input id="key" class="form-control" style="width:500px;" placeholder="英文逗号隔开" />
         </div>
+        <div class="form-group">
+            <label class="control-label">检查代码:</label>
+            <input id="checkCode" class="form-control" style="width:500px;" placeholder="检查代码" />
+        </div>
     </div>
     <div style="float:right;width:450px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
@@ -291,7 +295,7 @@
                             answerId: '',
                             projectId: $("#project-sel").val(),
                             shopCode: "",
-                            checkCode: '',
+                            checkCode: $("#checkCode").val(),
                             checkTypeId: '',
                             photoCheck: '',
                             addCheck: '',

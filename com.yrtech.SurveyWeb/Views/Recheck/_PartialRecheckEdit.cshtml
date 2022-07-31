@@ -65,7 +65,7 @@
                     <div class="form-group col-md-8">
                         <label class="control-label  col-md-2" for="InspectionDesc">检查标准说明:</label>
                         <div class="col-md-10">
-                            <input id="InspectionDesc" name="CheckPoint" type="text" class="form-control" readonly>
+                            <input id="InspectionDesc" name="InspectionDesc" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
@@ -403,9 +403,25 @@
         let InsResult = item.InspectionStandardResult ? JSON.parse(item.InspectionStandardResult) : []
         let LossResult = item.LossResult ? JSON.parse(item.LossResult) : []
 
+        item.SubjectFileList = item.SubjectFileList.map(function (o) {
+            let findOne = FileResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+            if (findOne) {
+                o.Url = findOne.Url
+            }
+            return o;
+        });
+        item.SubjectInspectionStandardList = item.SubjectInspectionStandardList.map(function (o) {
+            let findOne = InsResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+            if (findOne) {
+                o.AnswerResult = findOne.AnswerResult
+            }
+            return o
+        })
         $("#answer-form").setForm(item);
-        $('#ins-table').bootstrapTable("load", InsResult);
-        $('#photo-table').bootstrapTable("load", FileResult);
+        // $('#ins-table').bootstrapTable("load", InsResult);
+        $('#ins-table').bootstrapTable("load", item.SubjectInspectionStandardList);
+        //$('#photo-table').bootstrapTable("load", FileResult);
+        $('#photo-table').bootstrapTable("load", item.SubjectFileList);
         $('#lossresult-table').bootstrapTable("load", LossResult);
     }
 

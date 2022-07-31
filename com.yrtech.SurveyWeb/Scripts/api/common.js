@@ -126,8 +126,10 @@ function bindBrandSelect() {
 // 绑定权限类型
 function bindRoleTypeSelect(type) {
     $.ajaxSettings.async = false;
+    debugger
     $.commonGet("Master/GetRoleType", {
-        type: type
+        type: type,
+        roleTypeCode: loginUser.RoleType
     }, function (data) {
         $("#role-sel").empty();
         data.forEach(function (role) {
