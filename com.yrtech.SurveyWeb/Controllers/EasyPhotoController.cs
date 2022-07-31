@@ -97,6 +97,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialEasyPhotoFileRenameEdit");
         }
+        public ActionResult EasyPhotoAnswerShopInStatusIndex()
+        {
+            return View();
+        }
 
     }
 }

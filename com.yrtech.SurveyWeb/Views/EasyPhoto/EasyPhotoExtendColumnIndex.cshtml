@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "轻松拍-扩展列管理";
 }
- <style>
+<style>
     .operation {
         padding: 10px 0px;
         text-align: right;
@@ -16,7 +16,7 @@
         <div class="form-group">
             <label class="control-label">期号:</label>
             <select id="project-sel" class="form-control" style="width:200px;"></select>
-        </div> 
+        </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
@@ -49,12 +49,12 @@
                 <h4 class="modal-title">扩展列数据</h4>
             </div>
             <div class="modal-body">
-            </div> 
+            </div>
         </div>
     </div>
 </div>
-<script src="~/Scripts/api/common.js"></script> 
-<script src="~/Scripts/custom/form-serialize.js"></script> 
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js"></script>
 <script>
     $(function () {
         $('title').html('@ViewBag.Title');
@@ -66,7 +66,7 @@
         $("#project-sel").change(function () {
             loadEasyPhotoExtendColumn();
         }).change();
-        
+
         $("#btnQuery").click(function () {
             loadEasyPhotoExtendColumn();
         });
@@ -98,6 +98,12 @@
             }, {
                 title: "扩展列名称",
                 field: "ColumnName",
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "扩展列类型",
+                field: "ColumnType",
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -152,11 +158,11 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    if (row.AddShowChk||row.EditChk) {
+                    if (row.AddShowChk || row.EditChk) {
                         return '<a href="javascript:setExtendColumnData();" style="min-width:100px">数据</a>';
                     } else {
                         return "";
-                    }                    
+                    }
                 }
             }],
             onClickRow: function (row, $element) {
@@ -169,7 +175,12 @@
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .modal-body").load("/EasyPhoto/EasyPhotoExtendColumnEdit", {}, function () {
+            debugger
+            $("#ColumnType").append($("<option>").val("0").text('输入框'));
+            $("#ColumnType").append($("<option>").val("1").text("下拉框"));
+            $("#ColumnType").append($("<option>").val("2").text("日期"));
             $("#extend-column-form").setForm(curRow);
+            $("#ColumnType").val(curRow.ColumnType);
             $("#extend-column-form").data("json", JSON.stringify(curRow));
             $("input[type=checkbox]").iCheckParser();
         })
@@ -192,7 +203,7 @@
         })
     }
 
-   
+
     //保存轻松拍的扩展列
     function saveEasyPhotoExtendColumn() {
         var data = $('#extend-column-form').data('bootstrapValidator');
@@ -210,6 +221,8 @@
         params.AddShowChk = $("#AddShowChk").is(":checked");
         params.ListShowChk = $("#ListShowChk").is(":checked");
         params.EditChk = $("#EditChk").is(":checked");
+        debugger
+        params.ColumnType = $("#ColumnType").val();
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
@@ -239,11 +252,11 @@
             complete: function () { $("#save_button").button("reset"); }
         })
     }
-     
+
     function setExtendColumnData() {
         $("#DataModal .modal-body").empty();
         $("#DataModal").modal("show");
-        $("#DataModal .modal-body").load("/EasyPhoto/EasyPhotoExtendColumnData", {}, function () { 
+        $("#DataModal .modal-body").load("/EasyPhoto/EasyPhotoExtendColumnData", {}, function () {
         })
     }
 </script>
