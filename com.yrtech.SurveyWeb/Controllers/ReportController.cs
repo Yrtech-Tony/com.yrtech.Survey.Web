@@ -23,6 +23,8 @@ namespace com.yrtech.SurveyWeb.Controllers
         public ActionResult LogIndex()
         {
             return View();
-        }        
+        }    
+        
+            
 	}
 }

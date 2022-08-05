@@ -36,7 +36,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <select id="shop-sel" class="form-control" style="width: 140px"></select>
+            <select id="shop-sel"  style="width: 140px"></select>
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
@@ -234,9 +234,11 @@
             shopId: $("#shop-sel").val(),
             subjectId: ''
         }, function (data) {
-           // $('#recheck-table').bootstrapTable("hideLoading");
+           //$('#recheck-table').bootstrapTable("hideLoading");
             //$('#recheck-table').bootstrapTable("load", data);
             initRecheckTable(data);
+        }, function () {
+            $('#recheck-table').bootstrapTable("hideLoading");
         });
     }
 
