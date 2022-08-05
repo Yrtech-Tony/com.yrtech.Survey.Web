@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "照片下载命名";
+    ViewBag.Title = "照片下载名称管理";
 }
 <style>
     .operation {
@@ -14,8 +14,23 @@
 <div class="condition">
     <div class="form-inline">
         <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
             <label class="control-label">期号:</label>
             <select id="project-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">照片类型:</label>
+            <select id="photoType-sel" class="form-control" style="width:200px;">
+                <option value="1">标准照片</option>
+                <option value="2">失分照片</option>
+            </select>
         </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
@@ -43,33 +58,42 @@
 <script>
     $(function () {
         $('title').html('@ViewBag.Title')
-        bindEasyPhotoProjectSelect();
+
+        bindBrandSelect();
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+
+        $("#brand-sel").change(function () {
+            loadProject();
+        });
+        $("#year-sel").change(function () {
+            loadProject();
+        });
+
+        bindProjectSelect();
         $("#project-sel").change(function () {
-            loadEasyPhotoFileRename();
+            loadFileRename();
         })
 
-        initEasyPhotoFileRenameTable();
+        initFileRenameTable();
         $("#btnQuery").click(function () {
-            loadEasyPhotoFileRename();
+            loadFileRename();
         }).trigger("click");
     })
     var curRow;
-    function loadEasyPhotoFileRename() {
+    function loadFileRename() { 
         $('#rename-table').bootstrapTable("showLoading");
-        $.commonApi({
-            apiType: 'easyPhoto',
-            url: 'Master/GetFileType',
-            params: {
-            },
-            success: function (data) {
-                $('#rename-table').bootstrapTable("hideLoading");
-                $('#rename-table').bootstrapTable("load", data);
-            }
+        $.commonGet("Master/GetFileType", {}, function (data) {
+            $('#rename-table').bootstrapTable("hideLoading");
+            $('#rename-table').bootstrapTable("load", data);
         })
     }
 
     //初始化经销
-    function initEasyPhotoFileRenameTable() {
+    function initFileRenameTable() {
         $('#rename-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
@@ -111,8 +135,8 @@
     }
     function setFileRename() {
         $("#DataModal .modal-body").empty();
-        $("#DataModal").modal("show");
-        $("#DataModal .modal-body").load("/EasyPhoto/EasyPhotoFileRenameEdit", {}, function () {
+        $("#DataModal").modal("show"); 
+        $("#DataModal .modal-body").load("/ProjectContent/FileRenameEdit", {}, function () {
         })
     }
 </script>

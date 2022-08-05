@@ -172,6 +172,16 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView(view);
         }
-        
+
+        #region 照片下载名管理
+        public ActionResult FileRenameIndex()
+        {
+            return View("FileRenameIndex");
+        }
+        public ActionResult FileRenameEdit()
+        {
+            return PartialView("_PartialFileRenameEdit");
+        }
+        #endregion
     }
 }
