@@ -1,0 +1,144 @@
+﻿@{
+    ViewBag.Title = "进店状态管理";
+}
+
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商:</label>
+            <input id="key" class="form-control" style="width:200px;" placeholder="英文逗号隔开" />
+        </div>
+    </div>
+    
+    <div style="float:right;width:450px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnExportAnswer" class="btn btn-primary">导出</button>
+    </div>
+</div>
+<div class="result">
+    <table id="answerStatus-table" class="table table-set"></table>
+</div>
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script>
+    $(function () {
+        //加载期号
+        bindEasyPhotoProjectSelect();
+        loadAnswerShopInStatus();
+        initAnswerShopStatusTable();
+        $("#project-sel").change(function () {
+            loadAnswerShopInStatus();
+        });
+        //查询事件
+        $("#btnQuery").click(function () {
+            loadAnswerShopInStatus();
+        });
+        $("#btnExportAnswer").click(function () {
+            $("#btnExportAnswer").button('loading');
+
+            $.commonApi({
+                apiType: 'easyPhoto',
+                url: 'Answer/AnswerShopInfoExport',
+                params: {
+                    projectId: $("#project-sel").val(),
+                    shopCode: $("#key").val()
+                },
+                success: function (data) {
+                    window.location.href = baseEasyPhotoUrl + data;
+                },
+                complete: function () {
+                    debugger
+                    $("#btnExportAnswer").button('reset');
+                }
+            })
+        });
+    })
+
+    var curRow;
+
+    function loadAnswerShopInStatus() {
+        $('#answerStatus-table').bootstrapTable("showLoading");
+        $.commonApi({
+            apiType: 'easyPhoto',
+            url: 'Answer/GetAnswerShopInfo',
+            params: {
+                projectId: $("#project-sel").val(),
+                shopCode: $("#key").val()
+            },
+            success: function (data) {
+                $('#answerStatus-table').bootstrapTable("hideLoading");
+                $('#answerStatus-table').bootstrapTable("load", data);
+            }
+        })
+    }
+
+    //初始化期号表格
+    function initAnswerShopStatusTable(data) {
+        $('#answerStatus-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data:data,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 150,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                width: 230,
+                align: "center",
+                sortable: false
+            }, {
+                title: "进店状态",
+                field: "ShopInStatus",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },{
+                title: "进店日期",
+                field: "ShopInDateTime",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+</script>
+
+

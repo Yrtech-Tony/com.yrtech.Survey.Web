@@ -1,0 +1,187 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="condition">
+        <div class="form-inline">
+            <div class="form-group">
+                <label class="control-label col-md-2" style="width:80px">命名类型:</label>
+                <div class="col-md-3">
+                    <select id="fileNameOption-sel" class="form-control"></select>
+                </div>
+                <div class="col-md-3">
+                    <input id="otherName" class="form-control" style="width:200px;" placeholder="自定义名称" />
+                </div>
+                <div class="col-md-3">
+                    <input id="startIndex" class="form-control" style="width:200px;" placeholder="选择检查代码时的开始位置，数字" />
+                </div>
+                <br />
+                <label class="control-label col-md-2" style="width:80px;margin-top:10px" ></label>
+                <div class="col-md-3" style="    margin-top: 10px;">
+                    <input id="endIndex" class="form-control" style="width:200px;" placeholder="选择检查代码时的结束位置，数字" />
+                </div>
+                <div class="col-md-3" style="    margin-top: 10px;">
+                    <input id="connectStr" class="form-control" style="width:200px;" placeholder="连接符" />
+                </div>
+                <div class="col-md-3" style="    margin-top: 10px;">
+                    <a id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveEasyPhotofileRename()" data-loading-text="提交中..."></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="extend-column-data-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        objectType = '数据';
+        $("#btnAdd").text("添加" + objectType);
+
+        initEasyPhotoFileRenameTable();
+        loadEasyPhotoFileRename();
+        bindEasyPhotoFileOptionSelect();
+    })
+    var dataRow;
+    function initEasyPhotoFileRenameTable() {
+        $('#extend-column-data-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "文件类型代码",
+                field: 'FileTypeCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "文件类型名称",
+                field: "FileTypeName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "序号",
+                field: "SeqNO",
+                width: 50,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "命名类型",
+                field: "OptionName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "自定义名称",
+                field: "OtherName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "开始位置",
+                field: "StartIndex",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "结束位置",
+                field: "EndIndex",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "连接字符",
+                field: "ConnectStr",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "删除",
+                field: "",
+                width: 50,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:deleteFileRename();" style="min-width:100px">删除</a>';
+                }
+            }],
+            onClickRow: function (row, $element) {
+                dataRow = row;
+            }
+        });
+    }
+
+    function loadEasyPhotoFileRename() {
+        debugger;
+        $('#extend-column-data-table').bootstrapTable("showLoading");
+        $.commonApi({
+            apiType: 'easyPhoto',
+            url: 'Master/GetFileRename',
+            params: {
+                projectId: $("#project-sel").val(),
+                fileTypeCode: curRow.FileTypeCode
+            },
+            success: function (data) {
+                $('#extend-column-data-table').bootstrapTable("load", data);
+                $('#extend-column-data-table').bootstrapTable("hideLoading");
+            }
+        });
+    }
+    function saveEasyPhotofileRename() {
+
+        var optionCode = $("#fileNameOption-sel").val();
+        var otherName = $("#otherName").val();
+        var startIndex = $("#startIndex").val();
+        var endIndex = $("#endIndex").val();
+        var connectStr = $("#connectStr").val();
+        if (optionCode == "CheckCode") {
+            if (startIndex == null || endIndex == null) {
+                alert("开始和结束位置不能为空！");
+                return false;
+            }
+        }
+        $("#btnAdd").button("loading");
+        debugger;
+        $.commonApi({
+            apiType: 'easyPhoto',
+            type: 'post',
+            url: 'Master/SaveFileRename',
+            params: {
+                ProjectId: $("#project-sel").val(),
+                FileTypecode: curRow.FileTypeCode,
+                OptionCode: optionCode,
+                OtherName: otherName,
+                StartIndex: startIndex,
+                EndIndex: endIndex,
+                ConnectStr: connectStr,
+                SeqNO: 0,
+                InUserId: loginUser.Id
+            },
+            success: function (data) {
+                $("#btnAdd").button("reset");
+                loadEasyPhotoFileRename();
+            }
+        });
+    }
+
+    function deleteFileRename() {
+        $.commonApi({
+            apiType: 'easyPhoto',
+            type: 'post',
+            url: 'Master/DeleteFileRename',
+            params: dataRow,
+            success: function (data) {
+                loadEasyPhotoFileRename();
+            }
+        });
+    }
+</script>
