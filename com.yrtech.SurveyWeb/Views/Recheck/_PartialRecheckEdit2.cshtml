@@ -71,14 +71,14 @@
                     <div class="form-group col-md-4">
                         <label class="control-label  col-md-4" for="PhotoScore">得分:</label>
                         <div class="col-md-8">
-                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" readonly>
+                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" >
                         </div>
                     </div>
 
                     <div class="form-group col-md-8">
                         <label class="control-label  col-md-2" for="Remark">备注:</label>
                         <div class="col-md-10">
-                            <input id="Remark" name="Remark" type="text" class="form-control" readonly>
+                            <input id="Remark" name="Remark" type="text" class="form-control" >
                         </div>
                     </div>
                 </form>
@@ -445,7 +445,11 @@
             }
             return o
         })
+        debugger
+        $("#PhotoScore").val("");
+        $("#Remark").val("");
         $("#answer-form").setForm(item);
+       
         // $('#ins-table').bootstrapTable("load", InsResult);
         $('#ins-table').bootstrapTable("load", item.SubjectInspectionStandardList);
         //$('#photo-table').bootstrapTable("load", FileResult);
@@ -492,6 +496,8 @@
             };
         }
         curAnswer.LossResult = JSON.stringify([curLossRow]);
+        curAnswer.PhotoScore = $("#PhotoScore").val();
+        curAnswer.Remark = $("#Remark").val();
         $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
         }, function () { });
     }

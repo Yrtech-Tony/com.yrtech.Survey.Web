@@ -21,7 +21,7 @@
                     <input id="connectStr" class="form-control" placeholder="连接符" style="width:120px !important" />
                 </div>
                 <div class="col-md-2" style=" margin-right: 10px;">
-                    <a id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveEasyPhotofileRename()" data-loading-text="提交中..."></a>
+                    <a id="btnAdd" class="btn btn-primary" style="margin-right:0px" onclick="saveFileRename()" data-loading-text="提交中..."></a>
                 </div>
             </div>
         </div>
@@ -38,7 +38,8 @@
 
         initFileRenameTable();
         loadFileRename();
-        bindFileOptionSelect()
+        debugger
+        bindFileOptionSelect(curRow.FileTypeCode)
     })
     var dataRow;
     function initFileRenameTable() {
@@ -83,20 +84,6 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "开始位置",
-                field: "StartIndex",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "结束位置",
-                field: "EndIndex",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
                 title: "连接字符",
                 field: "ConnectStr",
                 width: 100,
@@ -119,7 +106,6 @@
             }
         });
     }
-
     function loadFileRename() {
         $('#extend-column-data-table').bootstrapTable("showLoading");
         $.commonApi({
@@ -136,19 +122,11 @@
             }
         });
     }
-    function saveEasyPhotofileRename() {
+    function saveFileRename() {
 
         var optionCode = $("#fileNameOption-sel").val();
         var otherName = $("#otherName").val();
-        var startIndex = $("#startIndex").val();
-        var endIndex = $("#endIndex").val();
         var connectStr = $("#connectStr").val();
-        //if (optionCode == "CheckCode") {
-        //    if (startIndex == null || endIndex == null) {
-        //        alert("开始和结束位置不能为空！");
-        //        return false;
-        //    }
-        //}
         $("#btnAdd").button("loading");
         debugger;
         $.commonApi({
@@ -158,13 +136,13 @@
             params: {
                 ProjectId: $("#project-sel").val(),
                 FileTypecode: curRow.FileTypeCode,
+                PhotoType: $("#photoType-sel").val(),
                 OptionCode: optionCode,
                 OtherName: otherName,
-                StartIndex: startIndex,
-                EndIndex: endIndex,
                 ConnectStr: connectStr,
                 SeqNO: 0,
-                InUserId: loginUser.Id
+                InUserId: loginUser.Id,
+                ModifyUserId:loginUser.Id
             },
             success: function (data) {
                 $("#btnAdd").button("reset");

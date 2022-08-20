@@ -27,7 +27,7 @@
         $('title').html('@ViewBag.Title')
 
         initReportCountTable();
-        $.commonGet("ReportFile/ReportFileCountYear", {}, function (data) {
+        $.commonGet("ReportFile/ReportFileCountYear", { tenantId: loginUser.TenantId }, function (data) {
             $('#report-count-table').bootstrapTable("hideLoading");
             $("#report-count-table").bootstrapTable("load", data);
         })

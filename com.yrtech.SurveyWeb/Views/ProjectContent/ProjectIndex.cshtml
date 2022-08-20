@@ -76,6 +76,8 @@
         $("#btnProjectAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/ProjectContent/ProjectEdit", {}, function () {
+                $("#RechckShopShow").attr('checked', true)
+                $("#PhotoUploadMode").attr('checked', false)
             })
             return false;
         });
@@ -90,6 +92,8 @@
     function saveProject() {
         var params = $("#project-form").serializeJson();
         var json = $("#project-form").data("json");
+        params.RechckShopShow = $("#RechckShopShow").is(":checked");
+        params.PhotoUploadMode = $("#PhotoUploadMode").is(":checked");
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);

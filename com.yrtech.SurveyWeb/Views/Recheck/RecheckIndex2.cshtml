@@ -37,7 +37,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <select id="shop-sel" class="form-control" style="width: 140px"></select>
+            <select id="shop-sel"  style="width: 140px"></select>
         </div>
         <div class="form-group">
             <label class="control-label">审核类型:</label>
@@ -182,6 +182,8 @@
            // $('#recheck-table').bootstrapTable("hideLoading");
             //$('#recheck-table').bootstrapTable("load", data);
             initRecheckTable(data);
+        }, function () {
+            $('#recheck-table').bootstrapTable("hideLoading");
         });
     }
 
