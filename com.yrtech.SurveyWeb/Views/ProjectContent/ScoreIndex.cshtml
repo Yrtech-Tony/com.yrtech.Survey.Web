@@ -21,6 +21,7 @@
     <div style="text-align:right;width:100%">
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnExportAnswer" class="btn btn-primary">导出全部得分</button>
+        <button id="btnExportAnswer2" class="btn btn-primary">导出全部得分(横向)</button>
         <button id="btnDownLoadFileResult" class="btn btn-primary">导出标准照片</button>
         <button id="btnDownLoadLossResult" class="btn btn-primary">导出失分照片</button>
     </div>
@@ -179,6 +180,17 @@
             }, function (data) {
                 window.location.href = baseSurveyUrl + data;
                 $("#btnExportAnswer").button('reset');
+            });
+        });
+        $("#btnExportAnswer2").click(function () {
+            $("#btnExportAnswer2").button('loading');
+
+            $.commonGet("Answer/ShopAnswerScoreInfoExportL", {
+                projectId: $("#project-sel").val(),
+                shopId: ""
+            }, function (data) {
+                window.location.href = baseSurveyUrl + data;
+                $("#btnExportAnswer2").button('reset');
             });
         });
         $("#btnDownLoadFileResult").click(function () {

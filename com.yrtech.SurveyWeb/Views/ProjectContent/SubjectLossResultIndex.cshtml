@@ -1,6 +1,9 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
     <div class="item form-group" style="float:left; width:80%">
         <div class="col-md-5">
+            <input id="LossResultCode" type="text" class="form-control" placeholder="失分编码">
+        </div>
+        <div class="col-md-5">
             <input id="LossResultName" type="text" class="form-control" placeholder="失分说明">
         </div>
         <button id="btnAdd" class="btn btn-primary col-md-3" style="margin-right:0px" onclick="saveSubjectLossResult()" data-loading-text="提交中...">保存</button>
@@ -26,6 +29,13 @@
                 width: 120,
                 valign: "middle",
                 align: "center",
+            }, {
+                title: "失分说明编码",
+                field: "LossResultCode",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
             }, {
                 title: "失分说明",
                 field: "LossResultName",
@@ -69,6 +79,11 @@
     }
     function saveSubjectLossResult() {
         var lossResultName = $("#LossResultName").val();
+        var lossResultCode = $("#LossResultCode").val();
+        if (!lossResultCode) {
+            alert("请输入失分说明编码！");
+            return false;
+        }
         if (!lossResultName) {
             alert("请输入失分说明！");
             return false;
@@ -78,12 +93,14 @@
         $.commonPost("Master/SaveLossResult", {
             SubjectId: curRow.SubjectId,
             LossResultName: lossResultName,
+            LossResultCode:lossResultCode,
             InUserId: loginUser.Id,
             ModifyUserId: loginUser.Id
         }, function () {
             $("#btnAdd").button("reset");
            // alert("保存成功！");
             $("#LossResultName").val("");
+            $("#LossResultCode").val("");
             loadSubjectLossResult();
         });
     }
