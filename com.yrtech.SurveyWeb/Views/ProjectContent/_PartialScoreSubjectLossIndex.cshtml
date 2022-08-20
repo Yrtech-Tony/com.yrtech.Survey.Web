@@ -87,8 +87,8 @@
         $("#LossResultCheckList").empty()
         lossDic.forEach(function (r) {
             var checkbox = $('<label class="col-md-6"><input type="checkbox"> <span class="checkbox-label"></span></label>')
-            checkbox.find('span').text(r.LossResultName)
-            checkbox.find('inout:checkbox').val(r.LossResultName)
+            checkbox.find('span').text(r.LossResultCode+'-'+r.LossResultName)
+            checkbox.find('input:checkbox').val(r.LossResultName)
             $("#LossResultCheckList").append(checkbox)
         })
         $("#LossResultCheckList").find("input[type=checkbox]").iCheckParser();
@@ -184,7 +184,8 @@
         debugger
         let lossArr = []
         $.each($("#LossResultCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
-            let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            //let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            let lossValue = $(checkbox).val()
             lossArr.push( lossValue)
         });
         if (curLossRow) {
@@ -234,7 +235,8 @@
         $('#LossDesc2').val(curLossRow.LossDesc2)
         let lossDescArr = curLossRow.LossDesc.split(';')
         $.each($("#LossResultCheckList").find("input[type=checkbox]"),function (i,checkbox) {
-            let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            //let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            let lossValue = $(checkbox).val()
             console.log('checkbox value', lossValue)
             if (lossDescArr.indexOf(lossValue) >= 0) {
                 $(checkbox).iCheck('check');
