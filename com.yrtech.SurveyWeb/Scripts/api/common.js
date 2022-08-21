@@ -1,5 +1,5 @@
-﻿//var baseSurveyUrl = 'http://123.57.229.128:8001/';
-var baseSurveyUrl = 'http://localhost:57328/';
+﻿var baseSurveyUrl = 'http://123.57.229.128:8003/';
+//var baseSurveyUrl = 'http://localhost:57328/';
 var surveyApi = baseSurveyUrl + "survey/api/";
 var baseEasyPhotoUrl = 'http://123.57.229.128:8020/';
 //var baseEasyPhotoUrl = 'http://localhost:57328/';
@@ -292,13 +292,14 @@ function bindLabelRecheck(labelType) {
     })
     $.ajaxSettings.async = true;
 }
-
-function bindFileOptionSelect() {
+// 绑定文件重命名选项
+function bindFileOptionSelect(fileTypeCode) {
     $.commonApi({
         apiType: 'survey',
         url: 'Master/GetFileNameOption',
         async: false,
         params: {
+            fileTypeCode: fileTypeCode
         },
         success: function (data) {
             $("#fileNameOption-sel").empty();
