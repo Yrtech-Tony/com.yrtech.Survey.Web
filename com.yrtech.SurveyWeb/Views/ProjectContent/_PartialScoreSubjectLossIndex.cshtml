@@ -288,30 +288,35 @@
             alert("没有照片！")
             return;
         }
-        var imgBox = $('<div id="galley" style="display:none"><ul class="pictures"></ul></div>');
+        var galley = document.getElementById('galley');
         var count = fileList.length;
+        $("#galley .pictures").empty()
         $.each(fileList, function (i, item) {
             var imgUrl = loginUser.ossInfo.osshost + item;
             var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
             var imagA = $('<li></li>');
             let name = item.substr(item.lastIndexOf('/') + 1);
-            var img = $('<img>').attr('data-original', imgUrl).attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+            img.attr('data-original', imgUrl)
             $(imagA).append(img);
 
-            imgBox.append(imagA);
+            $("#galley .pictures").append(imagA);
         })
-        $(document.body).append(imgBox);
-        var galley = document.getElementById('galley');
-        var viewer = new Viewer(galley, {
-            url: 'data-original',
-            title: function (image) {
-                return image.alt + ' (' + (this.index + 1) + '/' + this.length + ')';
-            },
-            hidden: function () {
+
+        $('#photoModal').on('shown.bs.modal', function (e) {
+            // WARNING: should ignore Viewer's `shown` event here.
+            if (e.namespace === 'bs.modal') {
+                viewer = new Viewer(galley, {
+                    url: 'data-original',
+                });
+            }
+        }).on('hidden.bs.modal', function (e) {
+            // WARNING: should ignore Viewer's `hidden` event here.
+            if (e.namespace === 'bs.modal') {
                 viewer.destroy();
-            },
+            }
         });
-        viewer.show();
+        $("#photoModal").modal("show")
     }
     function delLossResutl(lossId) {
         $('#subject-lossResult-table').bootstrapTable('remove', {field: 'LossId',values: [lossId] });

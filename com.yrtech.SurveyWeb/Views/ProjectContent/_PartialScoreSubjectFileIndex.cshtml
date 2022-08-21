@@ -169,46 +169,8 @@
         bindFileResultList(fileList)
     }
 
-    function viewSubjectFile2() { 
-        let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
-        if (!fileList || fileList.length == 0) {
-            alert("没有照片！")
-            return;
-        }
-        if ($("#baguetteBox").length > 0) {
-            $("#baguetteBox").remove() 
-        }
-       
-        if ($("#baguetteBox-overlay").length > 0) {
-            $("#baguetteBox-overlay").remove()
-        }
-        
-        var imgBox = $('<div id="baguetteBox" class="baguetteBox" style="display:none">');
-        $(document.body).append(imgBox);
-        
-        var count = fileList.length;
-        $.each(fileList, function (i, item) { 
-            var imgUrl = loginUser.ossInfo.osshost + item;
-            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
-            var imagA = $('<a></a>');
-            let name = item.substr(item.lastIndexOf('/')+1);
-            let txt = (i+1) + "/" + count + "   " + name
-            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", txt);
-            $(imagA).append(img);
-            $(imagA).attr('href', imgUrl);
-            $(imagA).attr('data-caption', txt);
-
-            imgBox.append(imagA);
-        })
-        baguetteBox.run('#baguetteBox');
-        
-        setTimeout(function () {
-            $('#baguetteBox').find("a:first img").trigger('click');
-        }, 300) 
-    }
-
     var viewer;
-    function viewSubjectFile3() {
+    function viewSubjectFile() {
         let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
@@ -245,7 +207,7 @@
         $("#photoModal").modal("show")
     }
      
-    function viewSubjectFile() {
+    function viewSubjectFile1() {
         let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
@@ -279,7 +241,45 @@
         });
         viewer.show();
     }
-  
+
+    function viewSubjectFile2() {
+        let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
+        if (!fileList || fileList.length == 0) {
+            alert("没有照片！")
+            return;
+        }
+        if ($("#baguetteBox").length > 0) {
+            $("#baguetteBox").remove()
+        }
+
+        if ($("#baguetteBox-overlay").length > 0) {
+            $("#baguetteBox-overlay").remove()
+        }
+
+        var imgBox = $('<div id="baguetteBox" class="baguetteBox" style="display:none">');
+        $(document.body).append(imgBox);
+
+        var count = fileList.length;
+        $.each(fileList, function (i, item) {
+            var imgUrl = loginUser.ossInfo.osshost + item;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<a></a>');
+            let name = item.substr(item.lastIndexOf('/') + 1);
+            let txt = (i + 1) + "/" + count + "   " + name
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", txt);
+            $(imagA).append(img);
+            $(imagA).attr('href', imgUrl);
+            $(imagA).attr('data-caption', txt);
+
+            imgBox.append(imagA);
+        })
+        baguetteBox.run('#baguetteBox');
+
+        setTimeout(function () {
+            $('#baguetteBox').find("a:first img").trigger('click');
+        }, 300)
+    }
+
     function closePhotoModel() {
         $("#photoModal").modal("hide")
     }
