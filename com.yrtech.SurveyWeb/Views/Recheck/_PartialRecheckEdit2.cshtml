@@ -464,7 +464,7 @@
         $("#LossResultCheckList").empty()
         subjectLossResult.forEach(function (r) {
             var checkbox = $('<label class="col-md-6"><input type="checkbox"> <span class="checkbox-label"></span></label>')
-            checkbox.find('span').text(r.LossResultName)
+            checkbox.find('span').text(r.LossResultCode + '-' + r.LossResultName)
             checkbox.find('inout:checkbox').val(r.LossResultName)
             $("#LossResultCheckList").append(checkbox)
         })
@@ -472,7 +472,8 @@
         if (!lossDesc) return;
         let lossDescArr = lossDesc.LossDesc.split(';')
         $.each($("#LossResultCheckList").find("input[type=checkbox]"), function (i, checkbox) {
-            let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            //let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            let lossValue = $(checkbox).val()
             console.log('checkbox value', lossValue)
             if (lossDescArr.indexOf(lossValue) >= 0) {
                 $(checkbox).iCheck('check');
@@ -480,10 +481,10 @@
         });
     }
     function saveCurLossResult() {
-        debugger
         let lossArr = []
         $.each($("#LossResultCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
-            let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            //let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            let lossValue = $(checkbox).val()
             lossArr.push(lossValue)
         });
         if (curLossRow) {

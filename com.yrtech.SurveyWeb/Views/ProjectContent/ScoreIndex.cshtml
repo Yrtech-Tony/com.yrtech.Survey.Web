@@ -16,6 +16,26 @@
         border-left: none;
         border-right: none;
     }
+
+    .pictures {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+        .pictures > li {
+            border: 1px solid transparent;
+            float: left;
+            height: calc(100% / 3);
+            margin: 0 -1px -1px 0;
+            overflow: hidden;
+            width: calc(100% / 3);
+        }
+
+            .pictures > li > img {
+                cursor: zoom-in;
+                width: 100%;
+            }
 </style>
 <div class="condition">
     <div style="text-align:right;width:100%">
@@ -40,7 +60,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <select id="shop-sel"  style="width: 200px"></select>
+            <select id="shop-sel" style="width: 200px"></select>
         </div>
     </div>
 
@@ -95,7 +115,7 @@
                         <div class="col-md-3">
                             <label>失分说明:</label>
                         </div>
-                        <div class="col-md-9" >
+                        <div class="col-md-9">
                             <div id="LossResultCheckList">
                             </div>
                         </div>
@@ -123,6 +143,23 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closePhotoModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">照片列表</h4>
+            </div>
+            <div class="modal-body" style="height:500px; overflow-y:auto">
+                <div id="galley">
+                    <ul class="pictures" ></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
@@ -140,6 +177,9 @@
 
 <link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
+
 
 <script>
     var uploader, lossUploader;
@@ -167,7 +207,7 @@
         });
         bindShopSelect();
         $("#shop-sel").change(function () {
-        //    loadScore();
+            //    loadScore();
         });
         loadScore();
 
@@ -211,7 +251,7 @@
                 shopId: $("#shop-sel").val()
             }, function (data) {
                 //window.location.href = baseSurveyUrl + data;
-                window.location.href =  data;
+                window.location.href = data;
                 $("#btnDownLoadLossResult").button('reset');
             });
         });
@@ -219,7 +259,7 @@
         $("#btnQuery").click(function () {
             loadScore();
 
-        })//.trigger("click"); 
+        })//.trigger("click");
     })
     var curRow;
     function saveScore() {
@@ -274,7 +314,7 @@
     function initScoreTable(data) {
         $('#score-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
-            data:data,
+            data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
@@ -321,7 +361,7 @@
                 valign: "middle",
                 align: "center",
                 sortable: false,
-                formatter:function(value, row, index) {
+                formatter: function (value, row, index) {
                     return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
@@ -339,8 +379,8 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    if(value!=undefined&&value!="")
-                    return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
                 title: "编辑",
@@ -496,5 +536,3 @@
 
     }
 </script>
-
-
