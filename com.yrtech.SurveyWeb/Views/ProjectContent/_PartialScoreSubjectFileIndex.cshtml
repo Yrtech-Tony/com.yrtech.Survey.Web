@@ -168,31 +168,22 @@
         let fileList = curFileRow.Url?curFileRow.Url.split(';'):[]
         bindFileResultList(fileList)
     }
-    let zooms=[], drags=[]
-    function viewSubjectFile() {
-        debugger
+
+    function viewSubjectFile2() { 
         let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
             return;
         }
         if ($("#baguetteBox").length > 0) {
-            $("#baguetteBox").remove()
-            $.each(zooms, function (i, item) { 
-                item.destroy()
-            })
-            zooms = []
-            $.each(drags, function (i, item) {
-                item.destroy()
-            }) 
-            drags = []
+            $("#baguetteBox").remove() 
         }
        
         if ($("#baguetteBox-overlay").length > 0) {
             $("#baguetteBox-overlay").remove()
         }
         
-        var imgBox = $('<div id="baguetteBox" class="baguetteBox">');
+        var imgBox = $('<div id="baguetteBox" class="baguetteBox" style="display:none">');
         $(document.body).append(imgBox);
         
         var count = fileList.length;
@@ -213,26 +204,85 @@
         
         setTimeout(function () {
             $('#baguetteBox').find("a:first img").trigger('click');
-        }, 300)
-        //// 缩放插件初始化
-        //setTimeout(function () {
-        //    $.each(fileList, function (i, item) {
-        //        var id = "baguette-img-" + i
-        //        zoom = $solway.zoom({
-        //            ele: document.getElementById(id),
-        //            scale: 1,
-        //            minScale: 0.1,
-        //            translate: [0, 0]
-        //        });
-        //        zooms.push(zoom)
-        //        //drag = $solway.drag({
-        //        //    ele: document.getElementById(id),
-        //        //});
-        //        //drags.push(drag)
-        //    })
-        //}, 1000)
-      
-    } 
+        }, 300) 
+    }
+
+    var viewer;
+    function viewSubjectFile3() {
+        let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
+        if (!fileList || fileList.length == 0) {
+            alert("没有照片！")
+            return;
+        }
+        var galley = document.getElementById('galley');
+        var count = fileList.length;
+        $("#galley .pictures").empty()
+        $.each(fileList, function (i, item) {
+            var imgUrl = loginUser.ossInfo.osshost + item;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<li></li>');
+            let name = item.substr(item.lastIndexOf('/') + 1);
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+            img.attr('data-original', imgUrl)
+            $(imagA).append(img);
+
+            $("#galley .pictures").append(imagA);
+        })  
+
+        $('#photoModal').on('shown.bs.modal', function (e) {
+            // WARNING: should ignore Viewer's `shown` event here.
+            if (e.namespace === 'bs.modal') {
+                viewer = new Viewer(galley, {
+                    url: 'data-original',
+                });
+            }
+        }).on('hidden.bs.modal', function (e) {
+            // WARNING: should ignore Viewer's `hidden` event here.
+            if (e.namespace === 'bs.modal') {
+                viewer.destroy();
+            }
+        });
+        $("#photoModal").modal("show")
+    }
+     
+    function viewSubjectFile() {
+        let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
+        if (!fileList || fileList.length == 0) {
+            alert("没有照片！")
+            return;
+        }
+        if ($("#galley").length > 0) {
+            $("#galley").remove()
+        }
+        var imgBox = $('<div id="galley" style="display:none"><ul class="pictures"></ul></div>');
+        var count = fileList.length;
+        $.each(fileList, function (i, item) {
+            var imgUrl = loginUser.ossInfo.osshost + item;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<li></li>');
+            let name = item.substr(item.lastIndexOf('/') + 1);
+            var img = $('<img>').attr('data-original', imgUrl).attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name); 
+            $(imagA).append(img);
+
+            imgBox.append(imagA);
+        })
+        $(document.body).append(imgBox);
+        var galley = document.getElementById('galley');
+        var viewer = new Viewer(galley, {
+            url: 'data-original',
+            title: function (image) {
+                return image.alt + ' (' + (this.index + 1) + '/' + this.length + ')';
+            },
+            hidden: function () {
+                viewer.destroy();
+            },
+        });
+        viewer.show();
+    }
+  
+    function closePhotoModel() {
+        $("#photoModal").modal("hide")
+    }
 </script>
 
 
