@@ -460,12 +460,13 @@
         bindSubjectLossResultList(item.SubjectLossResultList, LossResult.length == 0 ? undefined : LossResult[0]);
     }
     // 失分说明
-    function bindSubjectLossResultList(subjectLossResult,lossDesc) {
+    function bindSubjectLossResultList(subjectLossResult, lossDesc) {
+        debugger
         $("#LossResultCheckList").empty()
         subjectLossResult.forEach(function (r) {
             var checkbox = $('<label class="col-md-6"><input type="checkbox"> <span class="checkbox-label"></span></label>')
             checkbox.find('span').text(r.LossResultCode + '-' + r.LossResultName)
-            checkbox.find('inout:checkbox').val(r.LossResultName)
+            checkbox.find('input:checkbox').val(r.LossResultName)
             $("#LossResultCheckList").append(checkbox)
         })
         $("#LossResultCheckList").find("input[type=checkbox]").iCheckParser();
@@ -482,6 +483,7 @@
     }
     function saveCurLossResult() {
         let lossArr = []
+        debugger
         $.each($("#LossResultCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
             //let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
             let lossValue = $(checkbox).val()
@@ -502,8 +504,7 @@
         $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
         }, function () { });
     }
-    function viewPicutes(url) {
-        debugger
+    function viewPicutes(url) { 
         let fileList = url ? url.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
