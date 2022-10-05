@@ -60,6 +60,10 @@ namespace com.yrtech.SurveyWeb.Controllers
             ViewBag.StatusName = statusName;
             return View();
         }
-        
+
+        public ActionResult RecheckBatchIndex()
+        {
+            return View();
+        }
 	}
 }
