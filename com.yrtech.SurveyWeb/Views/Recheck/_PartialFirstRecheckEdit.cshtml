@@ -1,0 +1,652 @@
+﻿<style>
+    .form-horizontal label {
+        padding-right: 0px;
+    }
+
+    .panel {
+        margin-bottom: 5px;
+    }
+
+    .panel-heading {
+        padding: 6px 10px;
+    }
+
+    .dealer-li {
+        width: 60px;
+    }
+</style>
+<div style="height:700px; overflow:auto">
+    <div class="container col-md-12">
+        <div class="item form-group" style="float:right;">
+            <div class="form-inline">
+                <div class="form-group">
+                    <a id="btnPre" class="btn btn-primary" style="margin-right:0px" onclick="prevSubject()">上一题</a>
+                </div>
+                <div class="form-group">
+                    <a id="btnNext" class="btn btn-primary" style="margin-right:0px" onclick="nextSubject()">下一题</a>
+                </div>
+                @*<div class="form-group">
+                        <input id="toSeqNo" style="width:60px!important" class="form-control" />
+                        <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="toSubjectSeqNo()">转到</a>
+                    </div>*@
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="container col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">得分信息</div>
+            <div class="panel-body" style="padding: 0; padding-top:8px; ">
+                <form class="form-horizontal" id="answer-form">
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-3" for="OrderNO">题目序号:</label>
+                        <div class="col-md-9">
+                            <input id="OrderNO" name="OrderNO" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-3" for="SubjectCode">题目代码:</label>
+                        <div class="col-md-9">
+                            <input id="SubjectCode" name="SubjectCode" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-3" for="PhotoScore">得分:</label>
+                        <div class="col-md-9">
+                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-3" for="CheckPoint">检查点:</label>
+                        <div class="col-md-9">
+                            <textarea id="CheckPoint" name="CheckPoint" class="form-control" rows="3" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label  col-md-3" for="InspectionDesc">检查标准说明:</label>
+                        <div class="col-md-9">
+                            <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly>   </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="control-label col-md-3" for="Remark">备注:</label>
+                        <div class="col-md-9">
+                            <textarea id="Remark" name="Remark" class="form-control" rows="3" readonly>   </textarea>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="col-md-6">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#ins" aria-controls="ins" role="tab" data-toggle="tab">检查标准</a></li>
+                <li role="presentation"><a href="#photo" aria-controls="photo" role="tab" data-toggle="tab">标准照片</a></li>
+                <li role="presentation"><a href="#lossresult" aria-controls="lossresult" role="tab" data-toggle="tab">失分描述</a></li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="ins">
+                    <div class="panel-body" style="padding: 0; height: 400px; overflow: auto">
+                        <table id="ins-table" class="table table-set"></table>
+                    </div> 
+                </div>
+                <div role="tabpanel" class="tab-pane" id="photo">
+                    <div class="panel-body" style="padding: 0; height: 400px; overflow: auto">
+                        <table id="photo-table" class="table table-set"></table>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="lossresult">
+                    <div class="panel-body" style="padding: 0; height: 400px; overflow: auto">
+                        <table id="lossresult-table" class="table table-set"></table>
+                    </div>
+                </div>
+            </div>
+            @*<div class="panel panel-default">
+                    <div class="panel-heading">检查标准</div>
+                    <div class="panel-body" style="padding: 0; height: 180px; overflow: auto">
+                        <table id="ins-table" class="table table-bordered table-set"></table>
+                    </div>
+                </div>*@
+        </div>
+        @*<div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">标准照片</div>
+                    <div class="panel-body" style="padding: 0; height: 180px; overflow: auto; ">
+                        <table id="photo-table" class="table table-bordered "></table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">失分描述</div>
+                    <div class="panel-body" style="padding: 0; height: 200px; overflow: auto; ">
+                        <table id="lossresult-table" class="table table-bordered"></table>
+                    </div>
+                </div>
+            </div>*@
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">复审信息</div>
+                <div class="panel-body" style="padding: 0;padding-bottom:5px; height: 200px; overflow: auto">
+                    <form class="form-horizontal" id="recheck-form">
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="PassRecheck">是否通过:</label>
+                            <div class="col-md-8">
+                                <div>
+                                    <label class="dealer-li"><input id="PassRecheck" name="PassRecheck" type="radio" value="true" />  <font>是</font></label>
+                                    <label class="dealer-li"><input id="PassRecheck" name="PassRecheck" type="radio" value="false" /> <font>否</font></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="ReCheckScore">建议得分:</label>
+                            <div class="col-md-8">
+                                <input id="RecheckScore" name="RecheckScore" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="RecheckContent">审核意见:</label>
+                            <div class="col-md-8">
+                                <input id="RecheckContent" name="RecheckContent" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="PhotoScore">错误类型:</label>
+                            <div id="RecheckErrorCheckList" class="col-md-8" style="margin-top: 5px;">
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">复审确认</div>
+                <div class="panel-body" style="padding: 0;padding-bottom:5px; height: 200px; overflow: auto">
+                    <form class="form-horizontal" id="recheck-confirm-form">
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="PassRecheck">是否通过:</label>
+                            <div class="col-md-8">
+                                <div>
+                                    <label class="dealer-li"><input name="PassRecheckConfirm" type="radio" value="true" />  <font>是</font></label>
+                                    <label class="dealer-li"><input name="PassRecheckConfirm" type="radio" value="false" /> <font>否</font></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="ReCheckScoreConfirm">建议得分:</label>
+                            <div class="col-md-8">
+                                <input id="RecheckScoreConfirm" name="RecheckScoreConfirm" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3" for="RecheckContentConfirm">审核意见:</label>
+                            <div class="col-md-8">
+                                <input id="RecheckContentConfirm" name="RecheckContentConfirm" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">错误类型:</label>
+                            <div id="RecheckErrorCheckListConfirm" class="col-md-8" style="margin-top: 5px;">
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(function () {
+        $("input[type=radio]").iCheckParser();
+        console.log('open recheck answer =', curScoreRow)
+
+        initInspection();
+        initPhoto();
+        initLossResult();
+        loadAnswerInfo();
+
+        bindRecheckErrorChecks(allLabels)
+        bindRecheckInfo(curRow)
+
+        bindRecheckErrorChecksConfirm(allLabels)
+        bindRecheckInfoConfirm(curRow)
+    })
+
+    function prevSubject() {
+        //第一步 获取上一个得分
+        $.commonGet("Recheck/GetShopPreRecheckSubject", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId,
+            recheckTypeId: curRow.RecheckTypeId,
+            orderNO: curAnswer.OrderNO
+        }, function (data) {
+            if (data && data.length > 0) {
+                let item = data[0]
+                console.log('ge prev answer', item)
+                curAnswer = item
+                bindAnswerInfo(item);
+
+                //第二步 获取上一个复审信息
+                $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+                    projectId: item.ProjectId,
+                    shopId: item.ShopId,
+                    subjectId: item.SubjectId,
+                    recheckTypeId: curRow.RecheckTypeId
+                }, function (data) {
+                    if (data && data.length > 0) {
+                        let item = data[0]
+
+                        console.log('ge prev Recheck', item)
+                        bindRecheckInfo(item);
+                    }
+                });
+            }
+        });
+    }
+
+    function nextSubject() {
+        console.log('save recheck = ', curRow)
+        console.log('PassRecheck = ', $("input[name=PassRecheck]:checked").val())
+        let RecheckError = loadRecheckError()
+        //第一步 保存复审信息
+        $.commonPost("Recheck/SaveShopRecheckInfo", {
+            ProjectId: curAnswer.ProjectId,
+            ShopId: curAnswer.ShopId,
+            SubjectId: curAnswer.SubjectId,
+            PassReCheck: $("input[name=PassRecheck]:checked").val(),
+            ReCheckScore: $("#RecheckScore").val(),
+            ReCheckContent: $("#RecheckContent").val(),
+            ReCheckError: RecheckError,
+            ReCheckUserId: loginUser.Id
+        }, function (data) {
+            let RecheckErrorConfirm = loadRecheckErrorConfirm()
+            
+            let getNextScoreAndRecheck = function () {
+                //第二步 获取下一个得分
+                $.commonGet("Recheck/GetShopNextRecheckSubject", {
+                    projectId: curScoreRow.ProjectId,
+                    shopId: curScoreRow.ShopId,
+                    recheckTypeId: curScoreRow.RecheckTypeId,
+                    orderNO: curAnswer.OrderNO
+                }, function (data) {
+                    if (data && data.length > 0) {
+                        let item = data[0]
+                        console.log('ge next answer', item)
+                        curAnswer = item
+                        bindAnswerInfo(item);
+
+                        //第三步 获取下一个复审信息
+                        $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+                            projectId: item.ProjectId,
+                            shopId: item.ShopId,
+                            subjectId: item.SubjectId,
+                            recheckTypeId: curScoreRow.RecheckTypeId
+                        }, function (data) {
+                            if (data && data.length > 0) {
+                                let item = data[0]
+                                console.log('ge next Recheck', item)
+                                bindRecheckInfo(item);
+                                bindRecheckInfoConfirm(item);
+                            }
+                        });
+                    }
+                });
+            }
+            if (RecheckStatusObject.Status_S2 && !RecheckStatusObject.Status_S8) {
+                //保存复审确认信息 
+                $.commonPost("Recheck/SaveShopRecheckConfirmInfo", {
+                    ProjectId: curAnswer.ProjectId,
+                    ShopId: curAnswer.ShopId,
+                    SubjectId: curAnswer.SubjectId,
+                    PassReCheck_Confirm: $("input[name=PassRecheckConfirm]:checked").val(),
+                    ReCheckScore_Confirm: $("#RecheckScoreConfirm").val(),
+                    ReCheckContent_Confirm: $("#RecheckContentConfirm").val(),
+                    ReCheckError_Confirm: RecheckErrorConfirm,
+                    ReCheckUserId_Confirm: loginUser.Id
+                }, function (data) {
+                    getNextScoreAndRecheck()
+                })
+            } else {
+                getNextScoreAndRecheck()
+            } 
+        });
+    }
+
+    function toSubjectSeqNo() {
+        //未实现
+
+    }
+
+    //获取复审错误类型 
+    function loadRecheckError() {
+        let errorArr = []
+        $.each($("#RecheckErrorCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
+            let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            errorArr.push(errValue)
+        });
+        return errorArr.join(";")
+    }
+
+    //绑定复审信息
+    function bindRecheckInfo(item) {
+        $('#RecheckScore').val(item.RecheckScore)
+        $('#RecheckContent').val(item.RecheckContent)
+        $("input[name=PassRecheck]").each(function () {
+            $(this).iCheck('uncheck');
+            if (item.PassRecheck == ($(this).val() == 'true')) {
+                $(this).iCheck('check');
+            }
+        });
+        bindRecheckErrorResult(item)
+    }
+
+    function bindRecheckErrorResult(item) {
+        if (item.RecheckError) {
+            let errorArr = item.RecheckError.split(';')
+            $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
+                let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+                console.log('checkbox value', errValue)
+                if (errorArr.indexOf(errValue) >= 0) {
+                    $(checkbox).iCheck('check');
+                }
+            });
+        } else {
+            $.each($("#RecheckErrorCheckList").find("input[type=checkbox]"), function (i, checkbox) {
+                $(checkbox).iCheck('uncheck');
+            });
+        }
+    }
+    //绑定错误类型checkbox
+    function bindRecheckErrorChecks(data) {
+        $("#RecheckErrorCheckList").empty()
+        data.forEach(function (r) {
+            var checkbox = $('<label class="col-md-6"><input type="checkbox"> <span class="checkbox-label"></span></label>')
+            checkbox.find('span').text(r.LabelName)
+            checkbox.find('inout:checkbox').val(r.LabelId)
+            $("#RecheckErrorCheckList").append(checkbox)
+        })
+        $("#RecheckErrorCheckList").find("input[type=checkbox]").iCheckParser();
+    }
+    //-end  //绑定复审信息
+
+
+    //获取复审确认错误类型 
+    function loadRecheckErrorConfirm() {
+        let errorArr = []
+        $.each($("#RecheckErrorCheckListConfirm").find("input[type=checkbox]:checked"), function (i, checkbox) {
+            let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+            errorArr.push(errValue)
+        });
+        return errorArr.join(";")
+    }
+    //绑定复审确认信息 
+    function bindRecheckInfoConfirm(item) {
+        $('#RecheckScoreConfirm').val(item.RecheckScore_Confirm)
+        $('#RecheckContentConfirm').val(item.RecheckContent_Confirm)
+        $("input[name=PassRecheckConfirm]").each(function () {
+            $(this).iCheck('uncheck');
+            if (item.PassRecheck == ($(this).val() == 'true')) {
+                $(this).iCheck('check');
+            }
+        });
+        bindRecheckErrorResultConfirm(item)
+    } 
+
+    function bindRecheckErrorResultConfirm(item) {
+        if (item.RecheckError) {
+            let errorArr = item.RecheckError.split(';')
+            $.each($("#RecheckErrorCheckListConfirm").find("input[type=checkbox]"), function (i, checkbox) {
+                let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
+                console.log('checkbox value', errValue)
+                if (errorArr.indexOf(errValue) >= 0) {
+                    $(checkbox).iCheck('check');
+                }
+            });
+        } else {
+            $.each($("#RecheckErrorCheckListConfirm").find("input[type=checkbox]"), function (i, checkbox) {
+                $(checkbox).iCheck('uncheck');
+            });
+        }
+    }
+   
+
+    //绑定确认错误类型checkbox
+    function bindRecheckErrorChecksConfirm(data) {
+        $("#RecheckErrorCheckListConfirm").empty()
+        data.forEach(function (r) {
+            var checkbox = $('<label class="col-md-6"><input type="checkbox"> <span class="checkbox-label"></span></label>')
+            checkbox.find('span').text(r.LabelName)
+            checkbox.find('inout:checkbox').val(r.LabelId)
+            $("#RecheckErrorCheckListConfirm").append(checkbox)
+        })
+        $("#RecheckErrorCheckListConfirm").find("input[type=checkbox]").iCheckParser();
+    }
+    //-end  //绑定复审确认信息
+    function initInspection() {
+        $('#ins-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色 
+            columns: [{
+                title: "序号",
+                field: 'SeqNO',
+                width: 50,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "检查标准",
+                field: "InspectionStandardName", 
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查结果",
+                field: "AnswerResult",
+                width: 100,
+                valign: "middle",
+                align: "center",
+            }],
+        });
+    }
+    function initPhoto() {
+        $('#photo-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色 
+            columns: [{
+                title: "序号",
+                field: 'SeqNO',
+                width: 50,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "拍照点",
+                field: "FileName", 
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "查看照片",
+                field: "",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:viewSubjectFile(\'' + (row.Url || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
+                }
+            }]
+        });
+    }
+    function initLossResult() {
+        $('#lossresult-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色 
+            columns: [{
+                title: "序号",
+                field: 'LossId',
+                width: 50,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "失分说明",
+                field: "LossDesc", 
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "查看照片",
+                field: "",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    curLossRow = row;
+                    return '<a href="javascript:viewPicutes(\'' + (row.LossFileNameUrl || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
+                }
+            }]
+        });
+    }
+
+    var curAnswer
+    var RecheckStatusObject
+    function loadAnswerInfo() {
+        $.commonGet("Answer/GetShopAnswerScoreInfo", {
+            projectId: curScoreRow.ProjectId,
+            shopId: curScoreRow.ShopId,
+            subjectId: curScoreRow.SubjectId,
+            key: ""
+        }, function (data) {
+            if (data && data.length > 0) {
+                let item = data[0]
+                curAnswer = item
+                console.log('get answer', item)
+                bindAnswerInfo(item)
+            }
+        });
+
+        $.commonGet("Recheck/GetRecheckStatusForFirstRecheck", {
+            projectId: curScoreRow.ProjectId,
+            shopId: curScoreRow.ShopId,
+            shopCode:''
+        }, function (data) {
+            if (data && data.length > 0) {
+                let item = data[0]
+                RecheckStatusObject = item
+                if (!item.Status_S2) {
+                    $('#recheck-form').find("input").prop('disabled', false)
+                    $('#recheck-confirm-form').find("input").prop('disabled', true)
+                } else if (item.Status_S2 && !item.Status_S8) {
+                    $('#recheck-form').find("input").prop('disabled', true)
+                    $('#recheck-confirm-form').find("input").prop('disabled', false)
+                }
+            }
+        });
+    }
+
+    function bindAnswerInfo(item) {
+        debugger
+        let FileResult = item.FileResult ? JSON.parse(item.FileResult) : []
+        let InsResult = item.InspectionStandardResult ? JSON.parse(item.InspectionStandardResult) : []
+        let LossResult = item.LossResult ? JSON.parse(item.LossResult) : []
+
+        item.SubjectFileList = item.SubjectFileList.map(function (o) {
+            let findOne = FileResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+            if (findOne) {
+                o.Url = findOne.Url
+            }
+            return o;
+        });
+        item.SubjectInspectionStandardList = item.SubjectInspectionStandardList.map(function (o) {
+            let findOne = InsResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+            if (findOne) {
+                o.AnswerResult = findOne.AnswerResult
+            }
+            return o
+        })
+        $("#answer-form").setForm(item);
+        // $('#ins-table').bootstrapTable("load", InsResult);
+        $('#ins-table').bootstrapTable("load", item.SubjectInspectionStandardList);
+        //$('#photo-table').bootstrapTable("load", FileResult);
+        $('#photo-table').bootstrapTable("load", item.SubjectFileList);
+        $('#lossresult-table').bootstrapTable("load", LossResult);
+
+    }
+
+    function viewPicutes(url) {
+        debugger
+        let fileList = url ? url.split(';') : []
+        if (!fileList || fileList.length == 0) {
+            alert("没有照片！")
+            return;
+        }
+        if ($("#baguetteBox").length > 0) {
+            $("#baguetteBox").remove()
+        }
+        if ($("#baguetteBox-overlay").length > 0) {
+            $("#baguetteBox-overlay").remove()
+        }
+
+        var imgBox = $('<div id="baguetteBox" class="baguetteBox" style="display:none">');
+        $(document.body).append(imgBox);
+        var count = fileList.length;
+        $.each(fileList, function (i, item) {
+            var imgUrl = loginUser.ossInfo.osshost + item;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<a></a>');
+            let name = item.substr(item.lastIndexOf('/') + 1);
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+            $(imagA).append(img);
+            $(imagA).attr('href', imgUrl);
+            $(imagA).attr('data-caption', (i + 1) + "/" + count + "   " + name);
+
+            imgBox.append(imagA);
+        })
+        baguetteBox.run('#baguetteBox');
+
+        setTimeout(function () {
+            imgBox.find("a:first img").click();
+        }, 300)
+    }
+    function viewSubjectFile(url) {
+        let fileList = url ? url.split(';') : []
+        if (!fileList || fileList.length == 0) {
+            alert("没有照片！")
+            return;
+        }
+        var galley = document.getElementById('galley');
+        var count = fileList.length;
+        $("#galley .pictures").empty()
+        $.each(fileList, function (i, item) {
+            var imgUrl = loginUser.ossInfo.osshost + item;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<li></li>');
+            let name = item.substr(item.lastIndexOf('/') + 1);
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+            img.attr('data-original', imgUrl)
+            $(imagA).append(img);
+
+            $("#galley .pictures").append(imagA);
+        })
+
+        $('#photoModal').on('shown.bs.modal', function (e) {
+            // WARNING: should ignore Viewer's `shown` event here.
+            if (e.namespace === 'bs.modal') {
+                viewer = new Viewer(galley, {
+                    url: 'data-original',
+                });
+            }
+        }).on('hidden.bs.modal', function (e) {
+            // WARNING: should ignore Viewer's `hidden` event here.
+            if (e.namespace === 'bs.modal') {
+                viewer.destroy();
+            }
+        });
+        $("#photoModal").modal("show")
+    }
+</script>

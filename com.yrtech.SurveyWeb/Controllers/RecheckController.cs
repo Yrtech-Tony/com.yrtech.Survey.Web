@@ -65,5 +65,23 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult FirstRecheckIndex()
+        {
+            return View();
+        }
+
+        public ActionResult FirstRecheckDetail(string brandId, string projectId, string shopId)
+        {
+            ViewBag.BrandId = brandId;
+            ViewBag.ProjectId = projectId;
+            ViewBag.ShopId = shopId;
+            return View();
+        }
+
+        public ActionResult FirstRecheckEdit()
+        {
+            return PartialView("_PartialFirstRecheckEdit");
+        }
+        
 	}
 }
