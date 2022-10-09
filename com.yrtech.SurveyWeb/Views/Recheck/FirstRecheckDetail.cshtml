@@ -149,7 +149,7 @@
                     if (row.IndateTime) {
                         return '✔️'
                     } else {
-                        return '<button onclick="firstRecheckTypeFinish(' + row.RecheckStatusId + ')">初审完毕</span>'
+                        return '<button onclick="firstRecheckTypeFinish()">初审完毕</span>'
                     }
                 }
             }, {
@@ -176,7 +176,7 @@
         }, function (data) {
             initRecheckScoreTable(data);
         }, function () {
-            $('recheck-subject-table').bootstrapTable("hideLoading");
+            $('#recheck-subject-table').bootstrapTable("hideLoading");
         });
     }
 
@@ -351,8 +351,8 @@
         setTimeout(function () {
             $("#btnRecheckSubmit").button("loading");
             $.commonPost("Recheck/SaveRecheckStatusDtl", {
-                ProjectId: curRow.ProjectId,
-                ShopId: curRow.ShopId,
+                ProjectId: projectId,
+                ShopId: shopId,
                 recheckTypeId: curRow.RecheckTypeId,
                 InUserId: loginUser.Id
             }, function () {

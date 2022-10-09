@@ -212,10 +212,10 @@
         loadAnswerInfo();
 
         bindRecheckErrorChecks(allLabels)
-        bindRecheckInfo(curRow)
+        bindRecheckInfo(curScoreRow)
 
         bindRecheckErrorChecksConfirm(allLabels)
-        bindRecheckInfoConfirm(curRow)
+        bindRecheckInfoConfirm(curScoreRow)
     })
 
     function prevSubject() {
@@ -391,7 +391,7 @@
         $('#RecheckContentConfirm').val(item.RecheckContent_Confirm)
         $("input[name=PassRecheckConfirm]").each(function () {
             $(this).iCheck('uncheck');
-            if (item.PassRecheck == ($(this).val() == 'true')) {
+            if (item.PassRecheck_Confirm == ($(this).val() == 'true')) {
                 $(this).iCheck('check');
             }
         });
@@ -399,8 +399,8 @@
     } 
 
     function bindRecheckErrorResultConfirm(item) {
-        if (item.RecheckError) {
-            let errorArr = item.RecheckError.split(';')
+        if (item.ReCheckError_Confirm) {
+            let errorArr = item.ReCheckError_Confirm.split(';')
             $.each($("#RecheckErrorCheckListConfirm").find("input[type=checkbox]"), function (i, checkbox) {
                 let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
                 console.log('checkbox value', errValue)
