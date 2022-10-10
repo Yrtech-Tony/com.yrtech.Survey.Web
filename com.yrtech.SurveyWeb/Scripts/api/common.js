@@ -175,7 +175,7 @@ function bindProjectSelect() {
 }
 
 // 绑定经销商
-function bindShopSelect() {
+function bindShopSelect(isAll) {
     $.ajaxSettings.async = false;
     $.commonGet("Shop/GetProjectShopExamType", {
         brandId: $("#brand-sel").val(),
@@ -184,6 +184,9 @@ function bindShopSelect() {
         userId: loginUser.Id
     }, function (data) {
         $("#shop-sel").empty();
+        if (isAll) {
+            $("#shop-sel").append($("<option>").val("").text("全部"));
+        }
         data.forEach(function (item) {
             $("#shop-sel").append($("<option>").val(item.ShopId).text(item.ShopName));
         })
@@ -365,4 +368,14 @@ function bindEasyPhotoCheckTypeSelect() {
             })
         }
     })
+}
+
+function openNewPage(url,callback) {
+    if (url) {
+        $(".right_col div").remove();
+        $(".right_col").append($("<div>"));
+        $(".right_col div").load(url, {}, function () {
+
+        })
+    }
 }

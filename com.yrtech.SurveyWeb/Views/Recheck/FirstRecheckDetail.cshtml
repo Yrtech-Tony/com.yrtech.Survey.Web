@@ -1,0 +1,373 @@
+﻿@{
+    ViewBag.Title = "初审确认详情";
+}
+
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
+<div style="text-align:right;width:100%">
+    <button id="btnBack" class="btn btn-primary">返回初审确认</button>
+    <button id="btnReflash" class="btn btn-primary">刷新</button>
+</div>
+<div class="result">
+    <table id="recheck-type-table" class="table table-set"></table> 
+</div> 
+<div class="result"> 
+    <table id="recheck-subject-table" class="table table-set" style="max-height:600px"></table>
+</div> 
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" style="width:75%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">审核编辑</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer" style="display: none">
+                <button id="save_button" type="button" onclick="saveScore()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script src="~/Scripts/icheck.js"></script>
+
+<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
+<script src="~/Content/baguetteBox/baguetteBox.js"></script>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
+
+<script>
+    var projectId = "@ViewBag.ProjectId";
+    var shopId = "@ViewBag.ShopId";
+    var brandId = "@ViewBag.BrandId";
+    $(function () {
+        $('title').html('@ViewBag.Title') 
+        $("#btnBack").click(function () {
+            openNewPage("/Recheck/FirstRecheckIndex")
+        })
+        $("#btnReflash").click(function () {
+            var url = "/Recheck/FirstRecheckDetail?brandId=" + brandId + "&projectId=" + projectId + "&shopId=" + shopId
+            openNewPage(url)
+        })
+        loadRecheckType()
+        loadRecheckScoreType()
+         
+        bindRecheckErrors()
+
+        $('#Modal').on('hide.bs.modal', function (e) {
+            // 关闭编辑时刷新数据
+            loadRecheckScoreType()
+        })
+    })
+    
+    var allLabels = []
+    function bindRecheckErrors(callback) {
+        $.commonGet("Master/GetLabel", {
+            brandId: brandId,
+            labelType: 'RecheckErrorType',
+            useChk: true,
+            labelId: ""
+        }, function (data) {
+            console.log('get label', data)
+            allLabels = data
+        });
+    }
+
+    var curRow;
+    var curScoreRow;
+    function loadRecheckType() {
+        $('#recheck-type-table').bootstrapTable("showLoading");
+        $.commonGet("Recheck/GetShopRecheckStautsDtlForAllType", {
+            projectId: projectId,
+            shopId: shopId 
+        }, function (data) {
+            initRecheckTypeTable(data);
+        }, function () {
+            $('#recheck-type-table').bootstrapTable("hideLoading");
+        });
+    }
+
+    //初始化初审确认表格
+    function initRecheckTypeTable(data) {
+        $('#recheck-type-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: false,
+            data: data,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: 200,
+            "max-height":200,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true, 
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 120,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                width: 230,
+                sortable: false
+            },
+            {
+                title: "初审类型",
+                field: "RecheckTypeName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:loadRecheckSubjects(' + row.RecheckTypeId + ')" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "初审完毕",
+                field: "",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (row.IndateTime) {
+                        return '✔️'
+                    } else {
+                        return '<button onclick="firstRecheckTypeFinish()">初审完毕</span>'
+                    }
+                }
+            }, {
+                title: "初审时间",
+                field: "IndateTime ",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+    function loadRecheckScoreType(recheckTypeId) {
+        $('#recheck-subject-table').bootstrapTable("showLoading");
+        $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+            projectId: projectId,
+            shopId: shopId,
+            subjectId: '',
+            recheckTypeId: recheckTypeId||''
+        }, function (data) {
+            initRecheckScoreTable(data);
+        }, function () {
+            $('#recheck-subject-table').bootstrapTable("hideLoading");
+        });
+    }
+
+    //初始化初审确认表格 
+    function initRecheckScoreTable(data) {
+        $('#recheck-subject-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: false,
+            data: data,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 450,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "经销商代码",
+                field: '',
+                width: 120,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<button onclick="openFirstRecheckEdit()">初审</span>'
+                }
+            },{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 120,
+                valign: "middle",
+                align: "center" 
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                width: 230,
+                sortable: false
+            },
+            {
+                title: "题目代码",
+                field: "SubjectCode",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "题目序号",
+                field: "OrderNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查点",
+                field: "CheckPoint",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "得分",
+                field: "PhotoScore",
+                width: 50,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "备注",
+                field: "Remark",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "审核类型",
+                field: "RecheckTypeName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审建议得分",
+                field: "RecheckScore",
+                width: 130,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审结果",
+                field: "PassRecheckName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审意见",
+                field: "RecheckContent",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "初审时间",
+                field: "RecheckDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审确认建议得分",
+                field: "RecheckScore_Confirm",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审确认结果",
+                field: "PassRecheckName_Confirm",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审确认意见",
+                field: "RecheckContent_Confirm",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "初审确认时间",
+                field: "RecheckDateTime_Confirm",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curScoreRow = row;
+            },
+            rowStyle: function (row, index) {
+                if (row.AgreeCheck == 0) {
+                    return { css: { 'color': 'red' } }
+                }
+                return {}
+            }
+        });
+    }
+    
+    function loadRecheckSubjects(recheckTypeId) {
+        loadRecheckScoreType(recheckTypeId)
+    }
+
+    function firstRecheckTypeFinish() {
+        setTimeout(function () {
+            $("#btnRecheckSubmit").button("loading");
+            $.commonPost("Recheck/SaveRecheckStatusDtl", {
+                ProjectId: projectId,
+                ShopId: shopId,
+                recheckTypeId: curRow.RecheckTypeId,
+                InUserId: loginUser.Id
+            }, function () {
+                $("#btnRecheckSubmit").button("reset");
+                alert("初审完毕成功！");
+            });
+        }, 300)
+    }
+     
+    function openFirstRecheckEdit() {
+        $("#Modal .modal-title").html('初审编辑');
+        //$("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/Recheck/FirstRecheckEdit", {}, function () {
+        })
+    }
+</script>

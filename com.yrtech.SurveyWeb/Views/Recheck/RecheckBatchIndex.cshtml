@@ -1,0 +1,234 @@
+﻿@{
+    ViewBag.Title = "审核管理";
+}
+
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
+<div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+    </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商:</label>
+            <select id="shop-sel" style="width: 140px"></select>
+        </div>
+    </div>
+
+</div>
+<div class="result">
+    <table id="recheck-batch-table" class="table table-set"></table>
+</div>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script src="~/Scripts/icheck.js"></script>
+<style>
+    .loss-ui {
+        margin-left: 0px;
+        padding-left: 0px;
+    }
+    .loss-ui li {
+        list-style: none;       
+    }
+
+        .loss-ui li span.checkbox-label {
+            position: relative;
+            bottom: 3px;
+        }
+</style>
+<script>
+    var allLabels = []
+    $(function () {
+        $('title').html('@ViewBag.Title')
+        bindBrandSelect();
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
+
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+            bindRecheckErrors()
+        });
+        $("#project-sel").change(function () {
+            bindShopSelect();
+        });
+        bindShopSelect();
+        loadRecheck();
+        $("#btnQuery").click(function () {
+            loadRecheck();
+        });
+    })
+
+    function bindRecheckErrors(callback) {
+        $.commonGet("Master/GetLabel", {
+            brandId: $('#brand-sel').val(),
+            labelType: 'RecheckErrorType',
+            useChk: true,
+            labelId: ""
+        }, function (data) {
+            console.log('get label', data)
+            allLabels = data
+        });
+    }
+
+    var curRow;
+
+    function loadRecheck() {
+        var projectId = $("#project-sel").val();
+        if (!projectId) {
+            alert("请选择一个期号！");
+            return
+        }
+        var shopId = $("#shop-sel").val();
+        if (!shopId) {
+            alert("请选择一个经销商！");
+            return
+        }
+        $('#recheck-batch-table').bootstrapTable("showLoading");
+        $.commonGet("Answer/GetShopAnswerScoreInfo", {
+            projectId: $("#project-sel").val(),
+            shopId: $("#shop-sel").val(),
+            subjectId: '133',
+            key: ''
+        }, function (data) {
+            initRecheckTable(data);
+        }, function () {
+            $('#recheck-batch-table').bootstrapTable("hideLoading");
+        });
+
+    }
+
+    //初始化期号表格
+    function initRecheckTable(data) {
+        $('#recheck-batch-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data: data,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 120,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                width: 230,
+                sortable: false
+            },
+            {
+                title: "题目代码",
+                field: "SubjectCode",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "题目序号",
+                field: "OrderNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查标准",
+                field: "SubjectInspectionStandardList",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "") {
+                        console.log('index={},value={}', index, value)
+                        let lossUI = $('<ul class="loss-ui">')
+                        value.forEach(function (r) {
+                            var checkbox = $('<li><label><input type="checkbox"><span class="checkbox-label"></span></label></li>')
+                            checkbox.find('span').text(r.LossResultCode + '-' + r.LossResultName)
+                            checkbox.find('input:checkbox').val(r.LossResultName)
+                            lossUI.append(checkbox)
+                        })
+                        return lossUI[0].outerHTML
+                    }
+
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "失分描述",
+                field: "SubjectLossResultList",
+                width: 200,
+                valign: "middle",
+                align: "left",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "") {
+                        console.log('index={},value={}', index, value)
+                        let lossUI = $('<ul class="loss-ui">')
+                        value.forEach(function (r) {
+                            var checkbox = $('<li><label><input type="checkbox"><span class="checkbox-label"></span></label></li>')
+                            checkbox.find('span').text(r.LossResultCode + '-' + r.LossResultName)
+                            checkbox.find('input:checkbox').val(r.LossResultName)
+                            lossUI.append(checkbox)
+                        })
+                        return lossUI[0].outerHTML
+                    }
+                }
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+    function goEdit(id) {
+        $("#Modal .modal-title").html('审核编辑');
+        //$("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/Recheck/RecheckEdit2", {}, function () {
+        })
+    }
+</script>

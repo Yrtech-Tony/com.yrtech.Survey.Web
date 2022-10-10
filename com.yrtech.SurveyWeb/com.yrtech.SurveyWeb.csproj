@@ -572,6 +572,11 @@
     <Content Include="Views\Recheck\_PartialRecheckEdit2.cshtml" />
     <Content Include="Views\EasyPhoto\EasyPhotoAnswerShopInStatusIndex.cshtml" />
     <Content Include="Views\ProjectContent\FileRenameIndex.cshtml" />
+    <Content Include="Views\Recheck\RecheckBatchIndex.cshtml" />
+    <Content Include="Views\Recheck\FirstRecheckIndex.cshtml" />
+    <Content Include="Views\Recheck\FirstRecheckDetail.cshtml" />
+    <Content Include="Views\Recheck\_PartialFirstRecheckEdit.cshtml" />
+    <Content Include="Views\Recheck\SecondRecheckIndex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

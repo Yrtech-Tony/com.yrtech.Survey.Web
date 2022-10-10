@@ -60,6 +60,46 @@ namespace com.yrtech.SurveyWeb.Controllers
             ViewBag.StatusName = statusName;
             return View();
         }
-        
+
+        public ActionResult RecheckBatchIndex()
+        {
+            return View();
+        }
+
+        public ActionResult FirstRecheckIndex()
+        {
+            return View();
+        }
+
+        public ActionResult FirstRecheckDetail(string brandId, string projectId, string shopId)
+        {
+            ViewBag.BrandId = brandId;
+            ViewBag.ProjectId = projectId;
+            ViewBag.ShopId = shopId;
+            return View();
+        }
+
+        public ActionResult FirstRecheckEdit()
+        {
+            return PartialView("_PartialFirstRecheckEdit");
+        }
+
+
+        public ActionResult SecondRecheckIndex()
+        {
+            return View();
+        }
+        public ActionResult SecondRecheckDetail(string brandId, string projectId, string shopId)
+        {
+            ViewBag.BrandId = brandId;
+            ViewBag.ProjectId = projectId;
+            ViewBag.ShopId = shopId;
+            return View();
+        }
+
+        public ActionResult SecondRecheckEdit()
+        {
+            return PartialView("_PartialFirstRecheckEdit");
+        }
 	}
 }

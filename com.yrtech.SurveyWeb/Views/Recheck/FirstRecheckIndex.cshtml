@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "审核管理";
+    ViewBag.Title = "初审确认";
 }
 
 <style>
@@ -39,48 +39,12 @@
             <label class="control-label">经销商:</label>
             <select id="shop-sel" style="width: 140px"></select>
         </div>
-        <div class="form-group">
-            <label class="control-label">审核类型:</label>
-            <select id="LabelId" class="form-control" style="width: 140px"></select>
-        </div>
     </div>
 
 </div>
 <div class="result">
     <table id="recheck-table" class="table  table-set"></table>
 </div>
-<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" style="width:75%">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">审核编辑</h4>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer" style="display: none">
-                <button id="save_button" type="button" onclick="saveScore()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
-                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" onclick="javascript: closePhotoModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">照片列表</h4>
-            </div>
-            <div class="modal-body" style="height:500px; overflow-y:auto">
-                <div id="galley">
-                    <ul class="pictures"></ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
@@ -108,16 +72,13 @@
 
         //加载期号
         $("#brand-sel").change(function () {
-            bindProjectSelect();
-            bindRecheckErrors()
+            bindProjectSelect(); 
         });
         $("#project-sel").change(function () {
-            bindShopSelect();
+            bindShopSelect(true);
         });
-        bindShopSelect();
-        // 加载审核类型
-        bindLabel("RecheckType");
-        //initRecheckTable();
+        bindShopSelect(true);
+
         loadRecheck();
         $("#btnQuery").click(function () {
             loadRecheck();
@@ -130,40 +91,16 @@
             $('#photo-table').bootstrapTable("destroy");
             $('#ins-table').bootstrapTable('destroy')
             $('#lossresult-table').bootstrapTable("destroy");
-        }) 
+        })
     })
-
-    function bindRecheckErrors(callback) {
-        $.commonGet("Master/GetLabel", {
-            brandId: $('#brand-sel').val(),
-            labelType: 'RecheckErrorType',
-            useChk: true,
-            labelId: ""
-        }, function (data) {
-            console.log('get label', data)
-            allLabels = data
-        });
-    }
 
     var curRow;
     function recheckSubmit() {
-        debugger
         var projectId = $("#project-sel").val();
         if (!projectId) {
             alert("请选择期号！");
             return
         }
-        var shopId = $("#shop-sel").val();
-        if (!shopId) {
-            alert("请选择经销商！");
-            return
-        }
-        var recheckTypeId = $("#LabelId").val();
-        if (!recheckTypeId) {
-            alert("请选择审核类型！");
-            return
-        }
-
         $("#btnRecheckSubmit").button("loading");
         $.commonPost("Recheck/SaveRecheckStatusDtl", {
             ProjectId: $("#project-sel").val(),
@@ -182,31 +119,23 @@
             alert("请选择一个期号！");
             return
         }
-        var shopId = $("#shop-sel").val();
-        if (!shopId) {
-            alert("请选择一个经销商！");
-            return
-        }
         $('#recheck-table').bootstrapTable("showLoading");
-        $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+        $.commonGet("Recheck/GetRecheckStatusForFirstRecheck", {
             projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val(),
-            subjectId: '',
-            recheckTypeId: $("#LabelId").val()
+            shopCode: ''
         }, function (data) {
-           // $('#recheck-table').bootstrapTable("hideLoading");
-            //$('#recheck-table').bootstrapTable("load", data);
             initRecheckTable(data);
         }, function () {
             $('#recheck-table').bootstrapTable("hideLoading");
         });
     }
 
-    //初始化期号表格
+    //初始化初审确认表格
     function initRecheckTable(data) {
         $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
-            data:data,
+            data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
@@ -216,21 +145,14 @@
             pageSize: 20,
             pageList: [20, 50, 100, 500],
             columns: [{
-                title: "审核",
-                field: "",
-                width: 60,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit(' + row.Id + ');" style="min-width:100px">审核</a>';
-                }
-            }, {
                 title: "经销商代码",
                 field: 'ShopCode',
                 width: 120,
                 valign: "middle",
-                align: "center"
+                align: "center",
+                formatter: function (value, row, index) { 
+                    return '<a href="javascript:openDetail('+ row.ProjectId + ',' + row.ShopId + ')">' + value + '</a>';
+                }
             }, {
                 title: "经销商名称",
                 field: "ShopName",
@@ -240,91 +162,70 @@
                 sortable: false
             },
             {
-                title: "题目代码",
-                field: "SubjectCode",
+                title: "提交初审",
+                field: "Status_S1",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "题目序号",
-                field: "OrderNO",
+                title: "初审中", 
+                field: "Status_S2",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "检查点",
-                field: "CheckPoint",
+                title: "初审完毕",
+                field: "Status_S3",
                 width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (value != undefined && value != "")
-                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
-                }
+                sortable: false
             }, {
-                title: "得分",
-                field: "PhotoScore",
+                title: "初审修改",
+                field: "Status_S4",
                 width: 50,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "审核类型",
-                field: "RecheckTypeName",
+                title: "初审确认",
+                field: "Status_S8",
                 width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "审核得分",
-                field: "RecheckScore",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "通过审核",
-                field: "PassRecheckName",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "审核意见",
-                field: "RecheckContent",
-                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    if (value != undefined && value != "")
-                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                    if (!value)
+                        return '<button id="btnRecheckSubmit" onclick="firstRecheck()">初审确认</span>'
                 }
-            }, {
-                title: "审核时间",
-                field: "RecheckDateTime",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
+                console.log('curRow',curRow)
             }
         });
     }
 
-    function goEdit(id) {
-        $("#Modal .modal-title").html('审核编辑');
-        //$("#Modal .modal-footer").hide();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/Recheck/RecheckEdit", {}, function () {
-        })
+    function openDetail(projectId, shopId) {
+        var url = "/Recheck/FirstRecheckDetail?brandId=" + $("#brand-sel").val() + "&projectId=" + projectId + "&shopId=" + shopId
+        openNewPage(url)
+    }
+
+
+    function firstRecheck() {
+        setTimeout(function () {
+            $("#btnRecheckSubmit").button("loading");
+            $.commonPost("Recheck/SaveRecheckStatus", {
+                ProjectId: curRow.ProjectId,
+                ShopId: curRow.ShopId,
+                StatusCode: 'S8',
+                InUserId: loginUser.Id
+            }, function () {
+                $("#btnRecheckSubmit").button("reset");
+                alert("初审确认成功！");
+            });
+        },300)
     }
 </script>
-
-
