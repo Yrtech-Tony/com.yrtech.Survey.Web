@@ -293,7 +293,7 @@ function bindLabelRecheck(labelType) {
     $.ajaxSettings.async = true;
 }
 // 绑定文件重命名选项
-function bindFileOptionSelect(fileTypeCode) {
+function bindFileOptionSelect(fileTypeCode,projectId) {
     $.commonApi({
         apiType: 'survey',
         url: 'Master/GetFileNameOption',
@@ -331,12 +331,13 @@ function bindEasyPhotoProjectSelect() {
         }
     })
 }
-function bindEasyPhotoFileOptionSelect() {
+function bindEasyPhotoFileOptionSelect(projectId) {
     $.commonApi({
         apiType: 'easyPhoto',
         url: 'Master/GetFileNameOption',
         async: false,
         params: {
+            ProjectId:projectId
         },
         success: function (data) {
             $("#fileNameOption-sel").empty();
