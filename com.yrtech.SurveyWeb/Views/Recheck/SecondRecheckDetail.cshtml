@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "初审确认详情";
+    ViewBag.Title = "二审确认详情";
 }
 
 <style>
@@ -44,14 +44,11 @@
     }
 </style>
 <div style="text-align:right;width:100%">
-    <button id="btnBack" class="btn btn-primary">返回初审确认</button>
+    <button id="btnBack" class="btn btn-primary">返回二审</button>
     <button id="btnReflash" class="btn btn-primary">刷新</button>
-</div>
+</div> 
 <div class="result">
-    <table id="recheck-type-table" class="table table-set"></table>
-</div>
-<div class="result">
-    <table id="recheck-subject-table" class="table table-set" style="max-height:600px"></table>
+    <table id="recheck-subject-table" class="table table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" style="width:75%">
@@ -158,15 +155,14 @@
     $(function () {
         $('title').html('@ViewBag.Title')
         $("#btnBack").click(function () {
-            openNewPage("/Recheck/FirstRecheckIndex")
+            openNewPage("/Recheck/SecondRecheckIndex")
         })
         $("#btnReflash").click(function () {
-            var url = "/Recheck/FirstRecheckDetail?brandId=" + brandId + "&projectId=" + projectId + "&shopId=" + shopId
+            var url = "/Recheck/SecondRecheckDetail?brandId=" + brandId + "&projectId=" + projectId + "&shopId=" + shopId
             openNewPage(url)
         })
-        loadRecheckType()
-        loadRecheckScoreType()
 
+        loadRecheckScoreType()
         bindRecheckErrors()
 
         $('#Modal').on('hide.bs.modal', function (e) {
@@ -189,82 +185,8 @@
     }
 
     var curRow;
-    var curScoreRow;
-    function loadRecheckType() {
-        $('#recheck-type-table').bootstrapTable("showLoading");
-        $.commonGet("Recheck/GetShopRecheckStautsDtlForAllType", {
-            projectId: projectId,
-            shopId: shopId
-        }, function (data) {
-            initRecheckTypeTable(data);
-        }, function () {
-            $('#recheck-type-table').bootstrapTable("hideLoading");
-        });
-    }
-
-    //初始化初审确认表格
-    function initRecheckTypeTable(data) {
-        $('#recheck-type-table').bootstrapTable('destroy').bootstrapTable({
-            pagination: false,
-            data: data,
-            striped: true, //是否显示行间隔色
-            width: "100%",
-            height: 200,
-            "max-height": 200,
-            showColumns: false, // 开启自定义列显示功能
-            sortable: true,
-            columns: [{
-                title: "经销商代码",
-                field: 'ShopCode',
-                width: 120,
-                valign: "middle",
-                align: "center"
-            }, {
-                title: "经销商名称",
-                field: "ShopName",
-                valign: "middle",
-                align: "center",
-                width: 230,
-                sortable: false
-            },
-            {
-                title: "初审类型",
-                field: "RecheckTypeName",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:loadRecheckSubjects(' + row.RecheckTypeId + ')" style="min-width:100px">' + value + '</a>';
-                }
-            }, {
-                title: "初审完毕",
-                field: "",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (row.IndateTime) {
-                        return '✔️'
-                    } else {
-                        return '<button onclick="firstRecheckTypeFinish()">初审完毕</span>'
-                    }
-                }
-            }, {
-                title: "初审时间",
-                field: "IndateTime ",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }],
-            onClickRow: function (row, $element) {
-                curRow = row;
-            }
-        });
-    }
-
+    var curScoreRow; 
+     
     function loadRecheckScoreType(recheckTypeId) {
         $('#recheck-subject-table').bootstrapTable("showLoading");
         $.commonGet("Recheck/GetShopRecheckScoreInfo", {
@@ -273,20 +195,21 @@
             subjectId: '',
             recheckTypeId: recheckTypeId || ''
         }, function (data) {
+            debugger
             initRecheckScoreTable(data);
         }, function () {
             $('#recheck-subject-table').bootstrapTable("hideLoading");
         });
     }
 
-    //初始化初审确认表格
+    //初始化二审题目表格
     function initRecheckScoreTable(data) {
         $('#recheck-subject-table').bootstrapTable('destroy').bootstrapTable({
             pagination: false,
             data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
-            height: getClientHeight() - 450,
+            height: getClientHeight() - 260,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
@@ -299,7 +222,7 @@
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<button onclick="openFirstRecheckEdit()">初审</span>'
+                    return '<button onclick="openSecondRecheckEdit()">初审</span>'
                 }
             }, {
                 title: "经销商代码",
@@ -406,7 +329,7 @@
                 sortable: false
             }, {
                 title: "初审确认结果",
-                field: "PassRecheckName_Confirm",
+                field: "PassReCheckName_Confirm",
                 width: 100,
                 valign: "middle",
                 align: "center",
@@ -429,6 +352,38 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
+            }, {
+                title: "二审建议得分",
+                field: "RecheckScore_Sec",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "二审结果",
+                field: "PassReCheckName_Sec",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "二审意见",
+                field: "RecheckContent_Sec",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "二审时间",
+                field: "RecheckDateTime_Sec",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
             }],
             onClickRow: function (row, $element) {
                 curScoreRow = row;
@@ -446,7 +401,7 @@
         loadRecheckScoreType(recheckTypeId)
     }
 
-    function firstRecheckTypeFinish() {
+    function secondRecheckTypeFinish() {
         setTimeout(function () {
             $("#btnRecheckSubmit").button("loading");
             $.commonPost("Recheck/SaveRecheckStatusDtl", {
@@ -456,17 +411,17 @@
                 InUserId: loginUser.Id
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
-                alert("初审完毕成功！");
+                alert("二审完毕成功！");
             });
         }, 300)
     }
 
-    function openFirstRecheckEdit() {
+    function openSecondRecheckEdit() {
         $("#Modal .modal-title").html('初审编辑');
         //$("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/Recheck/FirstRecheckEdit", {}, function () {
+        $("#Modal .modal-body").load("/Recheck/SecondRecheckEdit", {}, function () {
         })
     }
 </script>

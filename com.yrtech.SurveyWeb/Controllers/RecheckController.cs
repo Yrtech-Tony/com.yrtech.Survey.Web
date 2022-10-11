@@ -99,7 +99,7 @@ namespace com.yrtech.SurveyWeb.Controllers
 
         public ActionResult SecondRecheckEdit()
         {
-            return PartialView("_PartialFirstRecheckEdit");
+            return PartialView("_PartialSecondRecheckEdit");
         }
 	}
 }
