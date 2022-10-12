@@ -234,6 +234,7 @@
 
                         console.log('ge prev Recheck', item)
                         bindRecheckInfo(item);
+                        bindRecheckInfoConfirm(item);
                     }
                 });
             }
@@ -280,9 +281,10 @@
                         }, function (data) {
                             if (data && data.length > 0) {
                                 let item = data[0]
+                                curScoreRow = item
                                 console.log('ge next Recheck', item)
                                 bindRecheckInfo(item);
-                                bindRecheckInfoConfirm(item);
+                                bindRecheckInfoConfirm(item); 
                             }
                         });
                     }

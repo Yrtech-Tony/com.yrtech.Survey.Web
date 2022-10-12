@@ -194,7 +194,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label  col-md-3" for="ReCheckScoreSec">建议得分:</label>
+                            <label class="control-label  col-md-3" for="RecheckScoreSec">建议得分:</label>
                             <div class="col-md-8">
                                 <input id="RecheckScoreSec" name="RecheckScoreSec" type="text" class="form-control">
                             </div>
@@ -268,9 +268,11 @@
                 }, function (data) {
                     if (data && data.length > 0) {
                         let item = data[0]
-
                         console.log('ge prev Recheck', item)
+                        curScoreRow = item
                         bindRecheckInfo(item);
+                        bindRecheckInfoConfirm(item);
+                        bindRecheckInfoSec(item);
                     }
                 });
             }
@@ -281,62 +283,52 @@
         console.log('save recheck = ', curRow)
         console.log('PassRecheck = ', $("input[name=PassRecheck]:checked").val())
         let RecheckError = loadRecheckError()
-        //第一步 保存复审信息
-        $.commonPost("Recheck/SaveShopRecheckInfo", {
+        let RecheckErrorSec = loadRecheckErrorSec()
+
+        ////第一步保存二审信息
+        $.commonPost("Recheck/SaveShopRecheckSecondInfo", {
             ProjectId: curAnswer.ProjectId,
             ShopId: curAnswer.ShopId,
             SubjectId: curAnswer.SubjectId,
-            PassReCheck: $("input[name=PassRecheck]:checked").val(),
-            ReCheckScore: $("#RecheckScore").val(),
-            ReCheckContent: $("#RecheckContent").val(),
-            ReCheckError: RecheckError,
-            ReCheckUserId: loginUser.Id
+            RecheckId: curScoreRow.RecheckId,
+            PassReCheck_Sec: $("input[name=PassRecheckSec]:checked").val(),
+            ReCheckScore_Sec: $("#RecheckScoreSec").val(),
+            ReCheckContent_Sec: $("#RecheckContentSec").val(),
+            ReCheckError_Sec: RecheckErrorSec,
+            ReCheckUserId_Sec: loginUser.Id
         }, function (data) {
-            let RecheckErrorSec = loadRecheckErrorSec()
-
-            //保存二审信息
-            $.commonPost("Recheck/SaveShopRecheckSecondInfo", {
-                ProjectId: curAnswer.ProjectId,
-                ShopId: curAnswer.ShopId,
-                SubjectId: curAnswer.SubjectId,
-                PassReCheck_Sec: $("input[name=PassRecheckSec]:checked").val(),
-                ReCheckScore_Sec: $("#RecheckScoreSec").val(),
-                ReCheckContent_Sec: $("#RecheckContentSec").val(),
-                ReCheckError_Sec: RecheckErrorSec,
-                ReCheckUserId_Sec: loginUser.Id
+            //第二步 获取下一个得分
+            $.commonGet("Recheck/GetShopNextRecheckSubject", {
+                projectId: curScoreRow.ProjectId,
+                shopId: curScoreRow.ShopId,
+                recheckTypeId: curScoreRow.RecheckTypeId,
+                orderNO: curAnswer.OrderNO
             }, function (data) {
-                //第二步 获取下一个得分
-                $.commonGet("Recheck/GetShopNextRecheckSubject", {
-                    projectId: curScoreRow.ProjectId,
-                    shopId: curScoreRow.ShopId,
-                    recheckTypeId: curScoreRow.RecheckTypeId,
-                    orderNO: curAnswer.OrderNO
-                }, function (data) {
-                    if (data && data.length > 0) {
-                        let item = data[0]
-                        console.log('ge next answer', item)
-                        curAnswer = item
-                        bindAnswerInfo(item);
+                if (data && data.length > 0) {
+                    let item = data[0]
+                    console.log('ge next answer', item)
+                    curAnswer = item
+                    bindAnswerInfo(item);
 
-                        //第三步 获取下一个复审信息
-                        $.commonGet("Recheck/GetShopRecheckScoreInfo", {
-                            projectId: item.ProjectId,
-                            shopId: item.ShopId,
-                            subjectId: item.SubjectId,
-                            recheckTypeId: curScoreRow.RecheckTypeId
-                        }, function (data) {
-                            if (data && data.length > 0) {
-                                let item = data[0]
-                                console.log('ge next Recheck', item)
-                                bindRecheckInfo(item);
-                                bindRecheckInfoConfirm(item);
-                                bindRecheckInfoSec(item);
-                            }
-                        });
-                    }
-                });
-            }) 
-        });
+                    //第三步 获取下一个复审信息
+                    $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+                        projectId: item.ProjectId,
+                        shopId: item.ShopId,
+                        subjectId: item.SubjectId,
+                        recheckTypeId: curScoreRow.RecheckTypeId
+                    }, function (data) {
+                        if (data && data.length > 0) {
+                            let item = data[0]
+                            console.log('ge next Recheck', item)
+                            curScoreRow = item
+                            bindRecheckInfo(item);
+                            bindRecheckInfoConfirm(item);
+                            bindRecheckInfoSec(item);
+                        }
+                    });
+                }
+            });
+        })
     }
 
     function toSubjectSeqNo() {
@@ -408,11 +400,11 @@
     }
     //绑定复审确认信息
     function bindRecheckInfoConfirm(item) {
-        $('#RecheckScoreConfirm').val(item.RecheckScore_Confirm)
-        $('#RecheckContentConfirm').val(item.RecheckContent_Confirm)
+        $('#RecheckScoreConfirm').val(item.ReCheckScore_Confirm)
+        $('#RecheckContentConfirm').val(item.ReCheckContent_Confirm)
         $("input[name=PassRecheckConfirm]").each(function () {
             $(this).iCheck('uncheck');
-            if (item.PassRecheck_Confirm == ($(this).val() == 'true')) {
+            if (item.PassReCheck_Confirm == ($(this).val() == 'true')) {
                 $(this).iCheck('check');
             }
         });
@@ -461,20 +453,21 @@
     }
     //绑定复审确认信息
     function bindRecheckInfoSec(item) {
-        $('#RecheckScoreSec').val(item.RecheckScore_Sec)
-        $('#RecheckContentSec').val(item.RecheckContent_Sec)
+        debugger
+        $('#RecheckScoreSec').val(item.ReCheckScore_Sec)
+        $('#RecheckContentSec').val(item.ReCheckContent_Sec)
         $("input[name=PassRecheckSec]").each(function () {
             $(this).iCheck('uncheck');
-            if (item.PassRecheck_Sec == ($(this).val() == 'true')) {
+            if (item.PassReCheck_Sec == ($(this).val() == 'true')) {
                 $(this).iCheck('check');
             }
         });
         bindRecheckErrorResultSec(item)
     }
 
-    function bindRecheckErrorResultSec(item) {
+    function bindRecheckErrorResultSec(item) { 
         if (item.ReCheckError_Sec) {
-            let errorArr = item.ReCheckError_Confirm.split(';')
+            let errorArr = item.ReCheckError_Sec.split(';')
             $.each($("#RecheckErrorCheckListSec").find("input[type=checkbox]"), function (i, checkbox) {
                 let errValue = $(checkbox).parent().parent().find('.checkbox-label').text()
                 console.log('checkbox value', errValue)
