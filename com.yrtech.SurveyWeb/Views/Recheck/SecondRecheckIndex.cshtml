@@ -72,7 +72,8 @@
 
         //加载期号
         $("#brand-sel").change(function () {
-            bindProjectSelect(); 
+            bindProjectSelect();
+            $("#project-sel").change()
         });
         $("#project-sel").change(function () {
             bindShopSelect(true);
