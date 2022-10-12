@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "一次抽查";
+    ViewBag.Title = "二审确认详情";
 }
 
 <style>
@@ -17,52 +17,57 @@
         border-right: none;
     }
 </style>
-<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
-<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
-<div class="condition">
-    <div class="form-inline">
-        <div class="form-group">
-            <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:200px;"></select>
-        </div>
-        <div class="form-group">
-            <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width:200px;"></select>
-        </div>
-        <div class="form-group">
-            <label class="control-label">期号:</label>
-            <select id="project-sel" class="form-control" style="width: 140px"></select>
-        </div>
-        <div class="form-group">
-            <label class="control-label">经销商:</label>
-            <select id="shop-sel"  style="width: 140px"></select>
-        </div>
-    </div>
-    <div style="float:right;width:200px;text-align:right">
-        <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnSaveStatus" class="btn btn-primary">抽查完毕</button>
-    </div>
-</div>
+<style>
+    #loss-file-pics .img-div {
+        float: left;
+        position: sticky;
+    }
+
+    #loss-file-pics i {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+    }
+</style>
+<style>
+    #subject-file-pics .img-div {
+        float: left;
+        position: sticky;
+    }
+
+    #subject-file-pics i {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+    }
+</style>
+<div style="text-align:right;width:100%">
+    <button id="btnBack" class="btn btn-primary">返回二审</button>
+    <button id="btnReflash" class="btn btn-primary">刷新</button>
+</div> 
 <div class="result">
-    <table id="recheck-table" class="table table-set"></table>
+    <table id="recheck-subject-table" class="table table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg" style="width:75%">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">得分编辑</h4>
+                <h4 class="modal-title">审核编辑</h4>
             </div>
             <div class="modal-body">
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="display: none">
                 <button id="save_button" type="button" onclick="saveScore()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
 </div>
+
+
 <div class="modal fade" id="sujectFileModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -122,10 +127,16 @@
         </div>
     </div>
 </div>
+<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
 
+<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
+<script src="~/Content/baguetteBox/baguetteBox.js"></script>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
 
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
@@ -133,96 +144,69 @@
 <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
-
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
 
-<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
-<script src="~/Content/baguetteBox/baguetteBox.js"></script>
-
 <script>
     var uploader, lossUploader;
+    var projectId = "@ViewBag.ProjectId";
+    var shopId = "@ViewBag.ShopId";
+    var brandId = "@ViewBag.BrandId";
     $(function () {
-        uploader = undefined
         $('title').html('@ViewBag.Title')
-        bindBrandSelect();
-        //加载年份
-        $("#year-sel").change(function () {
-            bindProjectSelect();
-        });
-        for (var i = 2020; i <= 2030; i++) {
-            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
-        }
-        var tYear = new Date().getFullYear();
-        $("#year-sel").val(tYear);
-        $("#year-sel").change();
+        $("#btnBack").click(function () {
+            openNewPage("/Recheck/SecondRecheckIndex")
+        })
+        $("#btnReflash").click(function () {
+            var url = "/Recheck/SecondRecheckDetail?brandId=" + brandId + "&projectId=" + projectId + "&shopId=" + shopId
+            openNewPage(url)
+        })
 
-        //加载期号
-        $("#brand-sel").change(function () {
-            bindProjectSelect();
-            $("#project-sel").change()
-        });
-        $("#project-sel").change(function () {
-            bindShopSelect();
-        });
-        bindShopSelect();
-        $("#shop-sel").change(function () {
-            loadRecheckSpotCheck1();
-        });
+        loadRecheckScoreType()
+        bindRecheckErrors()
 
-        $("#btnSaveStatus").click(function () {
-            saveRecheckStatus();
-        });
-
-        initRecheckTable();
-        $("#btnQuery").click(function () {
-            loadRecheckSpotCheck1();
+        $('#Modal').on('hide.bs.modal', function (e) {
+            // 关闭编辑时刷新数据
+            loadRecheckScoreType()
         })
     })
 
-    function saveRecheckStatus() {
-        $("#btnSaveStatus").button('loading');
-        $.commonPost("Recheck/SaveRecheckStatus", {
-            ProjectId: $("#project-sel").val(),
-            ShopId: $("#shop-sel").val(),
-            StatusCode: 'S6',
-            InUserId: loginUser.Id
-        }, function () {
-            $("#btnSaveStatus").button('reset');
-        }, function () { $("#btnSaveStatus").button('reset'); });
-    }
-
-    var curRow;
-    function loadRecheckSpotCheck1() {
-        var projectId = $("#project-sel").val();
-        if (!projectId) {
-            alert("请选择一个期号！");
-            return
-        }
-        var shopId = $("#shop-sel").val();
-        if (!shopId) {
-            alert("请选择一个经销商！");
-            return
-        }
-        $('#recheck-table').bootstrapTable("showLoading");
-        $.commonGet("Recheck/GetSupervisionSpotCheck", {
-            projectId: $("#project-sel").val(),
-            shopId: $("#shop-sel").val(),
-            subjectId: ''
+    var allLabels = []
+    function bindRecheckErrors(callback) {
+        $.commonGet("Master/GetLabel", {
+            brandId: brandId,
+            labelType: 'RecheckErrorType',
+            useChk: true,
+            labelId: ""
         }, function (data) {
-            // $('#recheck-table').bootstrapTable("hideLoading");
-            //$('#recheck-table').bootstrapTable("load", data);
-            initRecheckTable(data);
-        }, function () {
-            $('#recheck-table').bootstrapTable("hideLoading");
+            console.log('get label', data)
+            allLabels = data
         });
     }
 
-    //初始化期号表格
-    function initRecheckTable(data) {
-        $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
-            pagination: true,
+    var curRow;
+    var curScoreRow; 
+     
+    function loadRecheckScoreType(recheckTypeId) {
+        $('#recheck-subject-table').bootstrapTable("showLoading");
+        $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+            projectId: projectId,
+            shopId: shopId,
+            subjectId: '',
+            recheckTypeId: recheckTypeId || ''
+        }, function (data) {
+            debugger
+            initRecheckScoreTable(data);
+        }, function () {
+            $('#recheck-subject-table').bootstrapTable("hideLoading");
+        });
+    }
+
+    //初始化二审题目表格
+    function initRecheckScoreTable(data) {
+        $('#recheck-subject-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: false,
             data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
@@ -234,6 +218,15 @@
             pageList: [20, 50, 100, 500],
             columns: [{
                 title: "经销商代码",
+                field: '',
+                width: 120,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<button onclick="openSecondRecheckEdit()">初审</span>'
+                }
+            }, {
+                title: "经销商代码",
                 field: 'ShopCode',
                 width: 120,
                 valign: "middle",
@@ -241,9 +234,9 @@
             }, {
                 title: "经销商名称",
                 field: "ShopName",
-                width: 230,
                 valign: "middle",
                 align: "center",
+                width: 230,
                 sortable: false
             },
             {
@@ -274,7 +267,7 @@
             }, {
                 title: "得分",
                 field: "PhotoScore",
-                width: 100,
+                width: 50,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -290,16 +283,30 @@
                         return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
-                title: "复审得分",
-                field: "RecheckScore",
-                width: 150,
+                title: "审核类型",
+                field: "RecheckTypeName",
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "复审意见",
+                title: "初审建议得分",
+                field: "RecheckScore",
+                width: 130,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审结果",
+                field: "PassRecheckName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审意见",
                 field: "RecheckContent",
-                width: 150,
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -308,44 +315,30 @@
                         return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
-                title: "复审时间",
+                title: "初审时间",
                 field: "RecheckDateTime",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "同意复审",
-                field: "AgreeCheck",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value) {
-                    return value ? '是' : '否'
-                }
-            }, {
-                title: "理由",
-                field: "AgreeReason",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (value != undefined && value != "")
-                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
-                }
-            }, {
-                title: "仲裁结果",
-                field: "LastConfirmCheckName",
-                width: 80,
+                title: "初审确认建议得分",
+                field: "RecheckScore_Confirm",
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "仲裁原因",
-                field: "LastConfirmReason",
-                width: 150,
+                title: "初审确认结果",
+                field: "PassReCheckName_Confirm",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "初审确认意见",
+                field: "RecheckContent_Confirm",
+                width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -354,34 +347,82 @@
                         return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
-                title: "抽查意见",
-                field: "SupervisionSpotCheckContent",
+                title: "初审确认时间",
+                field: "RecheckDateTime_Confirm",
                 width: 150,
                 valign: "middle",
                 align: "center",
+                sortable: false
+            }, {
+                title: "二审建议得分",
+                field: "RecheckScore_Sec",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "二审结果",
+                field: "PassReCheckName_Sec",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "二审意见",
+                field: "RecheckContent_Sec",
+                width: 200,
+                valign: "middle",
+                align: "center",
                 sortable: false,
-                editable: {
-                    type: 'text',
-                    noeditFormatter: function (value, row, index) {
-                        return '<a href="javascript:void(0)" data-name="SupervisionSpotCheckContent" data-pk="undefined" data-value="" class="editable editable-click">' + (value || '') + '</a>';
-                    },
-                    validate: function (v) {
-                        if (!v) return '意见不能为空';
-                    }
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
+            }, {
+                title: "二审时间",
+                field: "RecheckDateTime_Sec",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
             }],
             onClickRow: function (row, $element) {
-                curRow = row;
+                curScoreRow = row;
             },
-            onEditableSave: function (field, row, oldValue, $el) {
-                $.commonPost("Recheck/SaveSupervisionSpotCheck", {
-                    RecheckId: row.RecheckId,
-                    SupervisionSpotCheckContent: row.SupervisionSpotCheckContent,
-                    SupervisionSpotCheckUserId: loginUser.Id
-                }, function () {
-                    loadRecheckSpotCheck1();
-                }, function () { });
+            rowStyle: function (row, index) {
+                if (row.AgreeCheck == 0) {
+                    return { css: { 'color': 'red' } }
+                }
+                return {}
             }
         });
+    }
+
+    function loadRecheckSubjects(recheckTypeId) {
+        loadRecheckScoreType(recheckTypeId)
+    }
+
+    function secondRecheckTypeFinish() {
+        setTimeout(function () {
+            $("#btnRecheckSubmit").button("loading");
+            $.commonPost("Recheck/SaveRecheckStatusDtl", {
+                ProjectId: projectId,
+                ShopId: shopId,
+                recheckTypeId: curRow.RecheckTypeId,
+                InUserId: loginUser.Id
+            }, function () {
+                $("#btnRecheckSubmit").button("reset");
+                alert("二审完毕成功！");
+            });
+        }, 300)
+    }
+
+    function openSecondRecheckEdit() {
+        $("#Modal .modal-title").html('初审编辑');
+        //$("#Modal .modal-footer").hide();
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/Recheck/SecondRecheckEdit", {}, function () {
+        })
     }
 </script>

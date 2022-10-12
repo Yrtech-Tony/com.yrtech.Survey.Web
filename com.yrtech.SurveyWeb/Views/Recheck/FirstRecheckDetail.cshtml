@@ -17,16 +17,42 @@
         border-right: none;
     }
 </style>
+<style>
+    #loss-file-pics .img-div {
+        float: left;
+        position: sticky;
+    }
+
+    #loss-file-pics i {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+    }
+</style>
+<style>
+    #subject-file-pics .img-div {
+        float: left;
+        position: sticky;
+    }
+
+    #subject-file-pics i {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+    }
+</style>
 <div style="text-align:right;width:100%">
     <button id="btnBack" class="btn btn-primary">返回初审确认</button>
     <button id="btnReflash" class="btn btn-primary">刷新</button>
 </div>
 <div class="result">
-    <table id="recheck-type-table" class="table table-set"></table> 
-</div> 
-<div class="result"> 
+    <table id="recheck-type-table" class="table table-set"></table>
+</div>
+<div class="result">
     <table id="recheck-subject-table" class="table table-set" style="max-height:600px"></table>
-</div> 
+</div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" style="width:75%">
         <div class="modal-content">
@@ -43,6 +69,69 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="sujectFileModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closeFileModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">标准照片列表</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <button id="btnAddPicture" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                </div>
+                <div id="subject-file-pics" style="max-height:500px;overflow:auto">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="lossModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closeLossModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">失分描述编辑</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+                    <div class="item form-group" style="width:100%">
+                        <div class="col-md-3">
+                            <label>失分说明:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div id="LossResultCheckList">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item form-group" style="width:100%">
+                        <div class="col-md-3">
+                            <label>补充失分说明:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <textarea id="LossDesc2" name="LossDesc2" class="form-control" style=""></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <button id="btnAddLossPic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                    </div>
+                    <div id="loss-file-pics" style="max-height:500px;overflow:auto">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurLossResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeLossModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
@@ -52,12 +141,23 @@
 <link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
 <script src="~/Content/viewer/viewer.min.js"></script>
 
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
+
 <script>
+    var uploader, lossUploader;
     var projectId = "@ViewBag.ProjectId";
     var shopId = "@ViewBag.ShopId";
     var brandId = "@ViewBag.BrandId";
     $(function () {
-        $('title').html('@ViewBag.Title') 
+        $('title').html('@ViewBag.Title')
         $("#btnBack").click(function () {
             openNewPage("/Recheck/FirstRecheckIndex")
         })
@@ -67,7 +167,7 @@
         })
         loadRecheckType()
         loadRecheckScoreType()
-         
+
         bindRecheckErrors()
 
         $('#Modal').on('hide.bs.modal', function (e) {
@@ -75,7 +175,7 @@
             loadRecheckScoreType()
         })
     })
-    
+
     var allLabels = []
     function bindRecheckErrors(callback) {
         $.commonGet("Master/GetLabel", {
@@ -95,7 +195,7 @@
         $('#recheck-type-table').bootstrapTable("showLoading");
         $.commonGet("Recheck/GetShopRecheckStautsDtlForAllType", {
             projectId: projectId,
-            shopId: shopId 
+            shopId: shopId
         }, function (data) {
             initRecheckTypeTable(data);
         }, function () {
@@ -111,9 +211,9 @@
             striped: true, //是否显示行间隔色
             width: "100%",
             height: 200,
-            "max-height":200,
+            "max-height": 200,
             showColumns: false, // 开启自定义列显示功能
-            sortable: true, 
+            sortable: true,
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
@@ -172,7 +272,7 @@
             projectId: projectId,
             shopId: shopId,
             subjectId: '',
-            recheckTypeId: recheckTypeId||''
+            recheckTypeId: recheckTypeId || ''
         }, function (data) {
             initRecheckScoreTable(data);
         }, function () {
@@ -180,7 +280,7 @@
         });
     }
 
-    //初始化初审确认表格 
+    //初始化初审确认表格
     function initRecheckScoreTable(data) {
         $('#recheck-subject-table').bootstrapTable('destroy').bootstrapTable({
             pagination: false,
@@ -202,12 +302,12 @@
                 formatter: function (value, row, index) {
                     return '<button onclick="openFirstRecheckEdit()">初审</span>'
                 }
-            },{
+            }, {
                 title: "经销商代码",
                 field: 'ShopCode',
                 width: 120,
                 valign: "middle",
-                align: "center" 
+                align: "center"
             }, {
                 title: "经销商名称",
                 field: "ShopName",
@@ -342,7 +442,7 @@
             }
         });
     }
-    
+
     function loadRecheckSubjects(recheckTypeId) {
         loadRecheckScoreType(recheckTypeId)
     }
@@ -361,7 +461,7 @@
             });
         }, 300)
     }
-     
+
     function openFirstRecheckEdit() {
         $("#Modal .modal-title").html('初审编辑');
         //$("#Modal .modal-footer").hide();

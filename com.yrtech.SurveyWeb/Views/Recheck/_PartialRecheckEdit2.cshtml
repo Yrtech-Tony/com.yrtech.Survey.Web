@@ -47,10 +47,10 @@
         <div class="item form-group" style="float:right;">
             <div class="form-inline">
                 <div class="form-group">
-                    <a id="btnPre" class="btn btn-primary" style="margin-right:0px" onclick="prevSubject()">上一题</a>
+                    <a id="btnPre" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="prevSubject()">上一题</a>
                 </div>
                 <div class="form-group">
-                    <a id="btnNext" class="btn btn-primary" style="margin-right:0px" onclick="nextSubject()">下一题</a>
+                    <a id="btnNext" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="nextSubject()">下一题</a>
                 </div>
                 @*<div class="form-group">
                         <input id="toSeqNo" style="width:60px!important" class="form-control" />
@@ -66,50 +66,42 @@
             <div class="panel-body" style="padding: 0; padding-top:8px; ">
                 <form class="form-horizontal" id="answer-form">
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-4" for="OrderNO">题目序号:</label>
-                        <div class="col-md-8">
+                        <label class="control-label  col-md-3" for="OrderNO">题目序号:</label>
+                        <div class="col-md-9">
                             <input id="OrderNO" name="OrderNO" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-4" for="SubjectCode">题目代码:</label>
-                        <div class="col-md-8">
+                        <label class="control-label  col-md-3" for="SubjectCode">题目代码:</label>
+                        <div class="col-md-9">
                             <input id="SubjectCode" name="SubjectCode" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-4" for="CheckPoint">检查点:</label>
-                        <div class="col-md-8">
-                            <input id="CheckPoint" name="CheckPoint" type="text" class="form-control" readonly>
+                        <label class="control-label  col-md-3" for="PhotoScore">得分:</label>
+                        <div class="col-md-9">
+                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-4" for="Desc">说明:</label>
-                        <div class="col-md-8">
-                            <input id="Desc" name="Desc" type="text" class="form-control" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-8">
-                        <label class="control-label  col-md-2" for="InspectionDesc">检查标准说明:</label>
-                        <div class="col-md-10">
-                            <input id="InspectionDesc" name="InspectionDesc" type="text" class="form-control" readonly>
+                        <label class="control-label  col-md-3" for="CheckPoint">检查点:</label>
+                        <div class="col-md-9">
+                            <textarea id="CheckPoint" name="CheckPoint" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-4" for="PhotoScore">得分:</label>
-                        <div class="col-md-8">
-                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" >
+                        <label class="control-label  col-md-3" for="InspectionDesc">检查标准说明:</label>
+                        <div class="col-md-9">
+                            <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly>   </textarea>
                         </div>
                     </div>
-
-                    <div class="form-group col-md-8">
-                        <label class="control-label  col-md-2" for="Remark">备注:</label>
-                        <div class="col-md-10">
-                            <input id="Remark" name="Remark" type="text" class="form-control" >
+                    <div class="form-group col-md-4">
+                        <label class="control-label col-md-3" for="Remark">备注:</label>
+                        <div class="col-md-9">
+                            <textarea id="Remark" name="Remark" class="form-control" rows="3" readonly>   </textarea>
                         </div>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
@@ -259,6 +251,7 @@
 
 <script> 
     let LossFileNameUrl;
+    var curRow_ins;
     let curLossRow;
     let curFileRow;
     $(function () {
@@ -419,7 +412,7 @@
         })
         $("#RecheckErrorCheckList").find("input[type=checkbox]").iCheckParser();
     }
-    var curRow_ins;
+    
     function initInspection() {
         $('#ins-table').bootstrapTable({
             pagination: false,
