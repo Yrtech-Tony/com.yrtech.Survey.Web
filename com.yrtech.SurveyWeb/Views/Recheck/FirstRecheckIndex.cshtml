@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "初审确认";
+    ViewBag.Title = "一审确认";
 }
 
 <style>
@@ -20,7 +20,7 @@
 <div class="condition">
     <div style="text-align:right;width:100%">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnRecheckSubmit" class="btn btn-primary">审核完毕</button>
+        @*<button id="btnRecheckSubmit" class="btn btn-primary">审核完毕</button>*@
     </div>
     <div class="form-inline">
         <div class="form-group">
@@ -128,7 +128,7 @@
         });
     }
 
-    //初始化初审确认表格
+    //初始化一审确认表格
     function initRecheckTable(data) {
         $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
@@ -159,35 +159,35 @@
                 sortable: false
             },
             {
-                title: "提交初审",
+                title: "提交一审",
                 field: "Status_S1",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审中", 
+                title: "一审中", 
                 field: "Status_S2",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审完毕",
+                title: "一审完毕",
                 field: "Status_S3",
                 width: 200,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审修改",
+                title: "一审修改",
                 field: "Status_S4",
                 width: 50,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审确认",
+                title: "一审确认",
                 field: "Status_S8",
                 width: 100,
                 valign: "middle",
@@ -195,7 +195,7 @@
                 sortable: false,
                 formatter: function (value, row, index) {
                     if (!value)
-                        return '<button id="btnRecheckSubmit" onclick="firstRecheck()">初审确认</span>'
+                        return '<button id="btnRecheckSubmit" onclick="firstRecheck()">一审确认</span>'
                 }
             }],
             onClickRow: function (row, $element) {
@@ -221,7 +221,7 @@
                 InUserId: loginUser.Id
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
-                alert("初审确认成功！");
+                alert("一审确认成功！");
             });
         },300)
     }

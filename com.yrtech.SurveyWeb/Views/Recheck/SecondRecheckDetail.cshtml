@@ -223,7 +223,7 @@
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<button onclick="openSecondRecheckEdit()">初审</span>'
+                    return '<button onclick="openSecondRecheckEdit()">一审</span>'
                 }
             }, {
                 title: "经销商代码",
@@ -290,21 +290,21 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "初审建议得分",
+                title: "一审建议得分",
                 field: "RecheckScore",
                 width: 130,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审结果",
+                title: "一审结果",
                 field: "PassRecheckName",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审意见",
+                title: "一审意见",
                 field: "RecheckContent",
                 width: 200,
                 valign: "middle",
@@ -315,28 +315,28 @@
                         return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
-                title: "初审时间",
+                title: "一审时间",
                 field: "RecheckDateTime",
                 width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审确认建议得分",
+                title: "一审确认建议得分",
                 field: "ReCheckScore_Confirm",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审确认结果",
+                title: "一审确认结果",
                 field: "PassReCheckName_Confirm",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "初审确认意见",
+                title: "一审确认意见",
                 field: "ReCheckContent_Confirm",
                 width: 200,
                 valign: "middle",
@@ -347,7 +347,7 @@
                         return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
-                title: "初审确认时间",
+                title: "一审确认时间",
                 field: "ReCheckDateTime_Confirm",
                 width: 150,
                 valign: "middle",
@@ -418,7 +418,7 @@
     }
 
     function openSecondRecheckEdit() {
-        $("#Modal .modal-title").html('初审编辑');
+        $("#Modal .modal-title").html('一审编辑');
         //$("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
