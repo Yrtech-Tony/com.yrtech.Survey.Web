@@ -17,10 +17,17 @@
     }
 </style>
 <div class="condition">
+    <div style="text-align:right;width:100%; ">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnAccountAdd" class="btn btn-primary">添加账号</button>
+        <button id="btnDownloadUserTemplate" class="btn btn-primary">下载账号模板</button>
+        <button id="btnImportUser" class="btn btn-primary">导入账号</button>
+    </div>
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">权限:</label>
             <select id="role-sel" class="form-control" style="width:200px;"></select>
+            <select id="brand-sel" class="form-control" style="width:140px; display:none"></select>
         </div>
         <div class="form-group">
             <label class="control-label">账号:</label>
@@ -30,10 +37,6 @@
             <label class="control-label">姓名:</label>
             <input type="text" class="form-control" id="AccountName" placeholder="姓名">
         </div>
-    </div>
-    <div style="float:right;width:200px;text-align:right">
-        <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnAccountAdd" class="btn btn-primary">添加账号</button>
     </div>
 
 </div>
@@ -74,6 +77,13 @@
 
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 <script>
 
     $(function () {
@@ -97,7 +107,29 @@
 
         $("#btnQuery").click(function () {
             loadShopAccount();
-        }).trigger("click")
+        }).trigger("click");
+        $("#btnDownloadUserTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/UserInfo_Survey.xlsx";
+            window.location.href = url;
+        });
+        osspath = "Survey/BaseInfo/";
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnImportUser",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-title").html("用户导入");
+                    $("#ModalImport .modal-body").load("/Account/OpenUserInfoImport", {}, function () {
+                        loadImportUser(file);
+                    })
+                })
+            }
+        });
     })
 
     var curRow;
@@ -259,7 +291,7 @@
             }
         });
     }
-
+    
     function goEdit(userId) {
         var item = curRow;
         $("#Modal .modal-title").html("编辑账号");

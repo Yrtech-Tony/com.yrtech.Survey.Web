@@ -418,6 +418,8 @@
             }
             return o
         })
+        $("#PhotoScore").val("");
+        $("#Remark").val("");
         $("#answer-form").setForm(item);
         // $('#ins-table').bootstrapTable("load", InsResult);
         $('#ins-table').bootstrapTable("load", item.SubjectInspectionStandardList);
