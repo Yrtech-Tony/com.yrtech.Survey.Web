@@ -65,13 +65,13 @@
                     <div class="form-group col-md-4">
                         <label class="control-label  col-md-3" for="InspectionDesc">检查标准说明:</label>
                         <div class="col-md-9">
-                            <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly>   </textarea>
+                            <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
                         <label class="control-label col-md-3" for="Remark">备注:</label>
                         <div class="col-md-9">
-                            <textarea id="Remark" name="Remark" class="form-control" rows="3" readonly>   </textarea>
+                            <textarea id="Remark" name="Remark" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                 </form>
@@ -118,7 +118,7 @@
                 <li role="presentation"><a href="#recheckConfirm" aria-controls="photo" role="tab" data-toggle="tab">复审确认</a></li> 
             </ul>
             <!-- Tab panes -->
-            <div class="tab-content" style="padding: 0; height: 400px; overflow: auto">
+            <div class="tab-content" style="padding: 0; height: 400px;">
                 <div role="tabpanel" class="tab-pane active" id="recheck">
                     <form class="form-horizontal" id="recheck-form">
                         <div class="form-group">
@@ -290,24 +290,19 @@
                     }
                 });
             }
-            debugger
-            if (RecheckStatusObject.Status_S2 && !RecheckStatusObject.Status_S8) {
-                //保存复审确认信息
-                $.commonPost("Recheck/SaveShopRecheckConfirmInfo", {
-                    ProjectId: curAnswer.ProjectId,
-                    ShopId: curAnswer.ShopId,
-                    SubjectId: curAnswer.SubjectId,
-                    PassReCheck_Confirm: $("input[name=PassRecheckConfirm]:checked").val(),
-                    ReCheckScore_Confirm: $("#RecheckScoreConfirm").val(),
-                    ReCheckContent_Confirm: $("#RecheckContentConfirm").val(),
-                    ReCheckError_Confirm: RecheckErrorConfirm,
-                    ReCheckUserId_Confirm: loginUser.Id
-                }, function (data) {
-                    getNextScoreAndRecheck()
-                })
-            } else {
+            //保存复审确认信息
+            $.commonPost("Recheck/SaveShopRecheckConfirmInfo", {
+                ProjectId: curAnswer.ProjectId,
+                ShopId: curAnswer.ShopId,
+                SubjectId: curAnswer.SubjectId,
+                PassReCheck_Confirm: $("input[name=PassRecheckConfirm]:checked").val(),
+                ReCheckScore_Confirm: $("#RecheckScoreConfirm").val(),
+                ReCheckContent_Confirm: $("#RecheckContentConfirm").val(),
+                ReCheckError_Confirm: RecheckErrorConfirm,
+                ReCheckUserId_Confirm: loginUser.Id
+            }, function (data) {
                 getNextScoreAndRecheck()
-            }
+            })
         });
     }
 

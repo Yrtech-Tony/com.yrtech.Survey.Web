@@ -129,9 +129,9 @@
             loginUser = JSON.parse(window.localStorage.userJson);
             //动态加载菜单
             var menuHtml = '<li class="main-page"><a href="/Home/Main"> <i class="fa fa-home"></i> 首页 </a> </li>'
-            menuHtml += '<li class="main-page"><a href="/Recheck/RecheckBatchIndex"> <i class="fa fa-home"></i> 批量编辑 </a> </li>'
-            menuHtml += '<li class="main-page"><a href="/Recheck/FirstRecheckIndex"> <i class="fa fa-home"></i> 一审 </a> </li>'
-            menuHtml += '<li class="main-page"><a href="/Recheck/SecondRecheckIndex"> <i class="fa fa-home"></i> 二审 </a> </li>'
+            //menuHtml += '<li class="main-page"><a href="/Recheck/RecheckBatchIndex"> <i class="fa fa-home"></i> 批量编辑 </a> </li>'
+            //menuHtml += '<li class="main-page"><a href="/Recheck/FirstRecheckIndex"> <i class="fa fa-home"></i> 一审 </a> </li>'
+            //menuHtml += '<li class="main-page"><a href="/Recheck/SecondRecheckIndex"> <i class="fa fa-home"></i> 二审 </a> </li>'
             loginUser.RoleProgramList.forEach(function (m, i) {
                 var mli =  '<li id="'+m.ProgramCode+'">'
                 var mLink = '<a><i class="fa fa-user"></i> '+m.MenuName+'<span class="fa fa-chevron-down"></span></a>'
