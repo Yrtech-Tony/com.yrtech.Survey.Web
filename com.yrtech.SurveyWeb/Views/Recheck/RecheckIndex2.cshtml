@@ -144,6 +144,7 @@
     <div id="ossfile"></div>
 </div>
 <script>
+    NProgress.start();
     var uploader, lossUploader; 
     var allLabels = []
     $(function () {
@@ -181,7 +182,9 @@
             recheckSubmit();
         })
         $('#Modal').on('hide.bs.modal', function (e) {
-        }) 
+        })
+
+        NProgress.done();
     })
 
     function bindRecheckErrors(callback) {

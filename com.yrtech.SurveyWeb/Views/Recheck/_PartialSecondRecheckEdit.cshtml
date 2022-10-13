@@ -53,7 +53,7 @@
                     <div class="form-group col-md-4">
                         <label class="control-label  col-md-3" for="PhotoScore">得分:</label>
                         <div class="col-md-9">
-                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" readonly>
+                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" >
                         </div>
                     </div>
                     <div class="form-group col-md-4">
@@ -65,7 +65,7 @@
                     <div class="form-group col-md-4">
                         <label class="control-label  col-md-3" for="InspectionDesc">检查标准说明:</label>
                         <div class="col-md-9">
-                            <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3"></textarea>
+                            <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
@@ -210,13 +210,11 @@
     </div>
 
 </div>
-<script>
-    let LossFileNameUrl;
+<script> 
     var curRow_ins;
     let curLossRow;
     let curFileRow;
-    $(function () {
-        LossFileNameUrl = ''
+    $(function () { 
         uploader = undefined
         lossUploader = undefined
         $("input[type=radio]").iCheckParser();
@@ -583,7 +581,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:viewSubjectFile(\'' + (row.Url || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
+                    return '<a href="javascript:viewPicutes(\'' + (row.Url || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
             }],
             onClickRow: function (row, $element) {
@@ -716,13 +714,22 @@
     }
     /**检查标准 **end**/
 
-    /**标准照片 **start**/
-    function saveFileResult() {
-        let data = $('#photo-table').bootstrapTable('getData', false)
-        curAnswer.FileResult = JSON.stringify(data);
-        $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
-            alert("保存成功！");
-        }, function () { });
+    /**标准照片 **start**/ 
+    function saveCurFileResult() {
+        if (curFileRow) {
+            //编辑 
+            curFileRow.Url = FileNameUrl
+            let data = $('#photo-table').bootstrapTable('getData', false)
+            $('#photo-table').bootstrapTable("load", data);
+        } else {
+            //新增
+            let data = $('#photo-table').bootstrapTable('getData', false)
+            data.push({ 
+                Url: FileNameUrl
+            })
+            $('#photo-table').bootstrapTable("load", data);
+        }
+        closeFileModel();
     }
     //编辑
     function editSubjectFile() {
@@ -791,21 +798,10 @@
     }
     /**标准照片 **end**/
 
-    /**失分说明 **start**/
-    //保存
-    function saveLossResult() {
-        let data = $('#lossresult-table').bootstrapTable('getData', false)
-        curAnswer.LossResult = JSON.stringify(data);
-        $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
-            alert("保存成功！");
-        }, function () {
-
-        });
-    }
+    /**失分说明 **start**/ 
     //新增
     function addLossResult() {
-        LossFileNameUrl = ''
-        curLossRow = null
+        curLossRow = {}
         $('#loss-file-pics').empty()
         $('#LossDesc2').val('')
         $.each($("#LossResultCheckList").find("input[type=checkbox]"), function (i, checkbox) {
@@ -815,8 +811,7 @@
     }
     //编辑
     function editLossResult() {
-        setTimeout(function () {
-            LossFileNameUrl = curLossRow.LossFileNameUrl
+        setTimeout(function () { 
             curLossRow.LossDesc2 = curLossRow.LossDesc2 || ''
             curLossRow.LossDesc = curLossRow.LossDesc || ''
             $('#LossDesc2').val(curLossRow.LossDesc2)
@@ -829,14 +824,13 @@
                     $(checkbox).iCheck('check');
                 }
             });
-            let fileList = LossFileNameUrl ? LossFileNameUrl.split(';') : []
+            let fileList = curLossRow.LossFileNameUrl ? curLossRow.LossFileNameUrl.split(';') : []
             bindLossUrlList(fileList)
             showLossModel();
         },300) 
     }
-    //界面保存
-    function saveCurLossResult() {
-        debugger
+    //本地保存
+    function saveCurLossResult() { 
         let lossArr = []
         $.each($("#LossResultCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
             //let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
@@ -847,7 +841,6 @@
             //编辑
             curLossRow.LossDesc = lossArr.join(';');
             curLossRow.LossDesc2 = $('#LossDesc2').val()
-            curLossRow.LossFileNameUrl = LossFileNameUrl
             let data = $('#lossresult-table').bootstrapTable('getData', false)
             $('#lossresult-table').bootstrapTable("load", data);
         } else {
@@ -857,7 +850,7 @@
                 LossId: fnGetMaxLossId() + 1,
                 LossDesc: lossArr.join(';'),
                 LossDesc2: $('#LossDesc2').val(),
-                LossFileNameUrl: LossFileNameUrl
+                LossFileNameUrl: curLossRow.LossFileNameUrl
             })
             $('#lossresult-table').bootstrapTable("load", data);
         }
@@ -876,8 +869,8 @@
             let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
             remove.click(function () {
                 fileList.splice(fileList.indexOf(file), 1);
-                LossFileNameUrl = fileList.join(';')
-                console.log('LossFileNameUrl', LossFileNameUrl)
+                curLossRow.LossFileNameUrl = fileList.join(';')
+                console.log('curLossRow.LossFileNameUrl', curLossRow.LossFileNameUrl)
                 bindLossUrlList(fileList)
             })
             imgDiv.append(remove);
@@ -910,11 +903,11 @@
                     files.forEach(function (file) {
                         filePaths.push(file.osspath)
                     })
-                    if (LossFileNameUrl) {
-                        LossFileNameUrl += ';' + filePaths.join(';')
-                        bindLossUrlList(LossFileNameUrl.split(';'))
+                    if (curLossRow.LossFileNameUrl) {
+                        curLossRow.LossFileNameUrl += ';' + filePaths.join(';')
+                        bindLossUrlList(curLossRow.LossFileNameUrl.split(';'))
                     } else {
-                        LossFileNameUrl = filePaths.join(';')
+                        curLossRow.LossFileNameUrl = filePaths.join(';')
                         bindLossUrlList(filePaths)
                     }
 

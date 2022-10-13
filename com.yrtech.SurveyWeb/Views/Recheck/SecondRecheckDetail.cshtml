@@ -44,7 +44,7 @@
     }
 </style>
 <div style="text-align:right;width:100%">
-    <button id="btnBack" class="btn btn-primary">返回二审</button>
+    <button id="btnBack" class="btn btn-primary">返回</button>
     <button id="btnReflash" class="btn btn-primary">刷新</button>
 </div> 
 <div class="result">
@@ -81,6 +81,10 @@
                 </div>
                 <div id="subject-file-pics" style="max-height:500px;overflow:auto">
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurFileResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeFileModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
@@ -149,6 +153,7 @@
 </div>
 
 <script>
+    NProgress.start();
     var uploader, lossUploader;
     var projectId = "@ViewBag.ProjectId";
     var shopId = "@ViewBag.ShopId";
@@ -169,7 +174,7 @@
         $('#Modal').on('hide.bs.modal', function (e) {
             // 关闭编辑时刷新数据
             loadRecheckScoreType()
-        })
+        }) 
     })
 
     var allLabels = []
@@ -195,9 +200,9 @@
             shopId: shopId,
             subjectId: '',
             recheckTypeId: recheckTypeId || ''
-        }, function (data) {
-            debugger
+        }, function (data) { 
             initRecheckScoreTable(data);
+            NProgress.done();
         }, function () {
             $('#recheck-subject-table').bootstrapTable("hideLoading");
         });
@@ -217,13 +222,13 @@
             pageSize: 20,
             pageList: [20, 50, 100, 500],
             columns: [{
-                title: "经销商代码",
+                title: "二审",
                 field: '',
                 width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<button onclick="openSecondRecheckEdit()">一审</span>'
+                    return '<a style="cursor:pointer" onclick="openSecondRecheckEdit()">二审</a>'
                 }
             }, {
                 title: "经销商代码",

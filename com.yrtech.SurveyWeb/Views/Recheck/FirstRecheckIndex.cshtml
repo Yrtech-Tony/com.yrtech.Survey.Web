@@ -55,6 +55,7 @@
 <script src="~/Content/viewer/viewer.min.js"></script>
 
 <script>
+    NProgress.start();
     var allLabels = []
     $(function () {
         $('title').html('@ViewBag.Title')
@@ -89,6 +90,8 @@
         })
         $('#Modal').on('hide.bs.modal', function (e) { 
         })
+
+        NProgress.done();
     })
 
     var curRow;
@@ -222,6 +225,9 @@
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
                 alert("一审确认成功！");
+                loadRecheck()
+            }, function () {
+                $("#btnRecheckSubmit").button("reset");
             });
         },300)
     }

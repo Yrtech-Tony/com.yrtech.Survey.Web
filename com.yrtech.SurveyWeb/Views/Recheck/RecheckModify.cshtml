@@ -142,6 +142,7 @@
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
 
 <script>
+    NProgress.start();
     var uploader, lossUploader;
     $(function () {
         uploader = undefined
@@ -183,6 +184,8 @@
         $(window).resize(function () {
             $('#recheck-table').bootstrapTable('resetView');
         });
+
+        NProgress.done();
     })
 
     function saveScore() {

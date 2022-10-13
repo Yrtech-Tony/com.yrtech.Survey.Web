@@ -179,13 +179,11 @@
     </div>
 
 </div>
-<script>
-    let LossFileNameUrl;
+<script> 
     var curRow_ins;
     let curLossRow;
     let curFileRow;
-    $(function () {
-        LossFileNameUrl = ''
+    $(function () { 
         uploader = undefined
         lossUploader = undefined
         $("input[type=radio]").iCheckParser();
@@ -500,7 +498,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:viewSubjectFile(\'' + (row.Url || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
+                    return '<a href="javascript:viewPicutes(\'' + (row.Url || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
             }],
             onClickRow: function (row, $element) {
@@ -543,7 +541,7 @@
                 sortable: false,
                 formatter: function (value, row, index) {
                     curLossRow = row;
-                    return '<a href="javascript:viewPicutes(\'' + (row.LossFileNameUrl || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
+                    return '<a href="javascript:viewPicutes(\'' + (row.curLossRow.LossFileNameUrl || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
             }],
             onClickRow: function (row, $element) {
@@ -739,9 +737,8 @@
         });
     }
     //新增
-    function addLossResult() {
-        LossFileNameUrl = ''
-        curLossRow = null
+    function addLossResult() { 
+        curLossRow = {}
         $('#loss-file-pics').empty()
         $('#LossDesc2').val('')
         $.each($("#LossResultCheckList").find("input[type=checkbox]"), function (i, checkbox) {
@@ -751,8 +748,7 @@
     }
     //编辑
     function editLossResult() {
-        setTimeout(function () {
-            LossFileNameUrl = curLossRow.LossFileNameUrl
+        setTimeout(function () { 
             curLossRow.LossDesc2 = curLossRow.LossDesc2 || ''
             curLossRow.LossDesc = curLossRow.LossDesc || ''
             $('#LossDesc2').val(curLossRow.LossDesc2)
@@ -765,7 +761,7 @@
                     $(checkbox).iCheck('check');
                 }
             });
-            let fileList = LossFileNameUrl ? LossFileNameUrl.split(';') : []
+            let fileList = curLossRow.LossFileNameUrl ? curLossRow.LossFileNameUrl.split(';') : []
             bindLossUrlList(fileList)
             showLossModel();
         },300) 
@@ -781,8 +777,7 @@
         if (curLossRow) {
             //编辑
             curLossRow.LossDesc = lossArr.join(';');
-            curLossRow.LossDesc2 = $('#LossDesc2').val()
-            curLossRow.LossFileNameUrl = LossFileNameUrl
+            curLossRow.LossDesc2 = $('#LossDesc2').val() 
             let data = $('#lossresult-table').bootstrapTable('getData', false)
             $('#lossresult-table').bootstrapTable("load", data);
         } else {
@@ -792,7 +787,7 @@
                 LossId: fnGetMaxLossId() + 1,
                 LossDesc: lossArr.join(';'),
                 LossDesc2: $('#LossDesc2').val(),
-                LossFileNameUrl: LossFileNameUrl
+                LossFileNameUrl: curLossRow.LossFileNameUrl
             })
             $('#lossresult-table').bootstrapTable("load", data);
         }
@@ -811,8 +806,8 @@
             let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
             remove.click(function () {
                 fileList.splice(fileList.indexOf(file), 1);
-                LossFileNameUrl = fileList.join(';')
-                console.log('LossFileNameUrl', LossFileNameUrl)
+                curLossRow.LossFileNameUrl = fileList.join(';')
+                console.log('curLossRow.LossFileNameUrl', curLossRow.LossFileNameUrl)
                 bindLossUrlList(fileList)
             })
             imgDiv.append(remove);
@@ -844,11 +839,11 @@
                     files.forEach(function (file) {
                         filePaths.push(file.osspath)
                     })
-                    if (LossFileNameUrl) {
-                        LossFileNameUrl += ';' + filePaths.join(';')
-                        bindLossUrlList(LossFileNameUrl.split(';'))
+                    if (curLossRow.LossFileNameUrl) {
+                        curLossRow.LossFileNameUrl += ';' + filePaths.join(';')
+                        bindLossUrlList(curLossRow.LossFileNameUrl.split(';'))
                     } else {
-                        LossFileNameUrl = filePaths.join(';')
+                        curLossRow.LossFileNameUrl = filePaths.join(';')
                         bindLossUrlList(filePaths)
                     }
 

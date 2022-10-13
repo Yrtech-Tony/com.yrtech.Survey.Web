@@ -134,7 +134,7 @@ function bindRoleTypeSelect(type) {
         $("#role-sel").empty();
         data.forEach(function (role) {
             $("#role-sel").append($("<option>").val(role.RoleTypeCode).text(role.RoleTypeName));
-        })     
+        })
     })
     $.ajaxSettings.async = true;
 }
@@ -154,7 +154,7 @@ function bindAreaTypeSelect(type) {
 }
 
 // 绑定期号
-function bindProjectSelect() {
+function bindProjectSelect() { 
     var brandId = $("#brand-sel").val();
     if (!brandId) {
         alert("请选择品牌！");
@@ -169,7 +169,7 @@ function bindProjectSelect() {
         $("#project-sel").empty();
         data.forEach(function (item) {
             $("#project-sel").append($("<option>").val(item.ProjectId).text(item.ProjectName));
-        })
+        }) 
     })
     $.ajaxSettings.async = true;
 }

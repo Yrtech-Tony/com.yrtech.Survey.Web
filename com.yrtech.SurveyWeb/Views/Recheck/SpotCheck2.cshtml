@@ -142,6 +142,7 @@
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
 
 <script>
+    NProgress.start();
     var uploader, lossUploader;
     $(function () {
         uploader = undefined
@@ -179,6 +180,8 @@
         $("#btnQuery").click(function () {
             loadRecheckSpotCheck2();
         })
+
+        NProgress.done();
     })
 
     function saveRecheckStatus() {

@@ -44,7 +44,7 @@
     }
 </style>
 <div style="text-align:right;width:100%">
-    <button id="btnBack" class="btn btn-primary">返回一审确认</button>
+    <button id="btnBack" class="btn btn-primary">返回</button>
     <button id="btnReflash" class="btn btn-primary">刷新</button>
 </div>
 <div class="result">
@@ -152,6 +152,7 @@
 </div>
 
 <script>
+    NProgress.start();
     var uploader, lossUploader;
     var projectId = "@ViewBag.ProjectId";
     var shopId = "@ViewBag.ShopId";
@@ -174,6 +175,7 @@
             // 关闭编辑时刷新数据
             loadRecheckScoreType()
         })
+        NProgress.done();
     })
 
     var allLabels = []
@@ -301,7 +303,7 @@
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<a style="cursor:pointer" onclick="openFirstRecheckEdit()">一审</span>'
+                    return '<a style="cursor:pointer" onclick="openFirstRecheckEdit()">一审</a>'
                 }
             }, {
                 title: "经销商代码",
@@ -459,6 +461,9 @@
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
                 alert("一审完毕成功！");
+                loadRecheckType()
+            }, function () {
+                $("#btnRecheckSubmit").button("reset"); 
             });
         }, 300)
     }

@@ -91,6 +91,7 @@
 <script src="~/Content/viewer/viewer.min.js"></script>
 
 <script>
+    NProgress.start();
     var allLabels = []
     $(function () {
         $('title').html('@ViewBag.Title')
@@ -131,7 +132,9 @@
             $('#photo-table').bootstrapTable("destroy");
             $('#ins-table').bootstrapTable('destroy')
             $('#lossresult-table').bootstrapTable("destroy");
-        }) 
+        })
+
+        NProgress.done();
     })
 
     function bindRecheckErrors(callback) {
