@@ -46,12 +46,8 @@
     <div class="container col-md-12">
         <div class="item form-group" style="float:right;">
             <div class="form-inline">
-                <div class="form-group">
-                    <a id="btnPre" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="prevSubject()">上一题</a>
-                </div>
-                <div class="form-group">
-                    <a id="btnNext" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="nextSubject()">下一题</a>
-                </div>
+                <a id="btnPre" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="prevSubject()">上一题</a>
+                <a id="btnNext" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="nextSubject()">下一题</a>
                 @*<div class="form-group">
                         <input id="toSeqNo" style="width:60px!important" class="form-control" />
                         <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="toSubjectSeqNo()">转到</a>
@@ -80,7 +76,7 @@
                     <div class="form-group col-md-4">
                         <label class="control-label  col-md-3" for="PhotoScore">得分:</label>
                         <div class="col-md-9">
-                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" readonly>
+                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control">
                         </div>
                     </div>
                     <div class="form-group col-md-4">
@@ -98,7 +94,7 @@
                     <div class="form-group col-md-4">
                         <label class="control-label col-md-3" for="Remark">备注:</label>
                         <div class="col-md-9">
-                            <textarea id="Remark" name="Remark" class="form-control" rows="3" readonly>   </textarea>
+                            <textarea id="Remark" name="Remark" class="form-control" rows="3">   </textarea>
                         </div>
                     </div>
                 </form>
@@ -108,23 +104,17 @@
     <div class="container">
         <div class="col-md-6">
             <div class="panel panel-default">
-                <div class="panel-heading" style="line-height:30px">检查标准
-                    <div style="float:right;">
-                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="saveInspectionStandard()" data-loading-text="提交中...">保存</button>
-                    </div>
+                <div class="panel-heading" >检查标准 
                 </div>
-                <div class="panel-body" style="padding: 0; height: 180px; overflow-y:auto">
+                <div class="panel-body" style="padding: 0; height: 180px; ">
                     <table id="ins-table" class="table table-bordered"></table>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
             <div class="panel panel-default">
-                <div class="panel-heading" style="line-height:30px">
-                    标准照片
-                    <div style="float:right;">
-                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="saveFileResult()" data-loading-text="提交中...">保存</button>
-                    </div>
+                <div class="panel-heading" >
+                    标准照片 
                 </div>
                 <div class="panel-body" style="padding: 0; height: 180px; overflow-y: auto">
                     <table id="photo-table" class="table table-bordered "></table>
@@ -135,8 +125,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading" style="line-height:30px">失分描述
                     <div style="float:right;">
-                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="addLossResult()" data-loading-text="提交中...">新增</button>
-                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="saveLossResult()" data-loading-text="提交中...">保存</button>
+                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="addLossResult()" data-loading-text="提交中...">新增</button> 
                     </div>
                 </div>
                 <div class="panel-body" style="padding: 0; height: 190px; overflow-y: auto;">
@@ -322,34 +311,51 @@
             ReCheckError: RecheckError,
             ReCheckUserId: loginUser.Id
         }, function (data) {
-            //第二步 获取下一个得分
-            $.commonGet("Recheck/GetShopNextRecheckSubject", {
-                projectId: curRow.ProjectId,
-                shopId: curRow.ShopId,
-                recheckTypeId: curRow.RecheckTypeId,
-                orderNO: curAnswer.OrderNO
-            }, function (data) {
-                if (data && data.length > 0) {
-                    let item = data[0]
-                    console.log('ge next answer', item)
-                    curAnswer = item
-                    bindAnswerInfo(item);
+            //第二步 获取得分
+            curAnswer.PhotoScore = $("#PhotoScore").val()
+            curAnswer.Remark = $("#Remark").val()
+            let insStandards = $('#ins-table').bootstrapTable('getData', false)
+            curAnswer.InspectionStandardResult = JSON.stringify(insStandards);
+            let fileResult = $('#photo-table').bootstrapTable('getData', false)
+            curAnswer.FileResult = JSON.stringify(fileResult); 
+            let loss = $('#lossresult-table').bootstrapTable('getData', false)
+            curAnswer.LossResult = JSON.stringify(loss);
+            $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
+                //第三步 获取下一个得分
+                $.commonGet("Recheck/GetShopNextRecheckSubject", {
+                    projectId: curRow.ProjectId,
+                    shopId: curRow.ShopId,
+                    recheckTypeId: curRow.RecheckTypeId,
+                    orderNO: curAnswer.OrderNO
+                }, function (data) {
+                    if (data && data.length > 0) {
+                        let item = data[0]
+                        console.log('ge next answer', item)
+                        curAnswer = item
+                        bindAnswerInfo(item);
 
-                    //第三步 获取下一个复审信息
-                    $.commonGet("Recheck/GetShopRecheckScoreInfo", {
-                        projectId: item.ProjectId,
-                        shopId: item.ShopId,
-                        subjectId: item.SubjectId,
-                        recheckTypeId: curRow.RecheckTypeId
-                    }, function (data) {
-                        if (data && data.length > 0) {
-                            let item = data[0]
-                            console.log('ge next Recheck', item)
-                            bindRecheckInfo(item);
-                        }
-                    });
-                }
-            });
+                        //第四步 获取下一个复审信息
+                        $.commonGet("Recheck/GetShopRecheckScoreInfo", {
+                            projectId: item.ProjectId,
+                            shopId: item.ShopId,
+                            subjectId: item.SubjectId,
+                            recheckTypeId: curRow.RecheckTypeId
+                        }, function (data) {
+                            if (data && data.length > 0) {
+                                let item = data[0]
+                                console.log('ge next Recheck', item)
+                                bindRecheckInfo(item);
+                            }
+                        }, function (err) {
+                            console.log('GetShopRecheckScoreInfo error', err)
+                        });
+                    }
+                }, function (err) {
+                    console.log('GetShopNextRecheckSubject error', err)
+                });
+            }, function (err) {
+                console.log('save answer error',err)
+            }); 
         });
     }
 
@@ -612,23 +618,11 @@
         });
     }
     /**检查标准 **start**/
-    function saveInspectionStandard() {
-        let data = $('#ins-table').bootstrapTable('getData', false)
-        curAnswer.InspectionStandardResult = JSON.stringify(data);
-        $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
-            alert("保存成功！");
-        }, function () { });
-    }
+     
     /**检查标准 **end**/
     
     /**标准照片 **start**/
-    function saveFileResult() { 
-        let data = $('#photo-table').bootstrapTable('getData', false)
-        curAnswer.FileResult = JSON.stringify(data);
-        $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
-            alert("保存成功！"); 
-        }, function () { });
-    }
+     
     //编辑
     function editSubjectFile() {
         showFileModel();
@@ -693,17 +687,7 @@
     }
     /**标准照片 **end**/
 
-    /**失分说明 **start**/ 
-    //保存
-    function saveLossResult() {
-        let data = $('#lossresult-table').bootstrapTable('getData', false)
-        curAnswer.LossResult = JSON.stringify(data);
-        $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
-            alert("保存成功！"); 
-        }, function () {
-           
-        });
-    }
+    /**失分说明 **start**/  
     //新增
     function addLossResult() {
         LossFileNameUrl = ''
@@ -735,8 +719,7 @@
         showLossModel();
     }
     //界面保存
-    function saveCurLossResult() {
-        debugger
+    function saveCurLossResult() { 
         let lossArr = []
         $.each($("#LossResultCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
             //let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()

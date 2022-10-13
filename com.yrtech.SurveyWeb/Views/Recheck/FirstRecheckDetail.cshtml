@@ -205,6 +205,7 @@
 
     //初始化一审确认表格
     function initRecheckTypeTable(data) {
+        debugger
         $('#recheck-type-table').bootstrapTable('destroy').bootstrapTable({
             pagination: false,
             data: data,
@@ -246,7 +247,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    if (row.IndateTime) {
+                    if (row.InDateTime) {
                         return '✔️'
                     } else {
                         return '<button onclick="firstRecheckTypeFinish()">一审完毕</span>'
@@ -254,7 +255,7 @@
                 }
             }, {
                 title: "一审时间",
-                field: "IndateTime ",
+                field: "InDateTime",
                 width: 200,
                 valign: "middle",
                 align: "center",
@@ -294,13 +295,13 @@
             pageSize: 20,
             pageList: [20, 50, 100, 500],
             columns: [{
-                title: "经销商代码",
+                title: "一审",
                 field: '',
                 width: 120,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
-                    return '<button onclick="openFirstRecheckEdit()">一审</span>'
+                    return '<a style="cursor:pointer" onclick="openFirstRecheckEdit()">一审</span>'
                 }
             }, {
                 title: "经销商代码",
@@ -469,5 +470,6 @@
         $("#Modal").modal("show");
         $("#Modal .modal-body").load("/Recheck/FirstRecheckEdit", {}, function () {
         })
+        return false
     }
 </script>
