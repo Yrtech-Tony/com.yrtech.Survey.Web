@@ -39,43 +39,48 @@
             <div class="panel-body" style="padding: 0; padding-top:8px; ">
                 <form class="form-horizontal" id="answer-form">
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-3" for="OrderNO">题目序号:</label>
-                        <div class="col-md-9">
+                        <label class="control-label  col-md-2" for="OrderNO">题目序号:</label>
+                        <div class="col-md-10">
                             <input id="OrderNO" name="OrderNO" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-3" for="SubjectCode">题目代码:</label>
-                        <div class="col-md-9">
+                        <label class="control-label  col-md-2" for="SubjectCode">题目代码:</label>
+                        <div class="col-md-10">
                             <input id="SubjectCode" name="SubjectCode" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-3" for="PhotoScore">得分:</label>
-                        <div class="col-md-9">
-                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" >
+                        <label class="control-label  col-md-2" for="PhotoScore">得分:</label>
+                        <div class="col-md-10">
+                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label class="control-label col-md-2" for="Remark" style="width: 73px">题目备注:</label>
+                        <div class="col-md-10" style="width: 1302px">
+                            <textarea id="Desc" name="Desc" class="form-control" rows="1" readonly></textarea>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-3" for="CheckPoint">检查点:</label>
+                        <label class="control-label  col-md-2" for="CheckPoint">检查点:</label>
                         <div class="col-md-9">
                             <textarea id="CheckPoint" name="CheckPoint" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label  col-md-3" for="InspectionDesc">检查标准说明:</label>
-                        <div class="col-md-9">
+                        <label class="control-label  col-md-2" for="InspectionDesc">检查标准说明:</label>
+                        <div class="col-md-10">
                             <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label class="control-label col-md-3" for="Remark">备注:</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-2" for="Remark">备注:</label>
+                        <div class="col-md-10">
                             <textarea id="Remark" name="Remark" class="form-control" rows="3"></textarea>
                         </div>
-                    </div>
+                    </div> 
                 </form>
-
             </div>
         </div>
     </div>
@@ -828,7 +833,7 @@
             let lossValue = $(checkbox).val()
             lossArr.push(lossValue)
         });
-        if (curLossRow) {
+        if (curLossRow.LossId) {
             //编辑
             curLossRow.LossDesc = lossArr.join(';');
             curLossRow.LossDesc2 = $('#LossDesc2').val()
