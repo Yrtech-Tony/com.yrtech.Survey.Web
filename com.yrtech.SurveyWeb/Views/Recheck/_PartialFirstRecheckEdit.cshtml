@@ -638,23 +638,24 @@
             }
         });
     }
-    /**检查标准 **start**/
-    function saveInspectionStandard() {
-        let data = $('#ins-table').bootstrapTable('getData', false)
-        curAnswer.InspectionStandardResult = JSON.stringify(data);
-        $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
-            alert("保存成功！");
-        }, function () { });
-    }
-    /**检查标准 **end**/
+    
 
     /**标准照片 **start**/
-    function saveFileResult() {
-        let data = $('#photo-table').bootstrapTable('getData', false)
-        curAnswer.FileResult = JSON.stringify(data);
-        $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
-            alert("保存成功！");
-        }, function () { });
+    function saveCurFileResult() {
+        if (curFileRow) {
+            //编辑 
+            curFileRow.Url = FileNameUrl
+            let data = $('#photo-table').bootstrapTable('getData', false)
+            $('#photo-table').bootstrapTable("load", data);
+        } else {
+            //新增
+            let data = $('#photo-table').bootstrapTable('getData', false)
+            data.push({
+                Url: FileNameUrl
+            })
+            $('#photo-table').bootstrapTable("load", data);
+        }
+        closeFileModel();
     }
     //编辑
     function editSubjectFile() {

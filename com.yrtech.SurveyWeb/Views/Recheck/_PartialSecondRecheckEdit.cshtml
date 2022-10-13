@@ -703,16 +703,7 @@
                 $(checkbox).iCheck('check');
             }
         });
-    }
-    /**检查标准 **start**/
-    function saveInspectionStandard() {
-        let data = $('#ins-table').bootstrapTable('getData', false)
-        curAnswer.InspectionStandardResult = JSON.stringify(data);
-        $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
-            alert("保存成功！");
-        }, function () { });
-    }
-    /**检查标准 **end**/
+    } 
 
     /**标准照片 **start**/ 
     function saveCurFileResult() {
