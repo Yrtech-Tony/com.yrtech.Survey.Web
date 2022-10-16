@@ -579,6 +579,7 @@
     <Content Include="Views\Recheck\SecondRecheckIndex.cshtml" />
     <Content Include="Views\Recheck\SecondRecheckDetail.cshtml" />
     <Content Include="Views\Recheck\_PartialSecondRecheckEdit.cshtml" />
+    <Content Include="Views\Report\stat.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

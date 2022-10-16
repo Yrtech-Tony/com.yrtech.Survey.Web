@@ -537,6 +537,16 @@
                     curLossRow = row;
                     return '<a href="javascript:viewPicutes(\'' + (row.LossFileNameUrl||'') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
+            }, {
+                title: "删除",
+                field: "",
+                width: 60,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delLossResutl(' + row.LossId + ');" style="min-width:100px">删除</a>';
+                }
             }],
             onClickRow: function (row, $element) {
                 curLossRow = row;
@@ -617,6 +627,11 @@
             }
         });
     }
+
+    function delLossResutl(lossId) {
+        $('#lossresult-table').bootstrapTable('remove', { field: 'LossId', values: [lossId] });
+    }
+
     /**检查标准 **start**/
      
     /**检查标准 **end**/
