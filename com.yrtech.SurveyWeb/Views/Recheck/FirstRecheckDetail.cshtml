@@ -82,66 +82,6 @@
     </div>
 </div>
 
-
-<div class="modal fade" id="sujectFileModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" onclick="javascript: closeFileModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">标准照片列表</h4>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <button id="btnAddPicture" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
-                </div>
-                <div id="subject-file-pics" style="max-height:600px;overflow:auto">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="lossModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" onclick="javascript: closeLossModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">失分描述编辑</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-horizontal form-label-left" style="padding-bottom: 5px; width: 100%; max-height: 700px; overflow: auto">
-                    <div class="item form-group" style="width: 100%;">
-                        <div class="col-md-3">
-                            <label>失分说明:</label>
-                        </div>
-                        <div class="col-md-9">
-                            <div id="LossResultCheckList">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item form-group" style="width:100%">
-                        <div class="col-md-3">
-                            <label>补充失分说明:</label>
-                        </div>
-                        <div class="col-md-9">
-                            <textarea id="LossDesc2" name="LossDesc2" class="form-control" style=""></textarea>
-                        </div>
-                    </div>
-                    <div>
-                        <button id="btnAddLossPic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
-                    </div>
-                    <div id="loss-file-pics" style="max-height:400px;overflow:auto">
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveCurLossResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
-                <button id="close_button" type="button" onclick="javascript: closeLossModel();" class="btn btn-default">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
 <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <script src="~/Scripts/api/common.js"></script>
@@ -164,8 +104,7 @@
 </div>
 
 <script>
-    NProgress.start();
-    var uploader, lossUploader;
+    NProgress.start(); 
     var projectId = "@ViewBag.ProjectId";
     var shopId = "@ViewBag.ShopId";
     var brandId = "@ViewBag.BrandId";

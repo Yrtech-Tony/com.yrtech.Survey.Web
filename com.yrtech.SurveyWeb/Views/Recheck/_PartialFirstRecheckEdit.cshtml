@@ -19,7 +19,7 @@
         margin-bottom: 5px;
     }
 </style>
-<div style="height:700px; overflow:auto">
+<div style="height:680px; overflow:auto">
     <div class="container col-md-12">
         <div class="item form-group" style="float:right;">
             <div class="form-inline">
@@ -100,11 +100,11 @@
                 <li role="presentation"><a href="#lossresult" aria-controls="lossresult" role="tab" data-toggle="tab">失分描述</a></li>
             </ul>
             <!-- Tab panes -->
-            <div class="tab-content" style="padding: 10px; height: 400px; border:solid 1px #ccc;border-top:none">
-                <div role="tabpanel" class="tab-pane active" id="ins"> 
+            <div class="tab-content" style="padding: 10px; height: 420px; overflow: auto; border: solid 1px #ccc; border-top: none">
+                @*<div role="tabpanel" class="tab-pane " id="ins"> 
                     <table id="ins-table" class="table table-set"></table>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="photo"> 
+                </div>*@
+                <div role="tabpanel" class="tab-pane active" id="photo">
                     <table id="photo-table" class="table table-set"></table>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="lossresult">
@@ -123,7 +123,7 @@
                 <li role="presentation"><a href="#recheckConfirm" aria-controls="photo" role="tab" data-toggle="tab">复审确认</a></li> 
             </ul>
             <!-- Tab panes -->
-            <div class="tab-content" style="padding: 10px; height: 400px; overflow: auto; border:solid 1px #ccc;border-top:none">
+            <div class="tab-content" style="padding: 10px; height: 420px; overflow: auto; border: solid 1px #ccc; border-top: none">
                 <div role="tabpanel" class="tab-pane active" id="recheck">
                     <form class="form-horizontal" id="recheck-form">
                         <div class="form-group">
@@ -152,7 +152,6 @@
                             <div id="RecheckErrorCheckList" class="col-md-8" style="margin-top: 5px;">
                             </div>
                         </div>
-
                     </form>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="recheckConfirm">
@@ -191,11 +190,74 @@
     </div>
 
 </div>
+
+
+
+<div class="modal fade" id="sujectFileModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closeFileModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">标准照片列表</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <button id="btnAddPicture" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                </div>
+                <div id="subject-file-pics" style="max-height:600px;overflow:auto">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="lossModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closeLossModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">失分描述编辑</h4>
+            </div>
+            <div class="modal-body" style="max-height: 700px; overflow: auto">
+                <div class="form-horizontal form-label-left">
+                    <div class="item form-group" style="width: 100%; padding-bottom: 5px; ">
+                        <div class="col-md-3">
+                            <label>失分说明:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div id="LossResultCheckList">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item form-group" style="width:100%">
+                        <div class="col-md-3">
+                            <label>补充失分说明:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <textarea id="LossDesc2" name="LossDesc2" class="form-control" style=""></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <button id="btnAddLossPic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                    </div>
+                    <div id="loss-file-pics" style="max-height:400px;overflow:auto">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurLossResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeLossModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script> 
     var curRow_ins;
     let curLossRow;
     let curFileRow;
-    $(function () { 
+    var uploader, lossUploader;
+    $(function () {
         uploader = undefined
         lossUploader = undefined
         $("input[type=radio]").iCheckParser();
@@ -300,7 +362,8 @@
                                 projectId: item.ProjectId,
                                 shopId: item.ShopId,
                                 subjectId: item.SubjectId,
-                                recheckTypeId: curScoreRow.RecheckTypeId
+                                recheckTypeId: curScoreRow.RecheckTypeId,
+
                             }, function (data) {
                                 if (data && data.length > 0) {
                                     let item = data[0]
