@@ -48,10 +48,22 @@
     <button id="btnReflash" class="btn btn-primary">刷新</button>
 </div>
 <div class="result">
+    
     <table id="recheck-type-table" class="table table-set"></table>
 </div>
+
 <div class="result">
-    <table id="recheck-subject-table" class="table table-set" style="max-height:600px"></table>
+    <div class="form-inline" style="text-align:right">
+        <div class="form-group">
+            <label class="control-label">审核结果:</label>
+            <select id="PassRecheck-sel" class="form-control" style="width:100px; margin-bottom:5px">
+                <option value="">全部</option>
+                <option value="true">是</option>
+                <option value="false">否</option>
+            </select>
+        </div>
+    </div>
+    <table id="recheck-subject-table" class="table table-set" style="max-height:650px"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" style="width:75%">
@@ -82,7 +94,7 @@
                 <div>
                     <button id="btnAddPicture" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
                 </div>
-                <div id="subject-file-pics" style="max-height:500px;overflow:auto">
+                <div id="subject-file-pics" style="max-height:600px;overflow:auto">
                 </div>
             </div>
         </div>
@@ -97,8 +109,8 @@
                 <h4 class="modal-title">失分描述编辑</h4>
             </div>
             <div class="modal-body">
-                <div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
-                    <div class="item form-group" style="width:100%">
+                <div class="form-horizontal form-label-left" style="padding-bottom: 5px; width: 100%; max-height: 700px; overflow: auto">
+                    <div class="item form-group" style="width: 100%;">
                         <div class="col-md-3">
                             <label>失分说明:</label>
                         </div>
@@ -118,7 +130,7 @@
                     <div>
                         <button id="btnAddLossPic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
                     </div>
-                    <div id="loss-file-pics" style="max-height:500px;overflow:auto">
+                    <div id="loss-file-pics" style="max-height:400px;overflow:auto">
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -166,6 +178,9 @@
             var url = "/Recheck/FirstRecheckDetail?brandId=" + brandId + "&projectId=" + projectId + "&shopId=" + shopId
             openNewPage(url)
         })
+        $("#PassRecheck-sel").change(function () {
+            loadRecheckScoreType()
+        })
         loadRecheckType()
         loadRecheckScoreType()
 
@@ -207,14 +222,12 @@
 
     //初始化一审确认表格
     function initRecheckTypeTable(data) {
-        debugger
         $('#recheck-type-table').bootstrapTable('destroy').bootstrapTable({
             pagination: false,
             data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
-            height: 200,
-            "max-height": 200,
+            height: 150,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             columns: [{
@@ -275,7 +288,8 @@
             projectId: projectId,
             shopId: shopId,
             subjectId: '',
-            recheckTypeId: recheckTypeId || ''
+            recheckTypeId: recheckTypeId || '',
+            passRecheck: $("#PassRecheck-sel").val()
         }, function (data) {
             initRecheckScoreTable(data);
         }, function () {
@@ -290,7 +304,7 @@
             data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
-            height: getClientHeight() - 450,
+            height: getClientHeight() - 400,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
@@ -299,37 +313,31 @@
             columns: [{
                 title: "一审",
                 field: '',
-                width: 120,
+                width: 60,
                 valign: "middle",
                 align: "center",
                 formatter: function (value, row, index) {
                     return '<a style="cursor:pointer" onclick="openFirstRecheckEdit()">一审</a>'
                 }
-            }, {
-                title: "经销商代码",
-                field: 'ShopCode',
-                width: 120,
-                valign: "middle",
-                align: "center"
-            }, {
-                title: "经销商名称",
-                field: "ShopName",
-                valign: "middle",
-                align: "center",
-                width: 230,
-                sortable: false
             },
             {
                 title: "题目代码",
                 field: "SubjectCode",
-                width: 100,
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "题目序号",
                 field: "OrderNO",
-                width: 100,
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "一审结果",
+                field: "PassRecheckName",
+                width: 80,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -369,71 +377,66 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            }, {
-                title: "一审建议得分",
-                field: "RecheckScore",
-                width: 130,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "一审结果",
-                field: "PassRecheckName",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "一审意见",
-                field: "RecheckContent",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (value != undefined && value != "")
-                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
-                }
-            }, {
-                title: "一审时间",
-                field: "RecheckDateTime",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "一审确认建议得分",
-                field: "RecheckScore_Confirm",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "一审确认结果",
-                field: "PassRecheckName_Confirm",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "一审确认意见",
-                field: "RecheckContent_Confirm",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (value != undefined && value != "")
-                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
-                }
-            }, {
-                title: "一审确认时间",
-                field: "RecheckDateTime_Confirm",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }],
+            },
+            //{
+            //    title: "一审建议得分",
+            //    field: "RecheckScore",
+            //    width: 130,
+            //    valign: "middle",
+            //    align: "center",
+            //    sortable: false
+            //},
+              {
+                  title: "一审意见",
+                  field: "RecheckContent",
+                  width: 200,
+                  valign: "middle",
+                  align: "center",
+                  sortable: false,
+                  formatter: function (value, row, index) {
+                      if (value != undefined && value != "")
+                          return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                  }
+              }, {
+                  title: "一审时间",
+                  field: "RecheckDateTime",
+                  width: 150,
+                  valign: "middle",
+                  align: "center",
+                  sortable: false
+              }, {
+                  title: "一审确认建议得分",
+                  field: "RecheckScore_Confirm",
+                  width: 100,
+                  valign: "middle",
+                  align: "center",
+                  sortable: false
+              }, {
+                  title: "一审确认结果",
+                  field: "PassRecheckName_Confirm",
+                  width: 100,
+                  valign: "middle",
+                  align: "center",
+                  sortable: false
+              }, {
+                  title: "一审确认意见",
+                  field: "RecheckContent_Confirm",
+                  width: 200,
+                  valign: "middle",
+                  align: "center",
+                  sortable: false,
+                  formatter: function (value, row, index) {
+                      if (value != undefined && value != "")
+                          return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                  }
+              }, {
+                  title: "一审确认时间",
+                  field: "RecheckDateTime_Confirm",
+                  width: 150,
+                  valign: "middle",
+                  align: "center",
+                  sortable: false
+              }],
             onClickRow: function (row, $element) {
                 curScoreRow = row;
             },
@@ -447,6 +450,7 @@
     }
 
     function loadRecheckSubjects(recheckTypeId) {
+        $("#PassRecheck-sel").val()
         loadRecheckScoreType(recheckTypeId)
     }
 
@@ -463,7 +467,7 @@
                 alert("一审完毕成功！");
                 loadRecheckType()
             }, function () {
-                $("#btnRecheckSubmit").button("reset"); 
+                $("#btnRecheckSubmit").button("reset");
             });
         }, 300)
     }

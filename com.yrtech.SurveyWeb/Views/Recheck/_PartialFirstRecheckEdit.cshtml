@@ -38,45 +38,52 @@
             <div class="panel-heading">得分信息</div>
             <div class="panel-body" style="padding: 0; padding-top:8px; ">
                 <form class="form-horizontal" id="answer-form">
-                    <div class="form-group col-md-4">
-                        <label class="control-label  col-md-2" for="OrderNO">题目序号:</label>
-                        <div class="col-md-10">
+                    <div class="form-group col-md-3">
+                        <label class="control-label  col-md-3" for="OrderNO">题目序号:</label>
+                        <div class="col-md-9">
                             <input id="OrderNO" name="OrderNO" type="text" class="form-control" readonly>
                         </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label class="control-label  col-md-2" for="SubjectCode">题目代码:</label>
-                        <div class="col-md-10">
+                    <div class="form-group col-md-3">
+                        <label class="control-label  col-md-3" for="SubjectCode">题目代码:</label>
+                        <div class="col-md-9">
                             <input id="SubjectCode" name="SubjectCode" type="text" class="form-control" readonly>
                         </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label class="control-label  col-md-2" for="PhotoScore">得分:</label>
-                        <div class="col-md-10">
+                    <div class="form-group col-md-3">
+                        <label class="control-label col-md-3" for="RangScore">分数限制:</label>
+                        <div class="col-md-9">
+                            <input id="RangScore" name="RangScore" type="text" class="form-control" readonly>
+                        </div>
+                    </div> 
+                    <div class="form-group col-md-3">
+                        <label class="control-label  col-md-3" for="PhotoScore">得分:</label>
+                        <div class="col-md-9">
                             <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" >
                         </div>
                     </div> 
-                    <div class="form-group col-md-12">
-                        <label class="control-label col-md-2" for="Remark" style="width: 73px">题目备注:</label>
-                        <div class="col-md-10" style="width: 1302px">
-                            <textarea id="Desc" name="Desc" class="form-control" rows="1" readonly></textarea>
+                    <div class="form-group col-md-3">
+                        <label class="control-label col-md-3" for="Remark" >题目备注:</label>
+                        <div class="col-md-9">
+                            <textarea id="Desc" name="Desc" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label class="control-label  col-md-2" for="CheckPoint">检查点:</label>
+                   
+                    <div class="form-group col-md-3">
+                        <label class="control-label  col-md-3" for="CheckPoint">检查点:</label>
                         <div class="col-md-9">
                             <textarea id="CheckPoint" name="CheckPoint" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label class="control-label  col-md-2" for="InspectionDesc">检查标准说明:</label>
-                        <div class="col-md-10">
+                    <div class="form-group col-md-3">
+                        <label class="control-label  col-md-3" for="InspectionDesc">检查标准说明:</label>
+                        <div class="col-md-9">
                             <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div> 
-                    <div class="form-group col-md-4">
-                        <label class="control-label col-md-2" for="Remark">备注:</label>
-                        <div class="col-md-10">
+                    <div class="form-group col-md-3">
+                        <label class="control-label col-md-3" for="Remark">备注:</label>
+                        <div class="col-md-9">
                             <textarea id="Remark" name="Remark" class="form-control" rows="3"></textarea>
                         </div>
                     </div> 
@@ -88,8 +95,8 @@
         <div class="col-md-6">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#ins" aria-controls="ins" role="tab" data-toggle="tab">检查标准</a></li>
-                <li role="presentation"><a href="#photo" aria-controls="photo" role="tab" data-toggle="tab">标准照片</a></li>
+                @*<li role="presentation" class="active"><a href="#ins" aria-controls="ins" role="tab" data-toggle="tab">检查标准</a></li>*@
+                <li role="presentation" class="active"><a href="#photo" aria-controls="photo" role="tab" data-toggle="tab">标准照片</a></li>
                 <li role="presentation"><a href="#lossresult" aria-controls="lossresult" role="tab" data-toggle="tab">失分描述</a></li>
             </ul>
             <!-- Tab panes -->
@@ -128,7 +135,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display:none">
                             <label class="control-label  col-md-3" for="ReCheckScore">建议得分:</label>
                             <div class="col-md-8">
                                 <input id="RecheckScore" name="RecheckScore" type="text" class="form-control">
@@ -140,7 +147,7 @@
                                 <input id="RecheckContent" name="RecheckContent" type="text" class="form-control">
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display:none">
                             <label class="control-label  col-md-3" for="RecheckErrorCheckList">错误类型:</label>
                             <div id="RecheckErrorCheckList" class="col-md-8" style="margin-top: 5px;">
                             </div>
@@ -159,7 +166,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display:none">
                             <label class="control-label  col-md-3" for="ReCheckScoreConfirm">建议得分:</label>
                             <div class="col-md-8">
                                 <input id="RecheckScoreConfirm" name="RecheckScoreConfirm" type="text" class="form-control">
@@ -171,7 +178,7 @@
                                 <input id="RecheckContentConfirm" name="RecheckContentConfirm" type="text" class="form-control">
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display:none">
                             <label class="control-label col-md-3">错误类型:</label>
                             <div id="RecheckErrorCheckListConfirm" class="col-md-8" style="margin-top: 5px;">
                             </div>
@@ -621,6 +628,12 @@
         })
         $("#answer-form input,#answer-form textarea").val("")
         $("#answer-form").setForm(item);
+        if (item.FullScore) {  
+            $("#RangScore").val((item.LowScore || 0) + '~' + item.FullScore);
+        }  
+        if (!item.PhotoScore) {
+            $("#PhotoScore").val(item.FullScore);
+        }
         // $('#ins-table').bootstrapTable("load", InsResult);
         $('#ins-table').bootstrapTable("load", SubjectInspectionStandardList);
         //$('#photo-table').bootstrapTable("load", FileResult);
