@@ -221,6 +221,7 @@
             InUserId: loginUser.Id
         }, function () {
             $("#btnSaveStatus").button('reset');
+            alert("提交成功！")
         }, function () { $("#btnSaveStatus").button('reset'); });
     }
 
@@ -289,56 +290,6 @@
                 title: "题目序号",
                 field: "OrderNO",
                 width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "检查点",
-                field: "CheckPoint",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (value != undefined && value != "")
-                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
-                }
-            }, {
-                title: "得分",
-                field: "PhotoScore",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "备注",
-                field: "Remark",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (value != undefined && value != "")
-                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
-                }
-            }, {
-                title: "复审得分",
-                field: "RecheckScore",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "复审意见",
-                field: "RecheckContent",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "复审时间",
-                field: "RecheckDateTime",
-                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -413,6 +364,56 @@
                 formatter: function (value, row, index) {
                     return '<a href="javascript:goSubjectLossIndex();" style="min-width:100px">失分描述</a>';
                 }
+            }, {
+                title: "检查点",
+                field: "CheckPoint",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "得分",
+                field: "PhotoScore",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "备注",
+                field: "Remark",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "复审得分",
+                field: "RecheckScore",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "复审意见",
+                field: "RecheckContent",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "复审时间",
+                field: "RecheckDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
