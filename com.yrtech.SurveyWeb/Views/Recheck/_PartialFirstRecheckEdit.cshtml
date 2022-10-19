@@ -650,13 +650,13 @@
             }
         });
 
-        $.commonGet("Recheck/GetRecheckStatusForFirstRecheck", {
+        $.commonGet("Recheck/GetRecheckStatus", {
             projectId: curScoreRow.ProjectId,
             shopId: curScoreRow.ShopId,
             shopCode: ''
         }, function (data) {
             if (data && data.length > 0) {
-                console.log('GetRecheckStatusForFirstRecheck ', data)
+                console.log('GetRecheckStatus ', data)
                 let item = data[0] 
                 if (!item.Status_S3) {
                     $('#recheck-form').find("input").prop('disabled', false)
