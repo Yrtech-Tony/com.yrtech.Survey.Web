@@ -39,51 +39,50 @@
             <div class="panel-body" style="padding: 0; padding-top:8px; ">
                 <form class="form-horizontal" id="answer-form">
                     <div class="form-group col-md-3">
-                        <label class="control-label  col-md-3" for="OrderNO">题目序号:</label>
-                        <div class="col-md-9">
+                        <label class="control-label  col-md-4" for="OrderNO">题目序号:</label>
+                        <div class="col-md-8">
                             <input id="OrderNO" name="OrderNO" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label  col-md-3" for="SubjectCode">题目代码:</label>
-                        <div class="col-md-9">
+                        <label class="control-label  col-md-4" for="SubjectCode">题目代码:</label>
+                        <div class="col-md-8">
                             <input id="SubjectCode" name="SubjectCode" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label col-md-3" for="RangScore">分数限制:</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-4" for="RangScore">分数限制:</label>
+                        <div class="col-md-8">
                             <input id="RangScore" name="RangScore" type="text" class="form-control" readonly>
                         </div>
                     </div> 
                     <div class="form-group col-md-3">
-                        <label class="control-label  col-md-3" for="PhotoScore">得分:</label>
-                        <div class="col-md-9">
+                        <label class="control-label  col-md-4" for="PhotoScore">得分:</label>
+                        <div class="col-md-8">
                             <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" >
                         </div>
                     </div> 
                     <div class="form-group col-md-3">
-                        <label class="control-label col-md-3" for="Remark" >题目备注:</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-4" for="Remark" >题目备注:</label>
+                        <div class="col-md-8">
                             <textarea id="Desc" name="Desc" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div>
-                   
                     <div class="form-group col-md-3">
-                        <label class="control-label  col-md-3" for="CheckPoint">检查点:</label>
-                        <div class="col-md-9">
+                        <label class="control-label  col-md-4" for="CheckPoint">检查点:</label>
+                        <div class="col-md-8">
                             <textarea id="CheckPoint" name="CheckPoint" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label  col-md-3" for="InspectionDesc">检查标准说明:</label>
-                        <div class="col-md-9">
+                        <label class="control-label  col-md-4" for="InspectionDesc">检查标准说明:</label>
+                        <div class="col-md-8">
                             <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly></textarea>
                         </div>
                     </div> 
                     <div class="form-group col-md-3">
-                        <label class="control-label col-md-3" for="Remark">备注:</label>
-                        <div class="col-md-9">
+                        <label class="control-label col-md-4" for="Remark">备注:</label>
+                        <div class="col-md-8">
                             <textarea id="Remark" name="Remark" class="form-control" rows="3"></textarea>
                         </div>
                     </div> 
@@ -119,7 +118,7 @@
         <div class="col-md-6">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#recheck" aria-controls="ins" role="tab" data-toggle="tab">复审信息</a></li>
+                <li role="presentation" class="active"><a href="#recheck" aria-controls="ins" role="tab" data-toggle="tab">一审确认</a></li>
                 <li role="presentation"><a href="#recheckConfirm" aria-controls="photo" role="tab" data-toggle="tab">复审确认</a></li> 
             </ul>
             <!-- Tab panes -->
@@ -651,18 +650,18 @@
             }
         });
 
-        $.commonGet("Recheck/GetRecheckStatusForFirstRecheck", {
+        $.commonGet("Recheck/GetRecheckStatus", {
             projectId: curScoreRow.ProjectId,
             shopId: curScoreRow.ShopId,
             shopCode: ''
         }, function (data) {
             if (data && data.length > 0) {
-                console.log('GetRecheckStatusForFirstRecheck ', data)
+                console.log('GetRecheckStatus ', data)
                 let item = data[0] 
-                if (!item.Status_S2) {
+                if (!item.Status_S3) {
                     $('#recheck-form').find("input").prop('disabled', false)
                     $('#recheck-confirm-form').find("input").prop('disabled', true)
-                } else if (item.Status_S2 && !item.Status_S8) {
+                } else if (item.Status_S3 && !item.Status_S8) {
                     $('#recheck-form').find("input").prop('disabled', true)
                     $('#recheck-confirm-form').find("input").prop('disabled', false)
                 }

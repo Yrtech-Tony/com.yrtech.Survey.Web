@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "二审";
+    ViewBag.Title = "二审管理";
 }
 
 <style>
@@ -195,7 +195,7 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "二审确认",
+                title: "二审完毕",
                 field: "Status_S9",
                 width: 120,
                 valign: "middle",
@@ -203,7 +203,7 @@
                 sortable: false,
                 formatter: function (value, row, index) {
                     if (!value)
-                        return '<button id="btnRecheckSubmit" onclick="secondRecheck()">二审确认</span>'
+                        return '<button id="btnRecheckSubmit" onclick="secondRecheck()">二审完毕</span>'
                 }
             }],
             onClickRow: function (row, $element) {
@@ -228,7 +228,7 @@
                 InUserId: loginUser.Id
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
-                alert("二审确认成功！");
+                alert("二审完毕！");
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
             });
