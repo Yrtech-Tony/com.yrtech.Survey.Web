@@ -55,15 +55,15 @@
                         <div class="col-md-8">
                             <input id="RangScore" name="RangScore" type="text" class="form-control" readonly>
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group col-md-3">
                         <label class="control-label  col-md-4" for="PhotoScore">得分:</label>
                         <div class="col-md-8">
-                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control" >
+                            <input id="PhotoScore" name="PhotoScore" type="text" class="form-control">
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label col-md-4" for="Remark" >题目备注:</label>
+                        <label class="control-label col-md-4" for="Remark">题目备注:</label>
                         <div class="col-md-8">
                             <textarea id="Desc" name="Desc" class="form-control" rows="3" readonly></textarea>
                         </div>
@@ -79,14 +79,14 @@
                         <div class="col-md-8">
                             <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly></textarea>
                         </div>
-                    </div> 
+                    </div>
                     <div class="form-group col-md-3">
                         <label class="control-label col-md-4" for="Remark">备注:</label>
                         <div class="col-md-8">
                             <textarea id="Remark" name="Remark" class="form-control" rows="3"></textarea>
                         </div>
-                    </div> 
-                </form> 
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -100,26 +100,26 @@
             </ul>
             <!-- Tab panes -->
             <div class="tab-content" style="padding: 10px; height: 420px; overflow: auto; border: solid 1px #ccc; border-top: none">
-                @*<div role="tabpanel" class="tab-pane " id="ins"> 
-                    <table id="ins-table" class="table table-set"></table>
-                </div>*@
+                @*<div role="tabpanel" class="tab-pane " id="ins">
+                        <table id="ins-table" class="table table-set"></table>
+                    </div>*@
                 <div role="tabpanel" class="tab-pane active" id="photo">
                     <table id="photo-table" class="table table-set"></table>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="lossresult">
                     <div style=" width: 100%; text-align: right; padding: 5px 0px;">
-                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:5px" onclick="addLossResult()" data-loading-text="提交中...">新增</button> 
+                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:5px" onclick="addLossResult()" data-loading-text="提交中...">新增</button>
                     </div>
                     <table id="lossresult-table" class="table table-set"></table>
                 </div>
             </div>
         </div>
-       
+
         <div class="col-md-6">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#recheck" aria-controls="ins" role="tab" data-toggle="tab">一审确认</a></li>
-                <li role="presentation"><a href="#recheckConfirm" aria-controls="photo" role="tab" data-toggle="tab">复审确认</a></li> 
+                <li role="presentation"><a href="#recheckConfirm" aria-controls="photo" role="tab" data-toggle="tab">复审确认</a></li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content" style="padding: 10px; height: 420px; overflow: auto; border: solid 1px #ccc; border-top: none">
@@ -184,7 +184,7 @@
 
                     </form>
                 </div>
-            </div> 
+            </div>
         </div>
     </div>
 
@@ -251,7 +251,7 @@
         </div>
     </div>
 </div>
-<script> 
+<script>
     var curRow_ins;
     let curLossRow;
     let curFileRow;
@@ -321,7 +321,7 @@
             ReCheckContent: $("#RecheckContent").val(),
             ReCheckError: RecheckError,
             ReCheckUserId: loginUser.Id
-        }, function (data) { 
+        }, function (data) {
             //第二步 保存复审确认信息
             $.commonPost("Recheck/SaveShopRecheckConfirmInfo", {
                 ProjectId: curAnswer.ProjectId,
@@ -342,7 +342,7 @@
                 curAnswer.FileResult = JSON.stringify(fileResult);
                 let loss = $('#lossresult-table').bootstrapTable('getData', false)
                 curAnswer.LossResult = JSON.stringify(loss);
-                $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () { 
+                $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
                     //第四步 获取下一个得分
                     $.commonGet("Recheck/GetShopNextRecheckSubject", {
                         projectId: curAnswer.ProjectId,
@@ -381,7 +381,7 @@
                 }, function (err) {
                     console.log('save answer error', err)
                 })
-            }) 
+            })
         });
     }
 
@@ -634,7 +634,7 @@
         });
     }
 
-    var curAnswer 
+    var curAnswer
     function loadAnswerInfo() {
         $.commonGet("Answer/GetShopAnswerScoreInfo", {
             projectId: curScoreRow.ProjectId,
@@ -657,7 +657,7 @@
         }, function (data) {
             if (data && data.length > 0) {
                 console.log('GetRecheckStatus ', data)
-                let item = data[0] 
+                let item = data[0]
                 if (!item.Status_S3) {
                     $('#recheck-form').find("input").prop('disabled', false)
                     $('#recheck-confirm-form').find("input").prop('disabled', true)
@@ -669,30 +669,36 @@
         });
     }
 
-    function bindAnswerInfo(item) { 
+    function bindAnswerInfo(item) {
+        debugger
         let FileResult = item.FileResult ? JSON.parse(item.FileResult) : []
         let InsResult = item.InspectionStandardResult ? JSON.parse(item.InspectionStandardResult) : []
         let LossResult = item.LossResult ? JSON.parse(item.LossResult) : []
 
         let SubjectFileList = item.SubjectFileList.map(function (o) {
-            let findOne = FileResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
-            if (findOne) {
-                o.Url = findOne.Url
+            if (FileResult) {
+                let findOne = FileResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+                if (findOne) {
+                    o.Url = findOne.Url
+                }
             }
+
             return o;
         });
         let SubjectInspectionStandardList = item.SubjectInspectionStandardList.map(function (o) {
-            let findOne = InsResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
-            if (findOne) {
-                o.AnswerResult = findOne.AnswerResult
+            if (InsResult) {
+                let findOne = InsResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+                if (findOne) {
+                    o.AnswerResult = findOne.AnswerResult
+                }
             }
             return o
         })
         $("#answer-form input,#answer-form textarea").val("")
         $("#answer-form").setForm(item);
-        if (item.FullScore) {  
+        if (item.FullScore) {
             $("#RangScore").val((item.LowScore || 0) + '~' + item.FullScore);
-        }  
+        }
         if (!item.PhotoScore) {
             $("#PhotoScore").val(item.FullScore);
         }
@@ -728,12 +734,12 @@
             }
         });
     }
-    
+
 
     /**标准照片 **start**/
     function saveCurFileResult() {
         if (curFileRow) {
-            //编辑 
+            //编辑
             curFileRow.Url = FileNameUrl
             let data = $('#photo-table').bootstrapTable('getData', false)
             $('#photo-table').bootstrapTable("load", data);
@@ -754,7 +760,7 @@
             showFileModel();
             let fileList = curFileRow.Url ? curFileRow.Url.split(';') : []
             bindFileResultList(fileList)
-        },300)
+        }, 300)
     }
     //绑定标准照片数据
     function bindFileResultList(fileList) {
@@ -828,7 +834,7 @@
         });
     }
     //新增
-    function addLossResult() { 
+    function addLossResult() {
         curLossRow = {}
         $('#loss-file-pics').empty()
         $('#LossDesc2').val('')
@@ -839,7 +845,7 @@
     }
     //编辑
     function editLossResult() {
-        setTimeout(function () { 
+        setTimeout(function () {
             curLossRow.LossDesc2 = curLossRow.LossDesc2 || ''
             curLossRow.LossDesc = curLossRow.LossDesc || ''
             $('#LossDesc2').val(curLossRow.LossDesc2)
@@ -855,10 +861,10 @@
             let fileList = curLossRow.LossFileNameUrl ? curLossRow.LossFileNameUrl.split(';') : []
             bindLossUrlList(fileList)
             showLossModel();
-        },300) 
+        }, 300)
     }
     //界面保存
-    function saveCurLossResult() { 
+    function saveCurLossResult() {
         let lossArr = []
         $.each($("#LossResultCheckList").find("input[type=checkbox]:checked"), function (i, checkbox) {
             //let lossValue = $(checkbox).parent().parent().find('.checkbox-label').text()
@@ -868,7 +874,7 @@
         if (curLossRow.LossId) {
             //编辑
             curLossRow.LossDesc = lossArr.join(';');
-            curLossRow.LossDesc2 = $('#LossDesc2').val() 
+            curLossRow.LossDesc2 = $('#LossDesc2').val()
             let data = $('#lossresult-table').bootstrapTable('getData', false)
             $('#lossresult-table').bootstrapTable("load", data);
         } else {
@@ -878,7 +884,7 @@
                 LossId: fnGetMaxLossId() + 1,
                 LossDesc: lossArr.join(';'),
                 LossDesc2: $('#LossDesc2').val(),
-                LossFileNameUrl: curLossRow.LossFileNameUrl||''
+                LossFileNameUrl: curLossRow.LossFileNameUrl || ''
             })
             $('#lossresult-table').bootstrapTable("load", data);
         }
@@ -923,7 +929,7 @@
     }
     function bindAddLossPicClick(project, shop) {
         var osspath = "Survey/" + project + "/" + shop + "/";
-        if (!lossUploader) { 
+        if (!lossUploader) {
             $('#btnAddLossPic').unbind('click')
             lossUploader = new OSSClient({
                 osspath: osspath,
@@ -991,7 +997,7 @@
     /**失分说明 **end**/
 
 
-    function viewPicutes(url) { 
+    function viewPicutes(url) {
         let fileList = url ? url.split(';') : []
         if (!fileList || fileList.length == 0) {
             alert("没有照片！")
