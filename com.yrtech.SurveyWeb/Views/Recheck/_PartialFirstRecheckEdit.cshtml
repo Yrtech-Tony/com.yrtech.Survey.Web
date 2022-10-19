@@ -658,10 +658,10 @@
             if (data && data.length > 0) {
                 console.log('GetRecheckStatusForFirstRecheck ', data)
                 let item = data[0] 
-                if (!item.Status_S2) {
+                if (!item.Status_S3) {
                     $('#recheck-form').find("input").prop('disabled', false)
                     $('#recheck-confirm-form').find("input").prop('disabled', true)
-                } else if (item.Status_S2 && !item.Status_S8) {
+                } else if (item.Status_S3 && !item.Status_S8) {
                     $('#recheck-form').find("input").prop('disabled', true)
                     $('#recheck-confirm-form').find("input").prop('disabled', false)
                 }
