@@ -230,6 +230,7 @@
             recheckTypeId: recheckTypeId || '',
             passRecheck: $("#PassRecheck-sel").val()
         }, function (data) {
+            console.log('GetShopRecheckScoreInfo data',data)
             initRecheckScoreTable(data);
         }, function () {
             $('#recheck-subject-table').bootstrapTable("hideLoading");
@@ -238,7 +239,7 @@
 
     //初始化一审确认表格
     function initRecheckScoreTable(data) {
-        debugger
+       
         $('#recheck-subject-table').bootstrapTable('destroy').bootstrapTable({
             pagination: false,
             data: data,

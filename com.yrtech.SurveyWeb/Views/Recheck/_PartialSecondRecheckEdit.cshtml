@@ -218,8 +218,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
+    </div> 
 </div>
 
 
@@ -237,6 +236,10 @@
                 <div id="subject-file-pics" style="max-height:600px;overflow:auto">
                 </div>
             </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurFileResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeFileModel();" class="btn btn-default">关闭</button>
+            </div>
         </div>
     </div>
 </div>
@@ -248,9 +251,9 @@
                 <button type="button" class="close" onclick="javascript: closeLossModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">失分描述编辑</h4>
             </div>
-            <div class="modal-body" style="max-height: 700px; overflow: auto">
-                <div class="form-horizontal form-label-left" style="width: 100%; padding-bottom: 5px; ">
-                    <div class="item form-group">
+            <div class="modal-body">
+                <div class="form-horizontal form-label-left" style="padding-bottom: 5px; width: 100%; max-height: 700px; overflow: auto">
+                    <div class="item form-group" style="width:100%">
                         <div class="col-md-3">
                             <label>失分说明:</label>
                         </div>
@@ -282,11 +285,11 @@
         </div>
     </div>
 </div>
-
 <script> 
     var curRow_ins;
     let curLossRow;
     let curFileRow;
+    var uploader, lossUploader;
     $(function () { 
         uploader = undefined
         lossUploader = undefined
@@ -790,19 +793,8 @@
 
     /**标准照片 **start**/ 
     function saveCurFileResult() {
-        if (curFileRow) {
-            //编辑 
-            curFileRow.Url = FileNameUrl
-            let data = $('#photo-table').bootstrapTable('getData', false)
-            $('#photo-table').bootstrapTable("load", data);
-        } else {
-            //新增
-            let data = $('#photo-table').bootstrapTable('getData', false)
-            data.push({ 
-                Url: FileNameUrl
-            })
-            $('#photo-table').bootstrapTable("load", data);
-        }
+        let data = $('#photo-table').bootstrapTable('getData', false)
+        $('#photo-table').bootstrapTable("load", data);
         closeFileModel();
     }
     //编辑

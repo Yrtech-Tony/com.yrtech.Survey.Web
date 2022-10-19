@@ -206,6 +206,10 @@
                 <div id="subject-file-pics" style="max-height:600px;overflow:auto">
                 </div>
             </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurFileResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeFileModel();" class="btn btn-default">关闭</button>
+            </div>
         </div>
     </div>
 </div>
@@ -741,19 +745,8 @@
 
     /**标准照片 **start**/
     function saveCurFileResult() {
-        if (curFileRow) {
-            //编辑
-            curFileRow.Url = FileNameUrl
-            let data = $('#photo-table').bootstrapTable('getData', false)
-            $('#photo-table').bootstrapTable("load", data);
-        } else {
-            //新增
-            let data = $('#photo-table').bootstrapTable('getData', false)
-            data.push({
-                Url: FileNameUrl
-            })
-            $('#photo-table').bootstrapTable("load", data);
-        }
+        let data = $('#photo-table').bootstrapTable('getData', false)
+        $('#photo-table').bootstrapTable("load", data);
         closeFileModel();
     }
     //编辑
