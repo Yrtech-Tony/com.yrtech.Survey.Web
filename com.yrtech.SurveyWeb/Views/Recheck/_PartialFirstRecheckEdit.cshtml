@@ -334,8 +334,7 @@
                 ReCheckScore_Confirm: $("#RecheckScoreConfirm").val(),
                 ReCheckContent_Confirm: $("#RecheckContentConfirm").val(),
                 ReCheckError_Confirm: loadRecheckErrorConfirm(),
-                ReCheckUserId_Confirm: loginUser.Id,
-                recheckTypeId: curScoreRow.RecheckTypeId,
+                ReCheckUserId_Confirm: loginUser.Id
             }, function (data) {
                 //第三步 获取得分
                 curAnswer.PhotoScore = $("#PhotoScore").val()
@@ -458,11 +457,11 @@
     }
     //绑定复审确认信息
     function bindRecheckInfoConfirm(item) {
-        $('#RecheckScoreConfirm').val(item.RecheckScore_Confirm)
-        $('#RecheckContentConfirm').val(item.RecheckContent_Confirm)
+        $('#RecheckScoreConfirm').val(item.ReCheckScore_Confirm)
+        $('#RecheckContentConfirm').val(item.ReCheckContent_Confirm)
         $("input[name=PassRecheckConfirm]").each(function () {
             $(this).iCheck('uncheck');
-            if (item.PassRecheck_Confirm == ($(this).val() == 'true')) {
+            if (item.PassReCheck_Confirm == ($(this).val() == 'true')) {
                 $(this).iCheck('check');
             }
         });
