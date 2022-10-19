@@ -366,8 +366,8 @@
             //第二步 获取得分
             curAnswer.PhotoScore = $("#PhotoScore").val()
             curAnswer.Remark = $("#Remark").val()
-            let insStandards = $('#ins-table').bootstrapTable('getData', false)
-            curAnswer.InspectionStandardResult = JSON.stringify(insStandards);
+            //let insStandards = $('#ins-table').bootstrapTable('getData', false)
+            //curAnswer.InspectionStandardResult = JSON.stringify(insStandards);
             let fileResult = $('#photo-table').bootstrapTable('getData', false)
             curAnswer.FileResult = JSON.stringify(fileResult);
             let loss = $('#lossresult-table').bootstrapTable('getData', false)

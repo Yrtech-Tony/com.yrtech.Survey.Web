@@ -308,11 +308,13 @@
     }
 
     function nextSubject() {
-        console.log('save recheck = ', curRow)
+        debugger
+        console.log('save recheck = ', curScoreRow)
         console.log('PassRecheck = ', $("input[name=PassRecheck]:checked").val())
         let RecheckError = loadRecheckError()
         //第一步 保存复审信息
         $.commonPost("Recheck/SaveShopRecheckInfo", {
+            RecheckId: curScoreRow.RecheckId,
             ProjectId: curAnswer.ProjectId,
             ShopId: curAnswer.ShopId,
             SubjectId: curAnswer.SubjectId,
@@ -324,6 +326,7 @@
         }, function (data) {
             //第二步 保存复审确认信息
             $.commonPost("Recheck/SaveShopRecheckConfirmInfo", {
+                RecheckId: curScoreRow.RecheckId,
                 ProjectId: curAnswer.ProjectId,
                 ShopId: curAnswer.ShopId,
                 SubjectId: curAnswer.SubjectId,
@@ -331,13 +334,14 @@
                 ReCheckScore_Confirm: $("#RecheckScoreConfirm").val(),
                 ReCheckContent_Confirm: $("#RecheckContentConfirm").val(),
                 ReCheckError_Confirm: loadRecheckErrorConfirm(),
-                ReCheckUserId_Confirm: loginUser.Id
+                ReCheckUserId_Confirm: loginUser.Id,
+                recheckTypeId: curScoreRow.RecheckTypeId,
             }, function (data) {
                 //第三步 获取得分
                 curAnswer.PhotoScore = $("#PhotoScore").val()
                 curAnswer.Remark = $("#Remark").val()
-                let insStandards = $('#ins-table').bootstrapTable('getData', false)
-                curAnswer.InspectionStandardResult = JSON.stringify(insStandards);
+                //let insStandards = $('#ins-table').bootstrapTable('getData', false)
+                //curAnswer.InspectionStandardResult = JSON.stringify(insStandards);
                 let fileResult = $('#photo-table').bootstrapTable('getData', false)
                 curAnswer.FileResult = JSON.stringify(fileResult);
                 let loss = $('#lossresult-table').bootstrapTable('getData', false)
