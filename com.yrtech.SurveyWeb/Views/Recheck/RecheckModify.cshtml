@@ -21,27 +21,27 @@
 <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnSaveStatus" class="btn btn-primary">复审修改完毕</button>
+    </div>
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+            <select id="brand-sel" class="form-control" style="width:150px;"></select>
         </div>
         <div class="form-group">
             <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width:200px;"></select>
+            <select id="year-sel" class="form-control" style="width: 150px;"></select>
         </div>
         <div class="form-group">
             <label class="control-label">期号:</label>
-            <select id="project-sel" class="form-control" style="width: 140px"></select>
+            <select id="project-sel" class="form-control" style="width: 200px"></select>
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <select id="shop-sel" style="width: 140px"></select>
+            <select id="shop-sel" data-width="300px"></select>
         </div>
-    </div>
-    <div style="float:right;width:200px;text-align:right">
-        <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnSaveStatus" class="btn btn-primary">复审修改完毕</button>
     </div>
 </div>
 <div class="result">

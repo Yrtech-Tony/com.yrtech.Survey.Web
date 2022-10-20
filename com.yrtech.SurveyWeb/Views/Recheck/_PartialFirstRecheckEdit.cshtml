@@ -19,7 +19,7 @@
         margin-bottom: 5px;
     }
 </style>
-<div style="height:680px; overflow:auto">
+<div style="height:720px; overflow:auto">
     <div class="container col-md-12">
         <div class="item form-group" style="float:right;">
             <div class="form-inline">
@@ -39,53 +39,55 @@
             <div class="panel-body" style="padding: 0; padding-top:8px; ">
                 <form class="form-horizontal" id="answer-form">
                     <div class="form-group col-md-3">
-                        <label class="control-label  col-md-4" for="OrderNO">题目序号:</label>
+                        <label class="control-label col-md-4" for="OrderNO" style="width:80px">题目序号:</label>
                         <div class="col-md-8">
                             <input id="OrderNO" name="OrderNO" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label  col-md-4" for="SubjectCode">题目代码:</label>
+                        <label class="control-label col-md-4" for="OrderNO" style="width:80px">题目代码:</label>
                         <div class="col-md-8">
                             <input id="SubjectCode" name="SubjectCode" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label col-md-4" for="RangScore">分数限制:</label>
+                        <label class="control-label col-md-4" for="OrderNO" style="width:80px">分数限制:</label>
                         <div class="col-md-8">
                             <input id="RangScore" name="RangScore" type="text" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label  col-md-4" for="PhotoScore">得分:</label>
+                        <label class="control-label col-md-4" for="OrderNO" style="width:80px">得分:</label>
                         <div class="col-md-8">
                             <input id="PhotoScore" name="PhotoScore" type="text" class="form-control">
+
                         </div>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label class="control-label col-md-4" for="Remark">题目备注:</label>
-                        <div class="col-md-8">
-                            <textarea id="Desc" name="Desc" class="form-control" rows="3" readonly></textarea>
+                    <div class="form-group col-md-6">
+                        <label class="control-label col-md-2" for="Remark" style="width:80px">题目备注:</label>
+                        <div class="col-md-10">
+                            <textarea id="Desc" name="Desc" class="form-control" rows="2" readonly></textarea>
                         </div>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label class="control-label  col-md-4" for="CheckPoint">检查点:</label>
-                        <div class="col-md-8">
-                            <textarea id="CheckPoint" name="CheckPoint" class="form-control" rows="3" readonly></textarea>
+                    <div class="form-group col-md-6">
+                        <label class="control-label col-md-2" for="Remark" style="width:80px">检查点:</label>
+                        <div class="col-md-10">
+                            <textarea id="CheckPoint" name="CheckPoint" class="form-control" rows="2" readonly></textarea>
                         </div>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label class="control-label  col-md-4" for="InspectionDesc">检查标准说明:</label>
-                        <div class="col-md-8">
-                            <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="3" readonly></textarea>
+                    <div class="form-group col-md-6">
+                        <label class="control-label col-md-2" for="Remark" style="width:80px">检查标准说明:</label>
+                        <div class="col-md-10">
+                            <textarea id="InspectionDesc" name="InspectionDesc" class="form-control" rows="2" readonly></textarea>
                         </div>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label class="control-label col-md-4" for="Remark">执行备注:</label>
-                        <div class="col-md-8">
-                            <textarea id="Remark" name="Remark" class="form-control" rows="3"></textarea>
+                    <div class="form-group col-md-6">
+                        <label class="control-label col-md-2" for="Remark" style="width:80px">执行备注:</label>
+                        <div class="col-md-10">
+                            <textarea id="Remark" name="Remark" class="form-control" rows="2"></textarea> 
                         </div>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -518,7 +520,11 @@
                 field: "InspectionStandardName",
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "检查结果",
                 field: "AnswerResult",
@@ -559,7 +565,11 @@
                 field: "FileName",
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "编辑",
                 field: "",
@@ -602,7 +612,11 @@
                 field: "LossDesc",
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "编辑",
                 field: "",

@@ -5128,7 +5128,7 @@ ul.notifications {
     margin-right: 0px;
 }
 
-@media(min-width: 1440px) {
+/*@media(min-width: 1440px) {
     .form-inline input, .form-inline select {
         width: 120px !important;
     }
@@ -5144,4 +5144,4 @@ ul.notifications {
     .form-inline input, .form-inline select {
         width: 200px !important;
     }
-}
+}*/

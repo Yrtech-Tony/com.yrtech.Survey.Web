@@ -48,11 +48,11 @@
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+            <select id="brand-sel" class="form-control" style="width:150px;"></select>
         </div>
         <div class="form-group">
             <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width:200px;"></select>
+            <select id="year-sel" class="form-control" style="width: 150px;"></select>
         </div>
         <div class="form-group">
             <label class="control-label">期号:</label>
@@ -60,7 +60,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <select id="shop-sel" style="width: 200px"></select>
+            <select id="shop-sel" data-width="300px"></select>
         </div>
     </div>
 
@@ -132,8 +132,7 @@
                         <button id="btnAddLossPic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
                     </div>
                     <div id="loss-file-pics" style="max-height:500px;overflow:auto">
-                    </div>
-                    <div class="clearfix"></div>
+                    </div> 
                 </div>
             </div>
             <div class="modal-footer">
@@ -185,6 +184,7 @@
     var uploader, lossUploader;
     $(function () {
         uploader = undefined
+        lossUploader = undefined
         $('title').html('@ViewBag.Title')
         bindBrandSelect();
         //加载年份
