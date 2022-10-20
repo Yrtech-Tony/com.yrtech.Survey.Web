@@ -34,10 +34,10 @@
             <label class="control-label">期号:</label>
             <select id="project-sel" class="form-control" style="width: 140px"></select>
         </div>
-        <div class="form-group">
+        @*<div class="form-group">
             <label class="control-label">经销商:</label>
-            <select id="shop-sel" style="width: 140px"></select>
-        </div>
+            <select id="shop-sel" style="width: 140px;"></select>
+        </div>*@
     </div>
 
 </div>
@@ -103,7 +103,8 @@
         $("#btnRecheckSubmit").button("loading");
         $.commonPost("Recheck/SaveRecheckStatusDtl", {
             ProjectId: $("#project-sel").val(),
-            ShopId: $("#shop-sel").val(),
+            // ShopId: $("#shop-sel").val(),
+            ShopId: curRow.ShopId,
             RecheckTypeId: $("#LabelId").val(),
             InUserId: loginUser.Id
         }, function () {
@@ -121,7 +122,7 @@
         $('#recheck-table').bootstrapTable("showLoading");
         $.commonGet("Recheck/GetRecheckStatusForSecondRecheck", {
             projectId: $("#project-sel").val(),
-            shopId: $("#shop-sel").val(),
+            shopId: "",
             shopCode: ''
         }, function (data) {
             initRecheckTable(data);
