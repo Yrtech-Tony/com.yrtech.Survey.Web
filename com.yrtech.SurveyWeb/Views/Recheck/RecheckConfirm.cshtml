@@ -21,6 +21,10 @@
 <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
 <div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnSaveStatus" class="btn btn-primary">仲裁完毕</button>
+    </div>
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
@@ -39,10 +43,7 @@
             <select id="shop-sel" data-width="300px"></select>
         </div>
     </div>
-    <div style="float:right;width:200px;text-align:right">
-        <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnSaveStatus" class="btn btn-primary">仲裁完毕</button>
-    </div>
+    
 </div>
 <div class="result">
     <table id="recheck-table"  class="table table-set"></table>
