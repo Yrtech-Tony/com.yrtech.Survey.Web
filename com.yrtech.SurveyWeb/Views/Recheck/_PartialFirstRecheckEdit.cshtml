@@ -206,6 +206,10 @@
                 <div id="subject-file-pics" style="max-height:600px;overflow:auto">
                 </div>
             </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurFileResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeFileModel();" class="btn btn-default">关闭</button>
+            </div>
         </div>
     </div>
 </div>
@@ -334,8 +338,7 @@
                 ReCheckScore_Confirm: $("#RecheckScoreConfirm").val(),
                 ReCheckContent_Confirm: $("#RecheckContentConfirm").val(),
                 ReCheckError_Confirm: loadRecheckErrorConfirm(),
-                ReCheckUserId_Confirm: loginUser.Id,
-                recheckTypeId: curScoreRow.RecheckTypeId,
+                ReCheckUserId_Confirm: loginUser.Id
             }, function (data) {
                 //第三步 获取得分
                 curAnswer.PhotoScore = $("#PhotoScore").val()
@@ -458,11 +461,11 @@
     }
     //绑定复审确认信息
     function bindRecheckInfoConfirm(item) {
-        $('#RecheckScoreConfirm').val(item.RecheckScore_Confirm)
-        $('#RecheckContentConfirm').val(item.RecheckContent_Confirm)
+        $('#RecheckScoreConfirm').val(item.ReCheckScore_Confirm)
+        $('#RecheckContentConfirm').val(item.ReCheckContent_Confirm)
         $("input[name=PassRecheckConfirm]").each(function () {
             $(this).iCheck('uncheck');
-            if (item.PassRecheck_Confirm == ($(this).val() == 'true')) {
+            if (item.PassReCheck_Confirm == ($(this).val() == 'true')) {
                 $(this).iCheck('check');
             }
         });
@@ -742,19 +745,8 @@
 
     /**标准照片 **start**/
     function saveCurFileResult() {
-        if (curFileRow) {
-            //编辑
-            curFileRow.Url = FileNameUrl
-            let data = $('#photo-table').bootstrapTable('getData', false)
-            $('#photo-table').bootstrapTable("load", data);
-        } else {
-            //新增
-            let data = $('#photo-table').bootstrapTable('getData', false)
-            data.push({
-                Url: FileNameUrl
-            })
-            $('#photo-table').bootstrapTable("load", data);
-        }
+        let data = $('#photo-table').bootstrapTable('getData', false)
+        $('#photo-table').bootstrapTable("load", data);
         closeFileModel();
     }
     //编辑
