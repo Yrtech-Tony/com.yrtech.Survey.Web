@@ -33,7 +33,11 @@
                 width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             }, {
                 title: "检查结果",
                 field: "AnswerResult",

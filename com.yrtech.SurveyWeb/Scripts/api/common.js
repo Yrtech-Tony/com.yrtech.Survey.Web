@@ -191,8 +191,7 @@ function bindShopSelect(isAll) {
             $("#shop-sel").append($("<option>").val(item.ShopId).text(item.ShopName));
         })
 
-        $("#shop-sel").addClass("selectpicker").prop("title", "").data("live-search", true).selectpicker("refresh");
-        $("#shop-sel").css('width','140px') 
+        $("#shop-sel").addClass("selectpicker").prop("title", "").data("live-search", true).selectpicker("refresh"); 
     })
     $.ajaxSettings.async = true;
 }
