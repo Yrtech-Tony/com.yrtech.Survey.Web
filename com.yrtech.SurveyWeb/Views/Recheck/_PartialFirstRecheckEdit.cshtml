@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label col-md-4" for="Remark">备注:</label>
+                        <label class="control-label col-md-4" for="Remark">执行备注:</label>
                         <div class="col-md-8">
                             <textarea id="Remark" name="Remark" class="form-control" rows="3"></textarea>
                         </div>
@@ -706,9 +706,9 @@
         if (item.FullScore) {
             $("#RangScore").val((item.LowScore || 0) + '~' + item.FullScore);
         }
-        if (!item.PhotoScore) {
-            $("#PhotoScore").val(item.FullScore);
-        }
+        //if (!item.PhotoScore) {
+        //    $("#PhotoScore").val(item.FullScore);
+        //}
         // $('#ins-table').bootstrapTable("load", InsResult);
         $('#ins-table').bootstrapTable("load", SubjectInspectionStandardList);
         //$('#photo-table').bootstrapTable("load", FileResult);

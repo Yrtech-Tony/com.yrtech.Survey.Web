@@ -82,7 +82,7 @@
                         </div>
                     </div>
                     <div class="form-group col-md-3">
-                        <label class="control-label col-md-3" for="Remark">备注:</label>
+                        <label class="control-label col-md-3" for="Remark">执行备注:</label>
                         <div class="col-md-9">
                             <textarea id="Remark" name="Remark" class="form-control" rows="3"></textarea>
                         </div>
@@ -149,7 +149,7 @@
                             </div>
                         </div>
                         <div class="form-group" style="display:none">
-                            <label class="control-label  col-md-3" for="PhotoScore">错误类型:</label>
+                            <label class="control-label  col-md-3" for="RecheckErrorCheckList">错误类型:</label>
                             <div id="RecheckErrorCheckList" class="col-md-8" style="margin-top: 5px;">
                             </div>
                         </div>
@@ -758,6 +758,9 @@
         })
         $("#answer-form input,#answer-form textarea").val("")
         $("#answer-form").setForm(item);
+        if (item.FullScore) {
+            $("#RangScore").val((item.LowScore || 0) + '~' + item.FullScore);
+        }
         // $('#ins-table').bootstrapTable("load", InsResult);
         $('#ins-table').bootstrapTable("load", item.SubjectInspectionStandardList);
         //$('#photo-table').bootstrapTable("load", FileResult);
