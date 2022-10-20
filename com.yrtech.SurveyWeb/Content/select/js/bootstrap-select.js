@@ -1447,8 +1447,8 @@
         } else {
           e.preventDefault();
           if (!$this.hasClass('dropdown-toggle')) {
-            $items.removeClass('active').eq(index).addClass('active').children('a').focus();
-            $this.focus();
+            //$items.removeClass('active').eq(index).addClass('active').children('a').focus();
+            //$this.focus();
           }
         }
 
