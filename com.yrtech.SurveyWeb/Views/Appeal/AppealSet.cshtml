@@ -227,7 +227,7 @@
         }, function () { $("#save_button").button("reset"); });
     }
     function CreateAppeal() {
-        confirm("若已生成，重新生成会覆盖已生成数据，确定生成吗？", function () {
+        confirm("确定生成吗？", function () {
             debugger
             $.commonGet("Appeal/CreateAppeal", {
                 projectId: curRow.ProjectId
