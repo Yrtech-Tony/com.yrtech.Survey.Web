@@ -228,7 +228,7 @@
                 StatusCode: 'S9',
                 InUserId: loginUser.Id
             }, function () {
-                $("#btnRecheckSubmit").button("reset");
+                loadRecheck()
                 alert("二审完毕！");
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
