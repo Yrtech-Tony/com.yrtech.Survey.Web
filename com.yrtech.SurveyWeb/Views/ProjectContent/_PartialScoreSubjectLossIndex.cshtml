@@ -17,8 +17,7 @@
     }
 </style>
 
-<script>
-    let LossFileNameUrl;
+<script> 
     let curLossRow;
     $(function () {
         initSubjectLossResult();
@@ -40,11 +39,11 @@
                     files.forEach(function (file) {
                         filePaths.push(file.osspath)
                     })
-                    if (LossFileNameUrl) {
-                        LossFileNameUrl += ';' + filePaths.join(';')
-                        bindLossUrlList(LossFileNameUrl.split(';'))
+                    if (curLossRow.LossFileNameUrl) {
+                        curLossRow.LossFileNameUrl += ';' + filePaths.join(';')
+                        bindLossUrlList(curLossRow.LossFileNameUrl.split(';'))
                     } else {
-                        LossFileNameUrl = filePaths.join(';')
+                        curLossRow.LossFileNameUrl = filePaths.join(';')
                         bindLossUrlList(filePaths)
                     }
 
@@ -72,8 +71,7 @@
             let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
             remove.click(function () {
                 fileList.splice(fileList.indexOf(file), 1);
-                LossFileNameUrl = fileList.join(';')
-                console.log('LossFileNameUrl', LossFileNameUrl)
+                curLossRow.LossFileNameUrl = fileList.join(';') 
                 bindLossUrlList(fileList)
             })
             imgDiv.append(remove);
@@ -187,22 +185,22 @@
             let lossValue = $(checkbox).val()
             lossArr.push( lossValue)
         });
-        if (curLossRow) {
+        debugger
+        if (curLossRow.LossId) {
             //编辑
             curLossRow.LossDesc = lossArr.join(';');
-            curLossRow.LossDesc2 = $('#LossDesc2').val()
-            curLossRow.LossFileNameUrl = LossFileNameUrl
+            curLossRow.LossDesc2 = $('#LossDesc2').val() 
             let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
             $('#subject-lossResult-table').bootstrapTable("load", data);
         } else {
             //新增
             let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
-            data.push({
+            curLossRow = $.extend(curLossRow,{
                 LossId:fnGetMaxLossId()+1,
                 LossDesc: lossArr.join(';'),
-                LossDesc2: $('#LossDesc2').val(),
-                LossFileNameUrl: LossFileNameUrl
+                LossDesc2: $('#LossDesc2').val()
             })
+            data.push(curLossRow)
             $('#subject-lossResult-table').bootstrapTable("load", data);
         }
         closeLossModel();
@@ -218,7 +216,7 @@
     }
 
     function addLossResult() {
-        curLossRow = null
+        curLossRow = {}
         $('#loss-file-pics').empty()        
         $('#LossDesc2').val('')
         $.each($("#LossResultCheckList").find("input[type=checkbox]"), function (i, checkbox) {
@@ -228,7 +226,6 @@
     }
 
     function editLossResult() {
-        LossFileNameUrl = curLossRow.LossFileNameUrl
         curLossRow.LossDesc2 = curLossRow.LossDesc2||''
         curLossRow.LossDesc = curLossRow.LossDesc || ''
         $('#LossDesc2').val(curLossRow.LossDesc2)
@@ -241,7 +238,8 @@
                 $(checkbox).iCheck('check');
             }
         });
-        let fileList = LossFileNameUrl ? LossFileNameUrl.split(';') : []
+        debugger
+        let fileList = curLossRow.LossFileNameUrl ? curLossRow.LossFileNameUrl.split(';') : []
         bindLossUrlList(fileList)
         showLossModel();
     }

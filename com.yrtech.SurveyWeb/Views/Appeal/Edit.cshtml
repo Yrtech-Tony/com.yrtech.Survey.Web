@@ -8,6 +8,8 @@
 <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js"></script>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
 <script>
     var appealId = "@ViewBag.AppealId";
 
@@ -39,7 +41,7 @@
                         ServerFileName: files[i].osspath
                     });
                 }
-                
+
                 if (appealId) {
                     for (var i in newFiles) {
                         newFiles[i].AppealId = appealId;
@@ -59,6 +61,7 @@
             appealId: appealId
         }, function (data) {
             if (data && data.length > 0) {
+                console.log('GetShopSubjectAppeal',data[0])
                 appeal = data[0];
                 $("#appeal-form").setForm(appeal);
                 $("input[name=FeedBackStatus]").each(function () {
@@ -70,11 +73,13 @@
                 $("#ShopName").html(appeal.ShopName);
                 $("#SubjectCode").html(appeal.SubjectCode);
                 $("#CheckPoint").html(appeal.CheckPoint);
+                $("#Remark").html(appeal.Remark);
                 $("#AppealReason").html(appeal.AppealReason);
 
                 $("#appeal-form").setForm(appeal);
 
                 loadAppealFiles();
+                bindLossResultTable(appeal.LossResult ? JSON.parse(appeal.LossResult) : [])
             }
         })
     })
@@ -102,7 +107,7 @@
             });
         }
         params.AppealFileList = fileList;
-               
+
         $.commonPost("Appeal/AppealFeedBack", {
             ListJson: JSON.stringify([params])
         }, function () {
@@ -160,13 +165,34 @@
         }
     }
 
+    function bindLossResultTable(data) {
+        $("#subject-lossResult-table tbody").empty();
+        if (data) {
+            $.each(data, function (i, item) {
+                var tr = $("<tr>");
+
+                tr.append($("<td>").html(item.LossDesc));
+                tr.append($("<td>").html(item.LossDesc2));
+                //查看照片
+                var showBtn = $("<a href='#'>查看照片</a>");
+                showBtn.click(function () {
+                    viewLossFile(item.LossFileNameUrl, tr);
+                    return false;
+                });
+                tr.append($("<td></td>").append(showBtn));
+
+                $("#subject-lossResult-table tbody").append(tr);
+            });
+        }
+    }
+
     function AppealFileSave(file) {
         $("#selectfiles").button("loading");
         $.commonPost("Appeal/AppealFileSave", file, function () {
             loadAppealFiles();
         });
     }
-    
+
     function delFile(fileId) {
         if (appealId) {
             confirm("确定要删除该文件吗？", function () {
@@ -191,8 +217,88 @@
         $.commonPost("Appeal/AppealFileDelete", params, callback);
     }
 
-</script>
+    function viewLossFile(LossFileNameUrl) {
+        let fileList = LossFileNameUrl ? LossFileNameUrl.split(';') : []
+        if (!fileList || fileList.length == 0) {
+            alert("没有照片！")
+            return;
+        }
+        var galley = document.getElementById('galley');
+        var count = fileList.length;
+        $("#galley .pictures").empty()
+        $.each(fileList, function (i, item) {
+            var imgUrl = loginUser.ossInfo.osshost + item;
+            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+            var imagA = $('<li></li>');
+            let name = item.substr(item.lastIndexOf('/') + 1);
+            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+            img.attr('data-original', imgUrl)
+            $(imagA).append(img);
 
+            $("#galley .pictures").append(imagA);
+        })
+
+        $('#photoModal').on('shown.bs.modal', function (e) {
+            // WARNING: should ignore Viewer's `shown` event here.
+            if (e.namespace === 'bs.modal') {
+                viewer = new Viewer(galley, {
+                    url: 'data-original',
+                });
+            }
+        }).on('hidden.bs.modal', function (e) {
+            // WARNING: should ignore Viewer's `hidden` event here.
+            if (e.namespace === 'bs.modal') {
+                viewer.destroy();
+            }
+        });
+        $("#photoModal").modal("show")
+    }
+
+    function closePhotoModel() {
+        $("#photoModal").modal("hide")
+    }
+</script>
+<style>
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+
+    .pictures {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+        .pictures > li {
+            border: 1px solid transparent;
+            float: left;
+            height: calc(100% / 3);
+            margin: 0 -1px -1px 0;
+            overflow: hidden;
+            width: calc(100% / 3);
+        }
+
+            .pictures > li > img {
+                cursor: zoom-in;
+                width: 100%;
+            }
+</style>
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closePhotoModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">照片列表</h4>
+            </div>
+            <div class="modal-body" style="height:500px; overflow-y:auto">
+                <div id="galley">
+                    <ul class="pictures"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div>
     <form id="appeal-form">
         <table class="table table-bordered" style="margin-bottom:0px;">
@@ -205,14 +311,33 @@
                 <td style="width: 300px; text-align: center">
                     <span id="ShopName"></span>
                 </td>
-                <th style="width: 100px;">体系号</th>
+                <th style="width: 100px;">题号</th>
                 <td style="width: 120px; text-align: center">
                     <span id="SubjectCode"></span>
                 </td>
             </tr>
             <tr>
-                <th>指标</th>
-                <td colspan="5"><span id="CheckPoint"></span></td>
+                <th>检查点及说明</th>
+                <td colspan="2"><span id="CheckPoint"></span></td>
+                <td colspan="3"><span id="Remark"></span></td>
+            </tr>
+            <tr>
+                <th>失分项列表</th>
+                <td colspan="5">
+                    <div class="table-responsive comm-table-div">
+                        <table id="subject-lossResult-table" class="table table-bordered" style="margin-bottom:10px;font-size:12px">
+                            <thead>
+                                <tr>
+                                    <th style="width:auto">失分说明</th>
+                                    <th width="100">补充失分说明</th>
+                                    <th width="100" style="text-align:center">查看照片</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                </td>
             </tr>
             <tr>
                 <th>申诉理由</th>
@@ -256,3 +381,4 @@
             </tr>
         </table>
     </form>
+</div>
