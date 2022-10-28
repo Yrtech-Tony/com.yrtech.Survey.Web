@@ -33,6 +33,7 @@
             <input type="text" class="form-control" name="SetExpireDateTime" id="SetExpireDateTime" placeholder="过期时间">
             <button id="btnCreateUser" class="btn btn-default" style="margin-left:6px;">生成账号</button>
             <button id="btnSetExpireDateTime" class="btn btn-default">设置过期时间</button>
+            <button id="btnSetPhotoExpireDateTime" class="btn btn-default">设置过期时间(照片提交)</button>
         </div>
     </div>
     <br />
@@ -172,6 +173,28 @@
             }, function () { });
             
         });
+        //设置照片可以提交的过期时间 btnSetPotoExpireDateTime
+        $("#btnSetPhotoExpireDateTime").click(function () {
+            var expireTime = $("#SetExpireDateTime").val();
+            if (!expireTime) {
+                alert("请设置过期时间！");
+                return;
+            }
+            confirm("确定要全部设置为" + expireTime, function () {
+                $.commonApi({
+                    apiType: 'easyPhoto',
+                    url: 'Master/ResetPhotoExpireDateTime',
+                    params: {
+                        projectId: $("#project-sel").val(),
+                        expireDateTime: $("#SetExpireDateTime").val()
+                    },
+                    success: function (data) {
+                        loadUserInfo();
+                    }
+                })
+            }, function () { });
+
+        });
         //导出
         $("#btnExport").click(function () { 
             $.commonApi({
@@ -242,6 +265,13 @@
             }, {
                 title: "过期时间",
                 field: "ExpireDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "过期时间(照片提交)",
+                field: "PhotoExpireDateTime",
                 width: 150,
                 valign: "middle",
                 align: "center",
