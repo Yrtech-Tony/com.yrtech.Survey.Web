@@ -33,12 +33,24 @@
                     <input id="ExpireDateTime" name="ExpireDateTime" class="form-control">
                 </div>
             </div> 
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="PhotoExpireDateTime">
+                    过期时间(照片提交)<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="PhotoExpireDateTime" name="PhotoExpireDateTime" class="form-control">
+                </div>
+            </div> 
         </fieldset>
     </form>
 </div>
 
 <script>
     $("#ExpireDateTime").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language: 'zh-CN'
+    });
+    $("#PhotoExpireDateTime").datetimepicker({
         format: 'yyyy-mm-dd hh:ii:ss',
         language: 'zh-CN'
     });
