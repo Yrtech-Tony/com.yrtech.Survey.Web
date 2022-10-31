@@ -580,6 +580,8 @@
     <Content Include="Views\Recheck\SecondRecheckDetail.cshtml" />
     <Content Include="Views\Recheck\_PartialSecondRecheckEdit.cshtml" />
     <Content Include="Views\Report\stat.cshtml" />
+    <Content Include="Views\Report\ReportSet.cshtml" />
+    <Content Include="Views\EasyPhoto\_PartialEasyPhotoUserInfoImport.cshtml" />
     <Content Include="Views\Appeal\AppealImport.cshtml" />
     <Content Include="Views\Appeal\_PartialAppealSetImport.cshtml" />
   </ItemGroup>
