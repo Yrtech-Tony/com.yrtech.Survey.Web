@@ -47,5 +47,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialAppealSetImport");
         }
+        public ActionResult ShopAppealSetEdit()
+        {
+            return PartialView("_PartialShopAppealSetEdit");
+        }
+        
     }
 }

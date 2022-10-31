@@ -36,6 +36,24 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
+            }, {
+                title: "数据状态",
+                field: "ImportChk",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '正确' : '错误';
+                }
+            }, {
+                title: "状态说明",
+                field: "ImportRemark",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: preferenceFormatter
             }]
         });
     }
@@ -52,6 +70,7 @@
             brandId:$("#brand-sel").val(),
             ossPath: file.osspath
         }, function (data) {
+            debugger
             var chk = true;
             if (data && data.length > 0) {
                 chk = data[0].ImportChk;
@@ -76,7 +95,7 @@
             ListJson: JSON.stringify(rows)
         }, function () {
             $("#ModalImport").modal("hide");
-            loadImportAppealSet();
+            loadShopAppealSet()
         });
     }
 

@@ -584,6 +584,7 @@
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoUserInfoImport.cshtml" />
     <Content Include="Views\Appeal\AppealImport.cshtml" />
     <Content Include="Views\Appeal\_PartialAppealSetImport.cshtml" />
+    <Content Include="Views\Appeal\_PartialShopAppealSetEdit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

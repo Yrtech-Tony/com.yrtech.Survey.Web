@@ -3,7 +3,7 @@
         <fieldset>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectCode">
-                    期号代码<span class="required">*</span>
+                    经销商代码<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <input id="ProjectCode" name="ProjectCode" required="required" type="text" disabled="disabled" maxlength="15" class="form-control col-md-7 col-xs-12">
@@ -11,28 +11,12 @@
             </div>
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectName">
-                    期号名称<span class="required">*</span>
+                    经销商名称<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <input id="ProjectName" name="ProjectName" required="required" type="text" disabled="disabled" maxlength="15" class="form-control col-md-7 col-xs-12">
                 </div>
-            </div>
-            <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="HiddenCode">
-                    申诉模式<span class="required">*</span>
-                </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <select id="HiddenCode" name="HiddenCode" class="form-control col-md-7 col-xs-12"></select>
-                </div>
-            </div>
-            @*<div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AppealStartDate">
-                    申诉开始时间
-                </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="AppealStartDate" name="AppealStartDate" class="form-control" />
-                </div>
-            </div>
+            </div>  
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AppealEndDate">
                     申诉结束时间
@@ -40,7 +24,7 @@
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <input id="AppealEndDate" name="AppealEndDate" class="form-control" />
                 </div>
-            </div>*@
+            </div>
             
         </fieldset>
     </form>
@@ -49,17 +33,11 @@
 <link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 <script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
 <script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-<script>
-    $("#AppealStartDate").datetimepicker({
-        format: 'yyyy-mm-dd hh:ii:ss',
-        language: 'zh-CN'
-    });
+<script> 
     $("#AppealEndDate").datetimepicker({
         format: 'yyyy-mm-dd hh:ii:ss',
         language: 'zh-CN'
-    });
-    debugger
-    bindHiddenColumn("申诉模式");
+    }); 
 </script>
 
 
