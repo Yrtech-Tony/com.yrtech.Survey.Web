@@ -35,11 +35,14 @@
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value.substr(0,10);
+                }
             }, {
                 title: "数据状态",
                 field: "ImportChk",
-                width: 80,
+                width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -48,8 +51,7 @@
                 }
             }, {
                 title: "状态说明",
-                field: "ImportRemark",
-                width: 150,
+                field: "ImportRemark", 
                 valign: "middle",
                 align: "center",
                 sortable: false,
