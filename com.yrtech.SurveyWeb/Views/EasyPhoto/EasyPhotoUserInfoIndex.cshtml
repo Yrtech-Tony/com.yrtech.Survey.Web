@@ -22,9 +22,11 @@
             <input id="AccountIdQuery" type="text" class="form-control" placeholder="账号" style="width:140px;">
         </div>
     </div>
-    <div style="float:right;width:200px;text-align:right">
+    <div style="float:right;width:300px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnExport" class="btn btn-primary">导出</button>
+        <button id="btnDownloadTemplate" class="btn btn-primary">模板</button>
+        <button id="btnImportUserInfo" class="btn btn-primary">导入</button>
     </div>
 </div>
 <div class="result">
@@ -38,6 +40,21 @@
     </div>
     <br />
     <table id="userinfo-table" class="table table-bordered table-set"></table>
+</div>
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
+<div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -62,10 +79,45 @@
 
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js"></script>
 <script>
     var projects;
+    var osspath;
+    var ossFileUploader;
+    var curRow;
     $(function () {
         $('title').html('@ViewBag.Title')
+
+        osspath = "EasyPhoto/UserInfo/";
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath,
+            selectfiles: "btnImportUserInfo",
+            multi_selection: false,
+            success: function (files) {
+                debugger
+                //调用导入方法
+                files.forEach(function (file) {
+                    var projectTxt = $("#project-sel option:selected").text();
+                    //调用导入方法
+                    files.forEach(function (file) {
+                        debugger
+                        $("#ModalImport .modal-body").empty();
+                        $("#ModalImport").modal("show");
+                        $("#ModalImport .modal-title").html("账号导入");
+                        $("#ModalImport .modal-body").load("/EasyPhoto/EasyPhotoUserInfoImport", {}, function () {
+                            $("#ImportProject").html(projectTxt);
+                            loadImportUserInfo(file);
+                        })
+                    })
+                })
+            }
+        });
 
         $("#SetExpireDateTime").datetimepicker({
             format: 'yyyy-mm-dd hh:ii:ss',
@@ -101,6 +153,11 @@
             loadUserInfo();
         }).trigger("click");
 
+        $("#btnDownloadTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "EasyPhoto/ImportTemplate/UserInfo.xlsx";
+            console.log(url)
+            window.location.href = url;
+        });
         //生成账号
         $("#btnCreateUser").click(function () {
             var expireTime = $("#SetExpireDateTime").val();
