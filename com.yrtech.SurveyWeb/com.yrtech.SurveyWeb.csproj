@@ -581,6 +581,7 @@
     <Content Include="Views\Recheck\_PartialSecondRecheckEdit.cshtml" />
     <Content Include="Views\Report\stat.cshtml" />
     <Content Include="Views\Appeal\AppealImport.cshtml" />
+    <Content Include="Views\Appeal\_PartialAppealSetImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

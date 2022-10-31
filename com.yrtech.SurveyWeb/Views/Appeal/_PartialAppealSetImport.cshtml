@@ -30,26 +30,6 @@
                 valign: "middle",
                 align: "center",
             }, {
-                title: "经销商名称",
-                field: 'ShopName',
-                width: 300,
-                valign: "middle",
-                align: "center"
-            }, {
-                title: "经销商代码",
-                field: 'AccountId',
-                width: 100,
-                valign: "middle",
-                align: "center"
-            }, {
-                title: "申诉开始时间",
-                field: "AppealStartDate",
-                width: 150,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-
-            }, {
                 title: "申诉结束时间",
                 field: "AppealEndDate",
                 width: 150,
@@ -67,7 +47,7 @@
     }
     function loadImportAppealSet(file) {
         $('#import-appeal-set-table').bootstrapTable("showLoading");
-        $.commonGet("Master/UserInfoExcelAnalysis", {
+        $.commonGet("Appeal/AppealShopSetExcelAnalysis", {
             tenantId:loginUser.TenantId,
             brandId:$("#brand-sel").val(),
             ossPath: file.osspath
@@ -85,6 +65,13 @@
     function importAppealSet() {
         $("#btnImport").button("loading");
         var rows = $('#import-appeal-set-table').bootstrapTable("getData");
+        rows.forEach(function (row) {
+            row.TenantId = loginUser.TenantId;
+            row.BrandId = $("#brand-sel").val();
+            row.ProjectId = $("#project-sel").val();
+            row.InUserId = loginUser.Id;
+            row.ModifyUserId = loginUser.Id;
+        })
         $.commonPost("Appeal/AppealShopSetImport", {
             ListJson: JSON.stringify(rows)
         }, function () {

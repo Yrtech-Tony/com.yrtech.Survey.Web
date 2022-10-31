@@ -43,6 +43,11 @@
 <div class="result">
     <table id="shop-appeal-set-table" class="table table-bordered table-set"></table>
 </div>
+
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
+
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -60,8 +65,9 @@
     </div>
 </div>
 
+
 <div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width:1000px;">
+    <div class="modal-dialog" style="width:600px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -113,11 +119,10 @@
             var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/AppealShopSet.xlsx";
             window.location.href = url;
         });
-
-        osspath = "Survey/BaseInfo/";
+         
         new OSSClient({
             autoupload: true,
-            osspath: osspath + "Import/",
+            osspath: "Survey/BaseInfo/Import/",
             selectfiles: "btnImport",
             multi_selection: false,
             success: function (files) {
@@ -284,6 +289,7 @@
                 valign: "middle",
                 align: "center",
                 sortable: false,
+                visible:false,
 
             }, {
                 title: "申诉结束时间",
