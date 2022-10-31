@@ -42,6 +42,10 @@ namespace com.yrtech.SurveyWeb.Controllers
             ViewBag.AppealId = appealId;
             return View();
         }
-     
+
+        public ActionResult OpenAppealSetImport()
+        {
+            return View();
+        }
     }
 }

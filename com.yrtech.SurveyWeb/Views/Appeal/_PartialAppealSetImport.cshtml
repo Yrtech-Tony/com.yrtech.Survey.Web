@@ -1,0 +1,96 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="form-inline" style="text-align:center">
+        <div class="item form-inline" style="float:right;">
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importAppealSet()" data-loading-text="导入中...">导入</button>
+        </div>
+    </div>
+    
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="import-appeal-set-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () { 
+    })
+
+    function initImportAppealSetTable(data) {
+        $('#import-appeal-set-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data:data,
+            striped: true, //是否显示行间隔色
+            height: 600,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 100,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "经销商名称",
+                field: 'ShopName',
+                width: 300,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商代码",
+                field: 'AccountId',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "申诉开始时间",
+                field: "AppealStartDate",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+
+            }, {
+                title: "申诉结束时间",
+                field: "AppealEndDate",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }]
+        });
+    }
+
+    function preferenceFormatter(value, row, index) {
+        return [
+            '<a href="#" data-toggle="tooltip" title=' + value + '>' + value + '</a>',
+        ].join('');
+    }
+    function loadImportAppealSet(file) {
+        $('#import-appeal-set-table').bootstrapTable("showLoading");
+        $.commonGet("Master/UserInfoExcelAnalysis", {
+            tenantId:loginUser.TenantId,
+            brandId:$("#brand-sel").val(),
+            ossPath: file.osspath
+        }, function (data) {
+            var chk = true;
+            if (data && data.length > 0) {
+                chk = data[0].ImportChk;
+            }
+            if (!chk) {
+                $("#btnImport").attr("disabled", true);
+            } 
+            initImportAppealSetTable(data);
+        });
+    }
+    function importAppealSet() {
+        $("#btnImport").button("loading");
+        var rows = $('#import-appeal-set-table').bootstrapTable("getData");
+        $.commonPost("Appeal/AppealShopSetImport", {
+            ListJson: JSON.stringify(rows)
+        }, function () {
+            $("#ModalImport").modal("hide");
+            loadImportAppealSet();
+        });
+    }
+
+</script>

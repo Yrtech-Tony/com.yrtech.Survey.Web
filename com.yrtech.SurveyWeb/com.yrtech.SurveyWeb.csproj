@@ -582,6 +582,7 @@
     <Content Include="Views\Report\stat.cshtml" />
     <Content Include="Views\Report\ReportSet.cshtml" />
     <Content Include="Views\EasyPhoto\_PartialEasyPhotoUserInfoImport.cshtml" />
+    <Content Include="Views\Appeal\AppealImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
