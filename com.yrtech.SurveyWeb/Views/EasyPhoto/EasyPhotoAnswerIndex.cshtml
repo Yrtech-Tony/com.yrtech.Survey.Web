@@ -17,21 +17,7 @@
     }
 </style>
 <div class="condition">
-    <div class="form-inline">
-        <div class="form-group">
-            <label class="control-label">期号:</label>
-            <select id="project-sel" class="form-control" style="width:200px;"></select>
-        </div>
-        <div class="form-group">
-            <label class="control-label">经销商:</label>
-            <input id="key" class="form-control" style="width:500px;" placeholder="英文逗号隔开" />
-        </div>
-        <div class="form-group">
-            <label class="control-label">检查代码:</label>
-            <input id="checkCode" class="form-control" style="width:500px;" placeholder="检查代码" />
-        </div>
-    </div>
-    <div style="float:right;width:450px;text-align:right">
+    <div style="text-align:right;width:100%">
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnDownloadTemplate" class="btn btn-primary">模板</button>
         <button id="btnImportAnswer" class="btn btn-primary">导入</button>
@@ -40,6 +26,21 @@
         <button id="btnDeleteByShop" class="btn btn-primary">按店删除</button>
 
     </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商:</label>
+            <input id="key" class="form-control" style="width:230px;" placeholder="英文逗号隔开" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">检查代码:</label>
+            <input id="checkCode" class="form-control" style="width:230px;" placeholder="检查代码" />
+        </div>
+    </div>
+    
 </div>
 <div class="result">
     <table id="answer-table" class="table table-set"></table>
