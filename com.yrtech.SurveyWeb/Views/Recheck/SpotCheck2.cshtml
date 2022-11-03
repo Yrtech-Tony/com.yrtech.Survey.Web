@@ -123,6 +123,25 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closePhotoModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">照片列表</h4>
+            </div>
+            <div class="modal-body" style="height:500px; overflow-y:auto">
+                <div id="galley">
+                    <ul class="pictures"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
@@ -139,8 +158,8 @@
     <div id="ossfile"></div>
 </div>
 
-<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
-<script src="~/Content/baguetteBox/baguetteBox.js"></script>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
 
 <script>
     NProgress.start();
@@ -293,6 +312,46 @@
                         return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
                 }
             }, {
+                title: "得分修改",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit();" style="min-width:100px">得分修改</a>';
+                }
+            }, {
+                title: "检查标准",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goInspectionStandardIndex();" style="min-width:100px">检查标准</a>';
+                }
+            }, {
+                title: "标准照片",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goSubjectFileIndex();" style="min-width:100px">标准照片</a>';
+                }
+            }, {
+                title: "失分描述",
+                field: "",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goSubjectLossIndex();" style="min-width:100px">失分描述</a>';
+                }
+            }, {
                 title: "复审得分",
                 field: "RecheckScore",
                 width: 150,
@@ -382,46 +441,6 @@
                     validate: function (v) {
                         if (!v) return '意见不能为空';
                     }
-                }
-            }, {
-                title: "得分修改",
-                field: "",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit();" style="min-width:100px">得分修改</a>';
-                }
-            }, {
-                title: "检查标准",
-                field: "",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goInspectionStandardIndex();" style="min-width:100px">检查标准</a>';
-                }
-            }, {
-                title: "标准照片",
-                field: "",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goSubjectFileIndex();" style="min-width:100px">标准照片</a>';
-                }
-            }, {
-                title: "失分描述",
-                field: "",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goSubjectLossIndex();" style="min-width:100px">失分描述</a>';
                 }
             }],
             onClickRow: function (row, $element) {
