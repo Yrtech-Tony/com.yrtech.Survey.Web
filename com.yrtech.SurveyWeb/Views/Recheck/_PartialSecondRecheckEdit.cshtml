@@ -286,6 +286,27 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closePhotoModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">照片列表</h4>
+            </div>
+            <div class="modal-body" style="height:500px; overflow-y:auto">
+                <div id="galley">
+                    <ul class="pictures"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
+
+
 <script> 
     var curRow_ins;
     let curLossRow;
@@ -1044,77 +1065,5 @@
     }
 
     /**失分说明 **end**/
-
-
-    function viewPicutes(url) {
-        debugger
-        let fileList = url ? url.split(';') : []
-        if (!fileList || fileList.length == 0) {
-            alert("没有照片！")
-            return;
-        }
-        if ($("#baguetteBox").length > 0) {
-            $("#baguetteBox").remove()
-        }
-        if ($("#baguetteBox-overlay").length > 0) {
-            $("#baguetteBox-overlay").remove()
-        }
-
-        var imgBox = $('<div id="baguetteBox" class="baguetteBox" style="display:none">');
-        $(document.body).append(imgBox);
-        var count = fileList.length;
-        $.each(fileList, function (i, item) {
-            var imgUrl = loginUser.ossInfo.osshost + item;
-            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
-            var imagA = $('<a></a>');
-            let name = item.substr(item.lastIndexOf('/') + 1);
-            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
-            $(imagA).append(img);
-            $(imagA).attr('href', imgUrl);
-            $(imagA).attr('data-caption', (i + 1) + "/" + count + "   " + name);
-
-            imgBox.append(imagA);
-        })
-        baguetteBox.run('#baguetteBox');
-
-        setTimeout(function () {
-            imgBox.find("a:first img").click();
-        }, 300)
-    }
-    function viewSubjectFile(url) {
-        let fileList = url ? url.split(';') : []
-        if (!fileList || fileList.length == 0) {
-            alert("没有照片！")
-            return;
-        }
-        var galley = document.getElementById('galley');
-        var count = fileList.length;
-        $("#galley .pictures").empty()
-        $.each(fileList, function (i, item) {
-            var imgUrl = loginUser.ossInfo.osshost + item;
-            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
-            var imagA = $('<li></li>');
-            let name = item.substr(item.lastIndexOf('/') + 1);
-            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
-            img.attr('data-original', imgUrl)
-            $(imagA).append(img);
-
-            $("#galley .pictures").append(imagA);
-        })
-
-        $('#photoModal').on('shown.bs.modal', function (e) {
-            // WARNING: should ignore Viewer's `shown` event here.
-            if (e.namespace === 'bs.modal') {
-                viewer = new Viewer(galley, {
-                    url: 'data-original',
-                });
-            }
-        }).on('hidden.bs.modal', function (e) {
-            // WARNING: should ignore Viewer's `hidden` event here.
-            if (e.namespace === 'bs.modal') {
-                viewer.destroy();
-            }
-        });
-        $("#photoModal").modal("show")
-    }
+     
 </script>
