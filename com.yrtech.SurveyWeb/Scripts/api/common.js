@@ -111,7 +111,7 @@ function toNullString(str) {
 }
 
 function closeModel() {
-    $("#Modal").modal("hide");
+    $("#Modal").modal("hide"); 
 }
 
 // 绑定品牌
@@ -377,4 +377,46 @@ function openNewPage(url,callback) {
 
         })
     }
+}
+
+var viewer;
+function viewPicutes(url) {
+    let fileList = url ? url.split(';') : []
+    if (!fileList || fileList.length == 0) {
+        alert("没有照片！")
+        return;
+    }
+    var galley = document.getElementById('galley');
+    var count = fileList.length;
+    $("#galley .pictures").empty()
+    $.each(fileList, function (i, item) {
+        var imgUrl = loginUser.ossInfo.osshost + item;
+        var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
+        var imagA = $('<li></li>');
+        let name = item.substr(item.lastIndexOf('/') + 1);
+        var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + name);
+        img.attr('data-original', imgUrl)
+        $(imagA).append(img);
+
+        $("#galley .pictures").append(imagA);
+    })  
+
+    $('#photoModal').on('shown.bs.modal', function (e) {
+        // WARNING: should ignore Viewer's `shown` event here.
+        if (e.namespace === 'bs.modal') {
+            viewer = new Viewer(galley, {
+                url: 'data-original',
+            });
+        }
+    }).on('hidden.bs.modal', function (e) {
+        // WARNING: should ignore Viewer's `hidden` event here.
+        if (e.namespace === 'bs.modal') {
+            viewer.destroy();
+        }
+    });
+    $("#photoModal").modal("show")
+}
+ 
+function closePhotoModel() {
+    $("#photoModal").modal("hide")
 }

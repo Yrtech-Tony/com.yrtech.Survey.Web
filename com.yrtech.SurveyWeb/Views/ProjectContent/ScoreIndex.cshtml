@@ -2,41 +2,6 @@
     ViewBag.Title = "得分管理";
 }
 
-<style>
-    .operation {
-        padding: 10px 0px;
-        text-align: right;
-    }
-
-        .operation .btn {
-            width: 100px;
-        }
-
-    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
-        border-left: none;
-        border-right: none;
-    }
-
-    .pictures {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-        .pictures > li {
-            border: 1px solid transparent;
-            float: left;
-            height: calc(100% / 3);
-            margin: 0 -1px -1px 0;
-            overflow: hidden;
-            width: calc(100% / 3);
-        }
-
-            .pictures > li > img {
-                cursor: zoom-in;
-                width: 100%;
-            }
-</style>
 <div class="condition">
     <div style="text-align:right;width:100%">
         <button id="btnQuery" class="btn btn-primary">查询</button>
@@ -97,6 +62,10 @@
                 </div>
                 <div id="subject-file-pics" style="max-height:500px;overflow:auto">
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveCurFileResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript: closeFileModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
     </div>
@@ -173,9 +142,7 @@
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
-
-<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
-<script src="~/Content/baguetteBox/baguetteBox.js"></script>
+ 
 <link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
 <script src="~/Content/viewer/viewer.min.js"></script>
 
@@ -261,6 +228,16 @@
             loadScore();
 
         })//.trigger("click");
+
+        $('#Modal').on('hide.bs.modal', function (e) {
+            // 关闭编辑时刷新数据
+            if (lossUploader) {
+                lossUploader.destroy()
+            }
+            if (uploader) {
+                uploader.destroy()
+            }
+        })
 
         NProgress.done();
     })
@@ -539,7 +516,4 @@
 
     }
     
-    function closePhotoModel() {
-        $("#photoModal").modal("hide")
-    }
 </script>

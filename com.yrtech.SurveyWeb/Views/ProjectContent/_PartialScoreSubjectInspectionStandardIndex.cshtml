@@ -73,6 +73,7 @@
         }, function (data) {
             if (data && data.length > 0) {
                 let item = data[0]
+                curRow = data[0]
                 let inspectionStandardResult = item.InspectionStandardResult ? JSON.parse(item.InspectionStandardResult) : []
                 item.SubjectInspectionStandardList = item.SubjectInspectionStandardList.map(function (o) {
                     let findOne = inspectionStandardResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })

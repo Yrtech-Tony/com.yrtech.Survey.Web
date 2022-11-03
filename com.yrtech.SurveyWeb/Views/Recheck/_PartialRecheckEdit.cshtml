@@ -323,6 +323,9 @@
                 valign: "middle",
                 align: "center",
             }],
+                onClickRow: function (row, $element) {
+                    curRow_ins = row;
+                } 
         });
     }
     function initPhoto() {
@@ -352,7 +355,10 @@
                 formatter: function (value, row, index) {
                     return '<a href="javascript:viewSubjectFile(\'' + (row.Url || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
-            }]
+            }],
+            onClickRow: function (row, $element) {
+                curFileRow = row;
+            }
         });
     }
     function initLossResult() {
