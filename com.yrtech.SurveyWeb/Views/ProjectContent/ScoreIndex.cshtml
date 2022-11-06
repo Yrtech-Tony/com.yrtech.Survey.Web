@@ -211,6 +211,11 @@
             });
         });
         $("#btnExportAnswer2").click(function () {
+            var data = [{ LabelId: 'LossCode', LabelName: '失分' },
+                { LabelId: 'LossName', LabelName: '失分描述' },
+                { LabelId: 'PhotoScore', LabelName: '照片得分' },
+                { LabelId: 'Remark', LabelName: '备注' }]
+            bindExportProperties(data)
             $("#exportModal").modal("show");
         });
         $("#btnDownLoadFileResult").click(function () {
@@ -250,11 +255,7 @@
                 uploader.destroy()
             }
         })
-        bindExportProperties([
-            { LabelId: 'LossCode', LabelName: '失分' },
-        { LabelId: 'LossName', LabelName: '失分描述' },
-        { LabelId: 'PhotoScore', LabelName: '照片得分' },
-        { LabelId: 'Remark', LabelName: '备注' }])
+
         NProgress.done();
     })
 
@@ -266,7 +267,7 @@
         $("#exportBtn").button('loading');
         var exportProps = loadExportProperties()
         console.log('exportProps', exportProps)
-       
+
         $.commonGet("Answer/ShopAnswerScoreInfoExportL", {
             projectId: $("#project-sel").val(),
             shopId: "",
@@ -274,6 +275,7 @@
         }, function (data) {
             window.location.href = baseSurveyUrl + data;
             $("#exportBtn").button('reset');
+            $("#export-properties-checks").empty()
             closeExportModel()
         });
     }
