@@ -542,7 +542,7 @@
         data.forEach(function (r) {
             var checkbox = $('<label class="col-md-6"><input type="checkbox"> <span class="checkbox-label"></span></label>')
             checkbox.find('span').text(r.LabelName)
-            checkbox.find('inout:checkbox').val(r.LabelId)
+            checkbox.find('input:checkbox').val(r.LabelId)
             $("#RecheckErrorCheckListConfirm").append(checkbox)
         })
         $("#RecheckErrorCheckListConfirm").find("input[type=checkbox]").iCheckParser();
