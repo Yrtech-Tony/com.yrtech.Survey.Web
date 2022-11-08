@@ -378,17 +378,17 @@ function openNewPage(url,callback) {
         })
     }
 }
+ 
 
-var viewer;
 function viewPicutes(url) {
     let fileList = url ? url.split(';') : []
     if (!fileList || fileList.length == 0) {
         alert("没有照片！")
         return;
-    }
+    } 
     var galley = document.getElementById('galley');
     var count = fileList.length;
-    $("#galley .pictures").empty()
+    $("#galley").empty()
     $.each(fileList, function (i, item) {
         var imgUrl = loginUser.ossInfo.osshost + item;
         var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
@@ -398,23 +398,37 @@ function viewPicutes(url) {
         img.attr('data-original', imgUrl)
         $(imagA).append(img);
 
-        $("#galley .pictures").append(imagA);
+        $("#galley").append(imagA);
     })  
-
-    $('#photoModal').on('shown.bs.modal', function (e) {
-        // WARNING: should ignore Viewer's `shown` event here.
-        if (e.namespace === 'bs.modal') {
-            viewer = new Viewer(galley, {
+    setTimeout(function () {
+        if (!viewer) {
+           var viewer = new Viewer(galley, {
                 url: 'data-original',
-            });
+                title: function (image) {
+                    return image.alt + ' (' + (this.index + 1) + '/' + this.length + ')';
+                },
+                hidden: function () {
+                    viewer.destroy();
+                },
+            }); 
         }
-    }).on('hidden.bs.modal', function (e) {
-        // WARNING: should ignore Viewer's `hidden` event here.
-        if (e.namespace === 'bs.modal') {
-            viewer.destroy();
-        }
-    });
-    $("#photoModal").modal("show")
+        $("#galley img:first").click()
+    },200)
+    
+    //$('#photoModal').on('shown.bs.modal', function (e) {
+    //    // WARNING: should ignore Viewer's `shown` event here.
+    //    if (e.namespace === 'bs.modal') {
+    //        viewer = new Viewer(galley, {
+    //            url: 'data-original',
+    //        });
+    //    }
+    //}).on('hidden.bs.modal', function (e) {
+    //    // WARNING: should ignore Viewer's `hidden` event here.
+    //    if (e.namespace === 'bs.modal') {
+    //        viewer.destroy();
+    //    }
+    //});
+    //$("#photoModal").modal("show")
 }
  
 function closePhotoModel() {
