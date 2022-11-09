@@ -219,6 +219,33 @@
             $("#btnSaveStatus").button('reset');
         }, function () { $("#btnSaveStatus").button('reset'); });
     }
+
+
+    var curRow;
+    function saveScore() {
+        var params = $("#score-form").serializeJson();
+        var json = $("#score-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+        } else {
+            //新增
+            params = $.extend({
+                TenantId: loginUser.TenantId,
+                ProjectId: $("#project-sel").val(),
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, params);
+        }
+        $("#save_button").button("loading");
+        $.commonPost("Answer/SaveAnswerInfo", params, function () {
+            $("#save_button").button("reset");
+            loadRecheckSpotCheck2();
+            closeModel();
+        }, function () { $("#save_button").button("reset"); });
+    }
+
     var curRow;
     function loadRecheckSpotCheck2() {
         var projectId = $("#project-sel").val();
