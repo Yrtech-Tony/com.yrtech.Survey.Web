@@ -497,10 +497,19 @@
                 else {
                     $("#save_button").show();
                 }
-                $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
-                    debugger
-                    $("#score-form").setForm(curRow);
-                    $("#score-form").data("json", JSON.stringify(curRow));
+                $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () { 
+                    $.commonGet("Answer/GetShopAnswerScoreInfo", {
+                        projectId: $("#project-sel").val(),
+                        shopId: $("#shop-sel").val(),
+                        subjectId: curRow.SubjectId,
+                        key: ''
+                    }, function (data) {
+                        if (data && data.length > 0) {
+                            curRow = data[0]
+                            $("#score-form").setForm(curRow);
+                            $("#score-form").data("json", JSON.stringify(curRow));
+                        }
+                    });
                 })
             });
         },300)
