@@ -228,7 +228,7 @@
             $("#btnSaveStatus").button('reset');
         }, function () { $("#btnSaveStatus").button('reset'); });
     }
-    var curRow;
+    
     function saveScore() {
         var params = $("#score-form").serializeJson();
         var json = $("#score-form").data("json");
@@ -278,6 +278,7 @@
         });
     }
 
+    var curRow;
     //初始化期号表格
     function initRecheckTable(data) {
         $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
@@ -481,7 +482,7 @@
             }
         });
     }
-
+   
     function goEdit() {
         $("#Modal .modal-title").html('得分编辑');
         $("#Modal .modal-footer").show();
@@ -498,9 +499,18 @@
                 $("#save_button").show();
             }
             $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
-                debugger
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
+                $.commonGet("Answer/GetShopAnswerScoreInfo", {
+                    projectId: $("#project-sel").val(),
+                    shopId: $("#shop-sel").val(),
+                    subjectId: curRow.SubjectId,
+                    key: ''
+                }, function (data) {
+                    if (data && data.length > 0) {
+                        curRow = data[0]
+                        $("#score-form").setForm(curRow);
+                        $("#score-form").data("json", JSON.stringify(curRow));
+                    }
+                });
             })
         });
 
@@ -521,9 +531,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () { 
             })
         });
 
@@ -544,9 +552,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () { 
             })
         });
 
@@ -567,9 +573,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () { 
             })
         });
 

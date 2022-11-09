@@ -83,7 +83,7 @@
             <div class="modal-footer">
                 <button id="save_button" type="button" onclick="saveCurFileResult()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript: closeFileModel();" class="btn btn-default">关闭</button>
-            </div>           
+            </div>
         </div>
     </div>
 </div>
@@ -259,7 +259,7 @@
         }, function () { $("#btnSaveStatus").button('reset'); });
     }
 
-    var curRow;
+   
     function loadRecheckNotPass() {
         var projectId = $("#project-sel").val();
         if (!projectId) {
@@ -285,7 +285,7 @@
         });
         // $('#recheck-table').bootstrapTable("hideLoading");
     }
-
+    var curRow;
     //初始化期号表格
     function initRecheckTable(data) {
         debugger
@@ -472,26 +472,37 @@
     }
 
     function goEdit() {
-        $("#Modal .modal-title").html('得分编辑');
-        $("#Modal .modal-footer").show();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
-            })
-        });
-
+        setTimeout(function () {
+            $("#Modal .modal-title").html('得分编辑');
+            $("#Modal .modal-footer").show();
+            $("#Modal .modal-body").empty();
+            $("#Modal").modal("show");
+            $.commonGet("Recheck/GetRecheckStatus", {
+                projectId: curRow.ProjectId,
+                shopId: curRow.ShopId
+            }, function (data) {
+                if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                    $("#save_button").hide();
+                }
+                else {
+                    $("#save_button").show();
+                }
+                $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+                    $.commonGet("Answer/GetShopAnswerScoreInfo", {
+                        projectId: $("#project-sel").val(),
+                        shopId: $("#shop-sel").val(),
+                        subjectId: curRow.SubjectId,
+                        key: ''
+                    }, function (data) {
+                        if (data && data.length > 0) {
+                            curRow = data[0]
+                            $("#score-form").setForm(curRow);
+                            $("#score-form").data("json", JSON.stringify(curRow));
+                        } 
+                    });
+                })
+            });
+        }, 300)
     }
 
     function goInspectionStandardIndex() {
@@ -511,8 +522,6 @@
                     $("#save_button").show();
                 }
                 $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
-                    $("#score-form").setForm(curRow);
-                    $("#score-form").data("json", JSON.stringify(curRow));
                 })
             });
         }, 300)
@@ -537,8 +546,6 @@
                     $("#save_button").show();
                 }
                 $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
-                    $("#score-form").setForm(curRow);
-                    $("#score-form").data("json", JSON.stringify(curRow));
                 })
             });
         }, 300)
@@ -561,8 +568,6 @@
                     $("#save_button").show();
                 }
                 $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
-                    $("#score-form").setForm(curRow);
-                    $("#score-form").data("json", JSON.stringify(curRow));
                 })
             });
         }, 300)
