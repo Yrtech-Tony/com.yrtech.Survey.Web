@@ -482,28 +482,29 @@
         });
     }
 
-    function goEdit(id) {
-        $("#Modal .modal-title").html('得分编辑');
-        $("#Modal .modal-footer").show();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
-                debugger
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
-            })
-        });
-
+    function goEdit() {
+        setTimeout(function () {
+            $("#Modal .modal-title").html('得分编辑');
+            $("#Modal .modal-footer").show();
+            $("#Modal .modal-body").empty();
+            $("#Modal").modal("show");
+            $.commonGet("Recheck/GetRecheckStatus", {
+                projectId: curRow.ProjectId,
+                shopId: curRow.ShopId
+            }, function (data) {
+                if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                    $("#save_button").hide();
+                }
+                else {
+                    $("#save_button").show();
+                }
+                $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
+                    debugger
+                    $("#score-form").setForm(curRow);
+                    $("#score-form").data("json", JSON.stringify(curRow));
+                })
+            });
+        },300)
     }
 
     function goInspectionStandardIndex() {
@@ -521,9 +522,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () { 
             })
         });
 
@@ -544,9 +543,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () { 
             })
         });
 
@@ -567,9 +564,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
-                $("#score-form").setForm(curRow);
-                $("#score-form").data("json", JSON.stringify(curRow));
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () { 
             })
         });
 
