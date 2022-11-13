@@ -111,6 +111,7 @@
             loadSubject();
         });
         loadSubject();
+        NProgress.done();
         $("#btnSubjectAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/ProjectContent/SubjectEdit", {}, function () {
