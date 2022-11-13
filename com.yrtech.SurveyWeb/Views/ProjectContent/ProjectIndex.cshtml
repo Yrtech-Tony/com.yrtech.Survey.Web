@@ -83,6 +83,7 @@
             return false;
         });
 
+        NProgress.done();
         //initProjectTable();
         $("#btnQuery").click(function () {
             loadProject();
@@ -189,6 +190,13 @@
             }, {
                 title: "序号",
                 field: "OrderNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "照片像素",
+                field: "PhotoSize",
                 width: 100,
                 valign: "middle",
                 align: "center",

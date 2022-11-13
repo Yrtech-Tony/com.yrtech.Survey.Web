@@ -36,6 +36,10 @@
             <label class="control-label">经销商名称:</label>
             <input type="text" class="form-control" id="ShopName" placeholder="经销商名称">
         </div>
+        <div class="form-group">
+            <label class="control-label">使用与否: </label>
+            <input type="checkbox" id="useChk" name="useChk" checked>
+        </div>
     </div>
     
 </div>
@@ -89,6 +93,7 @@
     var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
+        $("input[type=radio],input[type=checkbox]").iCheckParser();
 
         osspath = "Survey/BaseInfo/";
         new OSSClient({
@@ -160,13 +165,13 @@
         if (!brandId) {
             alert("请选择品牌！");
             return
-        }
-        $('#shop-table').bootstrapTable("showLoading");
+        } 
         $.commonGet("Master/GetShop", {
             brandId: $("#brand-sel").val(),
             shopId: '',
             shopCode: $("#ShopCode").val(),
-            key: $("#ShopName").val()
+            key: $("#ShopName").val(),
+            useChk: $("#useChk").is(":checked")
         }, function (data) {
           //  $('#shop-table').bootstrapTable("hideLoading");
             // $('#shop-table').bootstrapTable("load", data);

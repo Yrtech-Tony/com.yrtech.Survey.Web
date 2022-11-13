@@ -125,8 +125,7 @@ function bindBrandSelect() {
 }
 // 绑定权限类型
 function bindRoleTypeSelect(type) {
-    $.ajaxSettings.async = false;
-    debugger
+    $.ajaxSettings.async = false; 
     $.commonGet("Master/GetRoleType", {
         type: type,
         roleTypeCode: loginUser.RoleType
@@ -234,14 +233,21 @@ function bindGroupSel() {
 
 }
 // 绑定隐藏字段
-function bindHiddenColumn(hiddenCodeGroup) {
+function bindHiddenColumn(hiddenCodeGroup,dropEl) {
     $.ajaxSettings.async = false;
+    if (dropEl) {
+        $(dropEl).empty()
+    }
     $.commonGet("Master/GetHiddenCode", {
         hiddenCodeGroup: hiddenCodeGroup,
         hiddenCode: ''
     }, function (data) {
         data.forEach(function (hiddenCode) {
-            $("#HiddenCode").append($("<option>").val(hiddenCode.HiddenCode).text(hiddenCode.HiddenName));
+            if (dropEl) {
+                $(dropEl).append($("<option>").val(hiddenCode.HiddenCode).text(hiddenCode.HiddenName));
+            } else {
+                $("#HiddenCode").append($("<option>").val(hiddenCode.HiddenCode).text(hiddenCode.HiddenName));
+            } 
         })
     })
     $.ajaxSettings.async = true;

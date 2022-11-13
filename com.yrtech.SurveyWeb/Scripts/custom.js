@@ -307,11 +307,11 @@ $(document).ready(function () {
 
 // NProgress
 if (typeof NProgress != 'undefined') {
-    $(document).ready(function () {
+    $(document).ready(function () { 
         NProgress.start();
     });
 
-    $(window).load(function () {
+    $(window).load(function () { 
         NProgress.done();
     });
 }
