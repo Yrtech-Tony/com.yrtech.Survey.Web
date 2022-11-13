@@ -107,7 +107,7 @@
         $('#import-user-table').bootstrapTable("showLoading");
         $.commonGet("Master/UserInfoExcelAnalysis", {
             tenantId:loginUser.TenantId,
-            brandId:$("#brand-sel").val(),
+            brandId:$("#brand-sel").val()||"",
             ossPath: file.osspath
         }, function (data) {
             var chk = true;
