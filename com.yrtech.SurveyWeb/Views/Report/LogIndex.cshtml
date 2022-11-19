@@ -17,10 +17,22 @@
     }
 </style>
 <div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnSearch" class="btn btn-primary">查询</button>
+        <button id="btnExportReportLog" class="btn btn-primary">导出</button>
+    </div>
     <div class="form-inline">
         <div class="form-group">
-            <label class="control-label">期次:</label>
-            <input id="project" class="form-control" style="width:160px" placeholder="期号代码/期号名称" />
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:150px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width: 150px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">期号:</label>
+            <select id="project-sel" class="form-control" style="width: 140px"></select>
         </div>
         <div class="form-group">
             <label class="control-label">文件名称:</label>
@@ -34,11 +46,7 @@
             <label class="control-label">结束日期:</label>
             <input id="endDate" class="form-control" style="width: 160px" />
         </div>
-    </div>
-    <div style="float:right;width:200px;text-align:right">
-        <button id="btnSearch" class="btn btn-primary">查询</button>
-        <button id="btnExportReportLog" class="btn btn-primary">导出</button>
-    </div>
+    </div> 
 </div>
 <div class="result table-responsive">    
     <table id="report-log-table" class="table table-bordered table-set"></table>
@@ -67,6 +75,8 @@
 
 <script type="text/javascript" language="javascript">
     $(function () {
+        NProgress.start();
+
         $('title').html('@ViewBag.Title')
 
         $("#startDate,#endDate").datetimepicker({
@@ -77,6 +87,27 @@
         var curDate = new Date();
         $("#startDate").val(new Date(curDate.getTime() - 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
         $("#endDate").val(curDate.Format("yyyy-MM-dd"));
+
+        bindBrandSelect();
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
+
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+            $("#project-sel").change();
+        });
+        $("#project-sel").change(function () {
+            bindShopSelect();
+        });
 
        // initReportLogTable();
         //查询
@@ -98,9 +129,16 @@
                 $("#btnExportReportLog").button('reset');
             });
         });
+
+        NProgress.done();
     });
 
     function loadReportLog() {
+        var projectId = $("#project-sel").val();
+        if (!projectId) {
+            alert("请选择一个期号！");
+            return
+        }
         // $("#btnSearch").button('loading');
         $('#report-log-table').bootstrapTable("showLoading");
         $.commonGet("ReportFile/ReportFileActionLogSearch", getParams(), function (data) {
@@ -116,7 +154,7 @@
             userId: '',
             action: '',
             account: '',
-            project: $('#project').val() || '',
+            project: $('#project-sel').val() || '',
             reportFileName: $('#reportFileName').val() || '',
             startDate: $('#startDate').val() || '',
             endDate: $('#endDate').val() || ''
