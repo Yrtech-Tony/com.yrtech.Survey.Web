@@ -68,17 +68,17 @@
         $("#year-sel").val(tYear);
 
         $("#brand-sel").change(function () {
-            loadProject();
+            bindProjectSelect();
         });
         $("#year-sel").change(function () {
-            loadProject();
+            bindProjectSelect();
         });
 
         bindProjectSelect();
         $("#project-sel").change(function () {
             loadFileRename();
         })
-
+        bindProjectSelect();
         initFileRenameTable();
         $("#btnQuery").click(function () {
             loadFileRename();
