@@ -177,6 +177,7 @@
         //加载年份
         $("#year-sel").change(function () {
             bindProjectSelect();
+            $("#project-sel").change();
         });
         for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));

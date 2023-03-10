@@ -270,9 +270,11 @@
         $('#shop-appeal-set-table').bootstrapTable("showLoading");
         $.commonGet("Appeal/GetAppealShopSet", {
             projectId: $("#project-sel").val()
-        }, function (data) { 
+        }, function (data) {
+            $('#shop-appeal-set-table').bootstrapTable("hideLoading");
+            $('#shop-appeal-set-table').bootstrapTable("load", data);
             initShopAppealSetTable(data);
-            $('#shop-appeal-set-table').bootstrapTable("reset");
+            //$('#shop-appeal-set-table').bootstrapTable("reset");
         });
     }
     function initShopAppealSetTable(data) {
