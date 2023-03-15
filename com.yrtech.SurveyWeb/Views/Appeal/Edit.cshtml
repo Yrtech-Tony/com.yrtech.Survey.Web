@@ -80,6 +80,16 @@
 
                 loadAppealFiles();
                 bindLossResultTable(appeal.LossResult ? JSON.parse(appeal.LossResult) : [])
+                //标准照片
+                let FileResult = appeal.FileResult ? JSON.parse(appeal.FileResult) : []
+                appeal.SubjectFileList = appeal.SubjectFileList.map(function (o) {
+                    let findOne = FileResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
+                    if (findOne) {
+                        o.Url = findOne.Url
+                    }
+                    return o;
+                });
+                bindPhotoTable(appeal.SubjectFileList ? JSON.parse(appeal.SubjectFileList) : [])
             }
         })
     })
@@ -186,6 +196,28 @@
         }
     }
 
+    function bindPhotoTable(data) {
+        $("#subject-photo-table tbody").empty();
+        if (data) {
+            $.each(data, function (i, item) {
+                var tr = $("<tr>");
+
+                tr.append($("<td>").html(item.SeqNO));
+                tr.append($("<td>").html(item.FileName));
+                //查看照片
+                var showBtn = $("<a href='#'>查看照片</a>");
+                showBtn.click(function () {
+                    viewLossFile(item.LossFileNameUrl, tr);
+                    return false;
+                });
+                tr.append($("<td></td>").append(showBtn));
+
+                $("#subject-photo-table tbody").append(tr);
+            });
+        }
+    }
+
+    
     function AppealFileSave(file) {
         $("#selectfiles").button("loading");
         $.commonPost("Appeal/AppealFileSave", file, function () {
@@ -337,6 +369,23 @@
                         </table>
                     </div>
 
+                </td>
+            </tr>
+            <tr>
+                <th>标准照片</th>
+                <td colspan="5">
+                    <div class="table-responsive comm-table-div"> 
+                        <table id="subject-photo-table" class="table table-bordered" style="margin-bottom:10px;font-size:12px">
+                            <thead>
+                                <tr>
+                                    <th width="60">序号</th>
+                                    <th style="width:auto">拍照点</th>
+                                    <th width="100" style="text-align:center">查看照片</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div> 
                 </td>
             </tr>
             <tr>
