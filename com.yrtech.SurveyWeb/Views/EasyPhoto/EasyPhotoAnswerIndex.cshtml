@@ -70,15 +70,16 @@
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js"></script>
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
-<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+@*<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
 <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>
+<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>*@
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js"></script>
+<script src="~/Content/bootstrap-table/bootstrap-table-editor.js"></script>
 <script>
     var osspath;
     var ossFileUploader;
@@ -187,14 +188,29 @@
             valign: "middle",
             align: "center",
             sortable: true,
+            formatter: function (v) {
+                return  eval(v) ?'是':'否'
+            },
             editable: {
-                type: 'select',
-                source: [{ text: '是', value: true }, { text: '否', value: false }],
-                title: '审核通过与否',
-                validate: function (v) {
-                    if (!v) return '审核通过与否不能为空';
+                type: "select",
+                options: {
+                    items: [{
+                        value: 'true',
+                        label: "是",
+                    }, {
+                        value: 'false',
+                        label: "否",
+                    } ]
                 }
             }
+            //editable: {
+            //    type: 'select',
+            //    source: [{ text: '是', value: true }, { text: '否', value: false }],
+            //    title: '审核通过与否',
+            //    validate: function (v) {
+            //        if (!v) return '审核通过与否不能为空';
+            //    }
+            //}
         }, {
             title: "经销商代码",
             width: 120,
@@ -281,6 +297,7 @@
                 })
 
                 $('#answer-table').bootstrapTable('destroy').bootstrapTable({
+                    editable: true,
                     url: easyPhotoApi + 'Answer/GetShopAnswerList',
                     sidePagination: 'server',
                     pagination: true,
@@ -312,16 +329,16 @@
                     onClickRow: function (row, $element) {
                         curRow = row;
                     },
-                    onEditableSave: function (field, row, oldValue, $el) {
+                    onEditorSave: function (field, row, oldValue, $el) {
                         $.commonApi({
                             apiType: 'easyPhoto',
                             url: 'Answer/SaveRecheck',
                             type: 'post',
                             params: {
-                                AnswerId: curRow.AnswerId,
+                                AnswerId: row.AnswerId,
                                 InUserId: loginUser.Id,
                                 ModifyUserId: loginUser.Id,
-                                RecheckStatus: curRow.RecheckStatus
+                                RecheckStatus: row.RecheckStatus
                             },
                             success: function (data) {
                                 loadEasyPhotoAnswer();
