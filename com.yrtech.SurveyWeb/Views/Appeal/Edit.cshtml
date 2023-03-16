@@ -81,6 +81,7 @@
                 loadAppealFiles();
                 bindLossResultTable(appeal.LossResult ? JSON.parse(appeal.LossResult) : [])
                 //标准照片
+                debugger
                 let FileResult = appeal.FileResult ? JSON.parse(appeal.FileResult) : []
                 appeal.SubjectFileList = appeal.SubjectFileList.map(function (o) {
                     let findOne = FileResult.find(function (r) { return r.SubjectId == o.SubjectId && r.SeqNO == o.SeqNO })
@@ -89,7 +90,7 @@
                     }
                     return o;
                 });
-                bindPhotoTable(appeal.SubjectFileList ? JSON.parse(appeal.SubjectFileList) : [])
+                bindPhotoTable(appeal.SubjectFileList)
             }
         })
     })
@@ -207,7 +208,7 @@
                 //查看照片
                 var showBtn = $("<a href='#'>查看照片</a>");
                 showBtn.click(function () {
-                    viewLossFile(item.LossFileNameUrl, tr);
+                    viewLossFile(item.Url, tr);
                     return false;
                 });
                 tr.append($("<td></td>").append(showBtn));
