@@ -187,7 +187,7 @@
                 //查看照片
                 var showBtn = $("<a href='#'>查看照片</a>");
                 showBtn.click(function () {
-                    viewLossFile(item.LossFileNameUrl, tr);
+                    viewPicutes(item.LossFileNameUrl);
                     return false;
                 });
                 tr.append($("<td></td>").append(showBtn));
@@ -208,7 +208,7 @@
                 //查看照片
                 var showBtn = $("<a href='#'>查看照片</a>");
                 showBtn.click(function () {
-                    viewLossFile(item.Url, tr);
+                    viewPicutes(item.Url);
                     return false;
                 });
                 tr.append($("<td></td>").append(showBtn));
