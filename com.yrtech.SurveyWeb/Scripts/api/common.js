@@ -419,22 +419,7 @@ function viewPicutes(url) {
             }); 
         }
         $("#galley img:first").click()
-    },200)
-    
-    //$('#photoModal').on('shown.bs.modal', function (e) {
-    //    // WARNING: should ignore Viewer's `shown` event here.
-    //    if (e.namespace === 'bs.modal') {
-    //        viewer = new Viewer(galley, {
-    //            url: 'data-original',
-    //        });
-    //    }
-    //}).on('hidden.bs.modal', function (e) {
-    //    // WARNING: should ignore Viewer's `hidden` event here.
-    //    if (e.namespace === 'bs.modal') {
-    //        viewer.destroy();
-    //    }
-    //});
-    //$("#photoModal").modal("show")
+    },200) 
 }
  
 function closePhotoModel() {
