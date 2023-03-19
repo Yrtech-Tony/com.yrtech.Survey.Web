@@ -5062,7 +5062,7 @@ ul.notifications {
 }
 
     .dealer-li font {
-        position: absolute;
+        /*position: absolute;*/
         margin-top: 3px;
         margin-left: 3px;
     }
