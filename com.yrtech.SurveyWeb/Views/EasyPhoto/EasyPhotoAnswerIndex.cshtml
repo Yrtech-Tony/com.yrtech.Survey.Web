@@ -15,6 +15,11 @@
         border-left: none;
         border-right: none;
     }
+
+    .selected-tr {
+        background-color: #31b0d5 !important;
+        color: white;
+    }
 </style>
 <div class="condition">
     <div style="text-align:right;width:100%">
@@ -40,7 +45,7 @@
             <input id="checkCode" class="form-control" style="width:230px;" placeholder="检查代码" />
         </div>
     </div>
-    
+
 </div>
 <div class="result">
     <table id="answer-table" class="table table-set"></table>
@@ -71,8 +76,8 @@
 <script src="~/Scripts/custom/form-serialize.js"></script>
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
 @*<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
-<script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-<script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>*@
+    <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>*@
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
@@ -160,8 +165,8 @@
                     shopCode: $("#key").val()
                 },
                 success: function (data) {
-                   // window.location.href = baseEasyPhotoUrl + data;
-                    window.location.href =  data;
+                    // window.location.href = baseEasyPhotoUrl + data;
+                    window.location.href = data;
                 },
                 complete: function () {
                     debugger
@@ -189,7 +194,7 @@
             align: "center",
             sortable: true,
             formatter: function (v) {
-                return  eval(v) ?'是':'否'
+                return eval(v) ? '是' : '否'
             },
             editable: {
                 type: "select",
@@ -200,7 +205,7 @@
                     }, {
                         value: 'false',
                         label: "否",
-                    } ]
+                    }]
                 }
             }
             //editable: {
@@ -308,7 +313,8 @@
                     sortable: true,
                     pageNumber: 1,
                     pageSize: 20,
-                    pageList: [20, 50, 100, 500],
+                    pageList: [20, 50, 100, 500], 
+                   
                     queryParams: function (params) {//上传服务器的参数
                         var temp = {
                             answerId: '',
@@ -328,6 +334,9 @@
                     responseHandler: responseHandler,//请求数据成功后，渲染表格前的方法
                     onClickRow: function (row, $element) {
                         curRow = row;
+                        $('#answer-table .selected-tr').removeClass('selected-tr');
+                        //未点击则，为当前行添加 class='changeColor'
+                        $($element).addClass('selected-tr');
                     },
                     onEditorSave: function (field, row, oldValue, $el) {
                         $.commonApi({
@@ -341,7 +350,7 @@
                                 RecheckStatus: row.RecheckStatus
                             },
                             success: function (data) {
-                                loadEasyPhotoAnswer();
+                                updateLocalEasyPhotoAnswer(curRow);
                             }
                         });
                     }
@@ -351,6 +360,18 @@
             }
         });
     }
+
+    function updateLocalEasyPhotoAnswer(row) {
+        let data = $('#answer-table').bootstrapTable('getData', false)
+        let findIndex = data.findIndex(function (item, i) {
+            return item.AnswerId == curRow.AnswerId;
+        });
+        if (findIndex) {
+            data[findIndex] = row;
+        }
+        //$('#answer-table').bootstrapTable("load", data);
+    }
+
     function deleteAnswerByShop() {
         confirm("请确认期号和经销商，删除前请确认经销商是否已经执行，如已执行，执行数据会被删除", function () {
             $("#btnDelete").button("loading");
