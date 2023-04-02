@@ -70,14 +70,25 @@
         </div>
     </div>
 </div>
-<link href="~/Content/baguetteBox/baguetteBox.css" rel="stylesheet" />
 
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closePhotoModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">照片列表</h4>
+            </div>
+            <div class="modal-body" style="height:500px; overflow-y:auto">
+                <div id="galley">
+                    <ul class="pictures"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js"></script>
 <script src="~/Content/baguetteBox/baguetteBox.js"></script>
-@*<link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
-    <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-    <script src="~/Content/bootstrap-table/extensions/bootstrap-table-editable.min.js"></script>*@
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
@@ -85,6 +96,9 @@
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js"></script>
 <script src="~/Content/bootstrap-table/bootstrap-table-editor.js"></script>
+
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
 <script>
     var osspath;
     var ossFileUploader;
@@ -425,31 +439,10 @@
         };
     };
     function createImageList() {
-        var items = curRow.AnswerPhotoList;
-        if (!items || items.length == 0) {
-            alert("没有照片！")
-            return;
-        }
-        if ($("#baguetteBox-overlay").length > 0) {
-            $("#baguetteBox-overlay").remove()
-        }
-        var div = $("#baguetteBox");
-        div.empty();
-        var count = items.length;
-        $.each(items, function (i, item) {
-            var imgUrl = loginUser.ossInfo.osshost + item.PhotoUrl;
-            var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
-            var imagA = $('<a></a>');
-            var img = $('<img>').attr('src', imgThumbUrl).attr("alt", (i + 1) + "/" + count + "   " + item.PhotoName);
-            $(imagA).append(img);
-            $(imagA).attr('href', imgUrl);
-            $(imagA).attr('data-caption', (i + 1) + "/" + count + "   " + item.PhotoName);
-
-            div.append(imagA);
-        })
-        setTimeout(function () {
-            baguetteBox.run('#baguetteBox');
-            div.find("a:first img").click();
-        }, 300)
+        debugger
+        var images = curRow.AnswerPhotoList.map(function (item,i) {
+            return item.PhotoUrl
+        });
+        viewPicutesList(images)
     }
 </script>
