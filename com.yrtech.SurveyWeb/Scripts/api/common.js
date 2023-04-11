@@ -1,7 +1,7 @@
-﻿//var baseSurveyUrl = 'http://123.57.229.128:8001/';
-var baseSurveyUrl = 'http://localhost:57328/';
+﻿var baseSurveyUrl = 'http://123.57.229.128:8001/';
+//var baseSurveyUrl = 'http://localhost:57328/';
 var surveyApi = baseSurveyUrl + "survey/api/";
-var baseEasyPhotoUrl = 'http://123.57.229.128:8020/';
+var baseEasyPhotoUrl = 'http://123.57.229.128:8002/';
 //var baseEasyPhotoUrl = 'http://localhost:57328/';
 var easyPhotoApi = baseEasyPhotoUrl + "easyPhoto/api/";
  
@@ -384,14 +384,11 @@ function openNewPage(url,callback) {
         })
     }
 }
- 
-
-function viewPicutes(url) {
-    let fileList = url ? url.split(';') : []
+function viewPicutesList(fileList) {
     if (!fileList || fileList.length == 0) {
         alert("没有照片！")
         return;
-    } 
+    }
     var galley = document.getElementById('galley');
     var count = fileList.length;
     $("#galley").empty()
@@ -405,10 +402,10 @@ function viewPicutes(url) {
         $(imagA).append(img);
 
         $("#galley").append(imagA);
-    })  
+    })
     setTimeout(function () {
         if (!viewer) {
-           var viewer = new Viewer(galley, {
+            var viewer = new Viewer(galley, {
                 url: 'data-original',
                 title: function (image) {
                     return image.alt + ' (' + (this.index + 1) + '/' + this.length + ')';
@@ -416,10 +413,15 @@ function viewPicutes(url) {
                 hidden: function () {
                     viewer.destroy();
                 },
-            }); 
+            });
         }
         $("#galley img:first").click()
-    },200) 
+    }, 200)
+}
+
+function viewPicutes(url) {
+    let fileList = url ? url.split(';') : []
+    viewPicutesList(fileList)
 }
  
 function closePhotoModel() {
