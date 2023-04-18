@@ -397,6 +397,7 @@
             curAnswer.FileResult = JSON.stringify(fileResult);
             let loss = $('#lossresult-table').bootstrapTable('getData', false)
             curAnswer.LossResult = JSON.stringify(loss);
+            curAnswer.ModifyUserId = loginUser.Id;
             $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
                 //第三步 获取下一个得分
                 $.commonGet("Recheck/GetShopNextRecheckSubject", {
@@ -1060,6 +1061,7 @@
         curAnswer.LossResult = JSON.stringify([curLossRow]);
         curAnswer.PhotoScore = $("#PhotoScore").val();
         curAnswer.Remark = $("#Remark").val();
+        curAnswer.ModifyUserId = loginUser.Id;
         $.commonPost("Answer/SaveAnswerInfo", curAnswer, function () {
         }, function () { });
     }

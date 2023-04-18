@@ -162,6 +162,7 @@
     function saveFileResult() {
         let data = $('#subject-file-table').bootstrapTable('getData', false)
         curRow.FileResult = JSON.stringify(data);
+        curRow.ModifyUserId = loginUser.Id;
         $.commonPost("Answer/SaveAnswerInfo", curRow, function () {
             alert("保存成功！");
             closeModel();
