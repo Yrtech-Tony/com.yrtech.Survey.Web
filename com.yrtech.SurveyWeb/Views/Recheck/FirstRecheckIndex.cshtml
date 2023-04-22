@@ -35,10 +35,10 @@
             <label class="control-label">期号:</label>
             <select id="project-sel" class="form-control" style="width: 140px"></select>
         </div>
-        @*<div class="form-group">
-            <label class="control-label">经销商:</label>
-            <select id="shop-sel" style="width: 140px"></select>
-        </div>*@
+        <div class="form-group">
+            <label class="control-label">经销商代码:</label>
+            <input id="shopCode" class="form-control" style="width:150px;" placeholder="经销商代码" />
+        </div>
     </div>
 
 </div>
@@ -119,7 +119,7 @@
         $.commonGet("Recheck/GetRecheckStatusForFirstRecheck", {
             projectId: $("#project-sel").val(),
             shopId: "",
-            shopCode: ''
+            shopCode: $("#shopCode").val()
         }, function (data) {
             initRecheckTable(data);
         }, function () {
