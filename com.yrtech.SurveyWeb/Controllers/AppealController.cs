@@ -51,6 +51,9 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialShopAppealSetEdit");
         }
-        
+        public ActionResult OpenAppealImport()
+        {
+            return PartialView("_PartialAppealImport");
+        }
     }
 }

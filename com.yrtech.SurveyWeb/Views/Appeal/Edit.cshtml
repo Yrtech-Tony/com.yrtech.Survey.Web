@@ -79,7 +79,14 @@
                 $("#appeal-form").setForm(appeal);
 
                 loadAppealFiles();
-                bindLossResultTable(appeal.LossResult ? JSON.parse(appeal.LossResult) : [])
+                if (appeal.LossResultImport && appeal.LossResultImport.length > 0) {
+                    $("#subject-lossResult-table").hide();
+                    $("#LossResultImport").html(appeal.LossResultImport)
+                } else {
+                    $("#subject-lossResult-table").show();
+                    bindLossResultTable(appeal.LossResult ? JSON.parse(appeal.LossResult) : [])
+                }
+               
                 //标准照片
                 debugger
                 let FileResult = appeal.FileResult ? JSON.parse(appeal.FileResult) : []
@@ -355,7 +362,7 @@
                 <td colspan="3"><span id="Remark"></span></td>
             </tr>
             <tr>
-                <th>失分项列表</th>
+                <th>失分项</th>
                 <td colspan="5">
                     <div class="table-responsive comm-table-div">
                         <table id="subject-lossResult-table" class="table table-bordered" style="margin-bottom:10px;font-size:12px">
@@ -368,8 +375,8 @@
                             </thead>
                             <tbody></tbody>
                         </table>
-                    </div>
-
+                        <span id="LossResultImport"></span>
+                    </div> 
                 </td>
             </tr>
             <tr>

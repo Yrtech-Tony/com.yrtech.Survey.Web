@@ -19,8 +19,10 @@
 <div class="condition">
     <div style="text-align:right;width:100%">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnDownloadTemplate" class="btn btn-primary">下载模板</button>
-        <button id="btnImportAppealSet" class="btn btn-primary">导入</button>
+        <button id="btnImportTemplate" class="btn btn-primary">申诉导入模板</button>
+        <button id="btnDownloadTemplate" class="btn btn-primary">申诉设置模板</button>
+        <button id="btnImportAppealSet" class="btn btn-primary">导入申诉设置</button>
+        <button id="btnImportAppeal" class="btn btn-primary" style="display:none">导入申诉</button>
     </div>
     <div class="form-inline">
         <div class="form-group">
@@ -86,7 +88,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">用户导入</h4>
+                <h4 class="modal-title">申诉设置导入</h4>
             </div>
             <div class="modal-body">
             </div>
@@ -121,7 +123,7 @@
         });
         $("#project-sel").change(function () {
             loadAppealSet();
-        }); 
+        });
         bindProjectSelect();
 
         $("#btnQuery").click(function () {
@@ -134,7 +136,12 @@
             var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/AppealShopSet.xlsx";
             window.location.href = url;
         });
-         
+
+        $("#btnImportTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/Appeal.xlsx";
+            window.location.href = url;
+        });
+
         new OSSClient({
             autoupload: true,
             osspath: "Survey/BaseInfo/Import/",
@@ -152,12 +159,33 @@
                 })
             }
         });
+
+        ossFileUploaderShop = new OSSClient({
+            autoupload: true,
+            osspath: "Survey/BaseInfo/Import/",
+            selectfiles: "btnImportAppeal",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-title").html("申诉导入");
+                    $("#ModalImport .modal-body").load("/Appeal/OpenAppealImport", {}, function () {
+                        $("#projectIdSelected").val(curRow.ProjectId)
+                        loadImportAppeal(file);
+                    })
+                })
+            }
+        });
     });
+
+
     var curRow;
     function initAppealSetTable(data) {
         $('#appealSet-table').bootstrapTable('destroy').bootstrapTable({
             pagination: false,
-            data:data,
+            data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: 74,//getClientHeight() - 260,
@@ -212,8 +240,7 @@
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false,
-
+                sortable: false
             }, {
                 title: "生成申诉",
                 field: "",
@@ -223,9 +250,10 @@
                 sortable: false,
                 formatter: function (value, row, index) {
                     if (row.HiddenCode == "A") {
-                        return '<a href="javascript:CreateAppeal();" style="min-width:100px">' + "生成申诉" + '</a>';
-                    }
-                    else {
+                        return '<a href="javascript:CreateAppeal();" style="min-width:100px">生成申诉</a>';
+                    } else if (row.HiddenCode == "C") {
+                        return '<a  href="javascript:openImportAppealFile();" style="min-width:100px">导入申诉</a>';
+                    } else {
                         return '<a href="" style="min-width:100px">' + "-" + '</a>';
                     }
                 }
@@ -257,11 +285,16 @@
             }
         });
     }
-    function loadAppealSet() { 
+
+    function openImportAppealFile() {
+        $("#btnImportAppeal").trigger("click")
+    }
+
+    function loadAppealSet() {
         $('#appealSet-table').bootstrapTable("showLoading");
         $.commonGet("Appeal/GetAppealSet", {
             projectId: $("#project-sel").val()
-        }, function (data) { 
+        }, function (data) {
             initAppealSetTable(data);
         });
     }
@@ -282,7 +315,7 @@
             pagination: true,
             data: data,
             striped: true, //是否显示行间隔色
-            width: "100%", 
+            width: "100%",
             height: getClientHeight() - 400,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
@@ -312,7 +345,7 @@
             //    valign: "middle",
             //    align: "center",
             //    sortable: false,
-                
+
             //},
             {
                 title: "申诉结束时间",
@@ -361,7 +394,7 @@
             $("#appealset-form").data("json", JSON.stringify(curRowShop));
         })
     }
-    
+
     function saveAppealSet(el) {
         var params = $("#appealset-form").serializeJson();
         var json = $("#appealset-form").data("json");
@@ -405,13 +438,16 @@
 
     function CreateAppeal() {
         confirm("确定生成吗？", function () {
-            debugger
             $.commonGet("Appeal/CreateAppeal", {
                 projectId: curRow.ProjectId
-            }, function (data) { 
+            }, function (data) {
                 loadAppealSet();
             });
-        }); 
+        });
+    }
+
+    function AppealExcelAnalysis() {
+
     }
 
     function closeShopModel() {
