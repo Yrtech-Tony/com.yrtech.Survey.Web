@@ -209,6 +209,7 @@
     function saveLossResult() {
         let data = $('#subject-lossResult-table').bootstrapTable('getData', false)
         curRow.LossResult = JSON.stringify(data);
+        curRow.ModifyUserId = loginUser.Id;
         $.commonPost("Answer/SaveAnswerInfo", curRow, function () {
             alert("保存成功！");
             closeModel();

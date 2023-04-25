@@ -91,6 +91,7 @@
     function saveInspectionStandard(row) {
         let data = $('#subject-standard-table').bootstrapTable('getData', false)
         curRow.InspectionStandardResult = JSON.stringify(data);
+        curRow.ModifyUserId = loginUser.Id;
         $.commonPost("Answer/SaveAnswerInfo", curRow, function () {
             alert("保存成功！");
             closeModel();

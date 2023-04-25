@@ -235,6 +235,9 @@
         var json = $("#score-form").data("json");
         if (json && json.length > 0) {
             //编辑
+            params = $.extend({
+                ModifyUserId: loginUser.Id
+            }, params);
             json = JSON.parse(json);
             params = $.extend(json, params);
         } else {

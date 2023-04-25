@@ -229,6 +229,9 @@
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);
+            params = $.extend({
+                ModifyUserId: loginUser.Id
+            }, params);
             params = $.extend(json, params);
         } else {
             //新增
