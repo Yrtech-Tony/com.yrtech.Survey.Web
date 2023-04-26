@@ -97,20 +97,20 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 @*<li role="presentation"><a href="#ins" aria-controls="ins" role="tab" data-toggle="tab">检查标准</a></li>*@
-                <li role="presentation" class="active"><a href="#photo" aria-controls="photo" role="tab" data-toggle="tab">标准照片</a></li>
-                <li role="presentation"><a href="#lossresult" aria-controls="lossresult" role="tab" data-toggle="tab">失分描述</a></li>
+                <li role="presentation"><a href="#photo" aria-controls="photo" role="tab" data-toggle="tab">标准照片</a></li>
+                <li role="presentation" class="active"><a href="#lossresult" aria-controls="lossresult" role="tab" data-toggle="tab">失分描述</a></li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content" style="padding: 10px; height: 420px; overflow: auto; border:solid 1px #ccc;border-top:none">
                 @*<div role="tabpanel" class="tab-pane " id="ins"> 
                     <table id="ins-table" class="table table-set"></table>
                 </div>*@
-                <div role="tabpanel" class="tab-pane active" id="photo">
+                <div role="tabpanel" class="tab-pane " id="photo">
                     <table id="photo-table" class="table table-set"></table>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="lossresult">
+                <div role="tabpanel" class="tab-pane active" id="lossresult">
                     <div style=" width: 100%; text-align: right; padding: 5px 0px;">
-                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:5px" onclick="addLossResult()" data-loading-text="提交中...">新增</button> 
+                        <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:5px" onclick="addLossResult()" data-loading-text="提交中...">新增</button>
                     </div>
                     <table id="lossresult-table" class="table table-set"></table>
                 </div>
