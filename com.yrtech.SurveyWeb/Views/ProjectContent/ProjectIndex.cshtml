@@ -95,6 +95,7 @@
         var params = $("#project-form").serializeJson();
         var json = $("#project-form").data("json");
         params.RechckShopShow = $("#RechckShopShow").is(":checked");
+        params.AppealShow = $("#AppealShow").is(":checked");
         params.PhotoUploadMode = $("#PhotoUploadMode").is(":checked");
         if (json && json.length > 0) {
             //编辑
