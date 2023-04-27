@@ -30,6 +30,7 @@
 <div class="condition">
     <div style="text-align:right;width:100%">
         <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnExportFeedback" class="btn btn-primary">导出</button>
     </div>
     <div class="form-inline">
         <div class="form-group">
@@ -99,6 +100,19 @@
         $("#btnQuery").click(function () {
             loadAppeal();
         }).trigger("click");
+        $("#btnExportFeedback").click(function () {
+            $("#btnExportFeedback").button('loading');
+
+            $.commonGet("Appeal/AppealFeedbackExport", {
+                projectId: $("#project-sel").val(),
+                keyword: $('#keyword').val(),
+                pageNum: 1,
+                pageCount: 10000
+            }, function (data) {
+                window.location.href = baseSurveyUrl + data;
+                $("#btnExportFeedback").button('reset');
+            });
+        });
     });
 
     var curRow;
