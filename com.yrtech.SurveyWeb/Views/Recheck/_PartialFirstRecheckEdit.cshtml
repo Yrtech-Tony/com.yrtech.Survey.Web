@@ -24,7 +24,8 @@
         <div class="item form-group" style="float:right;">
             <div class="form-inline">
                 <a id="btnPre" class="btn btn-primary btn-sm" style="margin-right:10px" onclick="prevSubject()">上一题</a>
-                <a id="btnNext" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="nextSubject()">下一题</a>
+                @*<a id="btnNext" class="btn btn-primary btn-sm" style="margin-right:0px" onclick="nextSubject()">下一题</a>*@
+                <button id="btnNext" class="btn btn-primary">下一题</button>
                 @*<div class="form-group">
                         <input id="toSeqNo" style="width:60px!important" class="form-control" />
                         <a id="btnTrans" class="btn btn-primary" style="margin-right:0px" onclick="toSubjectSeqNo()">转到</a>
@@ -295,6 +296,10 @@
 
         bindRecheckErrorChecksConfirm(allLabels)
         bindRecheckInfoConfirm(curScoreRow)
+        $("#btnNext").click(function () {
+            nextSubject();
+
+        })
     })
 
     function prevSubject() {
@@ -331,6 +336,7 @@
     }
 
     function nextSubject() {
+        $("#btnNext").button('loading');
         debugger
         console.log('save recheck = ', curScoreRow)
         console.log('PassRecheck = ', $("input[name=PassRecheck]:checked").val())
@@ -410,6 +416,7 @@
                 })
             })
         });
+        $("#btnNext").button('reset');
     }
 
     function toSubjectSeqNo() {
