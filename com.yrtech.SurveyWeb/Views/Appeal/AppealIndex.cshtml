@@ -49,6 +49,14 @@
             <label class="control-label">经销商:</label>
             <input id="keyword" class="form-control" style="width:150px;" placeholder="经销商代码/名称" />
         </div>
+        <div class="form-group">
+            <label class="control-label">申诉与否:</label>
+            <select id="appealStatus-sel" class="form-control" style="width: 140px">
+                <option value="">全部</option>
+                <option value="1">申诉</option>
+                <option value="0">不申诉</option>
+            </select>
+        </div>
     </div>
    
 </div>
@@ -102,12 +110,13 @@
         }).trigger("click");
         $("#btnExportFeedback").click(function () {
             $("#btnExportFeedback").button('loading');
-
+             
             $.commonGet("Appeal/AppealFeedbackExport", {
                 projectId: $("#project-sel").val(),
                 keyword: $('#keyword').val(),
+                appealStatus : $("#appealStatus-sel").val(),
                 pageNum: 1,
-                pageCount: 10000
+                pageCount: 30000
             }, function (data) {
                 window.location.href = baseSurveyUrl + data;
                 $("#btnExportFeedback").button('reset');
@@ -138,6 +147,24 @@
                 align: "center",
                 formatter: function (value, row, index) {
                     return '<a  href="javascript:goEdit(' + row.AppealId + ');" style="min-width:100px">反馈详细</a>';
+                }
+            }, {
+                title: "申诉附件",
+                field: 'AppealFileChk_Apply',
+                width: 70,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return value ? '<i class="fa fa-paperclip" />' : '';
+                }
+            }, {
+                title: "反馈附件",
+                field: 'AppealFileChk_FeedBack',
+                width: 70,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return value ? '<i class="fa fa-paperclip" />' : '';
                 }
             }, {
                 title: "经销商代码",
@@ -237,7 +264,7 @@
     function loadAppeal() {
         var params = getParams();
         if (!params) return;
-
+        params.appealStatus = $("#appealStatus-sel").val()
         $('#appeal-table').bootstrapTable("showLoading");
         $.commonGet("Appeal/GetFeedBackInfoByPage", params, function (data) {
             // $('#appeal-table').bootstrapTable("load", data);
@@ -258,7 +285,7 @@
             projectId: project || '',
             keyword: $('#keyword').val(),
             pageNum: 1,
-            pageCount: 10000
+            pageCount: 30000
         };
     }
 
