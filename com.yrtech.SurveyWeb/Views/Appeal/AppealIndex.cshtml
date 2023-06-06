@@ -107,7 +107,7 @@
                 projectId: $("#project-sel").val(),
                 keyword: $('#keyword').val(),
                 pageNum: 1,
-                pageCount: 10000
+                pageCount: 30000
             }, function (data) {
                 window.location.href = baseSurveyUrl + data;
                 $("#btnExportFeedback").button('reset');
