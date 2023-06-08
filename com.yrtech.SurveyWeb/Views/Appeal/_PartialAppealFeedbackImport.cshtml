@@ -1,0 +1,114 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="form-inline" style="text-align:center">
+        <div class="item form-inline" style="float:right;">
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importAppealFeedback()" data-loading-text="导入中...">导入</button>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <input id="projectIdSelected" type="hidden" />
+    <table id="import-appeal-feedback-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+    })
+
+    function initImportAppealFeedbackTable(data) {
+        $('#import-appeal-feedback-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data: data,
+            striped: true, //是否显示行间隔色
+            height: 500,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 100,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "题目代码",
+                field: 'SubjectCode',
+                width: 100,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "是否同意",
+                field: 'FeedBackStatus',
+                width: 100,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return value ? '同意' : '不同意';
+                }
+            }, {
+                title: "反馈内容",
+                field: 'FeedBackReason',
+                width: 200,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "数据状态",
+                field: "ImportChk",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '正确' : '错误';
+                }
+            }, {
+                title: "状态说明",
+                field: "ImportRemark",
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: preferenceFormatter
+            }]
+        });
+    }
+
+    function preferenceFormatter(value, row, index) {
+        return [
+            '<a href="#" data-toggle="tooltip" title=' + value + '>' + value + '</a>',
+        ].join('');
+    }
+    function loadImportAppealFeedback(file) {
+        $('#import-appeal-feedback-table').bootstrapTable("showLoading");
+        $.commonGet("Appeal/AppealFeedBackExcelAnalysis", {
+            brandId: $("#brand-sel").val(),
+            projectId: $("#projectIdSelected").val(),
+            ossPath: file.osspath
+        }, function (data) {
+            var chk = true;
+            if (data && data.length > 0) {
+                chk = data[0].ImportChk;
+            }
+            if (!chk) {
+                $("#btnImport").attr("disabled", true);
+            }
+            initImportAppealFeedbackTable(data);
+        });
+    }
+    function importAppealFeedback() {
+        $("#AppealImport").button("loading");
+        var rows = $('#import-appeal-feedback-table').bootstrapTable("getData");
+        rows.forEach(function (row) {
+            row.TenantId = loginUser.TenantId;
+            row.BrandId = $("#brand-sel").val();
+            row.ProjectId = $("#projectIdSelected").val();
+            row.FeedBackUserId = loginUser.Id;
+        })
+        $.commonPost("Appeal/AppealFeedBackImport", {
+            ListJson: JSON.stringify(rows)
+        }, function () {
+            $("#ModalImport").modal("hide");
+            loadAppeal()
+        });
+    }
+
+</script>
