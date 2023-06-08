@@ -153,6 +153,7 @@
     <Compile Include="Controllers\AppealController.cs" />
     <Compile Include="Controllers\BrandContentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OperateController.cs" />
     <Compile Include="Controllers\ProjectContentController.cs" />
     <Compile Include="Controllers\RecheckController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
@@ -603,6 +604,9 @@
     <Content Include="Views\Appeal\_PartialAppealSetImport.cshtml" />
     <Content Include="Views\Appeal\_PartialShopAppealSetEdit.cshtml" />
     <Content Include="Views\Appeal\_PartialAppealImport.cshtml" />
+    <Content Include="Views\Operate\RecheckStatusIndex.cshtml" />
+    <Content Include="Views\Operate\ScoreOperateIndex.cshtml" />
+    <Content Include="Views\Appeal\_PartialAppealFeedbackImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

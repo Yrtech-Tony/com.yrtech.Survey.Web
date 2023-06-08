@@ -31,6 +31,8 @@
     <div style="text-align:right;width:100%">
         <button id="btnQuery" class="btn btn-primary">查询</button>
         <button id="btnExportFeedback" class="btn btn-primary">导出</button>
+        <button id="btnImportTemplate" class="btn btn-primary">申诉反馈导入模板</button>
+        <button id="btnImportAppealFeedBack" class="btn btn-primary">导入申诉反馈</button> 
     </div>
     <div class="form-inline">
         <div class="form-group">
@@ -66,6 +68,10 @@
     <table id="appeal-table" class="table table-set"></table>
 </div>
 
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
+
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width:1000px;">
         <div class="modal-content">
@@ -82,11 +88,30 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width:800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">申诉反馈导入</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="~/Scripts/api/common.js?20200523"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 <script>
+    var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
         bindBrandSelect();
@@ -122,11 +147,34 @@
                 $("#btnExportFeedback").button('reset');
             });
         });
+
+
+        $("#btnImportTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/AppealFeedBack.xlsx";
+            window.location.href = url;
+        });
+
+        new OSSClient({
+            autoupload: true,
+            osspath: "Survey/BaseInfo/Import/",
+            selectfiles: "btnImportAppealFeedBack",
+            multi_selection: false,
+            success: function (files) { 
+                //调用导入方法
+                files.forEach(function (file) { 
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-body").load("/Appeal/OpenAppealFeedbackImport", {}, function () {
+                        $("#projectIdSelected").val($("#project-sel").val())
+                        loadImportAppealFeedback(file); 
+                    })
+                })
+            }
+        });
     });
 
     var curRow;
-    function initAppealTable(data) {
-
+    function initAppealTable(data) { 
         $('#appeal-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
             data: data,
@@ -266,11 +314,8 @@
         if (!params) return;
         params.appealStatus = $("#appealStatus-sel").val()
         $('#appeal-table').bootstrapTable("showLoading");
-        $.commonGet("Appeal/GetFeedBackInfoByPage", params, function (data) {
-            // $('#appeal-table').bootstrapTable("load", data);
-
-            initAppealTable(data);
-            // $('#appeal-table').bootstrapTable("hideLoading");
+        $.commonGet("Appeal/GetFeedBackInfoByPage", params, function (data) { 
+            initAppealTable(data); 
         })
     }
     function getParams() {
