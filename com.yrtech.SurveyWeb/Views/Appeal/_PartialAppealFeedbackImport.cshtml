@@ -103,11 +103,36 @@
             row.ProjectId = $("#projectIdSelected").val();
             row.FeedBackUserId = loginUser.Id;
         })
+        var start = 0;
+        var size = 3000
+        var end = Math.min(rows.length, size);  
+        end = size;
+        while (true) {
+            let data = []
+            console.log('importAppealFeedbackSingle start,end ', start, end)
+            for (var i = start; i < end; i++) {
+                data.push(rows[i])
+            }
+            start += size;
+            end += size;
+            end = Math.min(rows.length, end);
+            if(start >= rows.length){
+                importAppealFeedbackSingle(data,function () {
+                    $("#ModalImport").modal("hide");
+                    loadAppeal()
+                })
+                break;
+            }else{
+                importAppealFeedbackSingle(data)
+            } 
+        } 
+    }
+
+    function importAppealFeedbackSingle(data, callback) {
         $.commonPost("Appeal/AppealFeedBackImport", {
-            ListJson: JSON.stringify(rows)
-        }, function () {
-            $("#ModalImport").modal("hide");
-            loadAppeal()
+            ListJson: JSON.stringify(data)
+        }, function(){
+            if(callback)callback();
         });
     }
 
