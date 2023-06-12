@@ -95,7 +95,7 @@
                     pagination: true,
                     striped: true, //是否显示行间隔色
                     height: getClientHeight() - 260,
-                  //  width: "100%",
+                    //  width: "100%",
                     showColumns: false, // 开启自定义列显示功能
                     sortable: true,
                     pageNumber: 1,
@@ -149,44 +149,21 @@
                 row.InUserId = loginUser.Id;
                 row.ModifyUserId = loginUser.Id;
             })
-            var start = 0;
-            var size = 3000
-            var end = Math.min(rows.length, size);  
-            end = size;
-            while (true) {
-                let data = []
-                console.log('importAppealSingle start,end ', start, end)
-                for (var i = start; i < end; i++) {
-                    data.push(rows[i])
-                }
-                start += size;
-                end += size;
-                end = Math.min(rows.length, end);
-                if(start >= rows.length){
-                    importAnswerSingle(data, function (data) {
-                        $("#ModalImport").modal("hide");
-                        loadEasyPhotoAnswer();
-                    })
-                    break;
-                }else{
-                    importAnswerSingle(data)
-                } 
-            }  
-            
-        }); 
-    }
 
-    function importAnswerSingle(data, success) {
-        $.commonApi({
-            apiType: 'easyPhoto',
-            type: 'post',
-            url: "Answer/AnswerImport",
-            params: {
-                ListJson: JSON.stringify(data)
-            },
-            success: function () {
-                if (success) success();
-            } 
-        }); 
+            $.commonApi({
+                apiType: 'easyPhoto',
+                type: 'post',
+                url: "Answer/AnswerImport",
+                params: {
+                    ListJson: JSON.stringify(rows)
+                },
+                success: function (data) {
+                    $("#ModalImport").modal("hide");
+                    loadEasyPhotoAnswer();
+                }
+            });
+
+        });
     }
+     
 </script>

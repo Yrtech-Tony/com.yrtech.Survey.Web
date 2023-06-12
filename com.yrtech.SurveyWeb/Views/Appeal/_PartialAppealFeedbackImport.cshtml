@@ -1,15 +1,15 @@
 ﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
     <div class="form-inline" style="text-align:center">
         <div class="item form-inline" style="float:right;">
-            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importAppealFeedback()" data-loading-text="导入中...">导入</button>
+            <button id="btnImport" class="btn btn-primary" style="margin-right:0px" onclick="importAppealFeedback()" data-loading-text="导入中...">导入</button>
         </div>
     </div>
 
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
-    <input id="projectIdSelected" type="hidden" />
-    <table id="import-appeal-feedback-table" class="table table-bordered table-set"></table>
+    <input id="projectIdSelected" type="hidden" /> 
+    <table id="import-appeal-feedback-table" class="table table-bordered table-set"><tr><td>正在解析分析数据。。。</td></tr></table>
 </div>
 <script>
     $(function () {
@@ -95,7 +95,7 @@
         });
     }
     function importAppealFeedback() {
-        $("#AppealImport").button("loading");
+        $("#btnImport").button("loading");
         var rows = $('#import-appeal-feedback-table').bootstrapTable("getData");
         rows.forEach(function (row) {
             row.TenantId = loginUser.TenantId;
@@ -103,37 +103,12 @@
             row.ProjectId = $("#projectIdSelected").val();
             row.FeedBackUserId = loginUser.Id;
         })
-        var start = 0;
-        var size = 3000
-        var end = Math.min(rows.length, size);  
-        end = size;
-        while (true) {
-            let data = []
-            console.log('importAppealFeedbackSingle start,end ', start, end)
-            for (var i = start; i < end; i++) {
-                data.push(rows[i])
-            }
-            start += size;
-            end += size;
-            end = Math.min(rows.length, end);
-            if(start >= rows.length){
-                importAppealFeedbackSingle(data,function () {
-                    $("#ModalImport").modal("hide");
-                    loadAppeal()
-                })
-                break;
-            }else{
-                importAppealFeedbackSingle(data)
-            } 
-        } 
-    }
-
-    function importAppealFeedbackSingle(data, callback) {
         $.commonPost("Appeal/AppealFeedBackImport", {
-            ListJson: JSON.stringify(data)
-        }, function(){
-            if(callback)callback();
+            ListJson: JSON.stringify(rows)
+        }, function () {
+            $("#ModalImport").modal("hide");
+            loadAppeal()
         });
     }
-
+     
 </script>

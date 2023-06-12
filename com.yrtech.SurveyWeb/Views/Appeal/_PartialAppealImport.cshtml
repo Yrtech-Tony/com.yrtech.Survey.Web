@@ -4,7 +4,7 @@
             <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importAppeal()" data-loading-text="导入中...">导入</button>
         </div>
     </div>
-    
+
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
@@ -12,13 +12,13 @@
     <table id="import-appeal-table" class="table table-bordered table-set"></table>
 </div>
 <script>
-    $(function () { 
+    $(function () {
     })
 
     function initImportAppealTable(data) {
         $('#import-appeal-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
-            data:data,
+            data: data,
             striped: true, //是否显示行间隔色
             height: 500,
             pageNumber: 1,
@@ -54,7 +54,7 @@
                 }
             }, {
                 title: "状态说明",
-                field: "ImportRemark", 
+                field: "ImportRemark",
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -70,23 +70,23 @@
     }
     function loadImportAppeal(file) {
         $('#import-appeal-table').bootstrapTable("showLoading");
-        $.commonGet("Appeal/AppealExcelAnalysis", { 
+        $.commonGet("Appeal/AppealExcelAnalysis", {
             brandId: $("#brand-sel").val(),
             projectId: $("#projectIdSelected").val(),
             ossPath: file.osspath
-        }, function (data) { 
+        }, function (data) {
             var chk = true;
             if (data && data.length > 0) {
                 chk = data[0].ImportChk;
             }
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
-            } 
+            }
             initImportAppealTable(data);
         });
     }
     function importAppeal() {
-        $("#AppealImport").button("loading");
+        $("#btnImport").button("loading");
         var rows = $('#import-appeal-table').bootstrapTable("getData");
         rows.forEach(function (row) {
             row.TenantId = loginUser.TenantId;
@@ -95,36 +95,13 @@
             row.InUserId = loginUser.Id;
             row.ModifyUserId = loginUser.Id;
         })
-        var start = 0;
-        var size = 3000
-        var end = Math.min(rows.length, size);  
-        end = size;
-        while (true) {
-            let data = []
-            console.log('importAppealSingle start,end ', start, end)
-            for (var i = start; i < end; i++) {
-                data.push(rows[i])
-            }
-            start += size;
-            end += size;
-            end = Math.min(rows.length, end);
-            if(start >= rows.length){
-                importAppealSingle(data, function () {
-                    $("#ModalImport").modal("hide");
-                    loadShopAppealSet()
-                })
-                break;
-            }else{
-                importAppealSingle(data)
-            } 
-        }  
-    }
-     
-    function importAppealSingle(data, callback) {
+
         $.commonPost("Appeal/AppealImport", {
-            ListJson: JSON.stringify(data)
+            ListJson: JSON.stringify(rows)
         }, function () {
-            if (callback) callback();
-        }); 
+            $("#ModalImport").modal("hide");
+            loadShopAppealSet()
+        });
     }
+
 </script>
