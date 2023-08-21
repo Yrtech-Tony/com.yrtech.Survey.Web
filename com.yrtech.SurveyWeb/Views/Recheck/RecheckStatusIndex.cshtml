@@ -143,50 +143,50 @@
             columns: [{
                 title: "经销商代码",
                 field: 'ShopCode',
-                width: 100,
+                width: 120,
                 valign: "middle",
+                sortable: true,
                 align: "center"
             }, {
                 title: "经销商名称",
                 field: "ShopName",
-                valign: "middle",
-                width: 300,
+                valign: "middle", 
                 align: "center",
-                sortable: false
+                sortable: true
             }, {
                 title: "进店",
                 field: "Status_S0",
-                width: 50,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "提交审核",
-                field: "Status_S1",
                 width: 80,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
+            }, {
+                title: "提交审核",
+                field: "Status_S1",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: true
             }, {
                 title: "提交审核时间",
                 field: "Status_S1_Date",
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }, {
                 title: "审核(一审)进行中",
                 field: "Status_S2",
-                width: 130,
+                width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }, {
                 title: "审核(一审)完毕",
                 field: "Status_S3",
                 width: 130,
                 valign: "middle",
-                align: "center",
+                align: "true",
                 sortable: false,
 
             }, {
@@ -195,52 +195,52 @@
                 width: 80,
                 valign: "middle",
                 align: "center",
-                sortable: false,
+                sortable: true,
                 formatter: function (value, row, index) {
                     return '<a href="javascript:getRecheckStatusDtl();" style="min-width:100px">审核详细</a>';
                 }
             }, {
                 title: "审核修改",
                 field: "Status_S4",
-                width: 80,
+                width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }, {
                 title: "审核(一审)确认",
                 field: "Status_S8",
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }, {
                 title: "二审完毕",
                 field: "Status_S9",
-                width: 80,
+                width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }, {
                 title: "仲裁",
                 field: "Status_S5",
-                width: 50,
+                width: 80,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }, {
                 title: "督导抽查",
                 field: "Status_S6",
                 width: 80,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }, {
                 title: "项目经理抽查",
                 field: "Status_S7",
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
