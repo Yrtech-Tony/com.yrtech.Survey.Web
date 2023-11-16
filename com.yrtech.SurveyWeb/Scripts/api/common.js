@@ -34,7 +34,7 @@ $.commonGet = function (url, params, callback, err) {
 }
 
 $.commonPost = function (url, params, callback, err) {
-    $.post(surveyApi + url, params, function (data) {
+    return $.post(surveyApi + url, params, function (data) {
         if (data && data.Status) {
             if (data.Body) {
                 var lst = JSON.parse(data.Body);

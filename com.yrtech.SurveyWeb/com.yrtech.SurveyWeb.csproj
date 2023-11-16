@@ -607,6 +607,7 @@
     <Content Include="Views\Operate\RecheckStatusIndex.cshtml" />
     <Content Include="Views\Operate\ScoreOperateIndex.cshtml" />
     <Content Include="Views\Appeal\_PartialAppealFeedbackImport.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialAnswerShopInfoAnnex.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
