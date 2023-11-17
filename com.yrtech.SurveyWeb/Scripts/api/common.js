@@ -6,7 +6,7 @@ var baseEasyPhotoUrl = 'http://123.57.229.128:8002/';
 var easyPhotoApi = baseEasyPhotoUrl + "easyPhoto/api/";
  
 $.commonGet = function (url, params, callback, err) {
-    $.get(surveyApi + url, params, function (data) {
+    return $.get(surveyApi + url, params, function (data) {
         if (data && data.Status) {
             if (data.Body) {
                 var lst = JSON.parse(data.Body);
