@@ -111,6 +111,10 @@
             alert("反馈意见必须选择");
             return false;
         }
+        if (loginUser.TenantId == 15 && $.trim($("#FeedBackReason").val()).length == 0) {
+            alert("反馈内容必填");
+            return false;
+        }
         if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
             alert("反馈意见为不同意时反馈内容必填");
             return false;
@@ -161,7 +165,7 @@
                 tr.append($("<td>").html(item.InUserName));
                 //下载
                 var download = $("<a>下载</a>");
-                var downloadUrl = osshost + "/" + item.ServerFileName;
+                var downloadUrl = osshost + "/" + item.ServerFileName+ "?response-content-type=application%2Foctet-stream";;
                 download.attr("href", downloadUrl);
                 tr.append($("<td></td>").append(download));
                 //删除

@@ -137,6 +137,21 @@ function bindRoleTypeSelect(type) {
     })
     $.ajaxSettings.async = true;
 }
+
+// 绑定省份
+function bindProvinceSelect() {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetProvince", {
+        provinceId:'',
+        provinceName:''
+    }, function (data) {
+        $("#ProvinceId").empty();
+        data.forEach(function (province) {
+            $("#ProvinceId").append($("<option>").val(province.ProvinceId).text(province.ProvinceName));
+        })
+    })
+    $.ajaxSettings.async = true;
+}
 // 绑定区域类型
 function bindAreaTypeSelect(type) {
     $.ajaxSettings.async = false;
