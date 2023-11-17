@@ -115,6 +115,7 @@
             alert("反馈内容必填");
             return false;
         }
+
         if ($("input[name=FeedBackStatus]:checked").val() == "false" && $.trim($("#FeedBackReason").val()).length == 0) {
             alert("反馈意见为不同意时反馈内容必填");
             return false;

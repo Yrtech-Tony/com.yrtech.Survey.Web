@@ -6,7 +6,7 @@ var baseEasyPhotoUrl = 'http://123.57.229.128:8002/';
 var easyPhotoApi = baseEasyPhotoUrl + "easyPhoto/api/";
  
 $.commonGet = function (url, params, callback, err) {
-    $.get(surveyApi + url, params, function (data) {
+    return $.get(surveyApi + url, params, function (data) {
         if (data && data.Status) {
             if (data.Body) {
                 var lst = JSON.parse(data.Body);
@@ -34,7 +34,7 @@ $.commonGet = function (url, params, callback, err) {
 }
 
 $.commonPost = function (url, params, callback, err) {
-    $.post(surveyApi + url, params, function (data) {
+    return $.post(surveyApi + url, params, function (data) {
         if (data && data.Status) {
             if (data.Body) {
                 var lst = JSON.parse(data.Body);
@@ -133,21 +133,6 @@ function bindRoleTypeSelect(type) {
         $("#role-sel").empty();
         data.forEach(function (role) {
             $("#role-sel").append($("<option>").val(role.RoleTypeCode).text(role.RoleTypeName));
-        })
-    })
-    $.ajaxSettings.async = true;
-}
-
-// 绑定省份
-function bindProvinceSelect() {
-    $.ajaxSettings.async = false;
-    $.commonGet("Master/GetProvince", {
-        provinceId:'',
-        provinceName:''
-    }, function (data) {
-        $("#ProvinceId").empty();
-        data.forEach(function (province) {
-            $("#ProvinceId").append($("<option>").val(province.ProvinceId).text(province.ProvinceName));
         })
     })
     $.ajaxSettings.async = true;
