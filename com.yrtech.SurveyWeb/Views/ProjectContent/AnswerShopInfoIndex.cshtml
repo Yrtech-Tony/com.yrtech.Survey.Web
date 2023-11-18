@@ -70,10 +70,14 @@
                 <div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
                     <div class="form-inline" style="text-align:center">
                         <div class="item form-inline" style="float:right;">
+                            <button id="btnDownloadAnnex" class="btn btn-primary" style="margin-right:0px">下载附件</button>
                             <button id="btnAddAnnex" class="btn btn-primary" style="margin-right:0px">添加附件</button>
                         </div>
                     </div>
-
+                    <div id="upload-container" class="container-fluid" style="margin:0;padding:0;">
+                        <div id="ossfile"></div>
+                        <div id="console"></div>
+                    </div>
                     <div class="clearfix"></div>
                 </div>
                 <table id="annex-table" class="table  table-set"></table>
@@ -84,9 +88,7 @@
         </div>
     </div>
 </div>
-<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
-    <div id="ossfile"></div>
-</div>
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 
@@ -139,16 +141,27 @@
                         AnswerShopInfoId:curRow.Id,
                         FileName: file.fileName,
                         ServerFileName: file.osspath,
-                        InUserId:loginUser.Id
+                        InUserId: loginUser.Id,
+                        SeqNO:0
                     }, function () {
                         successCount++
                         if (successCount == files.length) {
+                            alert("上传文件成功！")
                             loadAnnex()
                         }
                     }); 
                 })
             }
         });
+        
+        $("#btnDownloadAnnex").click(function () {
+            $.commonGet("Answer/AnswerShpoInfoFileDownLoad", {
+                projectId: curRow.ProjectId,
+                shopId: curRow.ShopId
+            }, function (data) {
+                 window.location.href = data
+            })
+        })
     })
 
     var curRow;
@@ -283,12 +296,13 @@
     function closeAnnexModal() {
         $("#Annex-Modal").modal("hide");
     }
-    function deleteAnnex() {
-        $.commonPost("Answer/AnswerShopInfoFileDelete", { FileId: curRow.FileId }, function () {
+    function deleteAnnex(FileId) {
+        $.commonPost("Answer/AnswerShopInfoFileDelete", { FileId: FileId }, function () {
             loadAnnex()
         });
     }
     
+    var curRowFile
     function loadAnnex() {
         $.commonGet("Answer/AnswerShopInfoFileSearch", {
             answerShopInfoFileId: curRow.Id,
@@ -335,7 +349,7 @@
                     align: "center",
                     sortable: false,
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:deleteAnnex();" style="min-width:100px">删除</a>';
+                        return '<a href="javascript:deleteAnnex(' + row.FileId + ');" style="min-width:100px">删除</a>';
                     }
                 }  ] 
             });
