@@ -198,6 +198,7 @@
     function loadAnswerShopInfo() {
         $('#answer-shop-info-table').bootstrapTable("showLoading");
         $.commonGet("Answer/GetAnswerShopInfo", {
+            userId:loginUser.Id,
             projectId: $("#project-sel").val(),
             shopId: $("#shop-sel").val()
         }, function (data) {
