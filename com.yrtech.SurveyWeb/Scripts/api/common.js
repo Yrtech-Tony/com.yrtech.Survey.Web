@@ -284,6 +284,23 @@ function bindLabel(labelType) {
     })
     $.ajaxSettings.async = true;
 }
+//  绑定标签-通用 多个
+function bindLabelMultiple(labelType) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetLabel", {
+        brandId: $("#brand-sel").val(),
+        labelId: '',
+        labelType: labelType,
+        useChk: true
+    }, function (data) {
+        $("#LabelId").append($("<option>").val('').text('请选择'));
+        data.forEach(function (label) {
+            $("#LabelId").append($("<option>").val(label.LabelId).text(label.LabelName));
+        })
+        $("#LabelId").addClass("selectpicker").prop("title", "").prop("multiple", true).data("live-search", true).selectpicker("refresh");
+    })
+    $.ajaxSettings.async = true;
+}
 //  绑定标签-审核类型
 function bindLabelRecheck(labelType) {
     $.ajaxSettings.async = false;
