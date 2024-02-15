@@ -36,7 +36,7 @@
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
-            <input id="keyword" class="form-control" style="width:150px;" placeholder="经销商代码/名称" />
+            <select id="shop-sel" data-width="300px"></select>
         </div>
     </div>
 </div>
@@ -68,7 +68,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
-                    <div class="form-inline" style="text-align:center">
+                    <div class="form-inline" style="text-align: center; height: 40px;">
                         <div class="item form-inline" style="float:right;">
                             <button id="btnDownloadAnnex" class="btn btn-primary" style="margin-right:0px">下载附件</button>
                             <button id="btnAddAnnex" class="btn btn-primary" style="margin-right:0px">添加附件</button>
@@ -119,8 +119,12 @@
             bindProjectSelect();
         });
         $("#project-sel").change(function () {
+            bindShopSelect(true);
+        });
+        $("#shop-sel").change(function () {
             loadAnswerShopInfo();
         });
+        bindShopSelect(true);
         loadAnswerShopInfo();
        // initAnswerShopInfoTable();
         $("#btnQuery").click(function () {
@@ -155,12 +159,15 @@
         });
         
         $("#btnDownloadAnnex").click(function () {
+            $("#btnDownloadAnnex").button("loading");
             $.commonGet("Answer/AnswerShpoInfoFileDownLoad", {
                 projectId: curRow.ProjectId,
                 shopId: curRow.ShopId
             }, function (data) {
                  window.location.href = data
-            })
+            }).always(function () {
+                $("#btnDownloadAnnex").button("reset");
+            });
         })
     })
 
@@ -192,7 +199,9 @@
         $('#answer-shop-info-table').bootstrapTable("showLoading");
         $.commonGet("Answer/GetAnswerShopInfo", {
             projectId: $("#project-sel").val(),
-            shopId: ''
+            shopId: $("#shop-sel").val(),
+            shopkey:"",
+            userId:loginUser.Id,
         }, function (data) {
            // $('#answer-shop-info-table').bootstrapTable("hideLoading");
             //$('#answer-shop-info-table').bootstrapTable("load", data);
