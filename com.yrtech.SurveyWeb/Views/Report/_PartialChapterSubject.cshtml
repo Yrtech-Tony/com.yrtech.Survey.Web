@@ -1,0 +1,64 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:right;">
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="chapter-subject-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        initChapterSubjectTable();
+        loadChapterSubject();
+    })
+
+    function initChapterSubjectTable() {
+        $('#chapter-subject-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "章节代码",
+                field: 'ChapterCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "体系代码",
+                field: "SubjectCode",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "删除",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delChapterSubject(' + row.Id + ');" style="min-width:100px">删除</a>';
+                }
+            }]
+        });
+    }
+
+    function loadChapterSubject() {
+        $.commonGet("Master/GetChapterSubject", {
+            projectId: $("#project-sel").val(),
+            chapterId: curRow.ChapterId,
+            subjectId: '',
+        }, function (data) {
+            $('#chapter-subject-table').bootstrapTable("load", data);
+        });
+    }
+  
+    function delChapterSubject(id) {
+        $.commonPost("Master/DeleteChapterSubject", { Id: id }, function () {
+            loadChapterSubject();
+        });
+    }
+</script>
