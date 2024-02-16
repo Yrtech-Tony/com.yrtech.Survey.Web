@@ -609,6 +609,10 @@
     <Content Include="Views\Appeal\_PartialAppealFeedbackImport.cshtml" />
     <Content Include="Views\Report\ReportAreaIndex.cshtml" />
     <Content Include="Views\Report\_PartialFileUploadingArea.cshtml" />
+    <Content Include="Views\Report\ChapterIndex.cshtml" />
+    <Content Include="Views\Report\_PartialChapterEdit.cshtml" />
+    <Content Include="Views\Report\_PartialChapterSubjectImport.cshtml" />
+    <Content Include="Views\Report\_PartialChapterSubject.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

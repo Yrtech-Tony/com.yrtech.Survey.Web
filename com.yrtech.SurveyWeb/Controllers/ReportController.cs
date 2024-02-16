@@ -42,6 +42,21 @@ namespace com.yrtech.SurveyWeb.Controllers
             return View();
         }
 
-
+        public ActionResult ChapterIndex()
+        {
+            return View();
+        }
+        public ActionResult ChapterEdit()
+        {
+            return PartialView("_PartialChapterEdit");
+        }
+        public ActionResult OpenChapterSubjectImport()
+        {
+            return PartialView("_PartialChapterSubjectImport");
+        }
+        public ActionResult OpenChapterSubject()
+        {
+            return PartialView("_PartialChapterSubject");
+        }
     }
 }
