@@ -14,6 +14,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult ReportAreaIndex()
+        {
+            return View();
+        }
 
         public ActionResult stat()
         {
@@ -23,6 +27,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         public ActionResult FileUploading()
         {
             return PartialView("_PartialFileUploading");
+        }
+        public ActionResult FileUploadingArea()
+        {
+            return PartialView("_PartialFileUploadingArea");
         }
 
         public ActionResult LogIndex()
@@ -34,6 +42,21 @@ namespace com.yrtech.SurveyWeb.Controllers
             return View();
         }
 
-
+        public ActionResult ChapterIndex()
+        {
+            return View();
+        }
+        public ActionResult ChapterEdit()
+        {
+            return PartialView("_PartialChapterEdit");
+        }
+        public ActionResult OpenChapterSubjectImport()
+        {
+            return PartialView("_PartialChapterSubjectImport");
+        }
+        public ActionResult OpenChapterSubject()
+        {
+            return PartialView("_PartialChapterSubject");
+        }
     }
 }

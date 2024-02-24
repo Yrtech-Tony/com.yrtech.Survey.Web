@@ -164,12 +164,26 @@
                 tr.append($("<td>").html(fileDownName));
                 tr.append($("<td>").html(item.FileTypeName));
                 tr.append($("<td>").html(item.InUserName));
-                //下载
-                var download = $("<a download='" + item.ServerFileName + "'>下载</a>");
-                var downloadUrl = osshost + "/" + item.ServerFileName + "?response-content-type=application%2Foctet-stream";
-                 
-                download.attr("href", downloadUrl);//
-                tr.append($("<td></td>").append(download));
+                if (item.ServerFileName.includes(".jpg")) {
+                    //查看照片
+                    var showBtn = $("<a href='#'>查看照片</a>");
+                    showBtn.click(function () {
+                        debugger
+                        viewPicutes(item.ServerFileName);
+                        return false;
+                    });
+                    tr.append($("<td></td>").append(showBtn));
+                }
+                else {
+
+
+                    //下载
+                    var download = $("<a>下载</a>");
+                    //var downloadUrl = osshost + "/" + item.ServerFileName + "?response-content-type=application%2Foctet-stream";;
+                    var downloadUrl = osshost + "/" + item.ServerFileName;
+                    download.attr("href", downloadUrl);
+                    tr.append($("<td></td>").append(download));
+                }
                 //删除
                 if (item.FileType == 'Shop') {
                     tr.append($("<td></td>"));

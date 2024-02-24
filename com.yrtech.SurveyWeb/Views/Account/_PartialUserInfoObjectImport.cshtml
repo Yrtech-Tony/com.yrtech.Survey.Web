@@ -111,6 +111,7 @@
             row.InUserId = loginUser.Id;
             row.ModifyUserId = loginUser.Id;
             row.BrandId = $("#brand-sel").val();
+            row.TenantId = loginUser.TenantId;
         })
         $.commonPost("Master/UserInfoObjectImport", {
             ListJson: JSON.stringify(rows)
@@ -126,6 +127,7 @@
             row.InUserId = loginUser.Id;
             row.ModifyUserId = loginUser.Id;
             row.BrandId = $("#brand-sel").val();
+            row.TenantId = loginUser.TenantId;
         })
         $.commonPost("Master/UserInfoObjectExcuteShopImport", {
             ListJson: JSON.stringify(rows)

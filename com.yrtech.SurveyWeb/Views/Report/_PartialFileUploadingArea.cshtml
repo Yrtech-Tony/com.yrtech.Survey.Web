@@ -1,0 +1,84 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:right;">
+        <button id="btnStartUpload" class="btn btn-primary" style="margin-right:0px" onclick="startUpload()" data-loading-text="上传中..." disabled>开始上传</button>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="ready-file-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    var readyUploader;
+    $(function () {
+        initFileTable();
+        loadReadyFiles();
+    })
+    var fileRow;
+    function initFileTable() {
+        $('#ready-file-table').bootstrapTable({
+            pagination: false,
+            striped: true, //是否显示行间隔色
+            columns: [{
+                title: "文件名称",
+                field: "ReportFileName",
+                width: 600,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "检查状态",
+                field: "AreaCodeCheck",
+                width: 140,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return value ? '<span class="green"><i class="fa fa-check" aria-hidden="true"></i></span>' : '<span class="red"><i class="fa fa-times" aria-hidden="true"></i></span>';
+                }
+            }
+            ],
+            onClickRow: function (row, $element) {
+                fileRow = row;
+            }
+        });
+    }
+
+    function loadReadyFiles() {
+        if (curRow) {
+            $("#btnStartUpload").attr("disabled", false);
+            readyFiles.forEach(function (file) { file.AreaCodeCheck = true});
+            $('#ready-file-table').bootstrapTable("load", readyFiles);
+        } else {
+            $.commonPost("ReportFile/ReportFileListSaveCheckArea", {
+                ListJson: JSON.stringify(readyFiles)
+            }, function (data) {
+                var chkFail = false;
+                data.forEach(function (item) {
+                    if (!item.AreaCodeCheck) {
+                        chkFail = true;
+                        return false;
+                    }
+                })
+                $("#btnStartUpload").attr("disabled", chkFail);
+                $('#ready-file-table').bootstrapTable("load", data);
+            });
+        }
+    }
+
+    function startUpload() {
+        var brandTxt = $("#brand-sel option:selected").text();
+        var projectTxt = $("#project-sel option:selected").text();
+        var bussinessTypeTxt = $("#bussiness-type-sel option:selected").text();
+        confirm("确定上传文件到品牌=" + brandTxt + ",期号=" + projectTxt  + "下么？", function () {
+            if (readyUploader)
+                readyUploader.start();
+            $("#btnStartUpload").button("loading");
+        }, function () {
+            return false;
+        })
+    }
+
+    function delFile(fileName) {
+        console.log(fileName)
+    }
+</script>

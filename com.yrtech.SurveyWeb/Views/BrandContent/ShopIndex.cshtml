@@ -141,6 +141,7 @@
         params.UseChk = $("#UseChk").is(":checked");
         params.TenantId = loginUser.TenantId;
         params.BrandId = $("#brand-sel").val();
+        params.ProvinceId = $("#ProvinceId").val();
         if (json && json.length > 0) {
             //编辑
             json = JSON.parse(json);

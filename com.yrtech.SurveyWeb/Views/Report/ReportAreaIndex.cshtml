@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "经销商报告";
+    ViewBag.Title = "区域报告";
 }
 <style>
     .operation {
@@ -33,10 +33,6 @@
             <label class="control-label">期号:</label>
             <select id="project-sel" class="form-control" style="width: 140px"></select>
         </div>
-        <div class="form-group">
-            <label class="control-label">业务类型:</label>
-            <select id="bussiness-type-sel" class="form-control" style="width: 140px"></select>
-        </div>
     </div>
 
 </div>
@@ -49,9 +45,9 @@
         </div>
         <div class="form-group" style="float:right;width:600px;text-align:right">
 
-            <span style="color:red">文件命名示例：经销商代码_xxxx</span>
-            <button id="btnUploadFileShop" class="btn btn-default" style="display:none">上传文件</button>
-            <button id="btnUploadVideoShop" class="btn btn-default" style="display: none; ">上传视频</button>
+            <span style="color:red">文件命名示例：区域代码_xxxx</span>
+            <button id="btnUploadFileArea" class="btn btn-default" style="display:none">上传文件</button>
+            <button id="btnUploadVideoArea" class="btn btn-default" style="display: none; ">上传视频</button>
             <button id="btnDeleteFile" class="btn btn-default" onclick="deleteFileByProject()">按期号删除文件</button>
             <button id="btnUploadFile" class="btn btn-default">批量上传文件</button>
             <button id="btnUploadVideo" class="btn btn-default">批量上传视频</button>
@@ -108,7 +104,8 @@
 <script>
     var ossFileUploader;
     var ossVideoUploader;
-    var ossFileUploaderShop;
+    var ossFileUploaderArea;
+    var ossVideoUploaderArea;
     var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
@@ -120,10 +117,9 @@
         //加载期号
         $("#brand-sel").change(function () {
             bindProjectSelect();
-            bindBussinessSelect();
         });
 
-        $("#project-sel,#bussiness-type-sel").change(function () {
+        $("#project-sel").change(function () {
             search();
         })
 
@@ -152,8 +148,6 @@
         $("#year-sel").change();
 
         initOss();
-
-        //initReportTable();
         search();
     });
 
@@ -190,23 +184,23 @@
             }
         });
 
-        ossFileUploaderShop = new OSSClient({
+        ossFileUploaderArea = new OSSClient({
             osspath: osspath + "files/",
-            selectfiles: "btnUploadFileShop",
+            selectfiles: "btnUploadFileArea",
             success: function (files) {
                 //调用导入方法
                 debugger
                 importFiles(files, "01", true);
             },
             FilesAddComplete: function (files) {
-                readyUploader = ossFileUploaderShop;
+                readyUploader = ossFileUploaderArea;
                 filesAddComplete(files, "01", true);
             }
         });
 
-        ossVideoUploaderShop = new OSSClient({
+        ossVideoUploaderArea = new OSSClient({
             osspath: osspath + "videos/",
-            selectfiles: "btnUploadVideoShop",
+            selectfiles: "btnUploadVideoArea",
             osspath: osspath,
             success: function (files) {
                 debugger
@@ -214,7 +208,7 @@
                 importFiles(files, "02", true);
             },
             FilesAddComplete: function (files) {
-                readyUploader = ossVideoUploaderShop;
+                readyUploader = ossVideoUploaderArea;
                 filesAddComplete(files, "02", true);
             }
         });
@@ -226,7 +220,7 @@
         $("#Modal").modal("show");
         $("#Modal .modal-body").empty();
         $("#Modal .modal-title").html(fileType == '01' ? '上传文件' : '上传视频');
-        $("#Modal .modal-body").load("/Report/FileUploading", {}, function () {
+        $("#Modal .modal-body").load("/Report/FileUploadingArea", {}, function () {
 
         })
     }
@@ -236,14 +230,12 @@
         var ufiles = [];
         fileObjs.forEach(function (fileObj) {
             if (curRow) {
-                selShopId = curRow.ShopId;
+                selAreaId = curRow.AreaId;
                 ufiles.push({
-                    TenantId: loginUser.TenantId,
                     BrandId: $("#brand-sel").val(),
                     ProjectId: selProject,
-                    ShopId: selShopId,
-                    ShopCode: curRow.ShopCode,
-                    BussinessTypeId: $('#bussiness-type-sel').val(),
+                    AreaId: selAreaId,
+                    AreaCode: curRow.AreaCode,
                     ReportFileType: fileType,
                     ReportFileName: fileObj.name,
                     Url_OSS: fileObj.osspath,
@@ -251,11 +243,9 @@
                 });
             } else {
                 ufiles.push({
-                    TenantId: loginUser.TenantId,
                     BrandId: $("#brand-sel").val(),
                     ProjectId: selProject,
-                    ShopCode: fileObj.shopCode,
-                    BussinessTypeId: $('#bussiness-type-sel').val(),
+                    AreaCode: fileObj.shopCode,
                     ReportFileType: fileType,
                     ReportFileName: fileObj.name,
                     Url_OSS: fileObj.osspath,
@@ -269,7 +259,7 @@
 
     function importFiles(fileObjs, fileType, isCheck) {
         var ufiles = getUploadFiles(fileObjs, fileType, isCheck);
-        $.commonPost("ReportFile/ReportFileListSave", {
+        $.commonPost("ReportFile/ReportFileListSaveArea", {
             ListJson: JSON.stringify(ufiles)
         }, function (data) {
             fileObjs = [];
@@ -279,52 +269,13 @@
             }
         });
     }
-
-    var oneShopUploaders = [];
     function search() {
         var params = getParams();
         if (!params) return;
 
         $('#report-table').bootstrapTable("showLoading");
-        $.commonGet("ReportFile/ReportFileListUploadSearch", params, function (data) {
-           // $('#report-table').bootstrapTable("load", data);
-            //$('#report-table').bootstrapTable("hideLoading");
+        $.commonGet("ReportFile/ReportFileListUploadSearchArea", params, function (data) {
             initReportTable(data);
-            //if (oneShopUploaders) {
-            //    $.each(oneShopUploaders, function () {
-            //        this.destroy();
-            //    })
-            //}
-            //oneShopUploaders = [];
-            //$.each(data, function (i, item) {
-            //    var fileUploader = new OSSClient({
-            //        osspath: osspath + "files/",
-            //        selectfiles: "shopFileUploaderA_" + item.ShopId,
-            //        success: function (files) {
-            //            //调用导入方法
-            //            importFiles(files, "01", true);
-            //        },
-            //        FilesAddComplete: function (files) {
-            //            readyUploader = fileUploader;
-            //            filesAddComplete(files, "01", true);
-            //        }
-            //    });
-            //    var videoUploader = new OSSClient({
-            //        osspath: osspath + "videos/",
-            //        selectfiles: "shopVideoUploaderA_" + item.ShopId,
-            //        success: function (files) {
-            //            //调用导入方法
-            //            importFiles(files, "02", true);
-            //        },
-            //        FilesAddComplete: function (files) {
-            //            readyUploader = videoUploader;
-            //            filesAddComplete(files, "02", true);
-            //        }
-            //    })
-
-            //    oneShopUploaders.push(fileUploader);
-            //    oneShopUploaders.push(videoUploader);
-            //})
         })
     }
     var curRow;
@@ -343,14 +294,14 @@
             width: "100%",
             height: getClientHeight() - 300,
             columns: [{
-                title: "经销商代码",
-                field: 'ShopCode',
+                title: "区域代码",
+                field: 'AreaCode',
                 width: 150,
                 valign: "middle",
                 align: "center"
             }, {
-                title: "经销商名称",
-                field: "ShopName",
+                title: "区域名称",
+                field: "AreaName",
                 width: 230,
                 valign: "middle",
                 align: "center",
@@ -373,7 +324,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a id="shopFileUploaderA_' + row.ShopId + '" href="javascript:openSelectFile(\'01\');" style="min-width:100px">文件上传</a>';
+                    return '<a id="areaFileUploaderA_' + row.AreaId + '" href="javascript:openSelectFile(\'01\');" style="min-width:100px">文件上传</a>';
                 }
             }, {
                 title: "视频数",
@@ -393,7 +344,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a id="shopVideoUploaderA_' + row.ShopId + '" href="javascript:openSelectFile(\'02\');" style="min-width:100px">视频上传</a>';
+                    return '<a id="areaVideoUploaderA_' + row.ShopId + '" href="javascript:openSelectFile(\'02\');" style="min-width:100px">视频上传</a>';
                 }
             }],
             onClickRow: function (row, $element) {
@@ -405,9 +356,9 @@
 
     function openSelectFile(fileType) {
         if (fileType == "01") {
-            $("#btnUploadFileShop").trigger("click");
+            $("#btnUploadFileArea").trigger("click");
         } else {
-            $("#btnUploadVideoShop").trigger("click");
+            $("#btnUploadVideoArea").trigger("click");
         }
     }
 
@@ -418,7 +369,7 @@
     function GoDetail(reportFileType) {
         $("#DetailModal").modal("show");
         getParams();
-        selShopId = curRow.ShopId;
+        selAreaId = curRow.AreaId;
         if (fileTable) {
             fileTable.bootstrapTable("destroy");
         }
@@ -463,10 +414,9 @@
 
 
     function loadFileList(reportFileType) {
-        $.commonGet("ReportFile/ReportFileSearch", {
+        $.commonGet("ReportFile/ReportFileSearchArea", {
             ProjectId: selProject,
-            bussinessTypeId: $('#bussiness-type-sel').val(),
-            ShopId: selShopId,
+            AreaId: selAreaId,
             reportFileType: reportFileType
         }, function (data) {
             fileTable.bootstrapTable("load", data);
@@ -475,17 +425,15 @@
 
     //删除文件
     function deleteFile(seq, reportFileType) {
-        $.commonGet("ReportFile/ReportFileDelete", {
+        $.commonGet("ReportFile/ReportFileDeleteArea", {
             ProjectId: selProject,
-            ShopId: selShopId,
+            AreaId: selAreaId,
             SeqNO: seq
         }, function (data) {
             loadFileList(reportFileType);
             search();
         });
     }
-
-
     function loadProject() {
         loadProjectBindDropdownList($("#brand-sel").val(), $("#year").val(), function (data) {
             $("#ProjectListDiv").empty();
@@ -520,7 +468,6 @@
         $("#brand-sel").val(), $("#year").val()
         return {
             brandId: $('#brand-sel').val(),
-            bussinessTypeId: $('#bussiness-type-sel').val(),
             projectId: project || '',
             keyword: $('#keyword').val(),
             pageNum: 1,
@@ -530,9 +477,9 @@
 
     function deleteFileByProject() {
         confirm("确定要删除" + $("#project-sel option:selected").text() + "的所有文件数据么", function () {
-            $.commonGet("ReportFile/ReportFileDelete", {
+            $.commonGet("ReportFile/ReportFileDeleteArea", {
                 ProjectId: selProject,
-                ShopId: '',
+                AreaId: '',
                 SeqNO: ''
             }, function (data) {
                 search();
