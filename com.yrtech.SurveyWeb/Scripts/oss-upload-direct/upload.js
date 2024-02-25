@@ -29,7 +29,25 @@ function OSSClient(options) {
     return uploader;    
 }
 
-var osshost;
+function getSignature() {
+    var accessid = loginUser.ossInfo.AccessId;
+    var accesskey = loginUser.ossInfo.AccessKey; 
+    var policyText = {
+        "expiration": "2028-01-01T12:00:00.000Z", //设置该Policy的失效时间，超过这个失效时间之后，就没有办法通过这个policy上传文件了
+        "conditions": [
+        ["content-length-range", 0, 1048576000] // 设置上传文件的大小限制
+        ]
+    };
+    var policyBase64 = Base64.encode(JSON.stringify(policyText))
+    var policyBase64 = Base64.encode(JSON.stringify(policyText))
+    message = policyBase64
+    var bytes = Crypto.HMAC(Crypto.SHA1, message, accesskey, { asBytes: true });
+    var signature = Crypto.util.bytesToBase64(bytes);
+
+    return signature
+}
+
+var osshost; 
 function init_uploader(options) {
     var policyText = {
         "expiration": "2028-01-01T12:00:00.000Z", //设置该Policy的失效时间，超过这个失效时间之后，就没有办法通过这个policy上传文件了
@@ -55,7 +73,7 @@ function init_uploader(options) {
         container: document.getElementById('upload-container'),
         flash_swf_url: 'lib/plupload-2.1.2/js/Moxie.swf',
         silverlight_xap_url: 'lib/plupload-2.1.2/js/Moxie.xap',
-
+        signature:signature,
         url: osshost,
 
         multipart_params: {
