@@ -47,11 +47,23 @@
                         curLossRow.LossFileNameUrl = filePaths.join(';')
                         bindLossUrlList(filePaths)
                     }
-
+                    fnSaveAnswerPhotoLog()
                 }
             });
         }
     })
+    function fnSaveAnswerPhotoLog() {
+        $.commonPost("Answer/SaveAnswerPhotoLog", {
+            AnswerId: curRow.AnswerId,
+            ProjectId: curRow.ProjectId,
+            ShopId: curRow.ShopId,
+            FileUrl: curLossRow.LossFileNameUrl,
+            InUserId: loginUser.Id 
+        }, function () {
+            alert("保存成功！");
+            closeModel();
+        }, function () { });
+    }
 
     function closeLossModel() {
         $("#lossModal").modal("hide");

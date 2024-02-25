@@ -49,7 +49,18 @@
             });
         }
     })
-
+    function fnSaveAnswerPhotoLog() { 
+        $.commonPost("Answer/SaveAnswerPhotoLog", {
+            AnswerId: curRow.AnswerId,
+            ProjectId: curRow.ProjectId,
+            ShopId: curRow.ShopId,
+            FileUrl: curFileRow.LossFileNameUrl,
+            InUserId: loginUser.Id
+        }, function () {
+            alert("保存成功！");
+            closeModel();
+        }, function () { });
+    }
     function closeFileModel() {
         $("#sujectFileModal").modal("hide");
     }
