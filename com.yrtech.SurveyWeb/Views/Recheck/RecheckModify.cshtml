@@ -485,12 +485,13 @@
                 projectId: curRow.ProjectId,
                 shopId: curRow.ShopId
             }, function (data) {
-                if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                    $("#save_button").hide();
-                }
-                else {
-                    $("#save_button").show();
-                }
+                // 复审修改在审核完毕后是可以修改的，代码有问题，暂时注释
+                //if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                //    $("#save_button").hide();
+                //}
+                //else {
+                //    $("#save_button").show();
+                //}
                 $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
                     $.commonGet("Answer/GetShopAnswerScoreInfo", {
                         projectId: $("#project-sel").val(),
@@ -519,12 +520,12 @@
                 projectId: curRow.ProjectId,
                 shopId: curRow.ShopId
             }, function (data) {
-                if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                    $("#save_button").hide();
-                }
-                else {
-                    $("#save_button").show();
-                }
+                //if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                //    $("#save_button").hide();
+                //}
+                //else {
+                //    $("#save_button").show();
+                //}
                 $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
                 })
             });
@@ -543,12 +544,12 @@
                 projectId: curRow.ProjectId,
                 shopId: curRow.ShopId
             }, function (data) {
-                if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                    $("#save_button").hide();
-                }
-                else {
-                    $("#save_button").show();
-                }
+                //if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                //    $("#save_button").hide();
+                //}
+                //else {
+                //    $("#save_button").show();
+                //}
                 $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
                 })
             });
@@ -565,12 +566,12 @@
                 projectId: curRow.ProjectId,
                 shopId: curRow.ShopId
             }, function (data) {
-                if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                    $("#save_button").hide();
-                }
-                else {
-                    $("#save_button").show();
-                }
+                //if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
+                //    $("#save_button").hide();
+                //}
+                //else {
+                //    $("#save_button").show();
+                //}
                 $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
                 })
             });

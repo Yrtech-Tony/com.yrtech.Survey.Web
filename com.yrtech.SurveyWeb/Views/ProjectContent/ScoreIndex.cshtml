@@ -198,9 +198,12 @@
         });
         bindShopSelect();
         $("#shop-sel").change(function () {
-            //    loadScore();
+            if (loginUser.RoleType == 'S_Execute') {
+                _shopId = $("#shop-sel").val()
+            } else {
+                _shopId = "";
+            }
         });
-        //登录权限判断
         if (loginUser.RoleType == 'S_Execute') {
             //$("#btnExportAnswer").hide()
             //$("#btnExportAnswer2").hide()
