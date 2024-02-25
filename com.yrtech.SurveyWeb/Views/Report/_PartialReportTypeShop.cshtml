@@ -1,0 +1,64 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="item form-group" style="float:right;">
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="report-type-shop-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    $(function () {
+        initReportTypeShopTable();
+        loadReportTypeShop();
+    })
+
+    function initReportTypeShopTable() {
+        $('#report-type-shop-table').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10, 15, 20, 50],
+            columns: [{
+                title: "章节代码",
+                field: 'ReportTypeCode',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "体系代码",
+                field: "SubjectCode",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "删除",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delReportTypeShop(' + row.ReportShopId + ');" style="min-width:100px">删除</a>';
+                }
+            }]
+        });
+    }
+
+    function loadReportTypeShop() {
+        $.commonGet("Master/GetReportTypeShop", {
+            projectId: $("#project-sel").val(),
+            ReportTypeId: curRow.ReportTypeId,
+            shopId: '',
+        }, function (data) {
+            $('#report-type-shop-table').bootstrapTable("load", data);
+        });
+    }
+  
+    function delReportTypeShop(id) {
+        $.commonPost("Master/DeleteReportTypeShop", { ReportShopId: id }, function () {
+            loadReportTypeShop();
+        });
+    }
+</script>
