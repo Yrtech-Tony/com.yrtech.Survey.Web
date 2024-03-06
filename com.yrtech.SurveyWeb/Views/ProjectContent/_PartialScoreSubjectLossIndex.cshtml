@@ -60,8 +60,7 @@
             FileUrl: curLossRow.LossFileNameUrl,
             InUserId: loginUser.Id 
         }, function () {
-            alert("保存成功！");
-            closeModel();
+           
         }, function () { });
     }
 
@@ -80,7 +79,7 @@
             var img = $('<img />')
             img.css("width", 250).css("height", 250).css("margin", 5)
             img.prop('src', osshost + file)
-            imgDiv.append(img);
+            imgDiv.append(img); 
             let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
             remove.click(function () {
                 fileList.splice(fileList.indexOf(file), 1);
