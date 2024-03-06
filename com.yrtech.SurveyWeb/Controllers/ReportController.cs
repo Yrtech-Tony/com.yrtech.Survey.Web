@@ -75,6 +75,14 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialReportTypeShop");
         }
+        public ActionResult ReportJobIndex()
+        {
+            return View();
+        }
+        public ActionResult OpenReportJobImport()
+        {
+            return PartialView("_PartialReportJobImport");
+        }
 
     }
 }
