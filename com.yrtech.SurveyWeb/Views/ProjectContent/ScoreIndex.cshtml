@@ -362,7 +362,7 @@
         $("#save_button").button("loading");
         $.commonPost("Answer/SaveAnswerInfo", params, function () {
             $("#save_button").button("reset");
-            loadScore();
+            //loadScore(); --临时改成不刷新
             closeModel();
         }, function () { $("#save_button").button("reset"); });
     }

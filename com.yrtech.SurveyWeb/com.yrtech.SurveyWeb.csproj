@@ -619,6 +619,8 @@
     <Content Include="Views\Report\_PartialReportTypeEdit.cshtml" />
     <Content Include="Views\Report\_PartialReportTypeShop.cshtml" />
     <Content Include="Views\Report\_PartialReportTypeShopImport.cshtml" />
+    <Content Include="Views\Report\ReportJobIndex.cshtml" />
+    <Content Include="Views\Report\_PartialReportJobImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

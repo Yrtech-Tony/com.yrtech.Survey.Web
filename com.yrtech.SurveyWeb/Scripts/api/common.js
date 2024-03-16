@@ -214,7 +214,21 @@ function bindBussinessSelect() {
     });
     $.ajaxSettings.async = true;
 }
+// 绑定省份
+function bindProvinceSelect() {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetProvince", {
+        provinceId: '',
+        provinceName: ''
+    }, function (data) {
+        $("#ProvinceId").append($("<option>").val('').text('请选择'));
+        data.forEach(function (province) {
+            $("#ProvinceId").append($("<option>").val(province.ProvinceId).text(province.ProvinceName));
+        })
+    })
+    $.ajaxSettings.async = true;
 
+}
 // 绑定集团
 function bindGroupSel() {
     $.ajaxSettings.async = false;

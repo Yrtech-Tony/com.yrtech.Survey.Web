@@ -2,21 +2,21 @@
     <div class="form-inline" style="text-align:center">
         <label class="control-label" style="font-size:16px;">导入期号:<span id="ImportProject"></span></label>
         <div class="item form-inline" style="float:right;">
-            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importReportTypeShop()" data-loading-text="导入中...">导入</button>
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importReportJob()" data-loading-text="导入中...">导入</button>
         </div>
     </div>
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
     
-    <table id="import-report-type-shop-table" class="table table-bordered table-set"></table>
+    <table id="import-job-table" class="table table-bordered table-set"></table>
 </div>
 <script>
     $(function () {
     })
 
-    function initImportReportTypeShopTable(data) {
-        $('#import-report-type-shop-table').bootstrapTable('destroy').bootstrapTable({
+    function initImportReportJobTable(data) {
+        $('#import-job-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
             data:data,
             striped: true, //是否显示行间隔色
@@ -25,15 +25,31 @@
             pageSize: 20,
             pageList: [20, 50, 100, 500],
             columns: [{
-                title: "报告类型代码",
-                field: 'ReportTypeCode',
+                title: "区域代码",
+                field: 'AreaCode',
                 width: 100,
                 valign: "middle",
                 align: "center",
             }, {
-                title: "经销商代码",
-                field: "ShopCode",
-                width: 300,
+                title: "岗位名称",
+                field: "JobName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: preferenceFormatter
+            }, {
+                title: "标准人数",
+                field: "JobFullCount",
+                width: 50,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: preferenceFormatter
+            }, {
+                title: "到岗人数",
+                field: "JobActualCount",
+                width: 50,
                 valign: "middle",
                 align: "center",
                 sortable: false,
@@ -62,9 +78,9 @@
             '<a href="#" data-toggle="tooltip" title=' + value + '>' + value + '</a>',
         ].join('');
     }
-    function loadImportReportTypeShop(file) {
-        $('#import-report-type-shop-table').bootstrapTable("showLoading");
-        $.commonGet("Master/ReportTypeShopExcelAnalysis", {
+    function loadImportReportJob(file) {
+        $('#import-job-table').bootstrapTable("showLoading");
+        $.commonGet("ReportFile/ReportJobRateExcelAnalysis", {
             projectId: $("#project-sel").val(),
             ossPath: file.osspath
         }, function (data) {
@@ -80,21 +96,21 @@
             if (!chk) {
                 $("#btnImport").attr("disabled", true);
             }
-            initImportReportTypeShopTable(data);
+            initImportReportJobTable(data);
         });
     }
-    function importReportTypeShop() {
+    function importReportJob() {
         $("#btnImport").button("loading");
-        var rows = $('#import-report-type-shop-table').bootstrapTable("getData");
+        var rows = $('#import-job-table').bootstrapTable("getData");
         rows.forEach(function (row) {
             row.ProjectId = $("#project-sel").val();
             row.InUserId = loginUser.Id;
         })
-        $.commonPost("Master/ReportTypeShopImport", {
+        $.commonPost("ReportFile/ReportJobRateImport", {
             ListJson: JSON.stringify(rows)
         }, function () {
             $("#ModalImport").modal("hide");
-            loadReportType();
+            loadReportJobRate();
         });
     }
 

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "报告类型管理";
+    ViewBag.Title = "岗位导入";
 }
 <style>
     .operation {
@@ -19,9 +19,8 @@
 <div class="condition">
     <div style="text-align:right;width:100%; ">
         <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnReportTypeAdd" class="btn btn-primary">添加报告类型</button>
-        <button id="btnDownloadReportTypeShopTemplate" class="btn btn-primary">下载报告类型经销商模板</button>
-        <button id="btnImportReportTypeShop" class="btn btn-primary">导入报告类型经销商</button>
+        <button id="btnDownloadReportJobRateTemplate" class="btn btn-primary">下载岗位模板</button>
+        <button id="btnImportReportJobRate" class="btn btn-primary">导入岗位</button>
     </div>
     <div class="form-inline">
         <div class="form-inline">
@@ -43,28 +42,11 @@
 
 </div>
 <div class="result">
-    <table id="report-type-table" class="table table-bordered table-set"></table>
+    <table id="report-jobrate-table" class="table table-bordered table-set"></table>
 </div>
 
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
-</div>
-
-<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveReportType()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
-                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="modal fade" id="ModalImport" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
@@ -72,7 +54,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">报告类型经销商导入</h4>
+                <h4 class="modal-title">岗位满足率导入</h4>
             </div>
             <div class="modal-body">
             </div>
@@ -112,25 +94,19 @@
             bindProjectSelect();
         });
         $("#project-sel").change(function () {
-            loadReportType();
+            loadReportJobRate();
         });
-        loadReportType();
+        loadReportJobRate();
         NProgress.done();
-        $("#btnReportTypeAdd").click(function () {
-            $("#Modal").modal("show");
-            $("#Modal .modal-body").load("/Report/ReportTypeEdit", {}, function () {
-            })
-            return false;
-        })
-        $("#btnDownloadReportTypeShopTemplate").click(function () {
-            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/ReportTypeShop.xlsx";
+        $("#btnDownloadReportJobRateTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/ReportJob.xlsx";
             window.location.href = url;
         });
         osspath = "Survey/BaseInfo/";
         new OSSClient({
             autoupload: true,
             osspath: osspath + "Import/",
-            selectfiles: "btnImportReportTypeShop",
+            selectfiles: "btnImportReportJobRate",
             multi_selection: false,
             success: function (files) {
                 //调用导入方法
@@ -139,57 +115,35 @@
                     var projectCode = $("#project-sel option:selected").text();
                     $("#ModalImport .modal-body").empty();
                     $("#ModalImport").modal("show");
-                    $("#ModalImport .modal-body").load("/Report/OpenReportTypeShopImport", {}, function () {
+                    $("#ModalImport .modal-body").load("/Report/OpenReportJobImport", {}, function () {
                         $("#ImportProject").html(projectCode);
-                        loadImportReportTypeShop(file);
+                        loadImportReportJob(file);
                     })
                 })
             }
         });
         $("#btnQuery").click(function () {
-            loadReportType();
+            loadReportJobRate();
         }).trigger("click");
     })
     var curRow;
-    function saveReportType() {
-        var params = $("#report-type-form").serializeJson();
-        debugger
-        params.ProjectId = $("#project-sel").val();
-        var json = $("#report-type-form").data("json");
-        if (json && json.length > 0) {
-            //编辑
-            json = JSON.parse(json);
-            params = $.extend(json, params);
-        } else {
-            //新增
-            params = $.extend({
-                InUserId: loginUser.Id,
-            }, params);
-        }
-        $("#save_button").button("loading");
-        $.commonPost("Master/SaveReportType", params, function () {
-            $("#save_button").button("reset");
-            loadReportType();
-            closeModel();
-        }, function () { $("#save_button").button("reset"); });
-    }
-    function loadReportType() {
+    
+    function loadReportJobRate() {
         var projectId = $("#project-sel").val();
         if (!projectId) {
             alert("请选择一个期号！");
             return
         }
-        $('#report-type-table').bootstrapTable("showLoading");
-        $.commonGet("Master/GetReportType", {
+        $('#report-jobrate-table').bootstrapTable("showLoading");
+        $.commonGet("ReportFile/ReportJobRateSearch", {
             projectId: $("#project-sel").val(),
-            ReportTypeId: '',
-            ReportTypeCode: '',
+            smallArea: '',
         }, function (data) {
-            initReportTypeTable(data);
+            initReportJobRateTable(data);
         });
     }
-    function initReportTypeTable(data) {
-        $('#report-type-table').bootstrapTable('destroy').bootstrapTable({
+    function initReportJobRateTable(data) {
+        $('#report-jobrate-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
             data:data,
             striped: true, //是否显示行间隔色
@@ -201,46 +155,45 @@
             pageSize: 20,
             pageList: [20, 50, 100, 500],
             columns: [{
-                title: "报告类型Id",
-                field: "ReportTypeId",
+                title: "区域代码",
+                field: "AreaCode",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "区域名称",
+                field: 'AreaName',
+                width: 80,
+                valign: "middle",
+                align: "center"
+                
+            }, {
+                title: "岗位名称",
+                field: "JobName",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false
+                
+            }, {
+                title: "标准人数",
+                field: "JobFullCount",
                 width: 50,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
-                title: "报告类型代码",
-                field: 'ReportTypeCode',
-                width: 80,
+                title: "到岗人数",
+                field: "JobActualCount",
+                width: 50,
                 valign: "middle",
                 align: "center",
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:goEdit( );" style="min-width:100px">' + value + '</a>';
-                }
+                sortable: false
             }, {
-                title: "报告类型名称",
-                field: "ReportTypeName",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (value != undefined && value != "")
-                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
-                }
-            }, {
-                title: "经销商",
-                field: "",
-                width: 120,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:setSubject();" style="min-width:100px">经销商详细</a>';
-                }
-            }, {
-                title: "添加时间",
+                title: "导入时间",
                 field: "InDateTime",
-                width: 150,
+                width: 50,
                 valign: "middle",
                 align: "center",
                 sortable: false
@@ -249,26 +202,6 @@
                 curRow = row;
             }
         });
-    }
-    function goEdit() {
-        $("#Modal .modal-body").empty();
-        $("#Modal .modal-footer").show();
-        $("#Modal").modal("show");
-        $("#Modal .modal-title").html("报告类型编辑");
-        $("#Modal .modal-body").load("/Report/ReportTypeEdit", {}, function () {
-            debugger
-            $("#report-type-form").setForm(curRow);
-            $("#report-type-form").data("json", JSON.stringify(curRow));
-            $("input[type=checkbox]").iCheckParser();
-        })
-    }
-    function setSubject() {
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $("#Modal .modal-footer").hide();
-        $("#Modal .modal-body").load("/Report/OpenReportTypeShop", {}, function () {
-
-        })
     }
 </script>
 
