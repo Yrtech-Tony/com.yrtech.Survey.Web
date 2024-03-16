@@ -375,7 +375,9 @@
         });
     }
 
+    var curRowShop
     function goEdit() {
+        debugger
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .modal-title").html("申诉设置编辑");
@@ -386,12 +388,13 @@
     }
 
     function goEditShopAppealSet() {
+        debugger
         $("#ModalShop .modal-body").empty();
         $("#ModalShop").modal("show");
         $("#ModalShop .modal-title").html("经销商申诉设置编辑");
         $("#ModalShop .modal-body").load("/Appeal/ShopAppealSetEdit", {}, function () {
-            $("#appealshopset-form").setForm(curRowShop);
-            $("#appealshopset-form").data("json", JSON.stringify(curRowShop));
+            $("#appealset-form").setForm(curRowShop);
+            $("#appealset-form").data("json", JSON.stringify(curRowShop));
         })
     }
 

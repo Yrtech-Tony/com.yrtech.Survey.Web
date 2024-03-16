@@ -184,8 +184,10 @@
     <Content Include="Content\bootstrap-datetimepicker\js\locales\bootstrap-datetimepicker.zh-CN.js" />
     <Content Include="Content\bootstrap-progressbar-3.3.4.min.css" />
     <Content Include="Content\bootstrap-table\bootstrap-table-editor.js" />
+    <Content Include="Content\bootstrap-table\extensions\bootstrap-table-resizable.js" />
     <Content Include="Content\bootstrap-table\bootstrap-table.css" />
     <Content Include="Content\bootstrap-table\bootstrap-table.js" />
+    <Content Include="Content\bootstrap-table\extensions\colResizable-1.6.min.js" />
     <Content Include="Content\bootstrap-table\extensions\bootstrap-table-editable.min.js" />
     <Content Include="Content\bootstrap-table\extensions\editable\bootstrap-table-editable.min.js" />
     <Content Include="Content\bootstrap-table\locale\bootstrap-table-zh-CN.js" />

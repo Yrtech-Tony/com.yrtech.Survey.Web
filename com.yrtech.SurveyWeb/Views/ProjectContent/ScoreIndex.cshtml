@@ -551,6 +551,7 @@
                             curRow = data[0]
                             $("#score-form").setForm(curRow);
                             $("#score-form").data("json", JSON.stringify(curRow));
+                            $("#score-range").html('(' + curRow.LowScore + '-' + curRow.FullScore + ')')
                         }
                     });
                 })

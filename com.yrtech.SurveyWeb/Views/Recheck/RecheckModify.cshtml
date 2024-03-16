@@ -499,10 +499,12 @@
                         subjectId: curRow.SubjectId,
                         key: ''
                     }, function (data) {
+                        debugger
                         if (data && data.length > 0) {
                             curRow = data[0]
                             $("#score-form").setForm(curRow);
-                            $("#score-form").data("json", JSON.stringify(curRow));
+                            $("#score-form").data("json", JSON.stringify(curRow)); 
+                            $("#score-range").html('('+curRow.LowScore + '-' + curRow.FullScore+')')
                         } 
                     });
                 })
