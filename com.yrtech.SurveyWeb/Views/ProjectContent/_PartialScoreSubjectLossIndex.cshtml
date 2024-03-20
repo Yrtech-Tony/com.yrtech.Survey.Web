@@ -53,15 +53,16 @@
         }
     })
     function fnSaveAnswerPhotoLog() {
-        $.commonPost("Answer/SaveAnswerPhotoLog", {
-            AnswerId: curRow.AnswerId,
-            ProjectId: curRow.ProjectId,
-            ShopId: curRow.ShopId,
-            FileUrl: curLossRow.LossFileNameUrl,
-            InUserId: loginUser.Id 
-        }, function () {
+        // 网页上传照片不需要保存记录
+        //$.commonPost("Answer/SaveAnswerPhotoLog", {
+        //    AnswerId: curRow.AnswerId,
+        //    ProjectId: curRow.ProjectId,
+        //    ShopId: curRow.ShopId,
+        //    FileUrl: curLossRow.LossFileNameUrl,
+        //    InUserId: loginUser.Id 
+        //}, function () {
            
-        }, function () { });
+        //}, function () { });
     }
 
     function closeLossModel() {
