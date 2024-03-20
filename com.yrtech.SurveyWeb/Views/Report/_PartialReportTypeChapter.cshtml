@@ -4,16 +4,16 @@
     <div class="clearfix"></div>
 </div>
 <div class="item form-group">
-    <table id="report-type-shop-table" class="table table-bordered table-set"></table>
+    <table id="report-type-chapter-table" class="table table-bordered table-set"></table>
 </div>
 <script>
     $(function () {
-        initReportTypeShopTable();
-        loadReportTypeShop();
+        initReportTypeChapterTable();
+        loadReportTypeChapter();
     })
 
-    function initReportTypeShopTable() {
-        $('#report-type-shop-table').bootstrapTable({
+    function initReportTypeChapterTable() {
+        $('#report-type-chapter-table').bootstrapTable({
             pagination: true,
             striped: true, //是否显示行间隔色
             pageNumber: 1,
@@ -26,8 +26,8 @@
                 valign: "middle",
                 align: "center"
             }, {
-                title: "经销商代码",
-                field: "ShopCode",
+                title: "章节代码",
+                field: "ChapterCode",
                 width: 200,
                 valign: "middle",
                 align: "center",
@@ -40,25 +40,25 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:delReportTypeShop(' + row.ReportShopId + ');" style="min-width:100px">删除</a>';
+                    return '<a href="javascript:delReportTypeChapter(' + row.ReportTypeId + ','+row.ChapterId+');" style="min-width:100px">删除</a>';
                 }
             }]
         });
     }
 
-    function loadReportTypeShop() {
-        $.commonGet("Master/GetReportTypeShop", {
+    function loadReportTypeChapter() {
+        $.commonGet("Master/GetChapterReportType", {
             projectId: $("#project-sel").val(),
             ReportTypeId: curRow.ReportTypeId,
-            shopId: '',
+            Chapter: '',
         }, function (data) {
-            $('#report-type-shop-table').bootstrapTable("load", data);
+            $('#report-type-chapter-table').bootstrapTable("load", data);
         });
     }
   
-    function delReportTypeShop(id) {
-        $.commonPost("Master/DeleteReportTypeShop", { ReportShopId: id }, function () {
-            loadReportTypeShop();
+    function delReportTypeChapter(reportTypeId, chapterId) {
+        $.commonPost("Master/DeleteChapterReportType", { ShopType: reportTypeId, ChapterId: chapterId }, function () {
+            loadReportTypeChapter();
         });
     }
 </script>
