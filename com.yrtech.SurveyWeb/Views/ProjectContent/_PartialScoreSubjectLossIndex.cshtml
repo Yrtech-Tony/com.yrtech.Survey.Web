@@ -38,7 +38,8 @@
                     //调用导入方法
                     let filePaths = []
                     files.forEach(function (file) {
-                        filePaths.push(file.osspath)
+                        filePaths.push(file.osspath);
+                        fnSaveAnswerPhotoLog(file.osspath)
                     })
                     if (curLossRow.LossFileNameUrl) {
                         curLossRow.LossFileNameUrl += ';' + filePaths.join(';')
@@ -47,22 +48,21 @@
                         curLossRow.LossFileNameUrl = filePaths.join(';')
                         bindLossUrlList(filePaths)
                     }
-                    fnSaveAnswerPhotoLog()
                 }
             });
         }
     })
-    function fnSaveAnswerPhotoLog() {
-        // 网页上传照片不需要保存记录
-        //$.commonPost("Answer/SaveAnswerPhotoLog", {
-        //    AnswerId: curRow.AnswerId,
-        //    ProjectId: curRow.ProjectId,
-        //    ShopId: curRow.ShopId,
-        //    FileUrl: curLossRow.LossFileNameUrl,
-        //    InUserId: loginUser.Id 
-        //}, function () {
+    function fnSaveAnswerPhotoLog(ossPath) {
+
+        $.commonPost("Answer/SaveAnswerPhotoLog", {
+            AnswerId: curRow.AnswerId,
+            ProjectId: curRow.ProjectId,
+            ShopId: curRow.ShopId,
+            FileUrl: ossPath,
+            InUserId: loginUser.Id 
+        }, function () {
            
-        //}, function () { });
+        }, function () { });
     }
 
     function closeLossModel() {

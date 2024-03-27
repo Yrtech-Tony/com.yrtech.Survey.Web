@@ -164,7 +164,7 @@
                 tr.append($("<td>").html(fileDownName));
                 tr.append($("<td>").html(item.FileTypeName));
                 tr.append($("<td>").html(item.InUserName));
-                if (item.ServerFileName.includes(".jpg")) {
+                if (item.ServerFileName.includes(".jpg") || item.ServerFileName.includes(".png") || item.ServerFileName.includes(".jpeg")) {
                     //查看照片
                     var showBtn = $("<a href='#'>查看照片</a>");
                     showBtn.click(function () {
