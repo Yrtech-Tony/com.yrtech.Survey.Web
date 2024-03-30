@@ -295,7 +295,7 @@ function bindLabel(labelType) {
         data.forEach(function (label) {
             $("#LabelId").append($("<option>").val(label.LabelId).text(label.LabelName));
         })
-        $("#LabelId").addClass("selectpicker").prop("title", "").prop("multiple", true).data("live-search", true).selectpicker("refresh");
+       // $("#LabelId").addClass("selectpicker").prop("title", "").prop("multiple", true).data("live-search", true).selectpicker("refresh");
     })
     $.ajaxSettings.async = true;
 }
