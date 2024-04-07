@@ -38,22 +38,9 @@
 <div class="result">
     <table id="reportSet-table" class="table table-bordered table-set"></table>
 </div>
-@*<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">申诉设置编辑</h4>
-            </div>
-            <div class="modal-body">
-            </div>
-            <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveAppealSet()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
-                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>*@
+<div class="result">
+    <table id="reportSet-reportDeploy-table" class="table table-bordered table-set"></table>
+</div>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script>
@@ -74,24 +61,26 @@
         });
         $("#project-sel").change(function () {
             loadReportSet();
+            loadReportSetDeploySet();
         });
 
         bindProjectSelect();
-        //initAppealSetTable();
         loadReportSet();
+        loadReportSetDeploySet();
         $("#btnQuery").click(function () {
             loadReportSet();
+            loadReportSetDeploySet();
         }).trigger("click");
 
     });
     var curRow;
     function initReportSetTable(data) {
         $('#reportSet-table').bootstrapTable('destroy').bootstrapTable({
-            pagination: true,
+            pagination: false,
             data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
-            height: getClientHeight() - 260,
+            height: 75,
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
@@ -159,41 +148,81 @@
             initReportSetTable(data);
         });
     }
-    //function goEdit() {
-    //    $("#Modal .modal-body").empty();
-    //    $("#Modal").modal("show");
-    //    $("#Modal .modal-title").html("申诉设置编辑");
-    //    $("#Modal .modal-body").load("/Appeal/AppealSetEdit", {}, function () {
-    //        $("#appealset-form").setForm(curRow);
-    //        $("#appealset-form").data("json", JSON.stringify(curRow));
-    //    })
-    //}
-    //function saveAppealSet() {
-    //    var params = $("#appealset-form").serializeJson();
-    //    var json = $("#appealset-form").data("json");
-    //    if (json && json.length > 0) {
-    //        //编辑
-    //        json = JSON.parse(json);
-    //        params = $.extend(json, params);
-    //        params.ProjectId = $("#project-sel").val();
-    //        params.InUserId = loginUser.Id;
-    //        params.ModifyUserId = loginUser.Id;
-    //        debugger
-    //        params.HiddenCode = $("#HiddenCode").val();
-    //    } else {// 无新增操作
-    //    }
-    //    $("#save_button").button("loading");
-    //    $.commonPost("Appeal/SaveAppealSet", params, function () {
-    //        $("#save_button").button("reset");
-    //        loadAppealSet();
-    //        closeModel();
-    //    }, function () { $("#save_button").button("reset"); });
-    //}
+    function loadReportSetDeploySet() {
+        $('#reportSet-reportDeploy-table').bootstrapTable("showLoading");
+        $.commonGet("ReportFile/ReportFileShopSearch", {
+            projectId: $("#project-sel").val(),
+            shopId: "",
+            shopCode: ""
+        }, function (data) {
+            $('#reportSet-reportDeploy-table').bootstrapTable("hideLoading");
+            $('#reportSet-reportDeploy-table').bootstrapTable("load", data);
+            initShopAppealSetDeployTable(data);
+        });
+    }
+    function initShopAppealSetDeployTable(data) {
+        $('#reportSet-reportDeploy-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data: data,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 400,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 100,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "经销商名称",
+                field: 'ShopName',
+                width: 300,
+                valign: "middle",
+                align: "center"
+            },
+            {
+                title: "发布状态",
+                field: "Status_S10",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "发布",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:reportdeploy(' + row.ShopId + ');" style="min-width:100px">发布</a>';
+                }
+            }, {
+                title: "取消发布",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delreportdeploy(' + row.ShopId + ');" style="min-width:100px">取消发布</a>';
+                }
+            }],
+            onClickRow: function (row, $element) {
+                curRowShop = row;
+            }
+        });
+    }
     function CreateReport() {
         confirm("确定生成吗？", function () {
             debugger
             $.commonGet("ReportFile/ReportDataCreate", {
-                brandId:$("#brand-sel").val(),
+                brandId: $("#brand-sel").val(),
                 projectId: curRow.ProjectId
             }, function (data) {
                 $.commonPost("ReportFile/SaveReportSet", {
@@ -201,10 +230,30 @@
                     InUserId: loginUser.Id,
                     ModifyUserId: loginUser.Id
                 }, function () {
-                    }, function () {  });
+                }, function () { });
                 loadReportSet();
             });
         });
 
+    }
+    function reportdeploy(id) {
+        $.commonPost("Recheck/SaveRecheckStatus", {
+            ProjectId: $("#project-sel").val(),
+            ShopId: id,
+            StatusCode: "S10",
+            InUserId:loginUser.Id
+        }, function () {
+            loadReportSetDeploySet();
+        });
+    }
+    function delreportdeploy(id) {
+        $.commonPost("ReportFile/ReportFileShopDelete", {
+            ProjectId: $("#project-sel").val(),
+            ShopId: id,
+            StatusCode: "S10",
+            RecheckUserId: loginUser.Id
+        }, function () {
+            loadReportSetDeploySet();
+        });
     }
 </script>
