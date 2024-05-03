@@ -180,7 +180,14 @@
                     //下载
                     var download = $("<a>下载</a>");
                     //var downloadUrl = osshost + "/" + item.ServerFileName + "?response-content-type=application%2Foctet-stream";;
-                    var downloadUrl = osshost + "/" + item.ServerFileName;
+                    var downloadUrl = "";
+                    if (item.ServerFileName.indexOf("http") == -1) {
+                        downloadUrl = osshost + "/" + item.ServerFileName;
+                    }
+                    else {
+                        downloadUrl = item.ServerFileName;
+                    }
+                    
                     download.attr("href", downloadUrl);
                     tr.append($("<td></td>").append(download));
                 }
@@ -288,6 +295,10 @@
         $("#galley .pictures").empty()
         $.each(fileList, function (i, item) {
             var imgUrl = loginUser.ossInfo.osshost + item;
+            if (item.indexOf("https") != -1) {
+                imgUrl = item;
+            }
+            //var imgUrl = loginUser.ossInfo.osshost + item;
             var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
             var imagA = $('<li></li>');
             let name = item.substr(item.lastIndexOf('/') + 1);

@@ -79,7 +79,13 @@
 
             var img = $('<img />')
             img.css("width", 250).css("height", 250).css("margin", 5)
-            img.prop('src', osshost + file)
+            //img.prop('src', osshost + file)
+            if (file.indexOf("https") == -1) {
+                img.prop('src', osshost + file)
+            }
+            else {
+                img.prop('src', file)
+            }
             imgDiv.append(img); 
             let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
             remove.click(function () {
