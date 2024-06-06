@@ -116,6 +116,7 @@
             pageNumber: 1,
             pageSize: 10,
             pageList: [10],
+            uniqueId:"LossId",
             columns: [{
                 title: "ID",
                 field: "LossId",
@@ -167,7 +168,7 @@
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
-                    return '<a href="javascript:delLossResutl(' + row.LossId + ');" style="min-width:100px">删除</a>';
+                    return '<a href="javascript:delLossResult(' + row.LossId + ');" style="min-width:100px">删除</a>';
                 }
             }],
             onClickRow: function (row, $element) {
@@ -263,8 +264,11 @@
         showLossModel();
     }
      
-    function delLossResutl(lossId) {
-        $('#subject-lossResult-table').bootstrapTable('remove', {field: 'LossId',values: [lossId] });
+    function delLossResult(lossId) {
+        debugger
+        //$('#subject-lossResult-table').bootstrapTable('remove', { field: 'LossId', values: [lossId] });
+        $('#subject-lossResult-table').bootstrapTable('removeByUniqueId', lossId);
+        
     }
 
     var maxLossId = 0;

@@ -625,6 +625,7 @@
     function initLossResult() {
         $('#lossresult-table').bootstrapTable({
             pagination: false,
+            uniqueId: "LossId",
             striped: true, //是否显示行间隔色
             columns: [{
                 title: "序号",
@@ -934,7 +935,8 @@
     }
 
     function delLossResutl(lossId) {
-        $('#lossresult-table').bootstrapTable('remove', { field: 'LossId', values: [lossId] });
+        //$('#lossresult-table').bootstrapTable('remove', { field: 'LossId', values: [lossId] });
+        $('#lossresult-table').bootstrapTable('removeByUniqueId', lossId);
     }
 
     //绑定 图片
