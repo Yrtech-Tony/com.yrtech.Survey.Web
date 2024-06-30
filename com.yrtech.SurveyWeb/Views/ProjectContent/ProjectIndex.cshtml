@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "期号管理";
+    ViewBag.Title = "期号/任务管理";
 }
 <style>
     .operation {
@@ -26,6 +26,15 @@
             <label class="control-label">年份:</label>
             <select id="year-sel" class="form-control" style="width:200px;"></select>
         </div>
+        <div class="form-group">
+            <label class="control-label">项目类型:</label>
+            <select id="projectType-sel"  class="form-control" style="width:200px;">
+                <option value="">全部</option>
+                <option value="明检">明检</option>
+                <option value="密采">密采</option>
+                <option value="自检">自检</option>
+            </select>
+        </div>
     </div>
     <div style="float:right;width:200px;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
@@ -36,7 +45,7 @@
     <table id="project-table" class="table table-set"></table>
 </div>
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
+    <div class="modal-dialog " style="height:500px">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -51,7 +60,6 @@
         </div>
     </div>
 </div>
-
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 
@@ -97,7 +105,6 @@
         params.RechckShopShow = $("#RechckShopShow").is(":checked");
         params.SelfTestChk = $("#SelfTestChk").is(":checked");
         params.LossCopyToSupplyChk = $("#LossCopyToSupplyChk").is(":checked");
-
         params.AppealShow = $("#AppealShow").is(":checked");
         params.PhotoUploadMode = $("#PhotoUploadMode").is(":checked");
         if (json && json.length > 0) {
@@ -130,9 +137,10 @@
         $.commonGet("Master/GetProject", {
             brandId: $("#brand-sel").val(),
             projectId: '',
-            year: $("#year-sel").val()
+            year: $("#year-sel").val(),
+            projectType: $("#projectType-sel").val()
         }, function (data) {
-           // $('#project-table').bootstrapTable("hideLoading");
+            // $('#project-table').bootstrapTable("hideLoading");
             //$('#project-table').bootstrapTable("load", data);
             initProjectTable(data);
         });
@@ -142,7 +150,7 @@
     function initProjectTable(data) {
         $('#project-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
-            data:data,
+            data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
@@ -174,25 +182,7 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            },
-            // 暂时不使用
-                {
-                title: "报告发布时间",
-                field: "ReportDeployDate",
-                width: 230,
-                valign: "middle",
-                align: "center",
-                sortable: false
-                },
-            {
-                title: "年份",
-                field: "Year",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            },
-            {
+            }, {
                 title: "年份",
                 field: "Year",
                 width: 100,
@@ -209,6 +199,20 @@
             }, {
                 title: "序号",
                 field: "OrderNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "开始时间",
+                field: "StartDate",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "结束时间",
+                field: "EndDate",
                 width: 100,
                 valign: "middle",
                 align: "center",
@@ -239,14 +243,41 @@
                 curRow = row;
             }
         });
+        columnShow();
     }
-
+    function columnShow() {
+        if ($("#projectType-sel").val() == "自检") {
+            $('#project-table').bootstrapTable('hideColumn', 'PhotoSize');
+        }
+    }
+    function columnShowEdit() {
+        debugger
+        if ($("#ProjectType").val() == "自检") {
+            $("#divScoreShowType").hide();
+            $("#divRechckShopShow").hide();
+            $("#divLossCopyToSupplyChk").hide();
+            $("#divAppealShow").hide();
+            $("#divPhotoUploadMode").hide();
+            $("#divReportDeployDate").hide();
+            $("#divPhotoSize").hide();
+        }
+        else {
+            $("#divScoreShowType").show();
+            $("#divRechckShopShow").show();
+            $("#divLossCopyToSupplyChk").show();
+            $("#divAppealShow").show();
+            $("#divPhotoUploadMode").show();
+            $("#divReportDeployDate").show();
+            $("#divPhotoSize").show();
+        }
+    }
     function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
         $("#Modal .modal-body").load("/ProjectContent/ProjectEdit", {}, function () {
             $("#project-form").setForm(curRow);
             $("#project-form").data("json", JSON.stringify(curRow));
+            columnShowEdit();
         })
     }
 
