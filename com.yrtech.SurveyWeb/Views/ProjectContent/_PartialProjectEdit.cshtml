@@ -2,6 +2,15 @@
     <form class="form-horizontal form-label-left" id="project-form">
         <fieldset>
             <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectGroup">
+                    分组
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    
+                    <input id="ProjectGroup" name="ProjectGroup" type="text" maxlength="15" class="form-control">
+                </div>
+            </div>
+            <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectCode">
                     期号代码<span class="required">*</span>
                 </label>
@@ -42,7 +51,15 @@
                     <input id="Quarter" name="Quarter" type="text" maxlength="15" class="form-control ">
                 </div>
             </div>
-            <div class="item form-group" style="display:none">
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
+                    序号
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="OrderNO" name="OrderNO" type="text" maxlength="15" class="form-control">
+                </div>
+            </div>
+            @*<div class="item form-group" style="display:none">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DataScore">
                     数据来源
                 </label>
@@ -53,7 +70,7 @@
                         <option value="Excel导入">Excel导入</option>
                     </select>
                 </div>
-            </div>
+            </div>*@
             <div class="item form-group" >
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectType">
                     项目类型
@@ -63,10 +80,11 @@
                         <option value=""></option>
                         <option value="明检">明检</option>
                         <option value="密采">密采</option>
+                        <option value="自检">自检</option>
                     </select>
                 </div>
             </div>
-            <div class="item form-group">
+            <div class="item form-group" id="divScoreShowType">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ScoreShowType">
                     默认分数
                 </label>
@@ -78,23 +96,32 @@
                     </select>
                 </div>
             </div>
-            <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
-                    序号
-                </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="OrderNO" name="OrderNO" type="text" maxlength="15" class="form-control">
-                </div>
-            </div>
-            <div class="item form-group">
+            
+            @*<div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="BrandId">
                     品牌
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <select id="BrandId" name="BrandId" class="form-control"></select>
                 </div>
+            </div>*@
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="StartDate">
+                    开始时间
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="StartDate" name="StartDate" class="form-control" />
+                </div>
             </div>
             <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="EndDate">
+                    结束时间
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="EndDate" name="EndDate" class="form-control" />
+                </div>
+            </div>
+            <div class="item form-group" id="divRechckShopShow">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="RechckShopShow">
                    复审提交经销商是否可见
                 </label>
@@ -102,15 +129,15 @@
                     <input type="checkbox" id="RechckShopShow" name="RechckShopShow" >
                 </div>
             </div>
-            <div class="item form-group">
+            @*<div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="SelfTestChk">
                     经销商自检
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
                     <input type="checkbox" id="SelfTestChk" name="SelfTestChk">
                 </div>
-            </div>
-            <div class="item form-group">
+            </div>*@
+            <div class="item form-group" id="divLossCopyToSupplyChk">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LossCopyToSupplyChk">
                     自动生成补充失分说明
                 </label>
@@ -118,7 +145,7 @@
                     <input type="checkbox" id="LossCopyToSupplyChk" name="LossCopyToSupplyChk">
                 </div>
             </div>
-            <div class="item form-group">
+            <div class="item form-group" id="divAppealShow">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="AppealShow">
                     是否申诉
                 </label>
@@ -126,7 +153,7 @@
                     <input type="checkbox" id="AppealShow" name="AppealShow">
                 </div>
             </div>
-            <div class="item form-group">
+            <div class="item form-group" id="divPhotoUploadMode">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="PhotoUploadMode">
                     支持照片一键上传
                 </label>
@@ -134,7 +161,7 @@
                     <input type="checkbox" id="PhotoUploadMode" name="PhotoUploadMode">
                 </div>
             </div>
-            <div class="item form-group">
+            <div class="item form-group" id="divReportDeployDate">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
                     报告发布时间
                 </label>
@@ -142,7 +169,7 @@
                     <input id="ReportDeployDate" name="ReportDeployDate" class="form-control" />
                 </div>
             </div>
-            <div class="item form-group">
+            <div class="item form-group" id="divPhotoSize">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
                     照片像素
                 </label>
@@ -160,8 +187,16 @@
 <script>
     $("#Year").html($("#year-sel").html());
     $("#Year").val(new Date().getFullYear());
-    $("#BrandId").html($("#brand-sel").html());
+    //$("#BrandId").html($("#brand-sel").html());
     $("#ReportDeployDate").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language: 'zh-CN'
+    });
+    $("#StartDate").datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language: 'zh-CN'
+    });
+    $("#EndDate").datetimepicker({
         format: 'yyyy-mm-dd hh:ii:ss',
         language: 'zh-CN'
     });

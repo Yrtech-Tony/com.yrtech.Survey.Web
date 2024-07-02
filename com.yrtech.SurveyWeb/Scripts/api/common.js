@@ -1,5 +1,5 @@
-﻿var baseSurveyUrl = 'http://123.57.229.128:8001/';
-//var baseSurveyUrl = 'http://localhost:57328/';
+﻿//var baseSurveyUrl = 'http://123.57.229.128:8001/';
+var baseSurveyUrl = 'http://123.57.229.128:8003/';
 var surveyApi = baseSurveyUrl + "survey/api/";
 var baseEasyPhotoUrl = 'http://123.57.229.128:8002/';
 //var baseEasyPhotoUrl = 'http://localhost:57328/';
