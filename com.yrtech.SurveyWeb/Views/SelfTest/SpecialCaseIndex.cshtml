@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewBag.Title = "特殊案例管理";
+}
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+</style>
+<div class="condition">
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">任务:</label>
+            <select id="project-sel" class="form-control" style="width:200px;"></select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商:</label>
+            <input id="shopKey" class="form-control" style="width:230px;" placeholder="经销商" />
+        </div> 
+    </div>
+    <div style="float:right;width:200px;text-align:right">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnExport" class="btn btn-primary">导出</button>
+    </div>
+</div>
+<div class="result">
+    <table id="special-case-table" class="table table-bordered table-set"></table>
+</div>
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">特殊案例编辑</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button id="save_button" type="button" onclick="saveSpecialCase()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script>
+    $(function () {
+        $('title').html('@ViewBag.Title')
+        bindBrandSelect();
+        //加载年份
+        $("#year-sel").change(function () {
+            bindProjectSelect();
+        });
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
+
+        //加载期号
+        $("#brand-sel").change(function () {
+            bindProjectSelect();
+        });
+        $("#project-sel").change(function () {
+            loadSpecialCase();
+        });
+        loadSpecialCase();
+        NProgress.done();
+
+        $("#btnAdd").click(function () {
+            $("#Modal").modal("show");
+            $("#Modal .modal-body").load("/SelfTest/SpecialCaseEdit", {}, function () { 
+            })
+            return false;
+        })
+
+        initSpecialCaseTable();
+        $("#btnQuery").click(function () {
+            loadSpecialCase();
+        }).trigger("click");
+    })
+
+    function loadSpecialCase() {
+        $('#special-case-table').bootstrapTable("showLoading");
+        $.commonGet("Answer/GetSpecialCase", {
+            projectId: $("#project-sel").val(),
+            shopId: '',
+            subjectId: '',
+            content: '',
+            shopKey: $("#shopKey").val()
+        }, function (data) {
+            initSpecialCaseTable(data);
+        });
+    }
+
+    var curRow;
+    function saveSpecialCase() {
+        var params = $("#special-case-form").serializeJson(); 
+        params.BrandId = $("#brand-sel").val();
+        var json = $("#special-case-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend(json, params);
+            params = $.extend({
+                SpecialFeedBackUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, params);
+        } else {
+            //新增
+            params = $.extend({
+                SpecialFeedBackUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, params);
+        }
+        $("#save_button").button("loading");
+        $.commonPost("Answer/SaveSpecialCase", params, function () {
+            $("#save_button").button("reset");
+            loadSpecialCase();
+            closeModel();
+        }, function () { $("#save_button").button("reset"); });
+    }
+ 
+
+    //初始化标签表格
+    function initSpecialCaseTable(data) {
+        $('#special-case-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            data: data,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 120,
+                valign: "middle",
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:goEdit();" style="min-width:100px">' + value + '</a>';
+                }
+            }, {
+                title: "经销商名称",
+                field: "ShopName", 
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "申请理由",
+                field: "SpecialCaseContent",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "反馈意见",
+                field: "SpecialFeedBack",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false 
+            }, {
+                title: "申请日期",
+                field: "InDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "反馈日期",
+                field: "SpecialFeedBackDateTime",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            } ],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+
+    function goEdit() {
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-body").load("/SelfTest/SpecialCaseEdit", {}, function () {
+            $("#special-case-form").setForm(curRow);
+            $("#special-case-form").data("json", JSON.stringify(curRow));
+        })
+    }
+
+</script>
