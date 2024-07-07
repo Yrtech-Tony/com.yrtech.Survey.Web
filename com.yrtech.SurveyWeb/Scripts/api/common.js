@@ -1,4 +1,5 @@
-﻿var baseSurveyUrl = 'http://123.57.229.128:8001/';
+﻿
+var baseSurveyUrl = 'http://123.57.229.128:8001/';
 //var baseSurveyUrl = 'http://localhost:57328/';
 var surveyApi = baseSurveyUrl + "survey/api/";
 var baseEasyPhotoUrl = 'http://123.57.229.128:8002/';
@@ -315,6 +316,22 @@ function bindLabelRecheck(labelType) {
     })
     $.ajaxSettings.async = true;
 }
+// 绑定标签-题目模式
+function bindLabelSubjectPattern(labelType) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetLabelSubjectPattern", {
+        brandId: $("#brand-sel").val(),
+        labelId: '',
+        labelType: labelType,
+        useChk: true
+    }, function (data) {
+        $("#LabelId_SubjectPattern").append($("<option>").val('').text('请选择'));
+        data.forEach(function (label) {
+            $("#LabelId_SubjectPattern").append($("<option>").val(label.LabelId_SubjectPattern).text(label.LabelName));
+        })
+    })
+    $.ajaxSettings.async = true;
+}
 // 绑定文件重命名选项
 function bindFileOptionSelect(fileTypeCode,projectId) {
     $.commonApi({
@@ -408,7 +425,11 @@ function viewPicutesList(fileList) {
     var count = fileList.length;
     $("#galley").empty()
     $.each(fileList, function (i, item) {
+        
         var imgUrl = loginUser.ossInfo.osshost + item;
+        if (item.indexOf("https")!= -1) {
+            imgUrl = item;
+        }
         var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
         var imagA = $('<li></li>');
         let name = item.substr(item.lastIndexOf('/') + 1);
