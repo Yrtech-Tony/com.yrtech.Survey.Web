@@ -58,6 +58,14 @@
                 </div>
             </div>
             <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelId_SubjectPattern">
+                    题目模式
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="LabelId_SubjectPattern" name="LabelId_SubjectPattern" class="form-control col-md-7 col-xs-12"></select>
+                </div>
+            </div>
+            <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="HiddenCode_SubjectType">
                     题目类型<span class="required">*</span>
                 </label>
@@ -91,12 +99,12 @@
                 </div>
             </div>
             <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="InspectionDesc">
-                    改善标准
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ImproveAdvice">
+                    改善建议
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     @* <input id="InspectionDesc" name="InspectionDesc" type="text"  class="form-control col-md-7 col-xs-12">*@
-                    <textarea id="Desc" name="Desc" rows="5" class="form-control col-md-7 col-xs-12"></textarea>
+                    <textarea id="ImproveAdvice" name="ImproveAdvice" rows="5" class="form-control col-md-7 col-xs-12"></textarea>
                 </div>
             </div>
             <div class="item form-group">
@@ -115,6 +123,7 @@
     //debugger
     bindLabel("ExamType");
     bindLabelRecheck("RecheckType");
+    bindLabelSubjectPattern("SubjectPattern");
     bindHiddenColumnSubjectType("体系类型");
 
 </script>

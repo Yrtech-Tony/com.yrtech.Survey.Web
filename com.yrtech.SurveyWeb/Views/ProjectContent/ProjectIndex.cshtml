@@ -29,7 +29,6 @@
         <div class="form-group">
             <label class="control-label">项目类型:</label>
             <select id="projectType-sel"  class="form-control" style="width:200px;">
-                <option value="">全部</option>
                 <option value="明检">明检</option>
                 <option value="密采">密采</option>
                 <option value="自检">自检</option>
@@ -83,10 +82,17 @@
         });
         loadProject();
         $("#btnProjectAdd").click(function () {
+            if ($("#projectType-sel").val() == "")
+            {
+                alert("请选择类型！");
+                return;
+            }
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/ProjectContent/ProjectEdit", {}, function () {
                 $("#RechckShopShow").attr('checked', true)
                 $("#PhotoUploadMode").attr('checked', false)
+                $("#ProjectType").val($("#projectType-sel").val());
+                columnShowEdit();
             })
             return false;
         });
@@ -97,7 +103,6 @@
             loadProject();
         }).trigger("click");
     })
-
     var curRow;
     function saveProject() {
         var params = $("#project-form").serializeJson();
@@ -145,7 +150,6 @@
             initProjectTable(data);
         });
     }
-
     //初始化期号表格
     function initProjectTable(data) {
         $('#project-table').bootstrapTable('destroy').bootstrapTable({
@@ -182,6 +186,16 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
+            }, {
+                title: "重新下发",
+                field: "ReCreate",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:reCreate();" style="min-width:100px">重新下发</a>';
+                }
             }, {
                 title: "年份",
                 field: "Year",
@@ -248,6 +262,11 @@
     function columnShow() {
         if ($("#projectType-sel").val() == "自检") {
             $('#project-table').bootstrapTable('hideColumn', 'PhotoSize');
+            $('#project-table').bootstrapTable('showColumn', 'ReCreate');
+        }
+        else {
+            $('#project-table').bootstrapTable('showColumn', 'PhotoSize');
+            $('#project-table').bootstrapTable('hideColumn', 'ReCreate');
         }
     }
     function columnShowEdit() {
@@ -279,6 +298,17 @@
             $("#project-form").data("json", JSON.stringify(curRow));
             columnShowEdit();
         })
+    }
+    function reCreate()
+    {
+        debugger
+        $.commonGet("Answer/ImproveCreate", {
+            projectId: curRow.ProjectId,
+            shopId: curRow.ShopId,
+            userId: loginUser.Id
+        }, function (data) {
+            loadProject();
+        });
     }
 
 </script>

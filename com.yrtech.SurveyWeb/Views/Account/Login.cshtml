@@ -197,7 +197,7 @@
                             data.OSSInfo.forEach(function (item) {
                                 data.ossInfo[item.HiddenCode] = item.HiddenName;
                             })
-                            data.ossInfo.osshost = data.ossInfo.EndPoint.substr(0, 7) + data.ossInfo.Bucket + "." + data.ossInfo.EndPoint.substr(7)+"/";
+                            data.ossInfo.osshost = data.ossInfo.EndPoint.substr(0, 8) + data.ossInfo.Bucket + "." + data.ossInfo.EndPoint.substr(8)+"/";
                         }
                         delete data.OSSInfo;
                         window.localStorage.userJson = JSON.stringify(data);

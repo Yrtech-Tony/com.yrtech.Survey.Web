@@ -56,8 +56,28 @@
     </div>
 </div>
 
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-hidden="false" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="javascript: closePhotoModel();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">照片列表</h4>
+            </div>
+            <div class="modal-body" style="height:500px; overflow-y:auto">
+                <div id="galley">
+                    <ul class="pictures"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
+
 <script>
     $(function () {
         $('title').html('@ViewBag.Title')
@@ -204,7 +224,7 @@
     function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/SelfTest/SpecialCaseEdit", {}, function () {
+        $("#Modal .modal-body").load("/Project/SpecialCaseEdit", {}, function () {
             $("#special-case-form").setForm(curRow);
             $("#special-case-form").data("json", JSON.stringify(curRow));
         })

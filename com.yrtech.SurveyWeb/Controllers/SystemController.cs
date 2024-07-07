@@ -35,5 +35,15 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return PartialView("_PartialBrandEdit");
         }
+
+        public ActionResult Notice()
+        {
+            return View();
+        }
+
+        public ActionResult NoticeEdit()
+        {
+            return View("_PartialNoticeEdit");
+        }
 	}
 }

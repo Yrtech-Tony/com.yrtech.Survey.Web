@@ -155,9 +155,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OperateController.cs" />
     <Compile Include="Controllers\ProjectContentController.cs" />
+    <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\RecheckController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
-    <Compile Include="Controllers\SelfTestController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Controllers\WechatOAuthController.cs" />
     <Compile Include="Global.asax.cs">
@@ -208,6 +208,7 @@
     <Content Include="Content\image\login-logo.png" />
     <Content Include="Content\image\uploadify-cancel.png" />
     <Content Include="Content\image\user.png" />
+    <Content Include="Content\jquery-ui.css" />
     <Content Include="Content\minimal\aero%402x.png" />
     <Content Include="Content\minimal\aero.css" />
     <Content Include="Content\minimal\aero.png" />
@@ -624,9 +625,10 @@
     <Content Include="Views\Report\_PartialReportJobImport.cshtml" />
     <Content Include="Views\Report\_PartialReportTypeChapterImport.cshtml" />
     <Content Include="Views\Report\_PartialReportTypeChapter.cshtml" />
-    <Content Include="Views\SelfTest\NoticeIndex.cshtml" />
-    <Content Include="Views\SelfTest\SpecialCaseIndex.cshtml" />
-    <Content Include="Views\SelfTest\_PartialSpecialCaseEdit.cshtml" />
+    <Content Include="Views\System\Notice.cshtml" />
+    <Content Include="Views\Project\SpecialCase.cshtml" />
+    <Content Include="Views\Project\_PartialSpecialCaseEdit.cshtml" />
+    <Content Include="Views\System\_PartialNoticeEdit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

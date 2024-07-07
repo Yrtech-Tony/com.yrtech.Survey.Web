@@ -78,6 +78,7 @@
 
         $.commonGet("Shop/ProjectShopExamTypeExcelAnalysis", {
             brandId: $("#brand-sel").val(),
+            projectId:$("#project-sel").val(),
             ossPath: file.osspath
         }, function (data) {
             var chk = true;

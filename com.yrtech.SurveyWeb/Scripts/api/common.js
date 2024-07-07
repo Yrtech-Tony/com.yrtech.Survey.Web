@@ -1,5 +1,5 @@
-﻿//var baseSurveyUrl = 'http://123.57.229.128:8001/';
-var baseSurveyUrl = 'http://123.57.229.128:8003/';
+﻿var baseSurveyUrl = 'http://123.57.229.128:8001/';
+//var baseSurveyUrl = 'http://123.57.229.128:8003/';
 var surveyApi = baseSurveyUrl + "survey/api/";
 var baseEasyPhotoUrl = 'http://123.57.229.128:8002/';
 //var baseEasyPhotoUrl = 'http://localhost:57328/';
@@ -173,6 +173,31 @@ function bindProjectSelect() {
     $.ajaxSettings.async = true;
 }
 
+function bindProjectAutocomplete() {
+    var brandId = $("#brand-sel").val();
+    if (!brandId) {
+        alert("请选择品牌！");
+        return
+    }
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetProject", {
+        brandId: $("#brand-sel").val(),
+        year: $("#year-sel").val(),
+        projectId: ""
+    }, function (data) {
+        $("#project-sel").empty();
+        $("#project-sel").autocomplete({
+            source: data.map(function(item){
+                return {
+                    label: item.ProjectName,
+                    value: item.ProjectName,
+                }
+            })
+        }) 
+    })
+    $.ajaxSettings.async = true;
+}
+
 // 绑定经销商
 function bindShopSelect(isAll) {
     $.ajaxSettings.async = false;
@@ -315,6 +340,22 @@ function bindLabelRecheck(labelType) {
     })
     $.ajaxSettings.async = true;
 }
+// 绑定标签-题目模式
+function bindLabelSubjectPattern(labelType) {
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetLabelSubjectPattern", {
+        brandId: $("#brand-sel").val(),
+        labelId: '',
+        labelType: labelType,
+        useChk: true
+    }, function (data) {
+        $("#LabelId_SubjectPattern").append($("<option>").val('').text('请选择'));
+        data.forEach(function (label) {
+            $("#LabelId_SubjectPattern").append($("<option>").val(label.LabelId_SubjectPattern).text(label.LabelName));
+        })
+    })
+    $.ajaxSettings.async = true;
+}
 // 绑定文件重命名选项
 function bindFileOptionSelect(fileTypeCode,projectId) {
     $.commonApi({
@@ -400,6 +441,7 @@ function openNewPage(url,callback) {
     }
 }
 function viewPicutesList(fileList) {
+    debugger
     if (!fileList || fileList.length == 0) {
         alert("没有照片！")
         return;
@@ -408,7 +450,11 @@ function viewPicutesList(fileList) {
     var count = fileList.length;
     $("#galley").empty()
     $.each(fileList, function (i, item) {
+        
         var imgUrl = loginUser.ossInfo.osshost + item;
+        if (item.indexOf("https")!= -1) {
+            imgUrl = item;
+        }
         var imgThumbUrl = imgUrl + '?x-oss-process=image/resize,m_fill,h_180,w_240';
         var imagA = $('<li></li>');
         let name = item.substr(item.lastIndexOf('/') + 1);

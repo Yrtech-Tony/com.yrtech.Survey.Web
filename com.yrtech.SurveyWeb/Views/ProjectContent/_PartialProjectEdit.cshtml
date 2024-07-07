@@ -77,7 +77,7 @@
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <select id="ProjectType" name="ProjectType" class="form-control">
-                        <option value=""></option>
+                        @*<option value=""></option>*@
                         <option value="明检">明检</option>
                         <option value="密采">密采</option>
                         <option value="自检">自检</option>
@@ -119,6 +119,14 @@
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <input id="EndDate" name="EndDate" class="form-control" />
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="BrandId">
+                    品牌
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <select id="BrandId" name="BrandId" class="form-control"></select>
                 </div>
             </div>
             <div class="item form-group" id="divRechckShopShow">
@@ -187,7 +195,7 @@
 <script>
     $("#Year").html($("#year-sel").html());
     $("#Year").val(new Date().getFullYear());
-    //$("#BrandId").html($("#brand-sel").html());
+    $("#BrandId").html($("#brand-sel").html());
     $("#ReportDeployDate").datetimepicker({
         format: 'yyyy-mm-dd hh:ii:ss',
         language: 'zh-CN'

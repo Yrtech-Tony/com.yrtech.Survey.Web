@@ -22,7 +22,8 @@
         </div>
         <div class="form-group">
             <label class="control-label">期号:</label>
-            <select id="project-sel" class="form-control" style="width: 140px"></select>
+            @*<select id="project-sel" class="form-control" style="width: 140px"></select>*@
+            <input id="project-sel" class="form-control" style="width: 140px" />
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
@@ -178,7 +179,7 @@
         bindBrandSelect();
         //加载年份
         $("#year-sel").change(function () {
-            bindProjectSelect();
+            bindProjectAutocomplete();
             $("#project-sel").change();
         });
         for (var i = 2020; i <= 2030; i++) {
