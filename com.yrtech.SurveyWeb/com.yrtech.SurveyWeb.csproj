@@ -157,6 +157,7 @@
     <Compile Include="Controllers\ProjectContentController.cs" />
     <Compile Include="Controllers\RecheckController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\SelfTestController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
     <Compile Include="Controllers\WechatOAuthController.cs" />
     <Compile Include="Global.asax.cs">
@@ -623,6 +624,9 @@
     <Content Include="Views\Report\_PartialReportJobImport.cshtml" />
     <Content Include="Views\Report\_PartialReportTypeChapterImport.cshtml" />
     <Content Include="Views\Report\_PartialReportTypeChapter.cshtml" />
+    <Content Include="Views\SelfTest\NoticeIndex.cshtml" />
+    <Content Include="Views\SelfTest\SpecialCaseIndex.cshtml" />
+    <Content Include="Views\SelfTest\_PartialSpecialCaseEdit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

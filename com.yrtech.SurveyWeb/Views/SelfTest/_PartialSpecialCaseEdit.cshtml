@@ -1,0 +1,83 @@
+﻿<div>
+    <form class="form-horizontal form-label-left" id="special-case-form">
+        <fieldset>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectCode">
+                    检查标准<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="InspectionDesc" name="InspectionDesc" type="text" maxlength="15" class="form-control" disabled>
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectName">
+                    申请理由<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="SpecialCaseContent" name="SpecialCaseContent" type="text" maxlength="15" class="form-control" disabled>
+                </div>
+            </div>
+
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelType">
+                    申请照片<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    @*<input id="SpecialCaseFile" name="SpecialCaseFile" required="required" type="text" maxlength="15" class="form-control" disabled> 
+                    <div>
+                        <button id="btnAddSpecialCasePic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
+                    </div>*@
+                    <div id="special-case-file-pics" style="max-height:400px;overflow:auto">
+                    </div>
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="UseChk">
+                    反馈意见
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                    <textarea id="SpecialFeedBack" name="SpecialFeedBack" rows="5" class="form-control col-md-7 col-xs-12"></textarea>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div> 
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script> 
+    $(function () {
+        if (curRow.SpecialCaseFile && curRow.SpecialCaseFile.Url) {
+            bindSpecialCaseUrlList(curRow.SpecialCaseFile.Url.split(';'))
+        }
+    })
+
+    //绑定失分描述图片
+    function bindSpecialCaseUrlList(fileList) {
+        $("#special-case-file-pics").empty()
+        fileList.forEach(function (file) {
+            var imgDiv = $('<div class="img-div">');
+
+            var img = $('<img />')
+            img.css("width", 250).css("height", 250).css("margin", 5)
+            //img.prop('src', osshost + file)
+            if (file.indexOf("https") == -1) {
+                img.prop('src', osshost + file)
+            }
+            else {
+                img.prop('src', file)
+            }
+            imgDiv.append(img);
+            let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
+            remove.click(function () {
+                fileList.splice(fileList.indexOf(file), 1);
+                curRow.LossFileNameUrl = fileList.join(';')
+                bindSpecialCaseUrlList(fileList)
+            })
+            imgDiv.append(remove);
+            $("#special-case-file-pics").append(imgDiv)
+        })
+    }
+</script>
+
