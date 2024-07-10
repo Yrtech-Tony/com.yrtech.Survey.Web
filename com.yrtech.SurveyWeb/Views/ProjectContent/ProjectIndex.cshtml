@@ -35,8 +35,10 @@
             </select>
         </div>
     </div>
-    <div style="float:right;width:200px;text-align:right">
+    <div style="float:right;text-align:right">
         <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnDownloadTemplate" class="btn btn-primary">下载自检模板</button>
+        <button id="btnProjectImport" class="btn btn-primary">导入自检任务</button>
         <button id="btnProjectAdd" class="btn btn-primary">添加期号</button>
     </div>
 </div>
@@ -59,11 +61,21 @@
         </div>
     </div>
 </div>
+<div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
+    <div id="ossfile"></div>
+</div>
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
-
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
 <script>
     NProgress.start();
+    var ossUploader;
+    var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
 
@@ -82,8 +94,7 @@
         });
         loadProject();
         $("#btnProjectAdd").click(function () {
-            if ($("#projectType-sel").val() == "")
-            {
+            if ($("#projectType-sel").val() == "") {
                 alert("请选择类型！");
                 return;
             }
@@ -96,13 +107,30 @@
             })
             return false;
         });
-
+        $("#btnDownloadTemplate").click(function () {
+            var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/Task.xlsx";
+            window.location.href = url;
+        });
         NProgress.done();
-        //initProjectTable();
+        osspath = "Survey/BaseInfo/";
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: "btnProjectImport",
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    loadImportProject(file);
+                })
+            }
+        });
         $("#btnQuery").click(function () {
             loadProject();
         }).trigger("click");
-    })
+
+    });
+
     var curRow;
     function saveProject() {
         var params = $("#project-form").serializeJson();
@@ -310,5 +338,18 @@
             loadProject();
         });
     }
-
+    function loadImportProject(file) {
+        debugger;
+        $("#btnProjectImport").button("loading");
+        $.commonGet("Master/TaskProjectCreate", {
+            tenantId: loginUser.TenantId,
+            brandId: $("#brand-sel").val(),
+            ossPath: file.osspath,
+            userId: loginUser.Id
+        }, function (data) {
+            $("#btnProjectImport").button("reset");
+            loadProject();
+        });
+        
+    }
 </script>
