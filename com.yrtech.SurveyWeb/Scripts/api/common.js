@@ -1,5 +1,5 @@
-﻿//var baseSurveyUrl = 'http://123.57.229.128:8001/';
-var baseSurveyUrl = 'http://123.57.229.128:8003/';
+﻿var baseSurveyUrl = 'http://123.57.229.128:8001/';
+//var baseSurveyUrl = 'http://123.57.229.128:8003/';
 var surveyApi = baseSurveyUrl + "survey/api/";
 var baseEasyPhotoUrl = 'http://123.57.229.128:8002/';
 //var baseEasyPhotoUrl = 'http://localhost:57328/';
@@ -168,6 +168,31 @@ function bindProjectSelect() {
         $("#project-sel").empty();
         data.forEach(function (item) {
             $("#project-sel").append($("<option>").val(item.ProjectId).text(item.ProjectName));
+        }) 
+    })
+    $.ajaxSettings.async = true;
+}
+
+function bindProjectAutocomplete() {
+    var brandId = $("#brand-sel").val();
+    if (!brandId) {
+        alert("请选择品牌！");
+        return
+    }
+    $.ajaxSettings.async = false;
+    $.commonGet("Master/GetProject", {
+        brandId: $("#brand-sel").val(),
+        year: $("#year-sel").val(),
+        projectId: ""
+    }, function (data) {
+        $("#project-sel").empty();
+        $("#project-sel").autocomplete({
+            source: data.map(function(item){
+                return {
+                    label: item.ProjectName,
+                    value: item.ProjectName,
+                }
+            })
         }) 
     })
     $.ajaxSettings.async = true;
@@ -416,6 +441,7 @@ function openNewPage(url,callback) {
     }
 }
 function viewPicutesList(fileList) {
+    debugger
     if (!fileList || fileList.length == 0) {
         alert("没有照片！")
         return;

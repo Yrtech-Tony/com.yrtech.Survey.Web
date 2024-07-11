@@ -35,12 +35,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">得分编辑</h4>
+                <h4 class="modal-title">公告编辑</h4>
             </div>
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button id="save_button" type="button" onclick="saveScore()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
+                <button id="save_button" type="button" onclick="saveNotice()" class="btn btn-primary" data-loading-text="提交中...">保存</button>
                 <button id="close_button" type="button" onclick="javascript:closeModel();" class="btn btn-default">关闭</button>
             </div>
         </div>
@@ -55,12 +55,6 @@
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
 
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
-<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
-<script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
 
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
@@ -70,8 +64,7 @@
 <script src="~/Content/viewer/viewer.min.js"></script>
 
 <script>
-    NProgress.start();
-    var uploader, lossUploader,_shopId;
+    NProgress.start(); 
     $(function () {  
         $('title').html('@ViewBag.Title')
 
@@ -92,7 +85,7 @@
          
         $("#btnNoticeAdd").click(function () {
             $("#Modal").modal("show");
-            $("#Modal .modal-body").load("/Report/NoticeEdit", {}, function () {
+            $("#Modal .modal-body").load("/System/NoticeEdit", {}, function () {
             })
             return false;
         })
@@ -104,34 +97,7 @@
         $("#exportModal").modal("hide");
     }
       
-    var curRow;
-    function saveNotice() {
-        var params = $("#score-form").serializeJson();
-        var json = $("#score-form").data("json");
-        if (json && json.length > 0) {
-            //编辑
-            json = JSON.parse(json);
-            params = $.extend({
-                ModifyUserId: loginUser.Id
-            }, params);
-            params = $.extend(json, params);
-
-        } else {
-            //新增
-            params = $.extend({
-                TenantId: loginUser.TenantId,
-                ProjectId: $("#project-sel").val(),
-                InUserId: loginUser.Id,
-                ModifyUserId: loginUser.Id
-            }, params);
-        }
-        $("#save_button").button("loading");
-        $.commonPost("Answer/SaveAnswerInfo", params, function () {
-            $("#save_button").button("reset");
-            //loadScore(); --临时改成不刷新
-            closeModel();
-        }, function () { $("#save_button").button("reset"); });
-    }
+    var curRow; 
 
     function loadNotice() { 
         $('#notice-table').bootstrapTable("showLoading");
@@ -167,10 +133,13 @@
                 field: 'NoticeCode',
                 width: 100,
                 valign: "middle",
-                align: "center"
+                align: "center",
+                formatter: function (value, row, index) {
+                    return '<a  href="javascript:goEdit(' + row.NoticeId + ');" style="min-width:100px">'+value+'</a>';
+                }
             }, {
                 title: "公告内容",
-                field: "ShopName",
+                field: "NoticeContent",
                 width: 230,
                 valign: "middle",
                 align: "center",
@@ -181,18 +150,21 @@
             },
             {
                 title: "发布日期",
-                field: "SubjectCode",
+                field: "PublishDate",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
             }, {
                 title: "附件",
-                field: "OrderNO",
+                field: "NoticeFileList",
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return (value&&value.length>0) ? '<i class="fa fa-paperclip" />' : '';
+                }
             }, {
                 title: "查看状态",
                 field: "",
@@ -203,6 +175,16 @@
                 formatter: function (value, row, index) {
                     return row.PublishViewCount + '/' + row.PublishObjectCount
                 }
+            }, {
+                title: "通知对象",
+                field: "",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a  href="javascript:goNoticeObject(' + row.NoticeId + ');" style="min-width:100px">通知对象</a>';
+                }
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
@@ -210,102 +192,26 @@
         });
     }
 
-    function goEdit() {
-        setTimeout(function () {
-            $("#Modal .modal-title").html('得分编辑');
-            $("#Modal .modal-footer").show();
-            $("#Modal .modal-body").empty();
-            $("#Modal").modal("show");
-            $.commonGet("Recheck/GetRecheckStatus", {
-                projectId: curRow.ProjectId,
-                shopId: curRow.ShopId
-            }, function (data) {
-                if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                    $("#save_button").hide();
-                }
-                else {
-                    $("#save_button").show();
-                }
-                $("#Modal .modal-body").load("/ProjectContent/ScoreEdit", {}, function () {
-                    $.commonGet("Answer/GetShopAnswerScoreInfo", {
-                        projectId: $("#project-sel").val(),
-                        shopId: $("#shop-sel").val(),
-                        subjectId: curRow.SubjectId,
-                        key: ''
-                    }, function (data) {
-                        if (data && data.length > 0) {
-                            curRow = data[0]
-                            $("#score-form").setForm(curRow);
-                            $("#score-form").data("json", JSON.stringify(curRow));
-                            $("#score-range").html('(' + curRow.LowScore + '-' + curRow.FullScore + ')')
-                        }
-                    });
-                })
-            });
-        }, 300)
+    function goEdit(id) {
+        $("#Modal .modal-title").html('公告编辑');
+        $("#Modal .modal-body").empty();
+        $("#Modal").modal("show");
+        $("#Modal .modal-footer").show();
+        $("#Modal .modal-body").load("/System/NoticeEdit", {}, function () {
+            $("#notice-form").setForm(curRow);
+            $("#notice-form").data("json", JSON.stringify(curRow));
+            noticeId = id
+        })
     }
+     
 
-    function goInspectionStandardIndex() {
-        $("#Modal .modal-title").html('检查标准');
+    function goNoticeObject(id) {
+        $("#Modal .modal-title").html('通知对象');
         $("#Modal .modal-footer").hide();
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
-            })
-        });
-
-    }
-
-    function goSubjectFileIndex() {
-        $("#Modal .modal-title").html('标准照片');
-        $("#Modal .modal-footer").hide();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
-            })
-        });
-
-    }
-
-    function goSubjectLossIndex() {
-        $("#Modal .modal-title").html('失分描述');
-        $("#Modal .modal-footer").hide();
-        $("#Modal .modal-body").empty();
-        $("#Modal").modal("show");
-        $.commonGet("Recheck/GetRecheckStatus", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId
-        }, function (data) {
-            if (data && data.length > 0 && (data[0].Status_S1) && loginUser.RoleType == "S_Execute") {
-                $("#save_button").hide();
-            }
-            else {
-                $("#save_button").show();
-            }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
-            })
-        });
-
+        $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
+        })
     }
 
 </script>

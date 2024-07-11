@@ -183,5 +183,16 @@ namespace com.yrtech.SurveyWeb.Controllers
             return PartialView("_PartialFileRenameEdit");
         }
         #endregion
+         
+        public ActionResult SpecialCase()
+        {
+            return View();
+        }
+
+
+        public ActionResult SpecialCaseEdit()
+        {
+            return View("_PartialSpecialCaseEdit");
+        }
     }
 }

@@ -23,11 +23,7 @@
                     申请照片<span class="required">*</span>
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    @*<input id="SpecialCaseFile" name="SpecialCaseFile" required="required" type="text" maxlength="15" class="form-control" disabled> 
-                    <div>
-                        <button id="btnAddSpecialCasePic" class="btn btn-primary" style="margin-right:0px" data-loading-text="提交中...">添加</button>
-                    </div>*@
-                    <div id="special-case-file-pics" style="max-height:400px;overflow:auto">
+                    <div id="special-case-file-pics" style="max-height:400px;overflow:auto; cursor: pointer">
                     </div>
                 </div>
             </div>
@@ -47,21 +43,24 @@
 <script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script> 
-    $(function () {
-        if (curRow.SpecialCaseFile && curRow.SpecialCaseFile.Url) {
-            bindSpecialCaseUrlList(curRow.SpecialCaseFile.Url.split(';'))
+    $(function () { 
+        if (curRow.SpecialCaseFile) {
+            let scFileObjs = JSON.parse(curRow.SpecialCaseFile)
+            if (scFileObjs && scFileObjs.length>0 && scFileObjs[0].Url) {
+                bindSpecialCaseUrlList(scFileObjs[0].Url.split(';'))
+            } 
         }
     })
 
     //绑定失分描述图片
     function bindSpecialCaseUrlList(fileList) {
         $("#special-case-file-pics").empty()
+        var osshost = loginUser.ossInfo.osshost
         fileList.forEach(function (file) {
             var imgDiv = $('<div class="img-div">');
 
             var img = $('<img />')
             img.css("width", 250).css("height", 250).css("margin", 5)
-            //img.prop('src', osshost + file)
             if (file.indexOf("https") == -1) {
                 img.prop('src', osshost + file)
             }
@@ -69,13 +68,9 @@
                 img.prop('src', file)
             }
             imgDiv.append(img);
-            let remove = $('<i class="glyphicon glyphicon-remove-circle"></i>')
-            remove.click(function () {
-                fileList.splice(fileList.indexOf(file), 1);
-                curRow.LossFileNameUrl = fileList.join(';')
-                bindSpecialCaseUrlList(fileList)
+            imgDiv.click(function () {
+                viewPicutesList(fileList)
             })
-            imgDiv.append(remove);
             $("#special-case-file-pics").append(imgDiv)
         })
     }

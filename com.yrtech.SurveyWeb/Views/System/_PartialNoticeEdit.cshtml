@@ -1,0 +1,247 @@
+﻿<div>
+    <form class="form-horizontal form-label-left" id="notice-form">
+        <fieldset>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectCode">
+                    公告标题<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input id="NoticeCode" name="NoticeCode" type="text" maxlength="100" class="form-control">
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectName">
+                    公告内容<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <textarea id="NoticeContent" name="NoticeContent" class="form-control"/>
+                </div>
+            </div>
+
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelType">
+                    发布日期<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12"> 
+                    <input id="PublishDate" name="PublishDate" class="form-control" style="width: 160px" />
+                </div>
+            </div>
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelType">
+                    查看状态<span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <span id="ViewStatus"></span> 
+                </div>
+            </div>
+            
+            <div class="item form-group">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelType">
+                    附件<span class="required">*</span>
+                </label>
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                    <div id="upload-container" class="container-fluid" style="display:none">
+                        <div id="ossfile"></div>
+                        <div id="console"></div>
+                    </div>
+                    <div class="container-fluid pull-right">
+                        <button id="selectfiles" class='btn btn-default'>上传文件</button>
+                    </div>
+                    <table id="notice_file_table" class="table table-bordered table-condensed list" style="margin-bottom:10px;font-size:12px">
+                        <thead>
+                            <tr>
+                                <th class="col-md-1">序号</th>
+                                <th class="col-md-7">文件名</th> 
+                                <th>下载</th>
+                                <th>删除</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div> 
+        </fieldset>
+    </form>
+</div> 
+
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
+
+<script> 
+    var fileList = [];
+    var noticeId;
+    var noticeAttmUploader
+    var selBrand = $("#brand-sel").val()
+    var osspath = "Survey/" + selBrand + "/Notice/";
+    $(function () {
+        loadNoticeAttmlFiles()
+
+        $("#PublishDate").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        debugger
+       
+        if (!noticeAttmUploader) {
+            noticeAttmUploader = new OSSClient({
+                osspath: osspath,
+                selectfiles: "selectfiles",
+                autoupload: true,
+                success: function (files) {
+                    console.log("files", files)
+                    var newFiles = []; 
+                    for (var i in files) {
+                        newFiles.push({
+                            InUserId: loginUser.Id,  
+                            FileName: files[i].fileName,
+                            FileUrl: files[i].osspath,
+                            SeqNo: i+1
+                        });
+                    }
+
+                    if (noticeId) {
+                        for (var i in newFiles) {
+                            newFiles[i].NoticeId = noticeId;
+                            NoticeFileSave(newFiles[i]);
+                        }
+                    } else {
+                        fileList = fileList.concat(newFiles);
+                        bindFileTable(fileList);
+                    }
+                },
+                FilesAddComplete: function (files) {
+
+                }
+            });
+        }
+
+    })
+
+    function saveNotice() {
+        var params = $("#notice-form").serializeJson();
+        var json = $("#notice-form").data("json");
+        if (json && json.length > 0) {
+            //编辑
+            json = JSON.parse(json);
+            params = $.extend({
+                ModifyUserId: loginUser.Id
+            }, params);
+            params = $.extend(json, params);
+
+        } else {
+            //新增
+            params = $.extend({
+                BrandId: $("#brand-sel").val(),
+                ProjectId: $("#project-sel").val(),
+                InUserId: loginUser.Id,
+                ModifyUserId: loginUser.Id
+            }, params);
+            params.NoticeFileList = fileList;
+        }
+
+
+        $("#save_button").button("loading");
+        $.commonPost("Master/SaveNotice", {
+            ListJson: JSON.stringify([params])
+        }, function () {
+            $("#save_button").button("reset");
+            loadNotice();
+            closeModel()
+        }, function () { $("#save_button").button("reset"); });
+    }
+
+    function loadNoticeAttmlFiles() {
+        $.commonGet("Master/NoticeFileSearch", {
+            noticeId: noticeId
+        }, function (data) {
+            $("#selectfiles").button("reset");
+            fileList = data;
+            bindFileTable(data);
+        });
+    }
+
+
+    //绑定附件
+    function bindFileTable(data) {
+        $("#notice_file_table tbody").empty();
+        if (data) {
+            $.each(data, function (i, item) {
+                var tr = $("<tr>");
+
+                var fileDownName = item.FileName;
+                tr.append($("<td>").html(fileDownName));  
+                if (item.FileName.includes(".jpg") || item.FileName.includes(".png") || item.FileName.includes(".jpeg")) {
+                    //查看照片
+                    var showBtn = $("<a href='#'>查看照片</a>");
+                    showBtn.click(function () { 
+                        viewPicutes(item.FileName);
+                        return false;
+                    });
+                    tr.append($("<td></td>").append(showBtn));
+                }
+                else {  
+                    //下载
+                    var download = $("<a>下载</a>");
+                    //var downloadUrl = osshost + "/" + item.ServerFileName + "?response-content-type=application%2Foctet-stream";;
+                    var downloadUrl = "";
+                    if (item.FileUrl.indexOf("http") == -1) {
+                        downloadUrl = osshost + "/" + item.FileUrl;
+                    }
+                    else {
+                        downloadUrl = item.FileUrl;
+                    }
+
+                    download.attr("href", downloadUrl);
+                    tr.append($("<td></td>").append(download));
+                }
+                //删除
+                var delBtn = $("<a href='#'>删除</a>");
+                delBtn.click(function () {  
+                    delFile(item.noticeId);
+                    return false;
+                });
+                tr.append($("<td></td>").append(delBtn));
+
+                $("#notice_file_table tbody").append(tr);
+            });
+        }
+    }
+
+    function NoticeFileSave(file) {
+        $("#selectfiles").button("loading");
+        $.commonPost("Master/NoticeFileSave", file, function () {
+            loadNoticeAttmlFiles();
+        });
+    }
+
+    function delFile(fileId) {
+        if (noticeId) {
+            confirm("确定要删除该文件吗？", function () {
+                noticeFileDelete({ fileId: fileId }, function () {
+                    loadNoticeAttmlFiles();
+                });
+            });
+        } else {
+            var fisrt = $(this).parent().parent().find("td:nth-child(1)");
+            if (fisrt) {
+                for (var i in fileList) {
+                    if (fileList[i].FileName == fisrt.text().trim()) {
+                        fileList.splice(i, 1);
+                    }
+                }
+                bindFileTable(fileList);
+            }
+        }
+    }
+
+    //删除附件
+    function noticeFileDelete(params, callback) {
+        $.commonPost("Master/NoticeFileDelete", params, callback);
+    }
+</script>
+
