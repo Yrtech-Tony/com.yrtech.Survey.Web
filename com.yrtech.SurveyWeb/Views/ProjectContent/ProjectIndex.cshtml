@@ -347,9 +347,13 @@
             ossPath: file.osspath,
             userId: loginUser.Id
         }, function (data) {
-            $("#btnProjectImport").button("reset");
-            loadProject();
+            if (data && data.Status)
+            { loadProject(); }
+            else {
+                alert(data.Body);
+            }
         });
+        $("#btnProjectImport").button("reset");
         
     }
 </script>
