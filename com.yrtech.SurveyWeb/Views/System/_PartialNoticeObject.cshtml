@@ -1,0 +1,192 @@
+﻿<div>
+    <div style="text-align: right;; margin-right: 10px;">
+        <button id="btnNoticeObjectRoleImport" class="btn btn-primary">导入通知对象-权限</button>
+        <button id="btnNoticeObjectUserImport" class="btn btn-primary">导入通知对象-账号</button>
+        <button id="btnDownloadTemplate1" class="btn btn-primary" onclick="downloadTemplate('NoticeObject')">下载模板</button>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <label>通知对象-权限</label>
+            <table id="notice-object-role-table" class="table table-bordered table-set"></table>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <label>通知对象-账号</label>
+            <table id="notice-object-user-table" class="table table-bordered table-set"></table>
+        </div>
+    </div>
+</div>
+
+
+<script> 
+    var noticeId
+    $(function () {
+       
+    })
+
+    function initFileUploaders() {
+        var osspath = "Survey/BaseInfo/";
+        var importBtns = ['btnNoticeObjectRoleImport', 'btnNoticeObjectUserImport']
+        for (var i in importBtns) {
+          
+        }
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: 'btnNoticeObjectRoleImport',
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-body").load("/System/OpenNoticeObjectRoleImport", {}, function () {
+                        loadImportNoticeObject(file);
+                    })
+                })
+            }
+        });
+        new OSSClient({
+            autoupload: true,
+            osspath: osspath + "Import/",
+            selectfiles: 'btnNoticeObjectUserImport',
+            multi_selection: false,
+            success: function (files) {
+                //调用导入方法
+                files.forEach(function (file) {
+                    $("#ModalImport .modal-body").empty();
+                    $("#ModalImport").modal("show");
+                    $("#ModalImport .modal-body").load("/System/OpenNoticeObjectUserImport", {}, function () {
+                        loadImportNoticeObject(file);
+                    })
+                })
+            }
+        });
+    }
+
+    function downloadTemplate(name) {
+        var url = loginUser.ossInfo.osshost + "Survey/ImportTemplate/" + name + ".xlsx";
+        window.location.href = url;
+    }
+    //通知对象-权限 管理 start
+
+    //查询
+    function loadNoticeObjectRole() {
+        $.commonGet("Master/NoticeRoleTypeSearch", {
+            noticeId: noticeId
+        }, function (data) { 
+            initNoticeObjectRole(data);
+        });
+    }
+     
+
+    //绑定通知对象-权限
+    function initNoticeObjectRole(data) {
+        $('#notice-object-role-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data: data,
+            striped: true, //是否显示行间隔色
+            height: 600,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "权限代码",
+                field: "RoleTypeCode",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "权限名称",
+                field: "RoleTypeName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "删除",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delNoticeObjectRole(' + row.NoticeId + ',' + row.RoleTypeId + ');" style="min-width:100px">删除</a>';
+                }
+            }]
+        });
+    }
+
+    //删除
+    function delNoticeObjectRole(NoticeId, RoleTypeId) {
+        confirm("确定要删除该记录吗？", function () {
+            $.commonPost("Master/NoticeRoleTypeDelete", {
+                noticeId: NoticeId,
+                RoleTypeId: RoleTypeId
+            }, function () {
+                loadNoticeObjectRole();
+            });
+        });
+    }
+    //通知对象-权限 管理 end
+
+    //通知对象-账号
+    function loadNoticeObjectUser() {
+        $.commonGet("Master/NoticeUserSearch", {
+            noticeId: noticeId
+        }, function (data) { 
+            initNoticeObjectUser(data);
+        });
+    } 
+
+    //绑定通知对象-用户
+    function initNoticeObjectUser(data) {
+        $('#notice-object-user-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data: data,
+            striped: true, //是否显示行间隔色
+            height: 600,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "账号",
+                field: "AccountId",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "用户名称",
+                field: "AccountName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "删除",
+                field: "",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:delNoticeObjectUser(' + row.NoticeId + ',' + row.UserId + ');" style="min-width:100px">删除</a>';
+                }
+            }]
+        });
+    }
+
+
+    function delNoticeObjectUser(NoticeId, UserId) {
+        confirm("确定要删除该记录吗？", function () {
+            $.commonPost("Master/NoticeUserIdDelete", {
+                noticeId: NoticeId,
+                UserId: UserId
+            }, function () {
+                loadNoticeObjectUser();
+            });
+        });
+    }
+</script>
+

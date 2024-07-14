@@ -45,5 +45,19 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View("_PartialNoticeEdit");
         }
+
+        public ActionResult NoticeObject()
+        {
+            return View("_PartialNoticeObject");
+        }
+
+        public ActionResult OpenNoticeObjectRoleImport()
+        {
+            return View("_PartialNoticeObjectRoleImport");
+        }
+        public ActionResult OpenNoticeObjectUserImport()
+        {
+            return View("_PartialNoticeObjectUserImport");
+        }
 	}
 }

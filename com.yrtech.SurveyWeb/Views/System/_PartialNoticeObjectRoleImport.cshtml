@@ -1,0 +1,96 @@
+﻿<div class="form-horizontal form-label-left" style="padding-bottom:5px;width:100%">
+    <div class="form-inline" style="text-align:center">
+        <div class="item form-inline" style="float:right;">
+            <button id="btnImport" class="btn btn-primary form-group" style="margin-right:0px" onclick="importNoticeObjectFile()" data-loading-text="导入中...">导入</button>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="item form-group">
+    <table id="import-notice-object-table" class="table table-bordered table-set"></table>
+</div>
+<script>
+    
+    $(function () {
+
+    })
+
+    //绑定附件
+    function initImportNoticeObjectTable(data) {
+        $('#import-notice-object-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data: data,
+            striped: true, //是否显示行间隔色
+            height: 500,
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 50, 100, 500],
+            columns: [{
+                title: "权限代码",
+                field: 'RoleTypeCode',
+                width: 150,
+                valign: "middle",
+                align: "center",
+            }, {
+                title: "导入状态",
+                field: "ImportChk",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+            }, {
+                title: "导入备注",
+                field: "ImportRemark",
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: preferenceFormatter
+            }]
+        });
+    }
+    function preferenceFormatter(value, row, index) {
+        return [
+            '<a href="#" data-toggle="tooltip" title=' + value + '>' + value + '</a>',
+        ].join('');
+    }
+    function loadImportNoticeObject(file) {
+        $('#import-notice-object-table').bootstrapTable("showLoading");
+        $.commonGet("Master/NoticeRoleExcelAnalysis", {
+            tenantId: loginUser.TenantId,
+            ossPath: file.osspath
+        }, function (data) {
+            var chk = true;
+            if (data && data.length > 0) {
+                data.forEach(function (item) {
+                    if (!item.ImportChk) {
+                        chk = item.ImportChk;
+                        return false;
+                    }
+                })
+            }
+            if (!chk) {
+                $("#btnImport").attr("disabled", true);
+            }
+            initImportNoticeObjectTable(data);
+        });
+    }
+
+    //导入
+    function importNoticeObjectFile() {
+        confirm("导入数据会覆盖原有数据，是否导入？", function () {
+            $("#btnImport").button("loading");
+            var rows = $('#import-notice-object-table').bootstrapTable("getData");
+            rows.forEach(function (row) {
+                row.NoticeId = noticeId;
+                row.InUserId = loginUser.Id;
+            })
+            $.commonPost("Master/NoticeRoleImport", {
+                tenantId: loginUser.TenantId,
+                ListJson: JSON.stringify(rows)
+            }, function () {
+                $("#ModalImport").modal("hide");
+                loadNoticeObjectRole();
+            });
+        }); 
+    }
+</script>

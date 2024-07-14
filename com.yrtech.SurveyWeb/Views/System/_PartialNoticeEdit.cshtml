@@ -85,41 +85,37 @@
             language: 'zh-CN',
             minView: '2'
         });
-        debugger
-       
-        if (!noticeAttmUploader) {
-            noticeAttmUploader = new OSSClient({
-                osspath: osspath,
-                selectfiles: "selectfiles",
-                autoupload: true,
-                success: function (files) {
-                    console.log("files", files)
-                    var newFiles = []; 
-                    for (var i in files) {
-                        newFiles.push({
-                            InUserId: loginUser.Id,  
-                            FileName: files[i].fileName,
-                            FileUrl: files[i].osspath,
-                            SeqNo: i+1
-                        });
-                    }
-
-                    if (noticeId) {
-                        for (var i in newFiles) {
-                            newFiles[i].NoticeId = noticeId;
-                            NoticeFileSave(newFiles[i]);
-                        }
-                    } else {
-                        fileList = fileList.concat(newFiles);
-                        bindFileTable(fileList);
-                    }
-                },
-                FilesAddComplete: function (files) {
-
+         
+        noticeAttmUploader = new OSSClient({
+            osspath: osspath,
+            selectfiles: "selectfiles",
+            autoupload: true,
+            success: function (files) {
+                console.log("files", files)
+                var newFiles = [];
+                for (var i in files) {
+                    newFiles.push({
+                        InUserId: loginUser.Id,
+                        FileName: files[i].fileName,
+                        FileUrl: files[i].osspath,
+                        SeqNo: 0
+                    });
                 }
-            });
-        }
 
+                if (noticeId) {
+                    for (var i in newFiles) {
+                        newFiles[i].NoticeId = noticeId;
+                        NoticeFileSave(newFiles[i]);
+                    }
+                } else {
+                    fileList = fileList.concat(newFiles);
+                    bindFileTable(fileList);
+                }
+            },
+            FilesAddComplete: function (files) {
+
+            }
+        });
     })
 
     function saveNotice() {
@@ -202,7 +198,7 @@
                 //删除
                 var delBtn = $("<a href='#'>删除</a>");
                 delBtn.click(function () {  
-                    delFile(item.noticeId);
+                    delFile(item.NoticeId, item.SeqNO);
                     return false;
                 });
                 tr.append($("<td></td>").append(delBtn));
@@ -219,10 +215,10 @@
         });
     }
 
-    function delFile(fileId) {
+    function delFile(noticeId,seqNO) {
         if (noticeId) {
             confirm("确定要删除该文件吗？", function () {
-                noticeFileDelete({ fileId: fileId }, function () {
+                noticeFileDelete({ noticeId: noticeId, seqNO: seqNO }, function () {
                     loadNoticeAttmlFiles();
                 });
             });
