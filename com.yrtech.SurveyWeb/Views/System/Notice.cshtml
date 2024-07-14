@@ -108,6 +108,7 @@
         $("#btnNoticeAdd").click(function () {
             $("#Modal").modal("show");
             $("#Modal .modal-body").load("/System/NoticeEdit", {}, function () {
+                noticeId = undefined
             })
             return false;
         })
@@ -222,9 +223,10 @@
         $("#Modal").modal("show");
         $("#Modal .modal-footer").show();
         $("#Modal .modal-body").load("/System/NoticeEdit", {}, function () {
+            noticeId = id
             $("#notice-form").setForm(curRow);
             $("#notice-form").data("json", JSON.stringify(curRow));
-            noticeId = id
+            loadNoticeAttmlFiles()
         })
     }
      
