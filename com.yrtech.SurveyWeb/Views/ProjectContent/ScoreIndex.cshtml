@@ -14,16 +14,31 @@
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:150px;"></select>
+            <select id="brand-sel" class="form-control" style="width:100px;"></select>
         </div>
         <div class="form-group">
+            <label class="control-label">项目类型:</label>
+            <select id="projectType-sel" class="form-control" style="width:100px;">
+                <option value="明检">明检</option>
+                <option value="密采">密采</option>
+                <option value="自检">自检</option>
+            </select>
+        </div>
+        <div class="form-group" id="year-div">
             <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width: 150px;"></select>
+            <select id="year-sel" class="form-control" style="width:100px;"></select>
+        </div>
+        <div class="form-group" id="startDate-div">
+            <label class="control-label">开始日期:</label>
+            <input id="startDate-sel" name="startDate-sel" class="form-control" style="width:100px;" />
+        </div>
+        <div class="form-group" id="endDate-div">
+            <label class="control-label">结束日期:</label>
+            <input id="endDate-sel" name="endDate-sel" class="form-control" style="width:100px;" />
         </div>
         <div class="form-group">
             <label class="control-label">期号:</label>
-            @*<select id="project-sel" class="form-control" style="width: 140px"></select>*@
-            <input id="project-sel" class="form-control" style="width: 140px" />
+            <select id="project-sel" data-width="150px"></select>
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
@@ -160,13 +175,15 @@
 <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
-
-<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
-<script src="~/Content/viewer/viewer.min.js"></script>
 
 <script>
     NProgress.start();
@@ -175,12 +192,22 @@
         debugger
         uploader = undefined
         lossUploader = undefined
-        $('title').html('@ViewBag.Title')
+        $('title').html('@ViewBag.Title');
+        $("#startDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        $("#endDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
         bindBrandSelect();
         //加载年份
         $("#year-sel").change(function () {
             bindProjectAutocomplete();
-            $("#project-sel").change();
+          //  $("#project-sel").change();
         });
         for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
@@ -188,16 +215,32 @@
         var tYear = new Date().getFullYear();
         $("#year-sel").val(tYear);
         $("#year-sel").change();
-
         //加载期号
         $("#brand-sel").change(function () {
             bindProjectSelect();
-            $("#project-sel").change();
+            //$("#project-sel").change();
+            initScoreTable();
         });
-        $("#project-sel").change(function () {
-            bindShopSelect();
+        $("#projectType-sel").change(function () {
+            projectTypeDateShow();
+            bindProjectSelect();
+            initScoreTable();
+            //$("#project-sel").trigger("change");
         });
-        bindShopSelect();
+        $("#projectType-sel").trigger("change");
+        $("#startDate-sel").datetimepicker().on('changeDate', function (ev) {
+            if ($("#startDate-sel") != '' && $("#endDate-sel") != "") {
+                bindProjectSelect();
+                initScoreTable();
+            }
+        });
+        $("#endDate-sel").datetimepicker().on('changeDate', function (ev) {
+            if ($("#endDate-sel") != '' && $("#endDate-sel") != "") {
+                bindProjectSelect();
+                initScoreTable();
+               // $("#project-sel").trigger("change");
+            }
+        });
         $("#shop-sel").change(function () {
             if (loginUser.RoleType == 'S_Execute') {
                 _shopId = $("#shop-sel").val()
@@ -205,25 +248,6 @@
                 _shopId = "";
             }
         });
-        if (loginUser.RoleType == 'S_Execute') {
-            //$("#btnExportAnswer").hide()
-            //$("#btnExportAnswer2").hide()
-            $("#btnDownLoadFileResult").hide()
-            $("#btnDownLoadLossResult").hide()
-            $("#btnSubmitCheck").show()
-
-            _shopId = $("#shop-sel").val()
-        } else {
-
-            //$("#btnExportAnswer").show()
-            //$("#btnExportAnswer2").show()
-            $("#btnDownLoadFileResult").show()
-            $("#btnDownLoadLossResult").show()
-            $("#btnSubmitCheck").hide()
-            _shopId = "";
-        }
-        loadScore();
-
         $("#btnExportAnswer").click(function () {
             $("#btnExportAnswer").button('loading');
 
@@ -260,12 +284,10 @@
                 $("#btnDownLoadLossResult").button('reset');
             });
         });
-        //initScoreTable();
         $("#btnQuery").click(function () {
             loadScore();
 
-        })//.trigger("click");
-
+        });
         $("#btnSubmitCheck").click(function () {
             $("#btnSubmitCheck").button("loading");
             $.commonPost("Recheck/SaveRecheckStatus", {
@@ -280,7 +302,6 @@
                 $("#btnSubmitCheck").button("reset");
             });
         })
-
         $('#Modal').on('hide.bs.modal', function (e) {
             // 关闭编辑时刷新数据
             if (lossUploader) {
@@ -295,14 +316,16 @@
             { LabelId: 'LossName', LabelName: '失分描述' },
             { LabelId: 'LossName2', LabelName: '补充失分描述' },
             { LabelId: 'PhotoScore', LabelName: '得分' },
-            { LabelId: 'Remark', LabelName: '得分备注' }])
+            { LabelId: 'Remark', LabelName: '得分备注' }]);
+        buttonShow();
+        bindShopSelect(false,"0");
+        loadScore();
         NProgress.done();
     })
 
     function closeExportModel() {
         $("#exportModal").modal("hide");
     }
-
     function exportAnswer2() {
         $("#exportBtn").button('loading');
         var exportProps = loadExportProperties()
@@ -318,7 +341,6 @@
             closeExportModel()
         });
     }
-
     function loadExportProperties() {
         let exportProps = []
         $.each($("#export-properties-checks").find("input[type=checkbox]:checked"), function (i, checkbox) {
@@ -327,7 +349,6 @@
         });
         return exportProps.join(";")
     }
-
     function bindExportProperties(data) {
         $("#export-properties-checks").empty()
         data.forEach(function (r) {
@@ -338,7 +359,21 @@
         })
         $("#export-properties-checks").find("input[type=checkbox]").iCheckParser();
     }
+    function buttonShow()
+    {
+        if (loginUser.RoleType == 'S_Execute') {
+            $("#btnDownLoadFileResult").hide()
+            $("#btnDownLoadLossResult").hide()
+            $("#btnSubmitCheck").show()
 
+            _shopId = $("#shop-sel").val()
+        } else {
+            $("#btnDownLoadFileResult").show()
+            $("#btnDownLoadLossResult").show()
+            $("#btnSubmitCheck").hide()
+            _shopId = "";
+        }
+    }
     var curRow;
     function saveScore() {
         var params = $("#score-form").serializeJson();

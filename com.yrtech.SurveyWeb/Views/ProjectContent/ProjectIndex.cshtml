@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "期号/任务管理";
+    ViewBag.Title = "期号管理";
 }
 <style>
     .operation {
@@ -17,29 +17,43 @@
     }
 </style>
 <div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnProjectAdd" class="btn btn-primary">添加期号</button>
+        <button id="btnDownloadTemplate" class="btn btn-primary">下载自检模板</button>
+        <button id="btnProjectImport" class="btn btn-primary">导入自检</button>
+        
+    </div>
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:200px;"></select>
-        </div>
-        <div class="form-group">
-            <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width:200px;"></select>
+            <select id="brand-sel" class="form-control" style="width:100px;"></select>
         </div>
         <div class="form-group">
             <label class="control-label">项目类型:</label>
-            <select id="projectType-sel"  class="form-control" style="width:200px;">
+            <select id="projectType-sel" class="form-control" style="width:100px;">
                 <option value="明检">明检</option>
                 <option value="密采">密采</option>
                 <option value="自检">自检</option>
             </select>
         </div>
-    </div>
-    <div style="float:right;text-align:right">
-        <button id="btnQuery" class="btn btn-primary">查询</button>
-        <button id="btnDownloadTemplate" class="btn btn-primary">下载自检模板</button>
-        <button id="btnProjectImport" class="btn btn-primary">导入自检任务</button>
-        <button id="btnProjectAdd" class="btn btn-primary">添加期号</button>
+        <div class="form-group" id="year-div">
+            <label class="control-label">年份:</label>
+            <select id="year-sel" class="form-control" style="width:100px;"></select>
+        </div>
+       
+        <div class="form-group" id="startDate-div">
+            <label class="control-label">开始日期:</label>
+            <input id="startDate-sel" name="startDate-sel" class="form-control" />
+        </div>
+        <div class="form-group" id="endDate-div">
+            <label class="control-label">结束日期:</label>
+            <input id="endDate-sel" name="endDate-sel" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">经销商:</label>
+            <input id="shop-sel" name="shop-sel" type="text"  class="form-control">
+        </div>
     </div>
 </div>
 <div class="result">
@@ -64,7 +78,7 @@
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
-<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/api/common.js?20240714"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
@@ -72,13 +86,25 @@
 <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js?20200426"></script>
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 <script>
     NProgress.start();
     var ossUploader;
     var osspath;
     $(function () {
         $('title').html('@ViewBag.Title')
-
+        $("#startDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView:'2'
+        });
+        $("#endDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
         bindBrandSelect();
         for (var i = 2020; i <= 2030; i++) {
             $("#year-sel").append($("<option>").text(i + "").val(i + ""));
@@ -92,7 +118,13 @@
         $("#year-sel").change(function () {
             loadProject();
         });
-        loadProject();
+        $("#projectType-sel").change(function () {
+            //debugger
+            columnShow();
+            loadProject();
+        });
+        $("#projectType-sel").trigger("change");
+       // loadProject();
         $("#btnProjectAdd").click(function () {
             if ($("#projectType-sel").val() == "") {
                 alert("请选择类型！");
@@ -128,9 +160,7 @@
         $("#btnQuery").click(function () {
             loadProject();
         }).trigger("click");
-
     });
-
     var curRow;
     function saveProject() {
         var params = $("#project-form").serializeJson();
@@ -159,24 +189,33 @@
             closeModel();
         }, function () { $("#save_button").button("reset"); });
     }
-
     function loadProject() {
         var brandId = $("#brand-sel").val();
         if (!brandId) {
             alert("请选择品牌！");
             return
         }
+        if ($("#projectType-sel").val() == "自检") {
+            if (getDateDiff($("#startDate-sel").val(), $("#endDate-sel").val()) > 2) {
+                alert("开始日期和结束日期相差不能超过2天！");
+                return
+            }
+        }
         $('#project-table').bootstrapTable("showLoading");
         $.commonGet("Master/GetProject", {
             brandId: $("#brand-sel").val(),
             projectId: '',
             year: $("#year-sel").val(),
-            projectType: $("#projectType-sel").val()
+            projectType: $("#projectType-sel").val(),
+            startDate: $("#startDate-sel").val(),
+            endDate: $("#endDate-sel").val(),
+            key: $("#shop-sel").val(),
         }, function (data) {
             // $('#project-table').bootstrapTable("hideLoading");
             //$('#project-table').bootstrapTable("load", data);
             initProjectTable(data);
         });
+        $('#project-table').bootstrapTable("hideLoading");
     }
     //初始化期号表格
     function initProjectTable(data) {
@@ -285,16 +324,33 @@
                 curRow = row;
             }
         });
-        columnShow();
+       // columnShow();
     }
     function columnShow() {
+        debugger
         if ($("#projectType-sel").val() == "自检") {
             $('#project-table').bootstrapTable('hideColumn', 'PhotoSize');
             $('#project-table').bootstrapTable('showColumn', 'ReCreate');
+            $('#btnDownloadTemplate').show();
+            $('#btnProjectImport').show();
+            $('#startDate-div').show();
+            $('#endDate-div').show();
+            $("#startDate-sel").val(new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+            $("#endDate-sel").val(new Date().Format("yyyy-MM-dd"));
+            $('#year-div').hide();
+            $('#year-sel').val("");
+
         }
         else {
             $('#project-table').bootstrapTable('showColumn', 'PhotoSize');
             $('#project-table').bootstrapTable('hideColumn', 'ReCreate');
+            $('#btnDownloadTemplate').hide();
+            $('#btnProjectImport').hide();
+            $('#startDate-div').hide();
+            $('#endDate-div').hide();
+            $('#startDate-sel').val("");
+            $('#endDate-sel').val("");
+            $('#year-sel').show();
         }
     }
     function columnShowEdit() {

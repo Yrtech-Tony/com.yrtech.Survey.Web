@@ -155,7 +155,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OperateController.cs" />
     <Compile Include="Controllers\ProjectContentController.cs" />
-    <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\RecheckController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\SystemController.cs" />
@@ -629,6 +628,10 @@
     <Content Include="Views\Project\SpecialCase.cshtml" />
     <Content Include="Views\Project\_PartialSpecialCaseEdit.cshtml" />
     <Content Include="Views\System\_PartialNoticeEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSpecialCaseEdit.cshtml" />
+    <Content Include="Views\ProjectContent\SpecialCase.cshtml" />
+    <Content Include="Views\SelfCheck\TaskIndex.cshtml" />
+    <Content Include="Views\SelfCheck\_PartialTaskEdit.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -24,31 +24,52 @@
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:150px;"></select>
+            <select id="brand-sel" class="form-control" style="width:100px;"></select>
         </div>
         <div class="form-group">
+            <label class="control-label">项目类型:</label>
+            <select id="projectType-sel" class="form-control" style="width:100px;">
+                <option value="明检">明检</option>
+                <option value="密采">密采</option>
+                <option value="自检">自检</option>
+            </select>
+        </div>
+        <div class="form-group" id="year-div">
             <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width: 150px;"></select>
+            <select id="year-sel" class="form-control" style="width:100px;"></select>
+        </div>
+        <div class="form-group" id="startDate-div">
+            <label class="control-label">开始日期:</label>
+            <input id="startDate-sel" name="startDate-sel" class="form-control" style="width:100px;" />
+        </div>
+        <div class="form-group" id="endDate-div">
+            <label class="control-label">结束日期:</label>
+            <input id="endDate-sel" name="endDate-sel" class="form-control" style="width:100px;" />
         </div>
         <div class="form-group">
             <label class="control-label">期号:</label>
-            <select id="project-sel" class="form-control" style="width: 140px"></select>
+            <select id="project-sel" data-width="150px"></select>
         </div>
         <div class="form-group">
             <label class="control-label">文件名称:</label>
             <input id="reportFileName" class="form-control" style="width: 160px" placeholder="文件名称" />
         </div>
+        <br />
+
+    </div>
+</div>
+<div class="result table-responsive">
+    <div class="form-inline">
         <div class="form-group">
-            <label class="control-label">开始日期:</label>
+            <label class="control-label">日志开始日期:</label>
             <input id="startDate" class="form-control" style="width: 160px" />
         </div>
         <div class="form-group">
-            <label class="control-label">结束日期:</label>
+            <label class="control-label">日志结束日期:</label>
             <input id="endDate" class="form-control" style="width: 160px" />
         </div>
-    </div> 
-</div>
-<div class="result table-responsive">    
+    </div>
+    <br />
     <table id="report-log-table" class="table table-bordered table-set"></table>
 </div>
 
@@ -77,9 +98,19 @@
     $(function () {
         NProgress.start();
 
-        $('title').html('@ViewBag.Title')
+        $('title').html('@ViewBag.Title');
 
         $("#startDate,#endDate").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        $("#startDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        $("#endDate-sel").datetimepicker({
             format: 'yyyy-mm-dd',
             language: 'zh-CN',
             minView: '2'
@@ -105,11 +136,31 @@
             bindProjectSelect();
             $("#project-sel").change();
         });
-        $("#project-sel").change(function () {
-            bindShopSelect();
+        $("#projectType-sel").change(function () {
+            projectTypeDateShow();
+            bindProjectSelect();
+            initReportLogTable();
+            //$("#project-sel").trigger("change");
         });
+        $("#projectType-sel").trigger("change");
+        $("#startDate-sel").datetimepicker().on('changeDate', function (ev) {
+            if ($("#startDate-sel") != '' && $("#endDate-sel") != "") {
+                bindProjectSelect();
+                initReportLogTable();
+            }
+        });
+        $("#endDate-sel").datetimepicker().on('changeDate', function (ev) {
+            if ($("#endDate-sel") != '' && $("#endDate-sel") != "") {
+                bindProjectSelect();
+                initReportLogTable();
+                // $("#project-sel").trigger("change");
+            }
+        });
+        //$("#project-sel").change(function () {
+        //    bindShopSelect();
+        //});
 
-       // initReportLogTable();
+        // initReportLogTable();
         //查询
         loadReportLog();
         $("#btnSearch").click(function () {
@@ -144,7 +195,7 @@
         $.commonGet("ReportFile/ReportFileActionLogSearch", getParams(), function (data) {
             //$('#report-log-table').bootstrapTable("hideLoading");
             //$('#report-log-table').bootstrapTable("load", data);
-         //   $("#btnSearch").button('reset');
+            //   $("#btnSearch").button('reset');
             initReportLogTable(data);
         });
     }
@@ -165,7 +216,7 @@
         //生成
         $('#report-log-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
-            data:data,
+            data: data,
             showLoading: true,
             striped: true, //是否显示行间隔色
             showColumns: false, // 开启自定义列显示功能
@@ -181,34 +232,34 @@
                 width: 150,
                 valign: "middle",
                 align: "center"
-            },  {
+            }, {
                 title: "下载账号",
                 field: "AccountId",
                 width: 120,
                 valign: "middle",
                 align: "center",
-                sortable: false 
+                sortable: false
             }, {
                 title: "下载姓名",
                 field: "AccountName",
                 width: 120,
                 valign: "middle",
                 align: "center",
-                sortable: false 
+                sortable: false
             }, {
                 title: "期号代码",
                 field: "ProjectCode",
                 width: 150,
                 valign: "middle",
                 align: "center",
-                sortable: false 
+                sortable: false
             }, {
                 title: "期号名称",
                 field: "ProjectName",
                 width: 200,
                 valign: "middle",
                 align: "center",
-                sortable: false 
+                sortable: false
             }, {
                 title: "文件",
                 field: "ReportFileName",

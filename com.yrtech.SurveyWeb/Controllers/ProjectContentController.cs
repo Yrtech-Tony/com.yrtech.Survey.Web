@@ -10,11 +10,11 @@ namespace com.yrtech.SurveyWeb.Controllers
     [AuthenAdmin]
     public class ProjectContentController : Controller
     {
+        #region 明检和密采
         public ActionResult ProjectIndex()
         {
             return View();
         }
-
         public ActionResult ProjectEdit()
         {
             return PartialView("_PartialProjectEdit");
@@ -194,5 +194,16 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View("_PartialSpecialCaseEdit");
         }
+        #endregion
+        #region 自检
+        public ActionResult TaskIndex()
+        {
+            return View();
+        }
+        public ActionResult TaskEdit()
+        {
+            return PartialView("_PartialTaskEdit");
+        }
+        #endregion
     }
 }

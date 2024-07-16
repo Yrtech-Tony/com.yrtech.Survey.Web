@@ -224,7 +224,7 @@
     function goEdit() {
         $("#Modal .modal-body").empty();
         $("#Modal").modal("show");
-        $("#Modal .modal-body").load("/Project/SpecialCaseEdit", {}, function () {
+        $("#Modal .modal-body").load("/ProjectContent/SpecialCaseEdit", {}, function () {
             $("#special-case-form").setForm(curRow);
             $("#special-case-form").data("json", JSON.stringify(curRow));
         })

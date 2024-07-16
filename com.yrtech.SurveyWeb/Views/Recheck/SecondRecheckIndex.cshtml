@@ -24,20 +24,36 @@
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width:200px;"></select>
+            <select id="brand-sel" class="form-control" style="width:100px;"></select>
         </div>
         <div class="form-group">
+            <label class="control-label">项目类型:</label>
+            <select id="projectType-sel" class="form-control" style="width:100px;">
+                <option value="明检">明检</option>
+                <option value="密采">密采</option>
+                <option value="自检">自检</option>
+            </select>
+        </div>
+        <div class="form-group" id="year-div">
             <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width:200px;"></select>
+            <select id="year-sel" class="form-control" style="width:100px;"></select>
+        </div>
+        <div class="form-group" id="startDate-div">
+            <label class="control-label">开始日期:</label>
+            <input id="startDate-sel" name="startDate-sel" class="form-control" style="width:100px;" />
+        </div>
+        <div class="form-group" id="endDate-div">
+            <label class="control-label">结束日期:</label>
+            <input id="endDate-sel" name="endDate-sel" class="form-control" style="width:100px;" />
         </div>
         <div class="form-group">
             <label class="control-label">期号:</label>
-            <select id="project-sel" class="form-control" style="width: 140px"></select>
+            <select id="project-sel" data-width="150px"></select>
         </div>
         @*<div class="form-group">
-            <label class="control-label">经销商:</label>
-            <select id="shop-sel" style="width: 140px;"></select>
-        </div>*@
+                <label class="control-label">经销商:</label>
+                <select id="shop-sel" style="width: 140px;"></select>
+            </div>*@
         <div class="form-group">
             <label class="control-label">经销商代码:</label>
             <input id="shopCode" class="form-control" style="width:150px;" placeholder="经销商代码" />
@@ -51,11 +67,26 @@
 <script src="~/Scripts/api/common.js"></script>
 <script src="~/Scripts/custom/form-serialize.js?20200510"></script>
 <script src="~/Scripts/icheck.js"></script>
- <script>
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+<script>
     NProgress.start();
     var allLabels = []
     $(function () {
-        $('title').html('@ViewBag.Title')
+        $('title').html('@ViewBag.Title');
+        $("#startDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        $("#endDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
         bindBrandSelect();
         //加载年份
         $("#year-sel").change(function () {
@@ -73,10 +104,30 @@
             bindProjectSelect();
             $("#project-sel").change()
         });
-        $("#project-sel").change(function () {
-            bindShopSelect(true);
+        $("#projectType-sel").change(function () {
+            projectTypeDateShow();
+            bindProjectSelect();
+            initRecheckTable();
+            //$("#project-sel").trigger("change");
         });
-        bindShopSelect(true);
+        $("#projectType-sel").trigger("change");
+        $("#startDate-sel").datetimepicker().on('changeDate', function (ev) {
+            if ($("#startDate-sel") != '' && $("#endDate-sel") != "") {
+                bindProjectSelect();
+                initRecheckTable();
+            }
+        });
+        $("#endDate-sel").datetimepicker().on('changeDate', function (ev) {
+            if ($("#endDate-sel") != '' && $("#endDate-sel") != "") {
+                bindProjectSelect();
+                initRecheckTable();
+                // $("#project-sel").trigger("change");
+            }
+        });
+        //$("#project-sel").change(function () {
+        //    bindShopSelect(true);
+        //});
+        //bindShopSelect(true);
 
         loadRecheck();
         $("#btnQuery").click(function () {
@@ -85,7 +136,7 @@
         $("#btnRecheckSubmit").click(function () {
             recheckSubmit();
         })
-        $('#Modal').on('hide.bs.modal', function (e) { 
+        $('#Modal').on('hide.bs.modal', function (e) {
         })
 
         NProgress.done();
@@ -148,14 +199,14 @@
                 width: 120,
                 valign: "middle",
                 align: "center",
-                formatter: function (value, row, index) { 
-                    return '<a href="javascript:openDetail('+ row.ProjectId + ',' + row.ShopId + ')">' + value + '</a>';
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:openDetail(' + row.ProjectId + ',' + row.ShopId + ')">' + value + '</a>';
                 }
             }, {
                 title: "经销商名称",
                 field: "ShopName",
                 valign: "middle",
-                align: "center", 
+                align: "center",
                 sortable: false
             },
             {
@@ -166,7 +217,7 @@
                 align: "center",
                 sortable: false
             }, {
-                title: "一审中", 
+                title: "一审中",
                 field: "Status_S2",
                 width: 100,
                 valign: "middle",
@@ -207,7 +258,7 @@
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
-                console.log('curRow',curRow)
+                console.log('curRow', curRow)
             }
         });
     }
@@ -215,7 +266,7 @@
     function openDetail(projectId, shopId) {
         var url = "/Recheck/SecondRecheckDetail?brandId=" + $("#brand-sel").val() + "&projectId=" + projectId + "&shopId=" + shopId
         openNewPage(url)
-    } 
+    }
 
     function secondRecheck() {
         setTimeout(function () {
@@ -231,6 +282,6 @@
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
             });
-        },300)
+        }, 300)
     }
 </script>

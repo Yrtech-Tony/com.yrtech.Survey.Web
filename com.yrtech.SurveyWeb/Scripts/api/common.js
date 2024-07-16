@@ -109,6 +109,35 @@ function toNullString(str) {
         return str;
     return "";
 }
+function getDateDiff(startDate, endDate)
+{
+    var startTime = new Date(Date.parse(startDate.replace(/-/g, "/"))).getTime();
+    var endTime = new Date(Date.parse(endDate.replace(/-/g, "/"))).getTime();
+    var dates = Math.abs((startTime - endTime)) / (1000 * 60 * 60 * 24);
+    return dates;
+}
+// 根据选择的项目类型，查询条件日期和年份显示
+function projectTypeDateShow() {
+    debugger
+    if ($("#projectType-sel").val() == "自检") {
+        $('#startDate-div').show();
+        $('#endDate-div').show();
+        $("#startDate-sel").val(new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+        $("#endDate-sel").val(new Date().Format("yyyy-MM-dd"));
+        $('#year-div').hide();
+        $('#year-sel').val("");
+    }
+    else {
+        $('#startDate-div').hide();
+        $('#endDate-div').hide();
+        $('#startDate-sel').val("");
+        $('#endDate-sel').val("");
+        $('#year-div').show();
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
+    }
+}
 
 function closeModel() {
     $("#Modal").modal("hide"); 
@@ -159,16 +188,32 @@ function bindProjectSelect() {
         alert("请选择品牌！");
         return
     }
+    if ($("#projectType-sel").val() == "自检") {
+        if ($("#startDate-sel").val() > $("#endDate-sel").val()) {
+            alert("开始日期不能大于结束日期！");
+            return
+        }
+        if (getDateDiff($("#startDate-sel").val(), $("#endDate-sel").val()) > 2) {
+            alert("开始日期和结束日期相差不能超过2天！");
+            return
+        }
+        
+    }
+    debugger
     $.ajaxSettings.async = false;
     $.commonGet("Master/GetProject", {
         brandId: $("#brand-sel").val(),
         year: $("#year-sel").val(),
-        projectId: ""
+        projectId: "",
+        projectType: $("#projectType-sel").val(),
+        startDate: $("#startDate-sel").val(),
+        endDate: $("#endDate-sel").val()
     }, function (data) {
         $("#project-sel").empty();
         data.forEach(function (item) {
             $("#project-sel").append($("<option>").val(item.ProjectId).text(item.ProjectName));
-        }) 
+        });
+        $("#project-sel").addClass("selectpicker").prop("title", "").data("live-search", true).selectpicker("refresh");
     })
     $.ajaxSettings.async = true;
 }
@@ -199,11 +244,17 @@ function bindProjectAutocomplete() {
 }
 
 // 绑定经销商
-function bindShopSelect(isAll) {
+// projectIdUseChk=0 不传ProjectId
+function bindShopSelect(isAll, projectIdUseChk) {
+    debugger
     $.ajaxSettings.async = false;
+    var projectId = "";
+    if (projectIdUseChk!="0") {
+        projectId = $("#project-sel").val();
+    }
     $.commonGet("Shop/GetProjectShopExamType", {
         brandId: $("#brand-sel").val(),
-        projectId: $("#project-sel").val(),
+        projectId: projectId,
         shopId: '',
         userId: loginUser.Id
     }, function (data) {

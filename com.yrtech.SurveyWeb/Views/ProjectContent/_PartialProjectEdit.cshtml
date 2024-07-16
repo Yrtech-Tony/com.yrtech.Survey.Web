@@ -51,7 +51,7 @@
                     <input id="Quarter" name="Quarter" type="text" maxlength="15" class="form-control ">
                 </div>
             </div>
-            <div class="item form-group">
+            <div class="item form-group" style="display:none">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="OrderNO">
                     序号
                 </label>
@@ -59,18 +59,6 @@
                     <input id="OrderNO" name="OrderNO" type="text" maxlength="15" class="form-control">
                 </div>
             </div>
-            @*<div class="item form-group" style="display:none">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DataScore">
-                    数据来源
-                </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <select id="DataScore" class="form-control">
-                        <option value=""></option>
-                        <option value="系统打分">系统打分</option>
-                        <option value="Excel导入">Excel导入</option>
-                    </select>
-                </div>
-            </div>*@
             <div class="item form-group" >
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectType">
                     项目类型
@@ -97,14 +85,6 @@
                 </div>
             </div>
             
-            @*<div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="BrandId">
-                    品牌
-                </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <select id="BrandId" name="BrandId" class="form-control"></select>
-                </div>
-            </div>*@
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="StartDate">
                     开始时间
@@ -121,7 +101,7 @@
                     <input id="EndDate" name="EndDate" class="form-control" />
                 </div>
             </div>
-            <div class="item form-group">
+            <div class="item form-group " style="display:none">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="BrandId">
                     品牌
                 </label>
@@ -209,5 +189,8 @@
         language: 'zh-CN'
     });
     bindHiddenColumn("照片像素", $("#PhotoSize"))
+    $("#ProjectType").change(function () {
+        columnShowEdit();
+    });
 </script>
 
