@@ -625,13 +625,12 @@
     <Content Include="Views\Report\_PartialReportTypeChapterImport.cshtml" />
     <Content Include="Views\Report\_PartialReportTypeChapter.cshtml" />
     <Content Include="Views\System\Notice.cshtml" />
-    <Content Include="Views\Project\SpecialCase.cshtml" />
-    <Content Include="Views\Project\_PartialSpecialCaseEdit.cshtml" />
-    <Content Include="Views\System\_PartialNoticeEdit.cshtml" />
-    <Content Include="Views\ProjectContent\_PartialSpecialCaseEdit.cshtml" />
     <Content Include="Views\ProjectContent\SpecialCase.cshtml" />
-    <Content Include="Views\SelfCheck\TaskIndex.cshtml" />
-    <Content Include="Views\SelfCheck\_PartialTaskEdit.cshtml" />
+    <Content Include="Views\ProjectContent\_PartialSpecialCaseEdit.cshtml" />
+    <Content Include="Views\System\_PartialNoticeEdit.cshtml" />
+    <Content Include="Views\System\_PartialNoticeObject.cshtml" />
+    <Content Include="Views\System\_PartialNoticeObjectUserImport.cshtml" />
+    <Content Include="Views\System\_PartialNoticeObjectRoleImport.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
