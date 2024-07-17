@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "二次抽查";
+    ViewBag.Title = "复审抽查（项目经理）";
 }
 
 <style>
@@ -28,22 +28,38 @@
     <div class="form-inline">
         <div class="form-group">
             <label class="control-label">品牌:</label>
-            <select id="brand-sel" class="form-control" style="width: 150px;"></select>
+            <select id="brand-sel" class="form-control" style="width:100px;"></select>
         </div>
         <div class="form-group">
+            <label class="control-label">项目类型:</label>
+            <select id="projectType-sel" class="form-control" style="width:100px;">
+                <option value="明检">明检</option>
+                <option value="密采">密采</option>
+                <option value="自检">自检</option>
+            </select>
+        </div>
+        <div class="form-group" id="year-div">
             <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width: 150px;"></select>
+            <select id="year-sel" class="form-control" style="width:100px;"></select>
+        </div>
+        <div class="form-group" id="startDate-div">
+            <label class="control-label">开始日期:</label>
+            <input id="startDate-sel" name="startDate-sel" class="form-control" style="width:100px;" />
+        </div>
+        <div class="form-group" id="endDate-div">
+            <label class="control-label">结束日期:</label>
+            <input id="endDate-sel" name="endDate-sel" class="form-control" style="width:100px;" />
         </div>
         <div class="form-group">
             <label class="control-label">期号:</label>
-            <select id="project-sel" class="form-control" style="width: 140px"></select>
+            <select id="project-sel" data-width="150px"></select>
         </div>
         <div class="form-group">
             <label class="control-label">经销商:</label>
             <select id="shop-sel" data-width="300px"></select>
         </div>
     </div>
-    
+
 </div>
 <div class="result">
     <table id="recheck-table" class="table table-set"></table>
@@ -157,20 +173,32 @@
 <script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
 <script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
 <script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <div id="upload-container" class="container-fluid" style="margin:0;padding:0;display:none">
     <div id="ossfile"></div>
 </div>
-
-<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
-<script src="~/Content/viewer/viewer.min.js"></script>
 
 <script>
     NProgress.start();
     var uploader, lossUploader;
     $(function () {
         uploader = undefined
-        $('title').html('@ViewBag.Title')
+        $('title').html('@ViewBag.Title');
+        $("#startDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        $("#endDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
         bindBrandSelect();
         //加载年份
         $("#year-sel").change(function () {
@@ -189,12 +217,32 @@
             bindProjectSelect();
             $("#project-sel").change();
         });
-        $("#project-sel").change(function () {
-            bindShopSelect();
+        $("#projectType-sel").change(function () {
+            projectTypeDateShow();
+            bindProjectSelect();
+            initRecheckTable();
+            //$("#project-sel").trigger("change");
         });
-        bindShopSelect();
+        $("#projectType-sel").trigger("change");
+        $("#startDate-sel").datetimepicker().on('changeDate', function (ev) {
+            if ($("#startDate-sel") != '' && $("#endDate-sel") != "") {
+                bindProjectSelect();
+                initRecheckTable();
+            }
+        });
+        $("#endDate-sel").datetimepicker().on('changeDate', function (ev) {
+            if ($("#endDate-sel") != '' && $("#endDate-sel") != "") {
+                bindProjectSelect();
+                initRecheckTable();
+                // $("#project-sel").trigger("change");
+            }
+        });
+        //$("#project-sel").change(function () {
+        //    bindShopSelect();
+        //});
+        bindShopSelect(false, "0");
         $("#shop-sel").change(function () {
-             loadRecheckSpotCheck2();
+            loadRecheckSpotCheck2();
         });
         loadRecheckSpotCheck2();
         $("#btnSaveStatus").click(function () {
@@ -208,7 +256,6 @@
 
         NProgress.done();
     })
-
     function saveRecheckStatus() {
         $("#btnSaveStatus").button('loading');
         $.commonPost("Recheck/SaveRecheckStatus", {
@@ -268,7 +315,7 @@
             shopId: $("#shop-sel").val(),
             subjectId: ''
         }, function (data) {
-           // $('#recheck-table').bootstrapTable("hideLoading");
+            // $('#recheck-table').bootstrapTable("hideLoading");
             //$('#recheck-table').bootstrapTable("load", data);
             initRecheckTable(data);
         }, function () {
@@ -280,7 +327,7 @@
     function initRecheckTable(data) {
         $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
             pagination: true,
-            data:data,
+            data: data,
             striped: true, //是否显示行间隔色
             width: "100%",
             height: getClientHeight() - 260,
@@ -387,8 +434,8 @@
                     return '<a href="javascript:goSubjectLossIndex();" style="min-width:100px">失分描述</a>';
                 }
             }, {
-                title: "复审得分",
-                field: "RecheckScore",
+                title: "复审结果",
+                field: "PassRecheckName",
                 width: 150,
                 valign: "middle",
                 align: "center",
@@ -540,7 +587,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () { 
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectInspectionStandardIndex", {}, function () {
             })
         });
 
@@ -561,7 +608,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () { 
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectFileIndex", {}, function () {
             })
         });
 
@@ -582,7 +629,7 @@
             else {
                 $("#save_button").show();
             }
-            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () { 
+            $("#Modal .modal-body").load("/ProjectContent/_PartialScoreSubjectLossIndex", {}, function () {
             })
         });
 
