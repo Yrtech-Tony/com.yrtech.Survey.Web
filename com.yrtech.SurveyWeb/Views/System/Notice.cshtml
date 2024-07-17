@@ -226,6 +226,7 @@
             noticeId = id
             $("#notice-form").setForm(curRow);
             $("#notice-form").data("json", JSON.stringify(curRow));
+            $("#ViewStatus").html(curRow.PublishViewCount + '/' + curRow.PublishObjectCount)
             loadNoticeAttmlFiles()
         })
     }
