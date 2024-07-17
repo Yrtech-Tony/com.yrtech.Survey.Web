@@ -139,7 +139,14 @@
             language: 'zh-CN',
             minView: '2'
         });
-
+        bindBrandSelect();
+        $("#brand-sel").change();
+        for (var i = 2020; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
         //加载年份
         $("#year-sel").change(function () {
             bindProjectSelect();
@@ -186,15 +193,6 @@
                 readyUploader.splice();
             }
         });
-
-        bindBrandSelect();
-        $("#brand-sel").change();
-        for (var i = 2020; i <= 2030; i++) {
-            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
-        }
-        var tYear = new Date().getFullYear();
-        $("#year-sel").val(tYear);
-        $("#year-sel").change();
 
         initOss();
         search();

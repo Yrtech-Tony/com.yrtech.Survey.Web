@@ -73,6 +73,14 @@
             language: 'zh-CN',
             minView: '2'
         });
+        bindBrandSelect();
+        $("#brand-sel").change();
+        for (var i = 2022; i <= 2030; i++) {
+            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
+        }
+        var tYear = new Date().getFullYear();
+        $("#year-sel").val(tYear);
+        $("#year-sel").change();
         //加载年份
         $("#year-sel").change(function () {
             bindProjectSelect();
@@ -104,17 +112,7 @@
         });
         $("#project-sel,#bussiness-type-sel").change(function () {
             loadAppealStat();
-        })
-
-        bindBrandSelect();
-        $("#brand-sel").change();
-        for (var i = 2022; i <= 2030; i++) {
-            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
-        }
-        var tYear = new Date().getFullYear();
-        $("#year-sel").val(tYear);
-        $("#year-sel").change();
-
+        });
         $("#btnSearch").click(function () {
             loadAppealStat();
         })

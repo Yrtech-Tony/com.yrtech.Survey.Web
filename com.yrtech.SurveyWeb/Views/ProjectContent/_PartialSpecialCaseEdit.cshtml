@@ -2,25 +2,27 @@
     <form class="form-horizontal form-label-left" id="special-case-form">
         <fieldset>
             <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectCode">
-                    检查标准<span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="InspectionDesc">
+                    检查标准
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="InspectionDesc" name="InspectionDesc" type="text" maxlength="15" class="form-control" disabled>
+                    <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                        <textarea id="InspectionDesc" name="InspectionDesc" rows="4" class="form-control col-md-7 col-xs-12" disabled></textarea>
+                    </div>
                 </div>
             </div>
             <div class="item form-group">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="ProjectName">
-                    申请理由<span class="required">*</span>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="SpecialCaseContent">
+                    申请理由
                 </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <input id="SpecialCaseContent" name="SpecialCaseContent" type="text" maxlength="15" class="form-control" disabled>
+                <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                    <textarea id="SpecialCaseContent" name="SpecialCaseContent" rows="4" class="form-control col-md-7 col-xs-12" disabled></textarea>
                 </div>
             </div>
 
             <div class="item form-group">
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelType">
-                    申请照片<span class="required">*</span>
+                    申请照片
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div id="special-case-file-pics" style="max-height:400px;overflow:auto; cursor: pointer">
@@ -32,7 +34,7 @@
                     反馈意见
                 </label>
                 <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
-                    <textarea id="SpecialFeedBack" name="SpecialFeedBack" rows="5" class="form-control col-md-7 col-xs-12"></textarea>
+                    <textarea id="SpecialFeedBack" name="SpecialFeedBack" rows="4" class="form-control col-md-7 col-xs-12"></textarea>
                 </div>
             </div>
         </fieldset>
