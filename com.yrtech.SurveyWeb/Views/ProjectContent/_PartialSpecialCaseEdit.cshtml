@@ -5,10 +5,8 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="InspectionDesc">
                     检查标准
                 </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
-                        <textarea id="InspectionDesc" name="InspectionDesc" rows="4" class="form-control col-md-7 col-xs-12" disabled></textarea>
-                    </div>
+                <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                    <textarea id="InspectionDesc" name="InspectionDesc" rows="4" class="form-control col-md-7 col-xs-12" disabled></textarea>
                 </div>
             </div>
             <div class="item form-group">
@@ -24,8 +22,8 @@
                 <label class="control-label col-md-3 col-sm-3 col-xs-12" for="LabelType">
                     申请照片
                 </label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div id="special-case-file-pics" style="max-height:400px;overflow:auto; cursor: pointer">
+                <div class="col-md-9 col-sm-9 col-xs-12">
+                    <div id="special-case-file-pics" style="max-height:300px;overflow:auto; cursor: pointer">
                     </div>
                 </div>
             </div>
@@ -43,11 +41,17 @@
 <link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 <script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
 <script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-
+<style>
+    #special-case-file-pics .img-div {
+        float: left;
+        position: sticky;
+    }
+</style>
 <script> 
     $(function () { 
         if (curRow.SpecialCaseFile) {
             let scFileObjs = JSON.parse(curRow.SpecialCaseFile)
+            console.log(scFileObjs)
             if (scFileObjs && scFileObjs.length>0 && scFileObjs[0].Url) {
                 bindSpecialCaseUrlList(scFileObjs[0].Url.split(';'))
             } 
@@ -56,13 +60,14 @@
 
     //绑定失分描述图片
     function bindSpecialCaseUrlList(fileList) {
+       
         $("#special-case-file-pics").empty()
         var osshost = loginUser.ossInfo.osshost
         fileList.forEach(function (file) {
             var imgDiv = $('<div class="img-div">');
 
             var img = $('<img />')
-            img.css("width", 250).css("height", 250).css("margin", 5)
+            img.css("width", 150).css("height", 150).css("margin", 5)
             if (file.indexOf("https") == -1) {
                 img.prop('src', osshost + file)
             }
