@@ -607,13 +607,14 @@
                     return '<a href="javascript:editSubjectFile();">编辑</a>';
                 }
             }, {
-                title: "查看照片",
+                title: "查看图片",
                 field: "",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false,
                 formatter: function (value, row, index) {
+
                     return '<a href="javascript:viewPicutes(\'' + (row.Url || '') + '\');" style="min-width:100px;cursor: pointer;">查看照片</a>';
                 }
             }],
@@ -680,7 +681,6 @@
             }
         });
     }
-
     var curAnswer
     function loadAnswerInfo() {
         $.commonGet("Answer/GetShopAnswerScoreInfo", {
@@ -715,7 +715,6 @@
             }
         });
     }
-
     function bindAnswerInfo(item) {
         debugger
         let FileResult = item.FileResult ? JSON.parse(item.FileResult) : []
@@ -759,7 +758,6 @@
         bindAddPictureClick(item.ProjectId, item.ShopId)
         bindAddLossPicClick(item.ProjectId, item.ShopId)
     }
-
     // 失分说明
     function bindSubjectLossResultList(subjectLossResult, lossDesc) {
         $("#LossResultCheckList").empty()
@@ -781,8 +779,6 @@
             }
         });
     }
-
-
     /**标准照片 **start**/
     function saveCurFileResult() {
         let data = $('#photo-table').bootstrapTable('getData', false)

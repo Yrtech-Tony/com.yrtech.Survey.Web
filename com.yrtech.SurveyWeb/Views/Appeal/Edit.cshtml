@@ -175,8 +175,6 @@
                     tr.append($("<td></td>").append(showBtn));
                 }
                 else {
-
-
                     //下载
                     var download = $("<a>下载</a>");
                     //var downloadUrl = osshost + "/" + item.ServerFileName + "?response-content-type=application%2Foctet-stream";;
@@ -187,7 +185,6 @@
                     else {
                         downloadUrl = item.ServerFileName;
                     }
-                    
                     download.attr("href", downloadUrl);
                     tr.append($("<td></td>").append(download));
                 }
