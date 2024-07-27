@@ -99,8 +99,8 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 @*<li role="presentation" class="active"><a href="#ins" aria-controls="ins" role="tab" data-toggle="tab">检查标准</a></li>*@
-                <li role="presentation"><a href="#photo" aria-controls="photo" role="tab" data-toggle="tab">标准照片</a></li>
-                <li role="presentation" class="active"><a href="#lossresult" aria-controls="lossresult" role="tab" data-toggle="tab">失分描述</a></li>
+                <li role="presentation" id="presentPhoto"><a href="#photo" aria-controls="photo" role="tab" data-toggle="tab">标准照片</a></li>
+                <li role="presentation" id="presentLossresult"class="active"><a href="#lossresult" aria-controls="lossresult" role="tab" data-toggle="tab">失分描述</a></li>
             </ul>
             <!-- Tab panes -->
             <div class="tab-content" style="padding: 10px; height: 420px; overflow: auto; border: solid 1px #ccc; border-top: none">
@@ -110,7 +110,7 @@
                 <div role="tabpanel" class="tab-pane" id="photo">
                     <table id="photo-table" class="table table-set"></table>
                 </div>
-                <div role="tabpanel" class="tab-pane active" id="lossresult">
+                <div role="tabpanel" class="tab-pane" id="lossresult">
                     <div style=" width: 100%; text-align: right; padding: 5px 0px;">
                         <button id="btnAdd" class="btn btn-primary btn-sm" style="margin-right:5px" onclick="addLossResult()" data-loading-text="提交中...">新增</button>
                     </div>
@@ -286,6 +286,8 @@
         $("input[type=radio]").iCheckParser();
         console.log('open recheck answer =', curScoreRow)
 
+
+        initTabActive();
         initInspection();
         initPhoto();
         initLossResult();
@@ -300,8 +302,23 @@
             nextSubject();
 
         })
-    })
-
+    });
+    function initTabActive()
+    {
+        if (page = "firstRecheck2") {
+            
+            $("#presentPhoto").addClass("active");
+            $("#photo").addClass("active");
+            $("#presentLossresult").removeClass("active");
+            $("#lossresult").removeClass("active");
+        }
+        else {
+            $("#presentPhoto").removeClass("active");
+            $("#photo").removeClass("active");
+            $("#presentLossresult").addClass("active");
+            $("#lossresult").addClass("active");
+        }
+    }
     function prevSubject() {
         //第一步 获取上一个得分
         $.commonGet("Recheck/GetShopPreRecheckSubject", {

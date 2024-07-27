@@ -20,6 +20,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult FirstRecheck2()
+        {
+            return View();
+        }
         public ActionResult RecheckIndex2()
         {
             return View();
@@ -71,11 +75,12 @@ namespace com.yrtech.SurveyWeb.Controllers
             return View();
         }
 
-        public ActionResult FirstRecheckDetail(string brandId, string projectId, string shopId)
+        public ActionResult FirstRecheckDetail(string brandId, string projectId, string shopId,string page)
         {
             ViewBag.BrandId = brandId;
             ViewBag.ProjectId = projectId;
             ViewBag.ShopId = shopId;
+            ViewBag.Page = page;
             return View();
         }
 

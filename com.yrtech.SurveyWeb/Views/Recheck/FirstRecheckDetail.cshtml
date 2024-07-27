@@ -99,14 +99,19 @@
 </div>
 
 <script>
-    NProgress.start(); 
+    NProgress.start();
     var projectId = "@ViewBag.ProjectId";
     var shopId = "@ViewBag.ShopId";
     var brandId = "@ViewBag.BrandId";
+    var page = "@ViewBag.Page";
     $(function () {
         $('title').html('@ViewBag.Title')
         $("#btnBack").click(function () {
-            openNewPage("/Recheck/FirstRecheckIndex")
+            if (page = "firstRecheck2") { openNewPage("/Recheck/FirstRecheck2") }
+            else {
+                openNewPage("/Recheck/FirstRecheckIndex")
+            }
+           
         })
         $("#btnReflash").click(function () {
             var url = "/Recheck/FirstRecheckDetail?brandId=" + brandId + "&projectId=" + projectId + "&shopId=" + shopId
@@ -234,7 +239,7 @@
 
     //初始化一审确认表格
     function initRecheckScoreTable(data) {
-       
+
         $('#recheck-subject-table').bootstrapTable('destroy').bootstrapTable({
             pagination: false,
             data: data,

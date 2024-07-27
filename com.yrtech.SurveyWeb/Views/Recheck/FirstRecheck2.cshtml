@@ -30,14 +30,10 @@
         <div class="form-group">
             <label class="control-label">项目类型:</label>
             <select id="projectType-sel" class="form-control" style="width:100px;">
-                <option value="明检">明检</option>
-                <option value="密采">密采</option>
                 <option value="自检">自检</option>
+                @*<option value="明检">明检</option>
+                    <option value="密采">密采</option>*@
             </select>
-        </div>
-        <div class="form-group" id="year-div">
-            <label class="control-label">年份:</label>
-            <select id="year-sel" class="form-control" style="width:100px;"></select>
         </div>
         <div class="form-group" id="startDate-div">
             <label class="control-label">开始日期:</label>
@@ -48,12 +44,8 @@
             <input id="endDate-sel" name="endDate-sel" class="form-control" style="width:100px;" />
         </div>
         <div class="form-group">
-            <label class="control-label">期号:</label>
-            <select id="project-sel" data-width="150px"></select>
-        </div>
-        <div class="form-group">
-            <label class="control-label">经销商代码:</label>
-            <input id="shopCode" class="form-control" style="width:150px;" placeholder="经销商代码" />
+            <label class="control-label">经销商:</label>
+            <input id="shopCode" class="form-control" style="width:150px;" placeholder="经销商代码或名称" />
         </div>
     </div>
 
@@ -68,7 +60,7 @@
 <script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
 <script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 
- 
+
 <script>
     NProgress.start();
     var allLabels = []
@@ -84,47 +76,11 @@
             language: 'zh-CN',
             minView: '2'
         });
+        $("#startDate-sel").val(new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+        $("#endDate-sel").val(new Date().Format("yyyy-MM-dd"));
         bindBrandSelect();
-        //加载年份
-        $("#year-sel").change(function () {
-            bindProjectSelect();
-        });
-        for (var i = 2020; i <= 2030; i++) {
-            $("#year-sel").append($("<option>").text(i + "").val(i + ""));
-        }
-        var tYear = new Date().getFullYear();
-        $("#year-sel").val(tYear);
-        $("#year-sel").change();
-
-        //加载期号
-        $("#brand-sel").change(function () {
-            bindProjectSelect();
-        });
-        $("#projectType-sel").change(function () {
-            projectTypeDateShow();
-            bindProjectSelect();
-            initRecheckTable();
-            //$("#project-sel").trigger("change");
-        });
-        $("#projectType-sel").trigger("change");
-        $("#startDate-sel").datetimepicker().on('changeDate', function (ev) {
-            if ($("#startDate-sel") != '' && $("#endDate-sel") != "") {
-                bindProjectSelect();
-                initRecheckTable();
-            }
-        });
-        $("#endDate-sel").datetimepicker().on('changeDate', function (ev) {
-            if ($("#endDate-sel") != '' && $("#endDate-sel") != "") {
-                bindProjectSelect();
-                initRecheckTable();
-                // $("#project-sel").trigger("change");
-            }
-        });
-        //$("#project-sel").change(function () {
-        //    bindShopSelect(true);
-        //});
-        //bindShopSelect(true);
         loadRecheck();
+        //initRecheckTable();
         $("#btnQuery").click(function () {
             loadRecheck();
         });
@@ -158,16 +114,24 @@
     }
 
     function loadRecheck() {
-        var projectId = $("#project-sel").val();
-        if (!projectId) {
-            alert("请选择一个期号！");
+        if ($("#startDate-sel").val() > $("#endDate-sel").val()) {
+            alert("开始日期不能大于结束日期！");
+            return
+        }
+        if (getDateDiff($("#startDate-sel").val(), $("#endDate-sel").val()) > 2) {
+            alert("开始日期和结束日期相差不能超过2天！");
             return
         }
         $('#recheck-table').bootstrapTable("showLoading");
-        $.commonGet("Recheck/GetRecheckStatusForFirstRecheck", {
-            projectId: $("#project-sel").val(),
+        $.commonGet("Answer/GetTaskProjectForWeb", {
             shopId: "",
-            shopCode: $("#shopCode").val()
+            projectId: "",
+            taskType: "",
+            projectType: $("#projectType-sel").val(),
+            startDate: $("#startDate-sel").val(),
+            endDate: $("#endDate-sel").val(),
+            brandId: $("#brand-sel").val(),
+            key: $("#shopCode").val()
         }, function (data) {
             initRecheckTable(data);
         }, function () {
@@ -189,75 +153,54 @@
             pageSize: 20,
             pageList: [20, 50, 100, 500],
             columns: [{
+                title: "期号代码",
+                field: "ProjectCode",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "期号名称",
+                field: "ProjectName",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
                 title: "经销商代码",
                 field: 'ShopCode',
                 width: 120,
                 valign: "middle",
                 align: "center",
-                formatter: function (value, row, index) { 
-                    return '<a href="javascript:openDetail('+ row.ProjectId + ',' + row.ShopId + ')">' + value + '</a>';
+                formatter: function (value, row, index) {
+                    return '<a href="javascript:openDetail(' + row.ProjectId + ',' + row.ShopId + ')">' + value + '</a>';
                 }
             }, {
                 title: "经销商名称",
                 field: "ShopName",
-                width: 300,
+                width: 220,
                 valign: "middle",
-                align: "center", 
+                align: "center",
                 sortable: false
-            },
-            {
-                title: "提交一审",
-                field: "Status_S1",
+            }
+            , {
+                title: "状态",
+                field: "Status",
                 width: 100,
                 valign: "middle",
                 align: "center",
                 sortable: false
-            }, {
-                title: "一审中", 
-                field: "Status_S2",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "一审完毕",
-                field: "Status_S3",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "一审修改",
-                field: "Status_S4",
-                width: 100,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "一审确认",
-                field: "Status_S8",
-                width: 120,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    if (!value)
-                        return '<button id="btnRecheckSubmit" onclick="firstRecheck()">一审确认</span>'
-                }
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
-                console.log('curRow',curRow)
+                console.log('curRow', curRow)
             }
         });
     }
-
     function openDetail(projectId, shopId) {
-        var url = "/Recheck/FirstRecheckDetail?brandId=" + $("#brand-sel").val() + "&projectId=" + projectId + "&shopId=" + shopId+"&page=firstRecheck"
+        var url = "/Recheck/FirstRecheckDetail?brandId=" + $("#brand-sel").val() + "&projectId=" + projectId + "&shopId=" + shopId+"&page=firstRecheck2"
         openNewPage(url)
     }
-
-
     function firstRecheck() {
         setTimeout(function () {
             $("#btnRecheckSubmit").button("loading");
@@ -273,6 +216,6 @@
             }, function () {
                 $("#btnRecheckSubmit").button("reset");
             });
-        },300)
+        }, 300)
     }
 </script>
