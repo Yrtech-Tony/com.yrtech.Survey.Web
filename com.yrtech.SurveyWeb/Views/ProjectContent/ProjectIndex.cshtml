@@ -211,8 +211,6 @@
             endDate: $("#endDate-sel").val(),
             key: $("#shop-sel").val(),
         }, function (data) {
-            // $('#project-table').bootstrapTable("hideLoading");
-            //$('#project-table').bootstrapTable("load", data);
             initProjectTable(data);
         });
         $('#project-table').bootstrapTable("hideLoading");
@@ -253,17 +251,19 @@
                 valign: "middle",
                 align: "center",
                 sortable: false
-            }, {
-                title: "重新下发",
-                field: "ReCreate",
-                width: 80,
-                valign: "middle",
-                align: "center",
-                sortable: false,
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:reCreate();" style="min-width:100px">重新下发</a>';
-                }
-            }, {
+            }
+            //, {
+            //    title: "重新下发",
+            //    field: "ReCreate",
+            //    width: 80,
+            //    valign: "middle",
+            //    align: "center",
+            //    sortable: false,
+            //    formatter: function (value, row, index) {
+            //        return '<a href="javascript:reCreate();" style="min-width:100px">重新下发</a>';
+            //    }
+            //}
+            , {
                 title: "年份",
                 field: "Year",
                 width: 100,
@@ -330,7 +330,7 @@
         debugger
         if ($("#projectType-sel").val() == "自检") {
             $('#project-table').bootstrapTable('hideColumn', 'PhotoSize');
-            $('#project-table').bootstrapTable('showColumn', 'ReCreate');
+            //$('#project-table').bootstrapTable('showColumn', 'ReCreate');
             $('#btnDownloadTemplate').show();
             $('#btnProjectImport').show();
             $('#startDate-div').show();
@@ -343,7 +343,7 @@
         }
         else {
             $('#project-table').bootstrapTable('showColumn', 'PhotoSize');
-            $('#project-table').bootstrapTable('hideColumn', 'ReCreate');
+            //$('#project-table').bootstrapTable('hideColumn', 'ReCreate');
             $('#btnDownloadTemplate').hide();
             $('#btnProjectImport').hide();
             $('#startDate-div').hide();
@@ -383,17 +383,17 @@
             columnShowEdit();
         })
     }
-    function reCreate()
-    {
-        debugger
-        $.commonGet("Answer/ImproveCreate", {
-            projectId: curRow.ProjectId,
-            shopId: curRow.ShopId,
-            userId: loginUser.Id
-        }, function (data) {
-            loadProject();
-        });
-    }
+    //function reCreate()
+    //{
+    //    debugger
+    //    $.commonGet("Answer/ImproveCreate", {
+    //        projectId: curRow.ProjectId,
+    //        shopId: curRow.ShopId,
+    //        userId: loginUser.Id
+    //    }, function (data) {
+    //        loadProject();
+    //    });
+    //}
     function loadImportProject(file) {
         debugger;
         $("#btnProjectImport").button("loading");
@@ -403,14 +403,8 @@
             ossPath: file.osspath,
             userId: loginUser.Id
         }, function (data) {
-            if (data && data.Status)
-            { loadProject(); }
-            else {
-                alert(data.Body);
-            }
+            loadProject();
             $("#btnProjectImport").button("reset");
-        });
-        
-        
+        }, function () { $("#btnProjectImport").button("reset"); });
     }
 </script>
