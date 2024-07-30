@@ -76,8 +76,10 @@
             language: 'zh-CN',
             minView: '2'
         });
-        $("#startDate-sel").val(new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+        //$("#startDate-sel").val(new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+        $("#startDate-sel").val(new Date().Format("yyyy-MM-dd"));
         $("#endDate-sel").val(new Date().Format("yyyy-MM-dd"));
+        debugger
         bindBrandSelect();
         loadRecheck();
         //initRecheckTable();
@@ -150,8 +152,8 @@
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 50, 100, 500],
+            pageSize: 500,
+            pageList: [500,1000],
             columns: [{
                 title: "期号代码",
                 field: "ProjectCode",
@@ -189,7 +191,7 @@
                 width: 100,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: true
             }],
             onClickRow: function (row, $element) {
                 curRow = row;
