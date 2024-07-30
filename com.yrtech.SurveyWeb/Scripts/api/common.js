@@ -539,3 +539,19 @@ function viewPicutes(url) {
 function closePhotoModel() {
     $("#photoModal").modal("hide")
 }
+
+function isVideoFile(filename) {
+    const videoExtensions = ['.mp4', '.mov', '.webm', '.mkv', '.avi', '.mpg', '.wmv', '.flv', '.3gp'];
+    const extension = filename.slice(filename.lastIndexOf('.')).toLowerCase();
+    return videoExtensions.includes(extension);
+}
+
+function playVideo(url) {
+    window.open(url)
+}
+
+
+function downloadFile(url) {
+    var fileName = url.slice(url.lastIndexOf('/')+1)
+    window.open('/Base/DownloadFile?ossPath=' + url + '&fileName=' + fileName)
+}

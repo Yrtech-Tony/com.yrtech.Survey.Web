@@ -147,8 +147,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Attributes\AuthenAdminAttribute.cs" />
+    <Compile Include="Attributes\CustomHandleErrorAttribute.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\EasyPhotoController.cs" />
     <Compile Include="Controllers\AppealController.cs" />
     <Compile Include="Controllers\BrandContentController.cs" />
