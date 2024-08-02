@@ -86,35 +86,11 @@
         $("#btnQuery").click(function () {
             loadRecheck();
         });
-        $("#btnRecheckSubmit").click(function () {
-            recheckSubmit();
-        });
-        $('#Modal').on('hide.bs.modal', function (e) {
-        });
 
         NProgress.done();
     });
 
     var curRow;
-    function recheckSubmit() {
-        var projectId = $("#project-sel").val();
-        if (!projectId) {
-            alert("请选择期号！");
-            return
-        }
-        $("#btnRecheckSubmit").button("loading");
-        $.commonPost("Recheck/SaveRecheckStatusDtl", {
-            ProjectId: $("#project-sel").val(),
-            //ShopId: $("#shop-sel").val(),
-            ShopId: curRow.ShopId,
-            RecheckTypeId: $("#LabelId").val(),
-            InUserId: loginUser.Id
-        }, function () {
-            $("#btnRecheckSubmit").button("reset");
-            alert("提交成功！");
-        });
-    }
-
     function loadRecheck() {
         if ($("#startDate-sel").val() > $("#endDate-sel").val()) {
             alert("开始日期不能大于结束日期！");

@@ -352,9 +352,7 @@
         });
     }
 
-    function nextSubject() {
-        $("#btnNext").button('loading');
-        debugger 
+    function nextSubject() { 
         var passRecheck = $("input[name=PassRecheck]:checked").val()
         var recheckContent = $("#RecheckContent").val()
         console.log('save recheck = ', curScoreRow)
@@ -364,7 +362,8 @@
                 alert('请输入审核意见！')
                 return
             }
-        } 
+        }
+        $("#btnNext").button('loading');
         let RecheckError = loadRecheckError()
         //第一步 保存复审信息
         $.commonPost("Recheck/SaveShopRecheckInfo", {

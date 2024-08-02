@@ -36,6 +36,10 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View();
         }
+        public ActionResult RecheckStat()
+        {
+            return View();
+        }
         public ActionResult SpotCheck1()
         {
             return View();

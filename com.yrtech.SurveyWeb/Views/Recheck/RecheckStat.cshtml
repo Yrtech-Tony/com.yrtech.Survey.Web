@@ -1,0 +1,227 @@
+﻿@{
+    ViewBag.Title = "一审统计";
+}
+
+<style>
+    .operation {
+        padding: 10px 0px;
+        text-align: right;
+    }
+
+        .operation .btn {
+            width: 100px;
+        }
+
+    .bootstrap-table .fixed-table-container.fixed-height .fixed-table-border {
+        border-left: none;
+        border-right: none;
+    }
+</style>
+<div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnQuery" class="btn btn-primary">查询</button>
+        <button id="btnExportRecheckStat" class="btn btn-primary">导出</button>
+    </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:120px;"></select>
+        </div>
+        @*<div class="form-group">
+                <label class="control-label">项目类型:</label>
+                <select id="projectType-sel" class="form-control" style="width:120px;">
+                    <option value="自检">自检</option>
+                    @*<option value="明检">明检</option>
+                        <option value="密采">密采</option>
+                </select>
+            </div>*@
+        <div class="form-group" id="startDate-div">
+            <label class="control-label">开始日期:</label>
+            <input id="startDate-sel" name="startDate-sel" class="form-control" style="width:120px;" />
+        </div>
+        <div class="form-group" id="endDate-div">
+            <label class="control-label">结束日期:</label>
+            <input id="endDate-sel" name="endDate-sel" class="form-control" style="width:120px;" />
+        </div>
+    </div>
+
+</div>
+<div class="result">
+    <table id="recheck-table" class="table  table-set"></table>
+</div>
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script src="~/Scripts/icheck.js"></script>
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script>
+    NProgress.start();
+    var allLabels = []
+    $(function () {
+        $('title').html('@ViewBag.Title');
+        $("#startDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        $("#endDate-sel").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        //$("#startDate-sel").val(new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+        $("#startDate-sel").val(new Date().Format("yyyy-MM-dd"));
+        $("#endDate-sel").val(new Date().Format("yyyy-MM-dd"));
+        debugger
+        bindBrandSelect();
+        loadRecheck();
+        $("#btnQuery").click(function () {
+            loadRecheck();
+        });
+        NProgress.done();
+    });
+    var curRow;
+    function loadRecheck() {
+        if ($("#startDate-sel").val() > $("#endDate-sel").val()) {
+            alert("开始日期不能大于结束日期！");
+            return
+        }
+        if (getDateDiff($("#startDate-sel").val(), $("#endDate-sel").val()) > 32) {
+            alert("开始日期和结束日期相差不能超过1个月！");
+            return
+        }
+        $('#recheck-table').bootstrapTable("showLoading");
+        $.commonGet("Recheck/GetTaskRecheckInfo", {
+            brandId: $("#brand-sel").val(),
+            shopId: "",
+            projectId: '',
+            startDate: $("#startDate-sel").val(),
+            endDate: $("#endDate-sel").val()
+        }, function (data) {
+            initRecheckTable(data);
+        }, function () {
+            $('#recheck-table').bootstrapTable("hideLoading");
+        });
+    }
+    //初始化期号表格
+    function initRecheckTable(data) {
+        $('#recheck-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data: data,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 50,
+            pageList: [50, 100, 500],
+            columns: [{
+                title: "期号代码",
+                field: 'ProjectCode',
+                width: 120,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "期号名称",
+                field: 'ProjectName',
+                width: 120,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商代码",
+                field: 'ShopCode',
+                width: 120,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                valign: "middle",
+                align: "center",
+                width: 120,
+                sortable: false
+            },
+            {
+                title: "状态",
+                field: "Status",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: true
+            }, {
+                title: "提交审核时间",
+                field: "StatusDateTime",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "题目代码",
+                field: "SubjectCode",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+            }, {
+                title: "检查点",
+                field: "CheckPoint",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "一审结果",
+                field: "PassRecheckName",
+                width: 80,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }, {
+                title: "一审意见",
+                field: "RecheckContent",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    if (value != undefined && value != "")
+                        return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "审核时间",
+                field: "RecheckDateTime",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+    $("#btnExportRecheckStat").click(function () {
+        $("#btnExportRecheckStat").button('loading');
+
+        $.commonGet("Recheck/TaskRecheckExport", {
+            brandId: $("#brand-sel").val(),
+            shopId: "",
+            projectId: '',
+            startDate: $("#startDate-sel").val(),
+            endDate: $("#endDate-sel").val()
+        }, function (data) {
+            window.location.href = baseSurveyUrl + data;
+            $("#btnExportRecheckStat").button('reset');
+        });
+    });
+</script>
