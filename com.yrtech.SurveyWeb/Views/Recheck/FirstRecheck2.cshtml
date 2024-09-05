@@ -129,38 +129,51 @@
             sortable: true,
             pageNumber: 1,
             pageSize: 500,
-            pageList: [500,1000],
-            columns: [{
-                title: "期号代码",
-                field: "ProjectCode",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "期号名称",
-                field: "ProjectName",
-                width: 200,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }, {
-                title: "经销商代码",
-                field: 'ShopCode',
-                width: 120,
-                valign: "middle",
-                align: "center",
-                formatter: function (value, row, index) {
-                    return '<a href="javascript:openDetail(' + row.ProjectId + ',' + row.ShopId + ')">' + value + '</a>';
+            pageList: [500, 1000],
+            columns: [
+                {
+                    title: "序号",
+                    field: "",
+                    width: 25,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false,
+                    formatter: function (value, row, index) {
+                        debugger
+                        return index + 1;
+                    }
                 }
-            }, {
-                title: "经销商名称",
-                field: "ShopName",
-                width: 220,
-                valign: "middle",
-                align: "center",
-                sortable: false
-            }
+                , {
+                    title: "期号代码",
+                    field: "ProjectCode",
+                    width: 200,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false
+                }, {
+                    title: "期号名称",
+                    field: "ProjectName",
+                    width: 200,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false
+                }, {
+                    title: "经销商代码",
+                    field: 'ShopCode',
+                    width: 120,
+                    valign: "middle",
+                    align: "center",
+                    formatter: function (value, row, index) {
+                        return '<a href="javascript:openDetail(' + row.ProjectId + ',' + row.ShopId + ')">' + value + '</a>';
+                    }
+                }, {
+                    title: "经销商名称",
+                    field: "ShopName",
+                    width: 220,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false
+                }
             , {
                 title: "状态",
                 field: "Status",
@@ -176,7 +189,7 @@
         });
     }
     function openDetail(projectId, shopId) {
-        var url = "/Recheck/FirstRecheckDetail?brandId=" + $("#brand-sel").val() + "&projectId=" + projectId + "&shopId=" + shopId+"&page=firstRecheck2"
+        var url = "/Recheck/FirstRecheckDetail?brandId=" + $("#brand-sel").val() + "&projectId=" + projectId + "&shopId=" + shopId + "&page=firstRecheck2"
         openNewPage(url)
     }
     function firstRecheck() {

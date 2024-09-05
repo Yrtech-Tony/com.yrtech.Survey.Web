@@ -1,0 +1,207 @@
+﻿@{
+    ViewBag.Title = "短信管理";
+}
+
+<div class="condition">
+    <div style="text-align:right;width:100%">
+        <button id="btnQuery" class="btn btn-primary">查询</button> 
+    </div>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label">品牌:</label>
+            <select id="brand-sel" class="form-control" style="width:100px;"></select>
+        </div> 
+        <div class="form-group">
+            <label class="control-label">开始日期:</label>
+            <input id="startDate" class="form-control" style="width: 100px" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">结束日期:</label>
+            <input id="endDate" class="form-control" style="width: 100px" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">发送状态:</label>
+            <select id="sendStatus-sel" class="form-control" style="width:100px;">
+                <option value="">请选择</option>
+                <option value="1">发送中</option>
+                <option value="2">发送失败</option>
+                <option value="3">发送成功</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">短信类型:</label>
+            <select id="bussinessType-sel" class="form-control" style="width:200px;">
+                <option value="">请选择</option>
+                <option value="gtmc0600">自主点检8:00-9:00</option>
+                <option value="gtmc1030">自主点检10:30-11:30</option>
+                <option value="gtmc1500">自主点检15:00-16:00</option>
+                <option value="gtmcImprove0630">改善事项异常06:30-07:00</option>
+            </select>
+        </div>
+        @*<div class="form-group">
+            <label class="control-label">电话号码:</label>
+            <input id="telNO" type="text" class="form-control" placeholder="电话号码" style="width:120px;">
+        </div>*@
+</div>
+</div>
+<div class="result">
+    <div class="form-inline">
+        <div class="form-group">
+            <input type="text" class="form-control" name="telNO" id="telNO" placeholder="电话号码" value="">
+            <button type="button" id="btnSearchByKey" class="btn btn-default ">搜 索</button>
+        </div>
+    </div>
+    <br />
+    <table id="sms-table" class="table table-set"></table>
+</div>
+
+<link href="~/Content/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="~/Content/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script src="~/Scripts/api/common.js"></script>
+<script src="~/Scripts/custom/form-serialize.js?20200510"></script>
+<script src="~/Scripts/icheck.js"></script>
+
+<link href="~/Content/viewer/viewer.min.css" rel="stylesheet" />
+<script src="~/Content/viewer/viewer.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/crypto/crypto.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/hmac/hmac.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/crypto1/sha1/sha1.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/plupload-2.1.2/js/plupload.full.min.js"></script>
+<script src="~/Scripts/oss-upload-direct/lib/base64.js"></script>
+<script src="~/Scripts/oss-upload-direct/upload.js?20200527"></script>
+
+
+<script>
+    NProgress.start();
+    var importUploaders
+    $(function () {  
+        $('title').html('@ViewBag.Title')
+
+        $("#startDate,#endDate").datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            minView: '2'
+        });
+        var curDate = new Date();
+        $("#startDate").val(new Date(curDate.getTime() - 7*24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+        $("#endDate").val(curDate.Format("yyyy-MM-dd")); 
+        bindBrandSelect();
+        
+        loadSMS(); 
+        $("#btnQuery").click(function () {
+            loadSMS();
+        })
+        $("#btnSearch").click(function () {
+            loadSMS();
+        });
+        NProgress.done();
+    })
+
+    var curRow; 
+
+    function loadSMS() {
+        $('#sms-table').bootstrapTable("showLoading");
+        $.commonGet("Master/GetSMSInfo", {
+            brandId: $("#brand-sel").val(),
+            smsBussinessType: $("#bussinessType-sel").val(),
+            telNO: $("#telNO").val(),
+            startDate: $("#startDate").val(),
+            endDate: $("#endDate").val(),
+            sendStatus: $("#sendStatus-sel").val()
+        }, function (data) {
+            initSMSTable(data);
+        });
+    }
+
+    //初始化期号表格
+    function initSMSTable(data) {
+        $('#sms-table').bootstrapTable('destroy').bootstrapTable({
+            pagination: true,
+            data: data,
+            striped: true, //是否显示行间隔色
+            width: "100%",
+            height: getClientHeight() - 260,
+            showColumns: false, // 开启自定义列显示功能
+            sortable: true,
+            pageNumber: 1,
+            pageSize: 500,
+            pageList: [500],
+            columns: [{ 
+                title: "任务",
+                field: 'ProjectName',
+                width: 100,
+                valign: "middle",
+                align: "center"
+            }, {
+                title: "经销商代码",
+                field: "ShopCode",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: true,
+                formatter: function (value, row, index) {
+                    return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }, {
+                title: "经销商名称",
+                field: "ShopName",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: true,
+                formatter: function (value, row, index) {
+                    return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            },
+            {
+                title: "短信类型",
+                field: "SMSBussinessName",
+                width: 150,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },
+            {
+                title: "电话",
+                field: "TelNO",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },
+            {
+                title: "发送日期",
+                field: "SMSSendDate",
+                width: 120,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            },
+            {
+                title: "发送状态",
+                field: "SendStatusName",
+                width: 100,
+                valign: "middle",
+                align: "center",
+                sortable: false
+            }
+            ,
+            {
+                title: "错误代码",
+                field: "ErrCode",
+                width: 200,
+                valign: "middle",
+                align: "center",
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
+            }],
+            onClickRow: function (row, $element) {
+                curRow = row;
+            }
+        });
+    }
+</script>

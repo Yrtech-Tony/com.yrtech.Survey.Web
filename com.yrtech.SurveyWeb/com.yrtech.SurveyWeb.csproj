@@ -635,6 +635,7 @@
     <Content Include="Views\System\_PartialNoticeObjectRoleImport.cshtml" />
     <Content Include="Views\Recheck\FirstRecheck2.cshtml" />
     <Content Include="Views\Recheck\RecheckStat.cshtml" />
+    <Content Include="Views\System\SMSInfo.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

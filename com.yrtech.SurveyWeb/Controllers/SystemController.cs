@@ -59,5 +59,9 @@ namespace com.yrtech.SurveyWeb.Controllers
         {
             return View("_PartialNoticeObjectUserImport");
         }
-	}
+        public ActionResult SMSInfo()
+        {
+            return View();
+        }
+    }
 }

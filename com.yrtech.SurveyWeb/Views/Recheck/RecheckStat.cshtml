@@ -74,8 +74,9 @@
             language: 'zh-CN',
             minView: '2'
         });
-        //$("#startDate-sel").val(new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
-        $("#startDate-sel").val(new Date().Format("yyyy-MM-dd"));
+
+        //$("#startDate-sel").val(new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+        $("#startDate-sel").val(new Date(new Date().getFullYear(), new Date().getMonth(), 1).Format("yyyy-MM-dd"));
         $("#endDate-sel").val(new Date().Format("yyyy-MM-dd"));
         debugger
         bindBrandSelect();
@@ -119,38 +120,50 @@
             showColumns: false, // 开启自定义列显示功能
             sortable: true,
             pageNumber: 1,
-            pageSize: 50,
-            pageList: [50, 100, 500],
-            columns: [{
-                title: "期号代码",
-                field: 'ProjectCode',
-                width: 120,
-                valign: "middle",
-                align: "center"
-            }, {
-                title: "期号名称",
-                field: 'ProjectName',
-                width: 120,
-                valign: "middle",
-                align: "center"
-            }, {
-                title: "经销商代码",
-                field: 'ShopCode',
-                width: 120,
-                valign: "middle",
-                align: "center"
-            }, {
-                title: "经销商名称",
-                field: "ShopName",
-                valign: "middle",
-                align: "center",
-                width: 120,
-                sortable: false
-            },
+            pageSize: 500,
+            pageList: [500],
+            columns: [
+                {
+                    title: "序号",
+                    field: "",
+                    width: 30,
+                    valign: "middle",
+                    align: "center",
+                    sortable: false,
+                    formatter: function (value, row, index) {
+                        debugger
+                        return index + 1;
+                    }
+                }, {
+                    title: "期号代码",
+                    field: 'ProjectCode',
+                    width: 100,
+                    valign: "middle",
+                    align: "center"
+                }, {
+                    title: "期号名称",
+                    field: 'ProjectName',
+                    width: 100,
+                    valign: "middle",
+                    align: "center"
+                }, {
+                    title: "经销商代码",
+                    field: 'ShopCode',
+                    width: 80,
+                    valign: "middle",
+                    align: "center"
+                }, {
+                    title: "经销商名称",
+                    field: "ShopName",
+                    valign: "middle",
+                    align: "center",
+                    width: 120,
+                    sortable: false
+                },
             {
                 title: "状态",
                 field: "Status",
-                width: 80,
+                width: 60,
                 valign: "middle",
                 align: "center",
                 sortable: true
@@ -189,7 +202,7 @@
             }, {
                 title: "一审意见",
                 field: "RecheckContent",
-                width: 200,
+                width: 150,
                 valign: "middle",
                 align: "center",
                 sortable: false,

@@ -107,7 +107,7 @@
     $(function () {
         $('title').html('@ViewBag.Title')
         $("#btnBack").click(function () {
-            if (page = "firstRecheck2") { openNewPage("/Recheck/FirstRecheck2") }
+            if (page == "firstRecheck2") { openNewPage("/Recheck/FirstRecheck2") }
             else {
                 openNewPage("/Recheck/FirstRecheckIndex")
             }
