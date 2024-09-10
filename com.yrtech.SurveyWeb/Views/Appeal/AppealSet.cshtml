@@ -417,8 +417,8 @@
         $("#ModalShop").modal("show");
         $("#ModalShop .modal-title").html("经销商申诉设置编辑");
         $("#ModalShop .modal-body").load("/Appeal/ShopAppealSetEdit", {}, function () {
-            $("#appealset-form").setForm(curRowShop);
-            $("#appealset-form").data("json", JSON.stringify(curRowShop));
+            $("#appealshopset-form").setForm(curRowShop);
+            $("#appealshopset-form").data("json", JSON.stringify(curRowShop));
         })
     }
 

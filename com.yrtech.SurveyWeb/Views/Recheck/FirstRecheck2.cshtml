@@ -44,6 +44,14 @@
             <input id="endDate-sel" name="endDate-sel" class="form-control" style="width:100px;" />
         </div>
         <div class="form-group">
+            <label class="control-label">任务类型:</label>
+            <select id="taskType-sel" class="form-control" style="width:100px;">
+                <option value="">全部</option>
+                <option value="0">自检任务</option>
+                <option value="1">改善任务</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label class="control-label">经销商:</label>
             <input id="shopCode" class="form-control" style="width:150px;" placeholder="经销商代码或名称" />
         </div>
@@ -96,15 +104,15 @@
             alert("开始日期不能大于结束日期！");
             return
         }
-        if (getDateDiff($("#startDate-sel").val(), $("#endDate-sel").val()) > 2) {
-            alert("开始日期和结束日期相差不能超过2天！");
+        if (getDateDiff($("#startDate-sel").val(), $("#endDate-sel").val()) > 7) {
+            alert("开始日期和结束日期相差不能超过7天！");
             return
         }
         $('#recheck-table').bootstrapTable("showLoading");
         $.commonGet("Answer/GetTaskProjectForWeb", {
             shopId: "",
             projectId: "",
-            taskType: "",
+            taskType: $("#taskType-sel").val(),
             projectType: $("#projectType-sel").val(),
             startDate: $("#startDate-sel").val(),
             endDate: $("#endDate-sel").val(),

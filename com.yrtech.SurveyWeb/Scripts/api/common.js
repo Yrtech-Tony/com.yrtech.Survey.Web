@@ -1,5 +1,5 @@
-﻿var baseSurveyUrl = 'http://123.57.229.128:8001/';
-//var baseSurveyUrl = 'http://123.57.229.128:8003/';
+﻿//var baseSurveyUrl = 'http://123.57.229.128:8001/';
+var baseSurveyUrl = 'http://localhost:57328/';
 var surveyApi = baseSurveyUrl + "survey/api/";
 var baseEasyPhotoUrl = 'http://123.57.229.128:8002/';
 //var baseEasyPhotoUrl = 'http://localhost:57328/';
@@ -274,6 +274,7 @@ function bindShopSelect(isAll, projectIdUseChk) {
 // 绑定业务类型
 function bindBussinessSelect() {
     $.ajaxSettings.async = false;
+    debugger
     $.commonGet("Master/GetArea", {
         brandId: $("#brand-sel").val(),
         areaId: '',

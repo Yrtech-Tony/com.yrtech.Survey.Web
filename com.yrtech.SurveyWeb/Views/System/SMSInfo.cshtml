@@ -85,15 +85,17 @@
             minView: '2'
         });
         var curDate = new Date();
-        $("#startDate").val(new Date(curDate.getTime() - 7*24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
-        $("#endDate").val(curDate.Format("yyyy-MM-dd")); 
+        $("#startDate").val(curDate.Format("yyyy-MM-dd"));
+        $("#endDate").val(curDate.Format("yyyy-MM-dd"));
+        //$("#endDate").val(new Date(curDate.getTime() + 1 * 24 * 60 * 60 * 1000).Format("yyyy-MM-dd"));
+        
         bindBrandSelect();
         
         loadSMS(); 
         $("#btnQuery").click(function () {
             loadSMS();
         })
-        $("#btnSearch").click(function () {
+        $("#btnSearchByKey").click(function () {
             loadSMS();
         });
         NProgress.done();
@@ -131,7 +133,7 @@
             columns: [{ 
                 title: "任务",
                 field: 'ProjectName',
-                width: 100,
+                width: 120,
                 valign: "middle",
                 align: "center"
             }, {
@@ -177,7 +179,10 @@
                 width: 120,
                 valign: "middle",
                 align: "center",
-                sortable: false
+                sortable: false,
+                formatter: function (value, row, index) {
+                    return '<span data-toggle="tooltip" data-placement="left" title="' + value + '">' + value + '</span>'
+                }
             },
             {
                 title: "发送状态",
